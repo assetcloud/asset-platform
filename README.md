@@ -28,21 +28,3 @@ abpm-process-center/src/main/resources/config/database/jdbc-dev.properties `数�
 abpm-process-center/src/main/resources/config/database/jdbc-test.properties `数据库连接`
 
 运行com.asset.FlowableApplication ，访问 [http//:localhost:9000] 
-
-## docker部署
-
-搭建horbor私库
-pom.xml需配置私库地址`docker.registry.url`。
-如果是域名，必须使用https
-配置docker 
-docker login 私库地址
-
-
-构建镜像 
-```
-mvn dockerfile:build
-```
-推送镜像
-```
-mvn dockerfile:push
-```
