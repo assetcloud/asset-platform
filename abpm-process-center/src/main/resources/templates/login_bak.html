@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fbpm工作流 - 登录</title>
+    <link rel="shortcut icon" href="favicon.ico"> <link href="hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="hplus/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="hplus/css/animate.min.css" rel="stylesheet">
+    <link href="hplus/css/style.min.css?v=4.1.0" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+    <meta http-equiv="refresh" content="0;ie.html" />
+    <![endif]-->
+</head>
+<body class="gray-bg">
+<div class="middle-box text-center loginscreen  animated fadeInDown">
+    <div>
+        <!--1ab394修改为4787F7-->
+        <h3 style="margin-top: 200px;">欢迎使用 Fbpm工作流</h3>
+        <form id="form1" class="m-t" role="form" method="post" action="">
+            <div class="form-group">
+                <input name="username" class="form-control" placeholder="用户名" required="">
+            </div>
+            <div class="form-group">
+                <input name="password" type="password" class="form-control" placeholder="密码" required="">
+            </div>
+            <button id="login" type="submit" class="btn btn-primary block full-width m-b">登 录</button>
+        </form>
+    </div>
+</div>
+<script src="hplus/js/jquery.min.js?v=2.1.4"></script>
+<script src="hplus/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="/modler/libs/layer/layer.min.js" type="javascript"></script>
+<script>
+    //TOCMAT重启之后 在ifrme框架登录后，重新跳出框架显示页面
+    if(window.top !== window.self){
+        window.top.location = window.location;
+    }
+
+    $(document).ready(function () {
+        $("#login").click(function(){
+            $.ajax({
+                url:"/login",
+                type:"post",
+                dataType:"json",
+                cache:false,
+                data:{username:$("input[name='username']").val(), password:$("input[name='password']").val(),time:new Date().getTime()},
+                success:function(data){
+                    if("success" == data.status){
+                        window.location.href="/index";
+                    }else if("fail" == data.status){
+                        alert("用户名或者密码不正确!")
+                        window.location.href="/";
+                    }
+                }
+            });
+        });
+    })
+</script>
+</body>
+</html>

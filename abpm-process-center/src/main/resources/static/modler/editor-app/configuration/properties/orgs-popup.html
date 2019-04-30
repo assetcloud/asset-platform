@@ -1,0 +1,93 @@
+<div class="modal" ng-controller="FlowableOrgPopupCtrl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+                <h2 translate>组织</h2>
+            </div>
+            <div class="content_wrap" style="margin-top:20px;">
+            	<div class="left1">
+            		<ul id="orgZtree" class="ztree"></ul>
+			    </div>
+			    <div class="middle1">
+			    	<div style="height:380px;display:block">
+		    			<span onclick="gplus();" class="glyphicon glyphicon-plus"></span>
+	          			<span id="gminus" class="glyphicon glyphicon-minus"></span>
+	          			<input id="forgids" name="forgids" type="hidden" ng-model="forgids"/>
+	          			<input id="forgnames" name="forgnames" type="hidden"  ng-model="forgnames"/>
+	          			<input id="liorgnames" name="liorgnames" type="hidden" />
+			        </div>
+			    </div>
+			    <div class="right1">
+			    	<ul id="resultsZtree" class="ztree">
+			       	</ul>
+			    </div>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="save()" class="btn btn-primary" translate>确定</button>
+                <button ng-click="close()" class="btn btn-primary" translate>取消</button>
+            </div>
+        </div>
+    </div>
+<!-- ztree树的初始化 -->
+<script type="text/javascript">
+	var setting = {
+		check: {
+            enable: true,
+            chkboxType:  {"Y": "","N": ""}
+        },view: {
+			dblClickExpand: dblClickExpand
+		},data: {
+			simpleData: {
+				enable: true
+			}
+		},callback:{
+			onCheck:zTreeOnClick   
+		}
+	};
+	var zNodes =[
+        { id:1, pId:0, name:"山东省财政厅", open:true},
+        { id:1001, pId:1, name:"部门A", open:true},
+        { id:10011001, pId:1001, name:"部门A1"},
+        { id:10011002, pId:1001, name:"部门A2"},
+        { id:1002, pId:1, name:"部门B", open:false},
+        { id:10021001, pId:1002, name:"部门B1"},
+        { id:10021002, pId:1002, name:"部门B2"},
+        { id:1003, pId:1, name:"部门C", open:false},
+        { id:10031001, pId:1003, name:"部门C1"},
+        { id:10031002, pId:1003, name:"部门C2"},
+        { id:10031003, pId:1003, name:"部门C3"},
+	];
+
+	function dblClickExpand(treeId, treeNode) {
+		return treeNode.level > 0;
+	}
+	function zTreeOnClick(event, treeId, treeNode) {
+        var treeObj = jQuery.fn.zTree.getZTreeObj("orgZtree");
+        nodes = treeObj.getCheckedNodes(true);
+        var v1 = "";//id
+    	var v2 = "";//name
+    	var v3 = "<li style='height:30px;'>名称</li>";//li
+        for (var i = 0; i < nodes.length; i++) {
+        	if(i==(nodes.length-1)) {
+        		v1 = v1 + nodes[i].id;
+        		v2 = v2 + nodes[i].name;
+        	}else {
+        		v1 = v1 + nodes[i].id + ",";
+                v2 = v2 + nodes[i].name + ",";
+        	}
+            v3 = v3 +"<li style='height:25px;'>"+ nodes[i].name + "</li>";
+        }
+        jQuery('#forgids').val(v1);
+		jQuery('#forgnames').val(v2);
+		jQuery('#liorgnames').val(v3);
+    }
+	function gplus() {
+		jQuery('#resultsZtree').html("");
+		jQuery('#resultsZtree').append(jQuery('#liorgnames').val());
+	}
+	jQuery(document).ready(function(){
+		jQuery.fn.zTree.init(jQuery("#orgZtree"),setting, zNodes);
+		jQuery('#resultsZtree').append("<li style='height:30px;'>名称</li>");
+	});
+</script>

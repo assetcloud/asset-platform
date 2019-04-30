@@ -1,0 +1,36 @@
+<div class="modal" ng-controller="FlowableRolePopupCtrl">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+                <h2 translate>角色</h2>
+            </div>
+            <div class="content_wrap" style="margin-top:20px;">
+            	<div class="left1">
+            		<ul id="roleZtree" class="ztree"></ul>
+			    </div>
+			    <div class="middle1">
+						<div style="height:380px;display:block">
+							<span ng-click="add();" class="glyphicon glyphicon-plus"></span>
+							<span id="gminus" class="glyphicon glyphicon-minus" ng-click="clean()"></span>
+							<input id="fuserids" name="fuserids" type="hidden" ng-model="fuserids" />
+							<input id="fusernames" name="fusernames" type="hidden" ng-model="fusernames" />
+							<input id="liusernames" name="liusernames" type="hidden" />
+						</div>
+					</div>
+					<ul id="resultsZtree" class="ztree">
+						<li style='height:30px;'><input type="checkbox" ng-click="selectAll($event)" />名称</li>
+						<li ng-repeat="r in roles">
+							<div >
+								<input type="checkbox" ng-model="r.selected" />
+								<span>{{r.name }}</span>
+							</div>
+						</li>
+					</ul>
+            </div>
+            <div class="modal-footer">
+                <button ng-click="save()" class="btn btn-primary" translate>确定</button>
+                <button ng-click="close()" class="btn btn-primary" translate>取消</button>
+            </div>
+        </div>
+    </div>
