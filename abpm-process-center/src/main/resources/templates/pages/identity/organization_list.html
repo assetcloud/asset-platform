@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>jqGird</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="hplus/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <!-- jqgrid-->
+    <link href="hplus/css/plugins/jqgrid/ui.jqgrid.css?0820" rel="stylesheet">
+    <link href="hplus/css/animate.min.css" rel="stylesheet">
+    <link href="hplus/css/style.min.css?v=4.1.0" rel="stylesheet">
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content  animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox ">
+                <div class="ibox-content">
+                    <div style="text-align:center;">
+                        <table style="width:100%;">
+                            <tr>
+                                <td style="text-align: right;width:20%;">流程定义Id：</td>
+                                <td style="width:30%;"><input id="id_" name="id_" type="text" style="height:30px;width:300px;"/></td>
+                                <td style="text-align: right;width:15%;"> 名 称：</td>
+                                <td style="width:35%;">
+                                    <input id="name_" name="name_" type="text" style="height:30px;width:300px;"/>&nbsp;&nbsp;
+                                    <input type="button" id="queryBtn" value=" 查 询 " class="btn btn-primary" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="jqGrid_wrapper">
+                        <table id="table_list_1"></table>
+                        <div id="pager_list_1"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="hplus/js/jquery.min.js?v=2.1.4"></script>
+<script src="hplus/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="hplus/js/plugins/peity/jquery.peity.min.js"></script>
+<script src="hplus/js/plugins/jqgrid/i18n/grid.locale-cn.js?0820"></script>
+<script src="hplus/js/plugins/jqgrid/jquery.jqGrid.min.js?0820"></script>
+<script src="hplus/js/content.min.js?v=1.0.0"></script>
+<script>
+    $(document).ready(function () {
+        var id_ = $("#id_").val();       //获取输入框内容
+        var name_ = $("#name_").val();       //获取输入框内容
+        $.jgrid.defaults.styleUI = "Bootstrap";
+        $("#table_list_1").jqGrid({
+            caption: "组织架构列表",
+            url: "/queryOrganization",
+            mtype: "post",
+            datatype: "json",
+            rownumbers: true,
+            height: 398,
+            autowidth: true,
+            shrinkToFit: true,
+            rowNum: 10,
+            rowList: [10, 20, 30],
+            colNames: ["名 称", "父节点Id","创建时间"],
+            colModel: [
+                {
+                    name: "name",
+                    index: "name",
+                    formatter: opratorUrl,
+                    width: 100
+                },{
+                    name: "parent_id",
+                    index: "parent_id",
+                    width: 30,
+                    align: "right"
+                }, {
+                    name: "created_time",
+                    index: "created_time",
+                    width: 100,
+                    sortable: false,
+                    align: "center"
+            }],
+            postData: {
+                id_: id_,
+                name_: name_
+            },
+            pager: "#pager_list_1",
+            viewrecords: true,
+            hidegrid: false,
+            loadComplete: function () {
+                jQuery("#table_list_1").jqGrid('setLabel', 'rn', '序号', {
+                    'text-align': 'center',
+                    'vertical-align': 'middle'
+                });
+            }
+        });
+
+        $("#table_list_1").setSelection(4, true);
+        $("#table_list_1").jqGrid("navGrid", "#pager_list_1", {
+            edit: true,
+            add: true,
+            del: true,
+            search: true
+        }, {height: 200, reloadAfterSubmit: true});
+
+        //$("#table_list_1").jqGrid('setLabel','rn', '序号', {'text-align':'left'},'');
+        $(window).bind("resize", function () {
+            var width = $(".jqGrid_wrapper").width();
+            $("#table_list_1").setGridWidth(width);
+        });
+
+        $('#queryBtn').on('click', function() {     //页面上的button按钮的click事件，重新获取参数后发送参数，然后重新加载数据。
+            var id_ = $("#id_").val();       //获取输入框内容
+            var name_ = $("#name_").val();       //获取输入框内容
+            $("#table_list_1").jqGrid('setGridParam',{
+                datatype:'json',
+                postData:{'id_':encodeURI(encodeURI(id_)),'name_':encodeURI(encodeURI(name_))}, //发送数据
+                page:1
+            }).trigger("reloadGrid"); //重新载入
+        });
+    });
+
+    function opratorUrl(cellvalue, options, rowdata) {
+        return "<a href= \"/getProcDetails?procDefId=" + rowdata.id_ + "\">" + cellvalue + "</a>";
+    }
+</script>
+</body>
+</html>
