@@ -1,10 +1,6 @@
 package com.asset;
 
-import com.asset.dao.CopyProcMapper;
-import com.asset.dao.UpdateProcMapper;
-import org.json.JSONObject;
 import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.liquibase.LiquibaseAutoConfiguration;
@@ -30,12 +26,7 @@ import org.springframework.context.annotation.ComponentScan;
 @MapperScan(basePackages= {"com.asset.dao"})
 public class FlowableApplication {
 
-
-
     public static void main(String[] args) {
         SpringApplication.run(FlowableApplication.class, args);
     }
-
-
-
 }

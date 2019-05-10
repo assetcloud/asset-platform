@@ -1,5 +1,6 @@
 package com.asset.controller;
 
+import com.asset.base.BaseController;
 import com.asset.dao.CopyProcMapper;
 import com.asset.utils.ProcessUtils;
 import liquibase.util.StringUtils;
@@ -40,9 +41,9 @@ import java.util.*;
  * 批量完成流程迁移操作
  */
 @Controller
-public class DozenController {
-    private static final Logger LOGGER = LoggerFactory.getLogger(ModelResource.class);
+public class DozenController extends BaseController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ModelResource.class);
 
     @Autowired
     CopyProcMapper mapper;
