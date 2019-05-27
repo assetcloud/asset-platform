@@ -5,9 +5,7 @@ import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.history.HistoricActivityInstance;
-import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.flowable.engine.runtime.Execution;
-import org.flowable.engine.runtime.ProcessInstance;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,7 +13,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ProcessUtils {
+/**
+ * 这个工具类主要用于生成流程模型节点信息
+ * @author yby
+ * @time 190522之前的某一天
+ * @version 1.0_190522b(efore)
+ */
+public class ExamProcModelUtils {
 
     //任务节点-组
     public static UserTask createGroupTask(String id, String name, String candidateGroup) {
@@ -146,91 +150,91 @@ public class ProcessUtils {
 
 
         //第一个fork
-        proc.addFlowElement(ProcessUtils.createParallelGateway(forkStr+forkIndex, forkStr+forkIndex));
+        proc.addFlowElement(ExamProcModelUtils.createParallelGateway(forkStr+forkIndex, forkStr+forkIndex));
         //第一个fork对应的join
-        proc.addFlowElement(ProcessUtils.createParallelGateway(joinStr+forkIndex, joinStr+forkIndex));
+        proc.addFlowElement(ExamProcModelUtils.createParallelGateway(joinStr+forkIndex, joinStr+forkIndex));
         f1 = forkIndex;
         forkIndex++;
 
         //上分支初始3个
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         t1 = staTaskIndex;
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
 
         //第二个fork
-        proc.addFlowElement(ProcessUtils.createParallelGateway(forkStr+forkIndex, forkStr+forkIndex));
+        proc.addFlowElement(ExamProcModelUtils.createParallelGateway(forkStr+forkIndex, forkStr+forkIndex));
         //对应第二个fork的join
-        proc.addFlowElement(ProcessUtils.createParallelGateway(joinStr+forkIndex, joinStr+forkIndex));
+        proc.addFlowElement(ExamProcModelUtils.createParallelGateway(joinStr+forkIndex, joinStr+forkIndex));
         f2 = forkIndex;
         forkIndex++;
 
         //两个嵌套
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
 
         //后部1个
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         t2 = staTaskIndex;
         staTaskIndex ++;
 
         //下面4个
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         t3 = staTaskIndex;
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         t4 = staTaskIndex;
         staTaskIndex ++;
 
 
         //接下来添加flow
         //前后两个大并行
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(forkStr + f1, userTaskStr + t1 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr + f1, userTaskStr + t1 , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(forkStr + f1, userTaskStr + t3 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr + f1, userTaskStr + t3 , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + t2, joinStr + f1 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + t2, joinStr + f1 , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + t4, joinStr + f1 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + t4, joinStr + f1 , flowStr + flowIndex));
         flowIndex++;
 
         int temp = t1+1 ;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + t1, userTaskStr + temp , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + t1, userTaskStr + temp , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + ++temp , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + ++temp , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, forkStr + f2 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, forkStr + f2 , flowStr + flowIndex));
         flowIndex++;
 
         //小分支
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(forkStr + f2, userTaskStr + ++temp , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr + f2, userTaskStr + ++temp , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, joinStr + f2 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, joinStr + f2 , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(forkStr + f2, userTaskStr + ++temp , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr + f2, userTaskStr + ++temp , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, joinStr + f2 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, joinStr + f2 , flowStr + flowIndex));
         flowIndex++;
 
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + f2 ,userTaskStr +t2, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + f2 ,userTaskStr +t2, flowStr + flowIndex));
 
 
         //下面4个UserTask
         temp = t3 + 1;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + t3 ,userTaskStr + temp, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + t3 ,userTaskStr + temp, flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp ,userTaskStr + ++temp, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp ,userTaskStr + ++temp, flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp ,userTaskStr + ++temp, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp ,userTaskStr + ++temp, flowStr + flowIndex));
         flowIndex++;
 
 
@@ -255,101 +259,101 @@ public class ProcessUtils {
 
 
         //第一个fork
-        proc.addFlowElement(ProcessUtils.createParallelGateway(forkStr+forkIndex, forkStr+forkIndex));
+        proc.addFlowElement(ExamProcModelUtils.createParallelGateway(forkStr+forkIndex, forkStr+forkIndex));
         //第一个fork对应的join
-        proc.addFlowElement(ProcessUtils.createParallelGateway(joinStr+forkIndex, joinStr+forkIndex));
+        proc.addFlowElement(ExamProcModelUtils.createParallelGateway(joinStr+forkIndex, joinStr+forkIndex));
         f1 = forkIndex;
         forkIndex++;
 
         //上分支初始3个
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         t1 = staTaskIndex;
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
 
         //第二个fork
-        proc.addFlowElement(ProcessUtils.createParallelGateway(forkStr+forkIndex, forkStr+forkIndex));
+        proc.addFlowElement(ExamProcModelUtils.createParallelGateway(forkStr+forkIndex, forkStr+forkIndex));
         //对应第二个fork的join
-        proc.addFlowElement(ProcessUtils.createParallelGateway(joinStr+forkIndex, joinStr+forkIndex));
+        proc.addFlowElement(ExamProcModelUtils.createParallelGateway(joinStr+forkIndex, joinStr+forkIndex));
         f2 = forkIndex;
         forkIndex++;
 
         //两个嵌套
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
 
         //后部1个
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         t2 = staTaskIndex;
         staTaskIndex ++;
 
         //下面4个
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         t3 = staTaskIndex;
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         staTaskIndex ++;
-        proc.addFlowElement(ProcessUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
+        proc.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + staTaskIndex, userTaskStr + staTaskIndex));
         t4 = staTaskIndex;
         staTaskIndex ++;
 
 
         //接下来添加flow
         //前后两个大并行
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(forkStr + f1, userTaskStr + t1 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr + f1, userTaskStr + t1 , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(forkStr + f1, userTaskStr + t3 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr + f1, userTaskStr + t3 , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + t2, joinStr + f1 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + t2, joinStr + f1 , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + t4, joinStr + f1 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + t4, joinStr + f1 , flowStr + flowIndex));
         flowIndex++;
 
         int temp = t1+1 ;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + t1, userTaskStr + temp , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + t1, userTaskStr + temp , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + ++temp , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + ++temp , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, forkStr + f2 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, forkStr + f2 , flowStr + flowIndex));
         flowIndex++;
 
         //小分支
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(forkStr + f2, userTaskStr + ++temp , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr + f2, userTaskStr + ++temp , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, joinStr + f2 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, joinStr + f2 , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(forkStr + f2, userTaskStr + ++temp , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr + f2, userTaskStr + ++temp , flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, joinStr + f2 , flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, joinStr + f2 , flowStr + flowIndex));
         flowIndex++;
 
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + f2 ,userTaskStr +t2, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + f2 ,userTaskStr +t2, flowStr + flowIndex));
 
 
         //下面4个UserTask
         temp = t3 + 1;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + t3 ,userTaskStr + temp, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + t3 ,userTaskStr + temp, flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp ,userTaskStr + ++temp, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp ,userTaskStr + ++temp, flowStr + flowIndex));
         flowIndex++;
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp ,userTaskStr + ++temp, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp ,userTaskStr + ++temp, flowStr + flowIndex));
         flowIndex++;
 
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + t4 ,forkStr + forkIndex, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + t4 ,forkStr + forkIndex, flowStr + flowIndex));
         flowIndex++;
 
         int a[] = setProcBranch10(proc,staTaskIndex,forkIndex,flowIndex);
 
         temp = a[1] - 2;
 
-        proc.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + temp ,joinStr + f1, flowStr + flowIndex));
+        proc.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + temp ,joinStr + f1, flowStr + flowIndex));
         flowIndex++;
 
 
@@ -377,41 +381,41 @@ public class ProcessUtils {
         String flowStr = "flow";
 
 
-        process.addFlowElement(ProcessUtils.createStartEvent());
-        process.addFlowElement(ProcessUtils.createEndEvent());
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createStartEvent());
+        process.addFlowElement(ExamProcModelUtils.createEndEvent());
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
 
         int taskIndex = 2;
         int forkIndex = 1;
         int flowIndex = 3;
-        int a[] = ProcessUtils.setProcBranch20(process,taskIndex,forkIndex,flowIndex);
+        int a[] = ExamProcModelUtils.setProcBranch20(process,taskIndex,forkIndex,flowIndex);
 
         int temp = a[1] - 1 ;
         int userTaskIndex = a[0];
         flowIndex = a[2];
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         userTaskIndex++;
 
         temp = userTaskIndex - 1 ;
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
 
 
         for(int i = 0 ; i <27 ;i++)
         {
-            process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+            process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
             userTaskIndex++;
             temp = userTaskIndex -1 ;
             if(userTaskIndex <= 50)
-                process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+                process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         }
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
 
         return process;
     }

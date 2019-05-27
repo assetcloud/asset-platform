@@ -58,6 +58,7 @@ CREATE TABLE `act_app_databasechangelog`  (
   `DEPLOYMENT_ID` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
+
 -- ----------------------------
 -- Records of act_app_databasechangelog
 -- ----------------------------
@@ -512,6 +513,8 @@ CREATE TABLE `act_de_model`  (
   `last_updated_by` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `version` int(11) NULL DEFAULT NULL,
   `model_editor_json` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `form_json` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `form_name` varchar(400) CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `thumbnail` longblob NULL,
   `model_type` int(11) NULL DEFAULT NULL,
   `tenant_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
@@ -1646,6 +1649,20 @@ CREATE TABLE `act_ru_suspended_job`  (
   CONSTRAINT `ACT_FK_SUSPENDED_JOB_PROCESS_INSTANCE` FOREIGN KEY (`PROCESS_INSTANCE_ID_`) REFERENCES `act_ru_execution` (`id_`) ON DELETE RESTRICT ON UPDATE RESTRICT,
   CONSTRAINT `ACT_FK_SUSPENDED_JOB_PROC_DEF` FOREIGN KEY (`PROC_DEF_ID_`) REFERENCES `act_re_procdef` (`id_`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- 用于保存 流程实例在运行时，第三方表单的填写情况，
+-- ----------------------------
+DROP TABLE IF EXISTS `asset_ru_form`;
+CREATE TABLE `asset_ru_form`  (
+  `TASK_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `PROC_INST_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `PROC_DEF_ID_` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
+  `MODEL_ID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `FORM_NAME` varchar(400) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `FORM_JSON` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
 
 -- ----------------------------
 -- Table structure for act_ru_task

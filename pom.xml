@@ -23,41 +23,39 @@
     </properties>
 
     <dependencies>
+
+        <!--flowable start-->
         <dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-engine</artifactId>
-            <version>6.4.0</version>
+            <version>${flowable.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.flowable/flowable-task-service -->
         <dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-task-service</artifactId>
-            <version>6.4.0</version>
+            <version>${flowable.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.flowable/flowable-task-service-api -->
         <dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-task-service-api</artifactId>
-            <version>6.4.0</version>
+            <version>${flowable.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.flowable/flowable-ui-task-logic -->
         <dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-ui-task-logic</artifactId>
-            <version>6.4.0</version>
+            <version>${flowable.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.flowable/flowable-ui-task-rest -->
         <dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-ui-task-rest</artifactId>
-            <version>6.4.0</version>
+            <version>${flowable.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.flowable/flowable-ui-task-conf -->
         <dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-ui-task-conf</artifactId>
-            <version>6.4.0</version>
+            <version>${flowable.version}</version>
         </dependency>
+        <!--flowable end-->
 
     </dependencies>
 

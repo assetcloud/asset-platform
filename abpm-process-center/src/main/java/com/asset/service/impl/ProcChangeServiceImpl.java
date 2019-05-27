@@ -1,7 +1,7 @@
 package com.asset.service.impl;
 
 import com.asset.dao.UpdateProcMapper;
-import com.asset.service.ChangeProcService;
+import com.asset.service.ProcChangeService;
 import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,8 +9,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
+/**
+ * 用于流程变更的Service，包括migration迁移、回滚rollback
+ * @author yby
+ * @time 190523前某一天
+ */
 @Service
-public class ChangeProcServiceImpl implements ChangeProcService {
+public class ProcChangeServiceImpl implements ProcChangeService {
 
     @Autowired
     UpdateProcMapper mapper;
@@ -21,7 +26,7 @@ public class ChangeProcServiceImpl implements ChangeProcService {
      * @param oldProcExe
      */
     @Override
-    public void updateProcDef(ProcessInstance oldProcInstance, Execution oldProcExe) {
+    public void migrateProc(ProcessInstance oldProcInstance, Execution oldProcExe) {
         String oldProcInstanceID = oldProcInstance.getProcessInstanceId();
         String oldDefID = oldProcInstance.getProcessDefinitionId();
 

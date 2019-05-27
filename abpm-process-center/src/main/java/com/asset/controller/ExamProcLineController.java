@@ -1,6 +1,6 @@
 package com.asset.controller;
 
-import com.asset.utils.ProcessUtils;
+import com.asset.utils.ExamProcModelUtils;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.Process;
 import org.flowable.engine.*;
@@ -16,20 +16,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * 流程迁移实验
  * 完成流程实例迁移中按照执行路径去完成的实验
+ * @author yby
+ * @time 190522之前某一天
  */
 
 @Controller
-public class ProcLineController {
+public class ExamProcLineController {
 
-    Logger logger = LoggerFactory.getLogger(ProcLineController.class);
+    Logger logger = LoggerFactory.getLogger(ExamProcLineController.class);
     ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
     RepositoryService repositoryService = engine.getRepositoryService();
     RuntimeService runtimeService = engine.getRuntimeService();
@@ -39,7 +41,7 @@ public class ProcLineController {
 
 
     //这里是计算执行单条串行流程实例所花的时间
-    @GetMapping("/procline")
+    @GetMapping("/proclineTest")
     public void createProcLine() {
         preComplete();
 
@@ -106,30 +108,30 @@ public class ProcLineController {
         String excluCondition1 = "${test>=5}";
         String excluCondition2 = "${test<5}";
 
-        process.addFlowElement(ProcessUtils.createStartEvent());
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
-        process.addFlowElement(ProcessUtils.createExclusiveGateway(excluForkStr, excluForkStr));
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 2, userTaskStr + 2));
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 3, userTaskStr + 3));
-        process.addFlowElement(ProcessUtils.createExclusiveGateway(excluJoinStr, excluJoinStr));
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 4, userTaskStr + 4));
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 5, userTaskStr + 5));
+        process.addFlowElement(ExamProcModelUtils.createStartEvent());
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createExclusiveGateway(excluForkStr, excluForkStr));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 2, userTaskStr + 2));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 3, userTaskStr + 3));
+        process.addFlowElement(ExamProcModelUtils.createExclusiveGateway(excluJoinStr, excluJoinStr));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 4, userTaskStr + 4));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 5, userTaskStr + 5));
 
-        process.addFlowElement(ProcessUtils.createEndEvent());
+        process.addFlowElement(ExamProcModelUtils.createEndEvent());
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(startStr, userTaskStr + 1, flowStr + 1));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 1, excluForkStr, flowStr + 2));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(startStr, userTaskStr + 1, flowStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 1, excluForkStr, flowStr + 2));
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(excluForkStr, userTaskStr + 2, flowStr + 3, excluCondition1));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 2, excluJoinStr, flowStr + 4));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(excluForkStr, userTaskStr + 2, flowStr + 3, excluCondition1));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 2, excluJoinStr, flowStr + 4));
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(excluForkStr, userTaskStr + 3, flowStr + 5, excluCondition2));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 3, excluJoinStr, flowStr + 6));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(excluForkStr, userTaskStr + 3, flowStr + 5, excluCondition2));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 3, excluJoinStr, flowStr + 6));
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(excluJoinStr, userTaskStr + 4, flowStr + 7));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(excluJoinStr, userTaskStr + 4, flowStr + 7));
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 4, userTaskStr + 5, flowStr + 8));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 5, endStr, flowStr + 9));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 4, userTaskStr + 5, flowStr + 8));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 5, endStr, flowStr + 9));
 
 
 
@@ -177,7 +179,7 @@ public class ProcLineController {
             processInstance = lists.get(i);
             ExecutionQuery newEXE = executionQuery.processInstanceId(processInstance.getProcessInstanceId());
             List<Execution> executions = newEXE.list();
-            curExe = ProcessUtils.getCurExecution(executions);
+            curExe = ExamProcModelUtils.getCurExecution(executions);
 
             curActivityID = curExe.getActivityId();
         }
@@ -196,7 +198,7 @@ public class ProcLineController {
             System.out.println("当前实例影响域: UserTask4、UserTask5");
 
             //获取影响域的第一个节点前面的那个节点
-            HistoricActivityInstance historicActivityInstance = ProcessUtils.getBeforeChanged(historyService,processInstance.getProcessInstanceId(),firstChangedID);
+            HistoricActivityInstance historicActivityInstance = ExamProcModelUtils.getBeforeChanged(historyService,processInstance.getProcessInstanceId(),firstChangedID);
             //不为空就代表找到了，准备开始回滚
             if(historicActivityInstance != null)
             {

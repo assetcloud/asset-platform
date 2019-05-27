@@ -55,7 +55,7 @@
             caption: "用户列表",
             url: "/queryUsers",
             mtype: "post",
-            datatype: "json",
+            datatype: "formjson",
             rownumbers: true,
             height: 398,
             autowidth: true,
@@ -119,7 +119,7 @@
             var id = $("#id").val();       //获取输入框内容
             var displayName = $("#displayName").val();       //获取输入框内容
             $("#table_list_3").jqGrid('setGridParam',{
-                datatype:'json',
+                datatype:'formjson',
                 postData:{'id':encodeURI(encodeURI(id)),'displayName':encodeURI(encodeURI(displayName))}, //发送数据
                 page:1
             }).trigger("reloadGrid"); //重新载入

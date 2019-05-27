@@ -19,7 +19,7 @@
             <artifactId>flowable-ui-modeler-logic</artifactId>
         </dependency>
 
-		<!-- Flowable -->
+		<!-- Flowable start-->
 		<dependency>
 			<groupId>org.flowable</groupId>
 			<artifactId>flowable-bpmn-model</artifactId>
@@ -52,14 +52,18 @@
 			<groupId>org.flowable</groupId>
 			<artifactId>flowable-idm-api</artifactId>
 		</dependency>
+		<!-- Flowable end-->
 
-		<!-- LOGGING -->
+
+		<!-- log start -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-        
-		<!-- JSON -->
+		<!-- log end -->
+
+
+		<!-- JSON start-->
 		<dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -84,6 +88,7 @@
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
 		</dependency>
+		<!-- JSON end-->
 
 		<!-- COMMON dependencies -->
 		<dependency>

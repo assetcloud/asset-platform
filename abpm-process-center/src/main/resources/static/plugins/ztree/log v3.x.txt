@@ -59,7 +59,7 @@
    * [修改] 使用 scrollIntoViewIfNeeded 替代 scrollIntoView，兼容各种浏览器
 
 *2016.09.27* v3.5.25
-   * [修改] ajax 异步加载支持 contentType = 'application/json'
+   * [修改] ajax 异步加载支持 contentType = 'application/formjson'
 
 *2016.06.06* v3.5.24
    * [修改] selectNode 方法中 某些情况下，isSilent 参数无效
@@ -166,7 +166,7 @@
    * [修改] 不兼容 jQuery 1.9 的bug
    * [修改] onDrop 的触发规则，保证异步加载模式下，可以在延迟加载结束后触发，避免 onDrop 中被拖拽的节点是已经更新后的数据。
    * [修改] setChkDisabled 方法，增加 inheritParent, inheritChildren 参数设置是否让父子节点继承 disabled
-   * [修改] 异步加载时 拼接参数的方法，由 string 修改为 json 对象
+   * [修改] 异步加载时 拼接参数的方法，由 string 修改为 formjson 对象
    * [修正] 1-2-3 3级节点时，如果 2级节点 全部设置为 nocheck 或 chkDisabled后，勾选3级节点时，1级节点的半勾选状态错误的 bug
    * [修改] Demo: checkbox_nocheck.html & checkbox_chkDisabled.html;
    * [修改] Demo: edit_super.html，增加 showRenameBtn & showRemoveBtn 的演示
@@ -248,7 +248,7 @@
    * [修改] 编辑模式下 默认的编辑按钮、删除按钮点击后，如果相应的 before 回调 return false 时会触发 onClick 回调的 bug
 
 *2012.02.14* v3.1
-   * [增加] ajax 的参数 setting.async.contentType ，让提交参数适用于 json 数据提交 （主要适用于 .Net 的开发）。
+   * [增加] ajax 的参数 setting.async.contentType ，让提交参数适用于 formjson 数据提交 （主要适用于 .Net 的开发）。
    * [增加] setting.edit.editNameSelectAll, 用于设定编辑节点名称时初次显示 input 后 text 内容为全选
    * [修改] 异步加载 规则，不再仅仅依靠父节点的子节点数来判定，增加内部属性 zAsync，保证默认状态下父节点及时无子节点也只能异步加载一次，除非使用 reAsyncChildNodes 方法强行控制异步加载。
    * [修改] 放大浏览器后导致 界面出现多余连接线的bug （需要更新：icon 图标和 css ）

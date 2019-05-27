@@ -55,7 +55,7 @@
             caption: "流程实例列表",
             url: "/repository/queryCompleteTask",
             mtype: "post",
-            datatype: "json",
+            datatype: "formjson",
             rownumbers: true,
             height: 398,
             autowidth: true,
@@ -116,7 +116,7 @@
             var id_ = $("#id_").val();       //获取输入框内容
             var assignee = $("#assignee_").val();       //获取输入框内容
             $("#table_list_1").jqGrid('setGridParam',{
-                datatype:'json',
+                datatype:'formjson',
                 postData:{'id_':encodeURI(encodeURI(id_)),'assignee':encodeURI(encodeURI(assignee))}, //发送数据
                 page:1
             }).trigger("reloadGrid"); //重新载入

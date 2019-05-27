@@ -1,7 +1,7 @@
 package com.asset.controller;
 
-import com.asset.dao.CopyProcMapper;
-import com.asset.utils.ProcessUtils;
+import com.asset.dao.ExamCopyProcMapper;
+import com.asset.utils.ExamProcModelUtils;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.Process;
 import org.flowable.engine.*;
@@ -22,11 +22,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 
+/**
+ * 流程迁移实验
+ * @author yby
+ * @time 190522阡陌一天
+ */
 @Controller
-public class RollbackController {
+public class ExamRollbackController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelResource.class);
     @Autowired
-    CopyProcMapper mapper;
+    ExamCopyProcMapper mapper;
 
     //初始化
     ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
@@ -41,7 +46,7 @@ public class RollbackController {
      * @param nodesNum  这里值不能低于50
      * @param percents
      */
-    @GetMapping("/roll")
+    @GetMapping("/rollTest")
     public void rollbackProcModel(@RequestParam(value = "num") Integer nodesNum,
                                   @RequestParam(value = "per") double percents) {
         preComplete();
@@ -151,7 +156,7 @@ public class RollbackController {
             execute(processInstance, execLineNum);
             long time2 = System.currentTimeMillis();
 
-//            all += ProcessUtils.getDiff(mapper.getStartTime(insID),mapper.getEndTime(insID));
+//            all += ExamProcModelUtils.getDiff(mapper.getStartTime(insID),mapper.getEndTime(insID));
             all += time2 - time1 ;
         }
 
@@ -215,7 +220,7 @@ public class RollbackController {
             //注意这里传进去的是是运行在旧的流程定义上的processInstance
             //迁移到最新版本
             if (curActivityID.compareTo("userTask3") < 0) {
-//                changeProcService.updateProcDef(oldProcInstance, oldProcExe);
+//                procChangeService.migrateProc(oldProcInstance, oldProcExe);
                 considerNodesNum(nodesNum,processInstance.getProcessInstanceId());
                 considerParallelNum(parallelNum,processInstance.getProcessInstanceId());
 
@@ -230,7 +235,7 @@ public class RollbackController {
             // 迁移+回滚
             else if (curActivityID.compareTo("userTask3") == 0 ||
                     curActivityID.compareTo("userTask" + endJoinFirstTaskIndex) == 0) {
-//                changeProcService.updateProcDef(oldProcInstance, oldProcExe);
+//                procChangeService.migrateProc(oldProcInstance, oldProcExe);
                 considerNodesNum(nodesNum,processInstance.getProcessInstanceId());
                 considerParallelNum(parallelNum,processInstance.getProcessInstanceId());
 
@@ -302,55 +307,55 @@ public class RollbackController {
 
         int index = 1;
 
-        process.addFlowElement(ProcessUtils.createStartEvent());
+        process.addFlowElement(ExamProcModelUtils.createStartEvent());
 
         //这里在并行前面先有两个串行的
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 2, userTaskStr + 2));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 2, userTaskStr + 2));
 
-        process.addFlowElement(ProcessUtils.createParallelGateway(forkStr, forkStr));
+        process.addFlowElement(ExamProcModelUtils.createParallelGateway(forkStr, forkStr));
 
         index = 3;
         startForkTaskIndex = index;
         for (; index <= parallelNum + 2; index++)
-            process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + index, userTaskStr + index));
+            process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + index, userTaskStr + index));
 
-        process.addFlowElement(ProcessUtils.createParallelGateway(joinStr, joinStr));
+        process.addFlowElement(ExamProcModelUtils.createParallelGateway(joinStr, joinStr));
 
         //是从join出来之后第一个串行的UserTask的ID
         endJoinFirstTaskIndex = index;
 
 
         for (; index <= nodesNum; index++)
-            process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + index, userTaskStr + index));
+            process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + index, userTaskStr + index));
 
-        process.addFlowElement(ProcessUtils.createEndEvent());
+        process.addFlowElement(ExamProcModelUtils.createEndEvent());
 
         //开始添加flow
         int flowIndex = 4;
         index = 1;
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(startStr, userTaskStr + 1, flowStr + 1));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 1, userTaskStr + 2, flowStr + 2));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 2, forkStr, flowStr + 3));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(startStr, userTaskStr + 1, flowStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 1, userTaskStr + 2, flowStr + 2));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 2, forkStr, flowStr + 3));
 
         index = 3;
 
         for (; index <= parallelNum + 2; index++) {
-            process.addFlowElement(ProcessUtils.createSequenceFlow(forkStr, userTaskStr + index, flowStr + flowIndex));
+            process.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr, userTaskStr + index, flowStr + flowIndex));
             flowIndex++;
-            process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + index, joinStr, flowStr + flowIndex));
+            process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + index, joinStr, flowStr + flowIndex));
             flowIndex++;
         }
-        process.addFlowElement(ProcessUtils.createSequenceFlow(joinStr, userTaskStr + index, flowStr + flowIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr, userTaskStr + index, flowStr + flowIndex));
         flowIndex++;
         for (; index < nodesNum; index++) {
             int t1 = index + 1;
-            process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + index, userTaskStr + t1, flowStr + flowIndex));
+            process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + index, userTaskStr + t1, flowStr + flowIndex));
             flowIndex++;
         }
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + index, endStr, flowStr + flowIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + index, endStr, flowStr + flowIndex));
 
         return process;
     }
@@ -370,41 +375,41 @@ public class RollbackController {
         String flowStr = "flow";
 
 
-        process.addFlowElement(ProcessUtils.createStartEvent());
-        process.addFlowElement(ProcessUtils.createEndEvent());
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createStartEvent());
+        process.addFlowElement(ExamProcModelUtils.createEndEvent());
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
 
         int taskIndex = 2;
         int forkIndex = 1;
         int flowIndex = 3;
-        int a[] = ProcessUtils.setProcBranch10(process,taskIndex,forkIndex,flowIndex);
+        int a[] = ExamProcModelUtils.setProcBranch10(process,taskIndex,forkIndex,flowIndex);
 
         int temp = a[1] - 1 ;
         int userTaskIndex = a[0];
         flowIndex = a[2];
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         userTaskIndex++;
 
         temp = userTaskIndex - 1 ;
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
 
 
         for(int i = 0 ; i <37 ;i++)
         {
-            process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+            process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
             userTaskIndex++;
             temp = userTaskIndex -1 ;
             if(userTaskIndex <= 50)
-                process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+                process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         }
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
 
         return process;
     }
@@ -424,41 +429,41 @@ public class RollbackController {
         String flowStr = "flow";
 
 
-        process.addFlowElement(ProcessUtils.createStartEvent());
-        process.addFlowElement(ProcessUtils.createEndEvent());
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createStartEvent());
+        process.addFlowElement(ExamProcModelUtils.createEndEvent());
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
 
         int taskIndex = 2;
         int forkIndex = 1;
         int flowIndex = 3;
-        int a[] = ProcessUtils.setProcBranch20(process,taskIndex,forkIndex,flowIndex);
+        int a[] = ExamProcModelUtils.setProcBranch20(process,taskIndex,forkIndex,flowIndex);
 
         int temp = a[1] - 1 ;
         int userTaskIndex = a[0];
         flowIndex = a[2];
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         userTaskIndex++;
 
         temp = userTaskIndex - 1 ;
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
 
 
         for(int i = 0 ; i <27 ;i++)
         {
-            process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+            process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
             userTaskIndex++;
             temp = userTaskIndex -1 ;
             if(userTaskIndex <= 50)
-                process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+                process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         }
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
 
         return process;
     }
@@ -478,51 +483,51 @@ public class RollbackController {
         String flowStr = "flow";
 
 
-        process.addFlowElement(ProcessUtils.createStartEvent());
-        process.addFlowElement(ProcessUtils.createEndEvent());
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createStartEvent());
+        process.addFlowElement(ExamProcModelUtils.createEndEvent());
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
 
         int taskIndex = 2;
         int forkIndex = 1;
         int flowIndex = 3;
 
-        int a[] = ProcessUtils.setProcBranch20(process,taskIndex,forkIndex,flowIndex);
+        int a[] = ExamProcModelUtils.setProcBranch20(process,taskIndex,forkIndex,flowIndex);
         int temp = a[1] - 1 ;
         int userTaskIndex = a[0];
         flowIndex = a[2];
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         userTaskIndex++;
 
-        int b[] = ProcessUtils.setProcBranch10(process,userTaskIndex,5,flowIndex);
+        int b[] = ExamProcModelUtils.setProcBranch10(process,userTaskIndex,5,flowIndex);
         temp = b[1] - 1 ;
         userTaskIndex = b[0];
         flowIndex = b[2];
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + 5, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + 5, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         userTaskIndex++;
 
 
         temp = userTaskIndex - 1 ;
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
 
 
         for(int i = 0 ; i <16 ;i++)
         {
-            process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+            process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
             userTaskIndex++;
             temp = userTaskIndex -1 ;
             if(userTaskIndex <= 50)
-                process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+                process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         }
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
 
         return process;
     }
@@ -543,51 +548,51 @@ public class RollbackController {
         String flowStr = "flow";
 
 
-        process.addFlowElement(ProcessUtils.createStartEvent());
-        process.addFlowElement(ProcessUtils.createEndEvent());
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createStartEvent());
+        process.addFlowElement(ExamProcModelUtils.createEndEvent());
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + 1, userTaskStr + 1));
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(startStr , userTaskStr + 1 ,flowStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + 1, forkStr + 1 ,flowStr + 2));
 
         int taskIndex = 2;
         int forkIndex = 1;
         int flowIndex = 3;
 
-        int a[] = ProcessUtils.setProcBranch20(process,taskIndex,forkIndex,flowIndex);
+        int a[] = ExamProcModelUtils.setProcBranch20(process,taskIndex,forkIndex,flowIndex);
         int temp = a[1] - 1 ;
         int userTaskIndex = a[0];
         flowIndex = a[2];
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + 1, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         userTaskIndex++;
 
-        int b[] = ProcessUtils.setProcBranch20(process,userTaskIndex,5,flowIndex);
+        int b[] = ExamProcModelUtils.setProcBranch20(process,userTaskIndex,5,flowIndex);
         temp = b[1] - 1 ;
         userTaskIndex = b[0];
         flowIndex = b[2];
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(joinStr + 5, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr + 5, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         userTaskIndex++;
 
 
         temp = userTaskIndex - 1 ;
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex,flowStr + flowIndex++));
 
 
         for(int i = 0 ; i <7 ;i++)
         {
-            process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+            process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
             userTaskIndex++;
             temp = userTaskIndex -1 ;
             if(userTaskIndex <= 50)
-                process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
+                process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + temp, userTaskStr + userTaskIndex ,flowStr + flowIndex++));
         }
 
-        process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
+        process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + userTaskIndex, userTaskStr + userTaskIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + userTaskIndex, endStr ,flowStr + flowIndex++));
 
         return process;
     }

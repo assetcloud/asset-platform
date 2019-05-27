@@ -1,10 +1,8 @@
 package com.asset.controller;
 
 import com.asset.base.BaseController;
-import com.asset.dao.CopyProcMapper;
-import com.asset.utils.ProcessUtils;
-import liquibase.util.StringUtils;
-import org.apache.commons.io.FileUtils;
+import com.asset.dao.ExamCopyProcMapper;
+import com.asset.utils.ExamProcModelUtils;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
@@ -12,26 +10,20 @@ import org.flowable.engine.*;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.engine.test.FlowableRule;
 import org.flowable.task.api.Task;
 import org.flowable.ui.modeler.rest.app.ModelResource;
 
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -39,17 +31,19 @@ import java.util.*;
 
 /**
  * 批量完成流程迁移操作
+ * @author yby
+ * @time 190522之前某一天
  */
 @Controller
-public class DozenController extends BaseController {
+public class ExamDozenController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelResource.class);
 
     @Autowired
-    CopyProcMapper mapper;
+    ExamCopyProcMapper mapper;
 
     //这里是计算执行单条串行流程实例所花的时间
-    @GetMapping("/copy")
+    @GetMapping("/copyTest")
     public void createProcModel1(@RequestParam Integer times) {
         copyProcNode(times);
     }
@@ -60,7 +54,7 @@ public class DozenController extends BaseController {
      * @param nodesNum 表示这个流程中应该总共有几个节点
      * @param percents 表示并行结构的节点有几个
      */
-    @GetMapping("/parallel")
+    @GetMapping("/parallelTest")
     public void createProcModel(@RequestParam(value = "num") Integer nodesNum,
                                 @RequestParam(value = "per") Integer percents) {
         branchProc(nodesNum,percents);
@@ -95,41 +89,41 @@ public class DozenController extends BaseController {
 
         int index = 1;
 
-        process.addFlowElement(ProcessUtils.createStartEvent());
-        process.addFlowElement(ProcessUtils.createParallelGateway(forkStr, forkStr));
+        process.addFlowElement(ExamProcModelUtils.createStartEvent());
+        process.addFlowElement(ExamProcModelUtils.createParallelGateway(forkStr, forkStr));
         for( ; index <= parallelNum;index++)
-            process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + index, userTaskStr + index));
+            process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + index, userTaskStr + index));
 
-        process.addFlowElement(ProcessUtils.createParallelGateway(joinStr, joinStr));
+        process.addFlowElement(ExamProcModelUtils.createParallelGateway(joinStr, joinStr));
 
         for( ; index <= nodesNum;index++)
-            process.addFlowElement(ProcessUtils.createUserTask(userTaskStr + index, userTaskStr + index));
+            process.addFlowElement(ExamProcModelUtils.createUserTask(userTaskStr + index, userTaskStr + index));
 
-        process.addFlowElement(ProcessUtils.createEndEvent());
+        process.addFlowElement(ExamProcModelUtils.createEndEvent());
 
         //开始添加flow
         int flowIndex = 2;
         index = 1;
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(startStr, forkStr, flowStr + 1));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(startStr, forkStr, flowStr + 1));
 
         for( ; index <= parallelNum;index++)
         {
-            process.addFlowElement(ProcessUtils.createSequenceFlow(forkStr, userTaskStr + index, flowStr + flowIndex));
+            process.addFlowElement(ExamProcModelUtils.createSequenceFlow(forkStr, userTaskStr + index, flowStr + flowIndex));
             flowIndex++;
-            process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr + index, joinStr, flowStr + flowIndex));
+            process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr + index, joinStr, flowStr + flowIndex));
             flowIndex++;
         }
-        process.addFlowElement(ProcessUtils.createSequenceFlow(joinStr, userTaskStr+index, flowStr + flowIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(joinStr, userTaskStr+index, flowStr + flowIndex));
         flowIndex++;
         for( ; index < nodesNum;index++)
         {
             int t = index + 1;
-            process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr+index, userTaskStr+t, flowStr + flowIndex));
+            process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr+index, userTaskStr+t, flowStr + flowIndex));
             flowIndex++;
         }
 
-        process.addFlowElement(ProcessUtils.createSequenceFlow(userTaskStr+index, endStr, flowStr + flowIndex));
+        process.addFlowElement(ExamProcModelUtils.createSequenceFlow(userTaskStr+index, endStr, flowStr + flowIndex));
 
 
         executeParallel(bpmnModel,times,1);

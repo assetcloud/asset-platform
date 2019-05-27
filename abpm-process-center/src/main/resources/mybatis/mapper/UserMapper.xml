@@ -35,6 +35,7 @@
     </if>
     order by a.CREATED_TIME_ ASC
   </select>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

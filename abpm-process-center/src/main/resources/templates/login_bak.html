@@ -44,7 +44,7 @@
             $.ajax({
                 url:"/login",
                 type:"post",
-                dataType:"json",
+                dataType:"formjson",
                 cache:false,
                 data:{username:$("input[name='username']").val(), password:$("input[name='password']").val(),time:new Date().getTime()},
                 success:function(data){

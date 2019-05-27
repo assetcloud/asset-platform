@@ -1,6 +1,6 @@
 package com.asset.controller;
 
-import com.asset.service.ChangeProcService;
+import com.asset.service.ProcChangeService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ExecutionQuery;
@@ -15,15 +15,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
 
+/**
+ * 流程迁移实验
+ * @author yby
+ * @time 190522之前某一天
+ */
 @Controller
-public class TransProcInstance {
+public class ExamTransProcInstance {
     private static final Logger LOGGER = LoggerFactory.getLogger(ModelResource.class);
 
     @Autowired
     protected RuntimeService runtimeService;
 
     @Autowired
-    ChangeProcService changeProcService;
+    ProcChangeService procChangeService;
 
 
     /*回滚流程：
@@ -38,7 +43,7 @@ public class TransProcInstance {
      *
      * @return
      */
-    @RequestMapping("/rollback")
+    @RequestMapping("/rollbackTest")
     public void rollbackStrategy() {
 
         LOGGER.info("编辑的model是 {fdfsdfsdfdsf} ");
@@ -80,11 +85,11 @@ public class TransProcInstance {
             //注意这里传进去的是是运行在旧的流程定义上的processInstance
             //迁移到最新版本
             if(curActivityID.equals("user1Event"))
-                changeProcService.updateProcDef(oldProcInstance, oldProcExe);
+                procChangeService.migrateProc(oldProcInstance, oldProcExe);
             //迁移+回滚
             else if(curActivityID.equals("user2Event"))
             {
-                changeProcService.updateProcDef(oldProcInstance, oldProcExe);
+                procChangeService.migrateProc(oldProcInstance, oldProcExe);
                 runtimeService.createChangeActivityStateBuilder().processInstanceId(oldProcInstance.getProcessInstanceId())
                         .moveExecutionToActivityId(oldProcExe.getId(), rollbackActivityID).changeState();
                 LOGGER.info("流程 {} 回滚完成", oldProcInstance.getProcessInstanceId());

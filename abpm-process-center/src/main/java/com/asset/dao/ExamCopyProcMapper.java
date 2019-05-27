@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Update;
 
 
 @Mapper
-public interface CopyProcMapper {
+public interface ExamCopyProcMapper {
 
     //在act_de_model表中找到model_editor_json字段，对里面的流程信息添加节点
     @Select("SELECT model_editor_json FROM act_de_model WHERE `name` = #{procDefName}")
