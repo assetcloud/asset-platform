@@ -2,29 +2,45 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>flowable-ui-modeler-logic</artifactId>
+	<artifactId>flowable-ui-task-rest</artifactId>
 	<parent>
 		<groupId>org.flowable</groupId>
-    	<artifactId>flowable-ui-modeler</artifactId>
+    	<artifactId>flowable-ui-task</artifactId>
     	<version>6.4.0</version>
 	</parent>
 	<packaging>jar</packaging>
-	flowable-ui-modeler
 
 	<dependencies>
 	
-        <!-- Flowable -->
         <dependency>
-           <groupId>org.flowable</groupId>
-           <artifactId>flowable-ui-common</artifactId>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-content-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-content-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-ui-task-logic</artifactId>
+        </dependency>
+
+		<!-- Flowable -->
+		<dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-engine</artifactId>
+        </dependency>
+		<dependency>
 			<groupId>org.flowable</groupId>
 			<artifactId>flowable-bpmn-model</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.flowable</groupId>
 			<artifactId>flowable-bpmn-converter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.flowable</groupId>
+			<artifactId>flowable-json-converter</artifactId>
 		</dependency>
         <dependency>
             <groupId>org.flowable</groupId>
@@ -35,51 +51,13 @@
             <artifactId>flowable-process-validation</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-image-generator</artifactId>
+        	<groupId>org.flowable</groupId>
+        	<artifactId>flowable-spring</artifactId>
         </dependency>
         <dependency>
         	<groupId>org.flowable</groupId>
-        	<artifactId>flowable-json-converter</artifactId>
+        	<artifactId>flowable-idm-api</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-cmmn-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-cmmn-converter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-cmmn-json-converter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-cmmn-image-generator</artifactId>
-        </dependency>
-        <dependency>
-        	<groupId>org.flowable</groupId>
-        	<artifactId>flowable-dmn-xml-converter</artifactId>
-        </dependency>
-        <dependency>
-       	 	<groupId>org.flowable</groupId>
-        	<artifactId>flowable-dmn-json-converter</artifactId>
-      	</dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-form-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-form-json-converter</artifactId>
-        </dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
-		</dependency>
 
 		<!-- LOGGING -->
 		<dependency>
@@ -88,6 +66,18 @@
 		</dependency>
         
 		<!-- JSON -->
+		<dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+        </dependency>
+		<dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+		<dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+        </dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-json-org</artifactId>
@@ -101,16 +91,6 @@
 			<artifactId>jackson-datatype-joda</artifactId>
 		</dependency>
 
-		<!-- DATABASE -->
-        <dependency>
-	      <groupId>org.mybatis</groupId>
-	      <artifactId>mybatis</artifactId>
-        </dependency>
-	    <dependency>
-		  <groupId>org.mybatis</groupId>
-		  <artifactId>mybatis-spring</artifactId>
-	    </dependency>
-
 		<!-- COMMON dependencies -->
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -121,29 +101,14 @@
   			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2.2</version>
-		</dependency>
-		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
 		<dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpmime</artifactId>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
 		</dependency>
-
-		<!-- JODA TIME -->
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
-
+		
 		<!-- SPRING -->
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -168,10 +133,6 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-expression</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-jdbc</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -201,15 +162,29 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
 		</dependency>
-    
-        <!-- Servlet -->
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
+        
+	  	<dependency>
+        	<groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-jsr223</artifactId>
+       </dependency>
+	   
 	</dependencies>
 
+	<!-- BUILD -->
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
 	<profiles>
 		<profile>
 			<id>distro</id>

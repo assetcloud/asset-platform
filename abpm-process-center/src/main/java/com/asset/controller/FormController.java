@@ -1,9 +1,8 @@
 package com.asset.controller;
 
 import com.asset.entity.Code;
-import com.asset.entity.FormInRun;
 import com.asset.entity.JsonForm;
-import com.asset.service.impl.FormServiceImpl;
+import com.asset.service.impl.FormRepositoryServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 public class FormController {
 
     @Autowired
-    FormServiceImpl formService;
+    FormRepositoryServiceImpl formService;
 
     /**
      * 把第三方表单以json格式存入数据库，与对应流程模型绑定
@@ -80,6 +79,8 @@ public class FormController {
     }
 
 
-//sasa
+
+
+
 
 }

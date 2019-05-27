@@ -1,7 +1,6 @@
 package com.asset.utils;
 
 
-import com.asset.controller.ExamProcLineController;
 import org.flowable.engine.*;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.engine.runtime.ProcessInstanceQuery;
@@ -21,7 +20,7 @@ import java.util.Map;
 
 public class ProcInstUtils {
 
-    static Logger logger = LoggerFactory.getLogger(ExamProcLineController.class);
+    static Logger logger = LoggerFactory.getLogger(ProcInstUtils.class);
     static ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
     static RepositoryService repositoryService = engine.getRepositoryService();
     static RuntimeService runtimeService = engine.getRuntimeService();
