@@ -3,29 +3,20 @@ package com.asset.controller.test;
 import com.asset.FlowableApplication;
 import com.asset.dao.FormMapper;
 import com.asset.entity.JsonForm;
-import com.asset.service.FormService;
-import com.asset.utils.ExamProcModelUtils;
+import com.asset.service.FormRepositoryService;
 import com.asset.utils.ProcInstUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,7 +34,7 @@ public class FormController {
     @Autowired
     FormMapper formMapper;
     @Autowired
-    FormService formService;
+    FormRepositoryService formRepositoryService;
 
 
     /**
@@ -92,7 +83,7 @@ public class FormController {
     @Test
     public void getFormInst() throws JsonProcessingException {
         String taskID = "modelid2";
-        JsonForm jsonForm = formService.getFormInst(taskID);
+        JsonForm jsonForm = formRepositoryService.getFormInst(taskID);
 
         logger.info("jsonForm is {}",jsonForm.toString());
     }

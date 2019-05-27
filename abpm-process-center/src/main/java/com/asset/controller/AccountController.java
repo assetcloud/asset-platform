@@ -16,7 +16,6 @@ import java.util.HashMap;
  * @version 1.0_190527 1423
  */
 @RestController
-@RequestMapping(value = "flowable-idm")
 public class AccountController {
 
     @RequestMapping(value = "/app/authentication", method = RequestMethod.GET)
@@ -24,19 +23,12 @@ public class AccountController {
         return true;
     }
 
-    @RequestMapping(value = "/app/rest/account")
-    public String account() {
-//        ModelAndView modelAndView = new ModelAndView();
-//        HashMap<String, Object> map = new HashMap<>();
-//        map.put("json","{\"id\":\"admin\",\"firstName\":\"Test\",\"lastName\":\"Administrator\",\"email\":\"admin@flowable.org\","
-//                + "\"fullName\":\"Test Administrator\",\"groups\":[],\"privileges\""
-//                + ":["
-//                + "\"access-idm\","
-//                + "\"access-task\","
-//                + "\"access-modeler\","
-//                + "\"access-admin\""
-//                + "]}\n");
-//        modelAndView.addAllObjects(map);
+    /**
+     * postman测试成功
+     * @return
+     */
+    @RequestMapping(value = {"/flowable-idm/app/rest/account"})
+    public String accountIdm() {
         return "{\"id\":\"admin\",\"firstName\":\"Test\",\"lastName\":\"Administrator\",\"email\":\"admin@flowable.org\","
                 + "\"fullName\":\"Test Administrator\",\"groups\":[],\"privileges\""
                 + ":["
@@ -45,7 +37,23 @@ public class AccountController {
                 + "\"access-modeler\","
                 + "\"access-admin\""
                 + "]}\n";
-//        return modelAndView;
+    }
+
+
+    /**
+     * postman测试成功
+     * @return
+     */
+    @RequestMapping(value = {"/flowable-idm/app/logout"},method = RequestMethod.GET)
+    public String accountLogout() {
+        return "{\"id\":\"admin\",\"firstName\":\"Test\",\"lastName\":\"Administrator\",\"email\":\"admin@flowable.org\","
+                + "\"fullName\":\"Test Administrator\",\"groups\":[],\"privileges\""
+                + ":["
+                + "\"access-idm\","
+                + "\"access-task\","
+                + "\"access-modeler\","
+                + "\"access-admin\""
+                + "]}\n";
     }
 
     @RequestMapping(value = "/test")
