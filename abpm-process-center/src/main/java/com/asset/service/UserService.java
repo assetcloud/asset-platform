@@ -3,12 +3,12 @@ package com.asset.service;
 
 import com.asset.entity.User;
 import com.asset.utils.PageGrids;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
  * @author lichao
  */
-public interface UserService {
-
+public interface UserService extends UserDetailsService {
 
     /**
      * 获取用户列表
@@ -24,4 +24,11 @@ public interface UserService {
      * @return int
      */
     int addUser(User user);
+
+    /**
+     * 通过id获取用户
+     * @param id
+     * @return User
+     */
+    User getUserById(String id);
 }

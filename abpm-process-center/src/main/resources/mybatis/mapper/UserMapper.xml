@@ -13,17 +13,33 @@
     <result column="ADMIN_" jdbcType="BIT" property="admin" />
     <result column="PICTURE_ID_" jdbcType="VARCHAR" property="pictureId" />
     <result column="TENANT_ID_" jdbcType="VARCHAR" property="tenantId" />
+    <result column="ADDRESS_" property="address" />
+    <result column="USER_PHOTO_" property="userPhoto" />
     <result column="STATUS_" jdbcType="BIT" property="status" />
     <result column="UPDATED_TIME_" jdbcType="DATE" property="updatedTime" />
     <result column="CREATED_TIME_" jdbcType="DATE" property="createdTime" />
   </resultMap>
-  <sql id="Base_Column_List">
-    ID_, REV_, FIRST_, LAST_, DISPLAY_NAME_, EMAIL_, PHONE_NUMBER_, PWD_, ADMIN_, PICTURE_ID_,
-    TENANT_ID_, STATUS_, UPDATED_TIME_, CREATED_TIME_
-  </sql>
+  <!--<resultMap id="lazyLoadRoles" type="com.asset.entity.User" extends="BaseResultMap">
+    <collection property="roles" ofType="com.asset.entity.Role" select="com.asset.dao.RoleMapper.getRolesByUserId"
+                column="id"></collection>
+  </resultMap>
+  <resultMap id="eagerLoadRoles" type="com.asset.entity.User" extends="BaseResultMap">
+    <collection property="roles" ofType="com.asset.entity.Role">
+      <id property="id" column="rid"/>
+      <result property="name" column="rname"/>
+      <result property="nameEn" column="rnameEn"/>
+    </collection>
+  </resultMap>-->
+
+  <!--<select id="getUserByName" resultMap="lazyLoadRoles">
+        select * from ACT_ID_USER WHERE DISPLAY_NAME_=#{name};
+  </select>-->
+  <select id="getRolesByUserId" resultType="com.asset.entity.Role">
+        SELECT r.* FROM ACT_ID_USER_ROLE u,ACT_ID_ROLE r where u.role_id=r.id AND u.uid=#{id}
+    </select>
   <select id="getUsers" resultMap="BaseResultMap">
     select
-    a.ID_,a.DISPLAY_NAME_,a.EMAIL_,a.PHONE_NUMBER_,a.ADMIN_,a.CREATED_TIME_
+    *
     from act_id_user a
     where
       1=1
@@ -38,7 +54,7 @@
 
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
+    *
     from act_id_user
     where ID_ = #{id,jdbcType=VARCHAR}
   </select>
