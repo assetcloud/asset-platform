@@ -1,5 +1,6 @@
 package com.asset.dao;
 
+import com.asset.entity.Role;
 import com.asset.entity.User;
 import org.springframework.stereotype.Repository;
 
@@ -7,6 +8,10 @@ import java.util.List;
 
 @Repository
 public interface UserMapper {
+
+//    User getUserByName(String name);
+
+    Role getRolesByUserId(int userId);
 
     List<User> getUsers(String id, String displayName);
 

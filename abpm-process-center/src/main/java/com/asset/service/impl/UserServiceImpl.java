@@ -7,12 +7,15 @@ import com.asset.utils.PageGrids;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Autowired
     UserMapper userMapper;
@@ -33,4 +36,20 @@ public class UserServiceImpl implements UserService {
     public int addUser(User user) {
         return userMapper.insert(user);
     }
+
+    @Override
+    public User getUserById(String id) {
+        return userMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+//        User user = userMapper.getUserByName(s);
+        User user = userMapper.selectByPrimaryKey(s);
+        if(user == null){
+            throw new UsernameNotFoundException("用户名错误");
+        }
+        return user;
+    }
+
 }
