@@ -13,14 +13,14 @@
 	<h3>String Format</h3>
 	<div class="desc">
 	<p> contentType = "application/x-www-form-urlencoded", means: the sending data format is "form" format.</p>
-	<p> contentType = "application/json",  means: the sending data format is "json" format. (for .Net)</p>
+	<p> contentType = "application/formjson",  means: the sending data format is "formjson" format. (for .Net)</p>
 	</div>
 	<h3>Examples of setting</h3>
-	<h4>1. set the sending data format to "json" format.</h4>
+	<h4>1. set the sending data format to "formjson" format.</h4>
 	<pre xmlns=""><code>var setting = {
 	async: {
 		enable: true,
-		contentType: "application/json",
+		contentType: "application/formjson",
 		url: "http://host/getNode.php",
 		autoParam: ["id", "name"]
 	}

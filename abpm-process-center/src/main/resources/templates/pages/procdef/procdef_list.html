@@ -56,7 +56,7 @@
             caption: "流程定义列表",
             url: "/repository/queryProcDef",
             mtype: "post",
-            datatype: "json",
+            datatype: "formjson",
             rownumbers: true,
             height: 398,
             autowidth: true,
@@ -114,7 +114,7 @@
             var id_ = $("#id_").val();       //获取输入框内容
             var name_ = $("#name_").val();       //获取输入框内容
             $("#table_list_1").jqGrid('setGridParam',{
-                datatype:'json',
+                datatype:'formjson',
                 postData:{'id_':encodeURI(encodeURI(id_)),'name_':encodeURI(encodeURI(name_))}, //发送数据
                 page:1
             }).trigger("reloadGrid"); //重新载入

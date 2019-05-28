@@ -23,7 +23,8 @@ public class FlowableHandlerInterceptor implements HandlerInterceptor {
 			return true;
 		}
 		System.out.println(servletPath);
-		if (servletPath.startsWith("/app")) {
+		if (servletPath.startsWith("/app") || servletPath.startsWith("/flowable-idm/app")) {
+			System.out.println("app");
 			User user = new UserEntityImpl();
 			user.setId("admin");
 			SecurityUtils.assumeUser(user);
