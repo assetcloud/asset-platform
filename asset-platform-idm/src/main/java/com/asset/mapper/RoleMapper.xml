@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.mapper.RoleMapper">
+  <resultMap id="BaseResultMap" type="com.asset.bean.Role">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+    <result column="role_name_zh" jdbcType="VARCHAR" property="roleNameZh" />
+    <result column="role_description" jdbcType="VARCHAR" property="roleDescription" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="applicable_unit_level" jdbcType="VARCHAR" property="applicableUnitLevel" />
+    <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, role_name, role_name_zh, role_description, status, applicable_unit_level, product_code,
+    enable_time, disable_time, updated_time, created_time
+  </sql>
+  <select id="roles" resultMap="BaseResultMap">
+    select
+    *
+    from as_role
+    where id != 2
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from as_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from as_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.Role">
+    insert into as_role (id, role_name, role_name_zh,
+      role_description, status, applicable_unit_level,
+      product_code, enable_time, disable_time,
+      updated_time, created_time)
+    values (#{id,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR}, #{roleNameZh,jdbcType=VARCHAR},
+      #{roleDescription,jdbcType=VARCHAR}, #{status,jdbcType=BIT}, #{applicableUnitLevel,jdbcType=VARCHAR},
+      #{productCode,jdbcType=VARCHAR}, #{enableTime,jdbcType=TIMESTAMP}, #{disableTime,jdbcType=TIMESTAMP},
+      #{updatedTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.Role">
+    insert into as_role
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="roleName != null">
+        role_name,
+      </if>
+      <if test="roleNameZh != null">
+        role_name_zh,
+      </if>
+      <if test="roleDescription != null">
+        role_description,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="applicableUnitLevel != null">
+        applicable_unit_level,
+      </if>
+      <if test="productCode != null">
+        product_code,
+      </if>
+      <if test="enableTime != null">
+        enable_time,
+      </if>
+      <if test="disableTime != null">
+        disable_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null">
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleNameZh != null">
+        #{roleNameZh,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDescription != null">
+        #{roleDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="applicableUnitLevel != null">
+        #{applicableUnitLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="productCode != null">
+        #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="enableTime != null">
+        #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="disableTime != null">
+        #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.Role">
+    update as_role
+    <set>
+      <if test="roleName != null">
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+      <if test="roleNameZh != null">
+        role_name_zh = #{roleNameZh,jdbcType=VARCHAR},
+      </if>
+      <if test="roleDescription != null">
+        role_description = #{roleDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="applicableUnitLevel != null">
+        applicable_unit_level = #{applicableUnitLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="productCode != null">
+        product_code = #{productCode,jdbcType=VARCHAR},
+      </if>
+      <if test="enableTime != null">
+        enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="disableTime != null">
+        disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.Role">
+    update as_role
+    set role_name = #{roleName,jdbcType=VARCHAR},
+      role_name_zh = #{roleNameZh,jdbcType=VARCHAR},
+      role_description = #{roleDescription,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      applicable_unit_level = #{applicableUnitLevel,jdbcType=VARCHAR},
+      product_code = #{productCode,jdbcType=VARCHAR},
+      enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      created_time = #{createdTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

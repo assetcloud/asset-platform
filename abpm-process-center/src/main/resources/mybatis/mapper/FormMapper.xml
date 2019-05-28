@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.FormMapper">
+
+    <resultMap id="jsonFormModel" type="com.asset.entity.JsonForm">
+        <id column="form_json" jdbcType="LONGVARCHAR" property="formjson" />
+        <id column="form_name" jdbcType="VARCHAR" property="formname" />
+        <id column="id" jdbcType="VARCHAR" property="modelid" />
+    </resultMap>
+
+    <resultMap id="jsonFormInst" type="com.asset.entity.JsonForm">
+        <id column="FORM_JSON" jdbcType="LONGVARCHAR" property="formjson" />
+        <id column="FORM_NAME" jdbcType="VARCHAR" property="formname" />
+        <id column="MODEL_ID" jdbcType="VARCHAR" property="modelid" />
+    </resultMap>
+
+    <!--新增 “表单详情” 字段-->
+    <update id="createFormColumn">
+        ALTER TABLE act_de_model ADD COLUMN form_json LONGVARCHAR
+    </update>
+
+    <!--保存表单模型-->
+    <update id="saveForm" parameterType="com.asset.entity.JsonForm">
+      UPDATE act_de_model
+      SET form_json = #{formjson,jdbcType=VARCHAR},
+          form_name = #{formname,jdbcType=VARCHAR}
+      WHERE
+	    id = #{modelid,jdbcType=VARCHAR};
+    </update>
+
+    <!--获取表单模型-->
+    <select id="getForm" parameterType="java.lang.String" resultMap="jsonFormModel">
+        SELECT
+	      form_json,form_name,id
+        FROM
+	      act_de_model
+        WHERE
+	      id = #{modelid,jdbcType =VARCHAR };
+    </select>
+
+    <!--保存表单实例-->
+    <insert id="saveFormInst" parameterType="com.asset.entity.FormInRun">
+      INSERT INTO asset_ru_form
+      ( TASK_ID,
+      PROC_INST_ID_,
+      PROC_DEF_ID_,
+      MODEL_ID,
+      FORM_NAME,
+      FORM_JSON )
+      VALUES
+	  ( #{taskid,jdbcType = VARCHAR},
+	  #{procinstid,jdbcType = VARCHAR},
+	  #{procdefid,jdbcType = VARCHAR},
+	  #{modelid,jdbcType = VARCHAR},
+	  #{formname,jdbcType = VARCHAR},
+	  #{formjson,jdbcType = VARCHAR} );
+    </insert>
+
+    <!--获取表单实例-->
+    <select id="getFormInst" parameterType="java.lang.String" resultMap="jsonFormInst">
+        SELECT
+	      FORM_JSON,FORM_NAME,MODEL_ID
+        FROM
+	      asset_ru_form
+        WHERE
+	      TASK_ID = #{taskID,jdbcType =VARCHAR};
+    </select>
+
+</mapper>

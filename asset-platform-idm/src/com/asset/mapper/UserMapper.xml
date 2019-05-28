@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.asset.bean.User">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="staff_id" jdbcType="INTEGER" property="staffId" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
+    <result column="user_birthday" jdbcType="TIMESTAMP" property="userBirthday" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
+    <result column="certificate_number" jdbcType="VARCHAR" property="certificateNumber" />
+    <result column="pwd" jdbcType="VARCHAR" property="pwd" />
+    <result column="authentication_method" jdbcType="INTEGER" property="authenticationMethod" />
+    <result column="account_picture" jdbcType="VARCHAR" property="accountPicture" />
+    <result column="admin" jdbcType="INTEGER" property="admin" />
+    <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+    <result column="user_photo" jdbcType="VARCHAR" property="userPhoto" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.asset.bean.User">
+    <result column="user_remark" jdbcType="LONGVARCHAR" property="userRemark" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, staff_id, real_name, account_name, nickname, gender, user_birthday, user_email, 
+    phone_number, certificate_type, certificate_number, pwd, authentication_method, account_picture, 
+    admin, user_address, user_photo, status, user_type, disable_time, enable_time, updated_time, 
+    remove_time, created_time
+  </sql>
+  <sql id="Blob_Column_List">
+    user_remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from as_user
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from as_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.User">
+    insert into as_user (id, staff_id, real_name, 
+      account_name, nickname, gender, 
+      user_birthday, user_email, phone_number, 
+      certificate_type, certificate_number, pwd, 
+      authentication_method, account_picture, admin, 
+      user_address, user_photo, status, 
+      user_type, disable_time, enable_time, 
+      updated_time, remove_time, created_time, 
+      user_remark)
+    values (#{id,jdbcType=INTEGER}, #{staffId,jdbcType=INTEGER}, #{realName,jdbcType=VARCHAR}, 
+      #{accountName,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER}, 
+      #{userBirthday,jdbcType=TIMESTAMP}, #{userEmail,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, 
+      #{certificateType,jdbcType=INTEGER}, #{certificateNumber,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, 
+      #{authenticationMethod,jdbcType=INTEGER}, #{accountPicture,jdbcType=VARCHAR}, #{admin,jdbcType=INTEGER}, 
+      #{userAddress,jdbcType=VARCHAR}, #{userPhoto,jdbcType=VARCHAR}, #{status,jdbcType=BIT}, 
+      #{userType,jdbcType=INTEGER}, #{disableTime,jdbcType=TIMESTAMP}, #{enableTime,jdbcType=TIMESTAMP}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{removeTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP}, 
+      #{userRemark,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.User">
+    insert into as_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="staffId != null">
+        staff_id,
+      </if>
+      <if test="realName != null">
+        real_name,
+      </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="userBirthday != null">
+        user_birthday,
+      </if>
+      <if test="userEmail != null">
+        user_email,
+      </if>
+      <if test="phoneNumber != null">
+        phone_number,
+      </if>
+      <if test="certificateType != null">
+        certificate_type,
+      </if>
+      <if test="certificateNumber != null">
+        certificate_number,
+      </if>
+      <if test="pwd != null">
+        pwd,
+      </if>
+      <if test="authenticationMethod != null">
+        authentication_method,
+      </if>
+      <if test="accountPicture != null">
+        account_picture,
+      </if>
+      <if test="admin != null">
+        admin,
+      </if>
+      <if test="userAddress != null">
+        user_address,
+      </if>
+      <if test="userPhoto != null">
+        user_photo,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="disableTime != null">
+        disable_time,
+      </if>
+      <if test="enableTime != null">
+        enable_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="removeTime != null">
+        remove_time,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="userRemark != null">
+        user_remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="staffId != null">
+        #{staffId,jdbcType=INTEGER},
+      </if>
+      <if test="realName != null">
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="userBirthday != null">
+        #{userBirthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userEmail != null">
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateType != null">
+        #{certificateType,jdbcType=INTEGER},
+      </if>
+      <if test="certificateNumber != null">
+        #{certificateNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="authenticationMethod != null">
+        #{authenticationMethod,jdbcType=INTEGER},
+      </if>
+      <if test="accountPicture != null">
+        #{accountPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="admin != null">
+        #{admin,jdbcType=INTEGER},
+      </if>
+      <if test="userAddress != null">
+        #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhoto != null">
+        #{userPhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="userType != null">
+        #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="disableTime != null">
+        #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enableTime != null">
+        #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="removeTime != null">
+        #{removeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userRemark != null">
+        #{userRemark,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.User">
+    update as_user
+    <set>
+      <if test="staffId != null">
+        staff_id = #{staffId,jdbcType=INTEGER},
+      </if>
+      <if test="realName != null">
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="userBirthday != null">
+        user_birthday = #{userBirthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userEmail != null">
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateType != null">
+        certificate_type = #{certificateType,jdbcType=INTEGER},
+      </if>
+      <if test="certificateNumber != null">
+        certificate_number = #{certificateNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        pwd = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="authenticationMethod != null">
+        authentication_method = #{authenticationMethod,jdbcType=INTEGER},
+      </if>
+      <if test="accountPicture != null">
+        account_picture = #{accountPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="admin != null">
+        admin = #{admin,jdbcType=INTEGER},
+      </if>
+      <if test="userAddress != null">
+        user_address = #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhoto != null">
+        user_photo = #{userPhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="userType != null">
+        user_type = #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="disableTime != null">
+        disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enableTime != null">
+        enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="removeTime != null">
+        remove_time = #{removeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userRemark != null">
+        user_remark = #{userRemark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.asset.bean.User">
+    update as_user
+    set staff_id = #{staffId,jdbcType=INTEGER},
+      real_name = #{realName,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=INTEGER},
+      user_birthday = #{userBirthday,jdbcType=TIMESTAMP},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      certificate_type = #{certificateType,jdbcType=INTEGER},
+      certificate_number = #{certificateNumber,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      authentication_method = #{authenticationMethod,jdbcType=INTEGER},
+      account_picture = #{accountPicture,jdbcType=VARCHAR},
+      admin = #{admin,jdbcType=INTEGER},
+      user_address = #{userAddress,jdbcType=VARCHAR},
+      user_photo = #{userPhoto,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      user_type = #{userType,jdbcType=INTEGER},
+      disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      remove_time = #{removeTime,jdbcType=TIMESTAMP},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      user_remark = #{userRemark,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.User">
+    update as_user
+    set staff_id = #{staffId,jdbcType=INTEGER},
+      real_name = #{realName,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=INTEGER},
+      user_birthday = #{userBirthday,jdbcType=TIMESTAMP},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      certificate_type = #{certificateType,jdbcType=INTEGER},
+      certificate_number = #{certificateNumber,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      authentication_method = #{authenticationMethod,jdbcType=INTEGER},
+      account_picture = #{accountPicture,jdbcType=VARCHAR},
+      admin = #{admin,jdbcType=INTEGER},
+      user_address = #{userAddress,jdbcType=VARCHAR},
+      user_photo = #{userPhoto,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      user_type = #{userType,jdbcType=INTEGER},
+      disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      remove_time = #{removeTime,jdbcType=TIMESTAMP},
+      created_time = #{createdTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

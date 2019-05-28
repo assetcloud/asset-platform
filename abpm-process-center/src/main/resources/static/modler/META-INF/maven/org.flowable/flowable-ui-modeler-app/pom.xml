@@ -35,7 +35,7 @@
         </dependency>
         <dependency>
             <groupId>org.flowable</groupId>
-            <artifactId>flowable-json-converter</artifactId>
+            <artifactId>flowable-formjson-converter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.flowable</groupId>
@@ -47,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>org.flowable</groupId>
-            <artifactId>flowable-form-json-converter</artifactId>
+            <artifactId>flowable-form-formjson-converter</artifactId>
         </dependency>
         <dependency>
             <groupId>org.flowable</groupId>
@@ -59,7 +59,7 @@
         </dependency>
         <dependency>
        	 	<groupId>org.flowable</groupId>
-        	<artifactId>flowable-dmn-json-converter</artifactId>
+        	<artifactId>flowable-dmn-formjson-converter</artifactId>
       	</dependency>
 
         <!-- DATABASE -->
@@ -135,7 +135,7 @@
         <!-- JSON -->
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-json-org</artifactId>
+            <artifactId>jackson-datatype-formjson-org</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
