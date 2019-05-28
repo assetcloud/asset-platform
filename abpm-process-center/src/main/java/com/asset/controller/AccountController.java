@@ -23,6 +23,11 @@ public class AccountController {
         return true;
     }
 
+    @RequestMapping(value = "/flowable-idm/app/authentication", method = RequestMethod.GET)
+    public boolean login2(){
+        return true;
+    }
+
     /**
      * postman测试成功
      * @return
