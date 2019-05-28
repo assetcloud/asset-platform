@@ -102,6 +102,7 @@ public class Resource {
         this.parentId = parentId;
     }
 
+    @JsonIgnore
     public Boolean getEnabled() {
         return enabled;
     }

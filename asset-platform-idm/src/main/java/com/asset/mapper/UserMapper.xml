@@ -48,7 +48,12 @@
         SELECT
         r.id as id,
         r.role_name as roleName,
-        r.role_name_zh as roleNameZh
+        r.role_name_zh as roleNameZh,
+        r.role_description as roleDescription,
+        r.status as status,
+        r.applicable_unit_level as applicableUnitLevel,
+        r.product_code as productCode,
+        r.created_time as createdTime
         FROM as_user_role ur,as_role r where ur.role_id=r.id AND ur.uid=#{id}
   </select>
   <sql id="Base_Column_List">

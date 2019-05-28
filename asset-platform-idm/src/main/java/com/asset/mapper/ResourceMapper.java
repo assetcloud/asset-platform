@@ -1,14 +1,16 @@
 package com.asset.mapper;
 
 import com.asset.bean.Resource;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public interface ResourceMapper {
 
     List<Resource> getAllResource();
 
-    List<Resource> getResourcesByHrId(int userId);
+    List<Resource> getResourcesByUserId(int userId);
 
     List<Resource> resourceTree();
 
