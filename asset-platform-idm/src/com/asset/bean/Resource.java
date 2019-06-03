@@ -21,6 +21,8 @@ public class Resource {
 
     private Boolean enabled;
 
+    private Integer resourceType;
+
     public Integer getId() {
         return id;
     }
@@ -99,5 +101,13 @@ public class Resource {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Integer getResourceType() {
+        return resourceType;
+    }
+
+    public void setResourceType(Integer resourceType) {
+        this.resourceType = resourceType;
     }
 }

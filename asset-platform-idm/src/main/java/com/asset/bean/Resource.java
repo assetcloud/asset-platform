@@ -2,6 +2,7 @@ package com.asset.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Date;
 import java.util.List;
 
 public class Resource {
@@ -17,6 +18,78 @@ public class Resource {
     private List<Role> roles;
     private List<Resource> children;
     private ResourceMeta meta;
+    private Boolean keepAlive;
+    private Boolean requireAuth;
+    private Integer sortNumber;
+    private Date disableTime;
+    private Date enableTime;
+    private Date createdTime;
+    private Boolean status;
+    private Long finalLevelNode;
+
+    public Integer getSortNumber() {
+        return sortNumber;
+    }
+
+    public void setSortNumber(Integer sortNumber) {
+        this.sortNumber = sortNumber;
+    }
+
+    public Date getDisableTime() {
+        return disableTime;
+    }
+
+    public void setDisableTime(Date disableTime) {
+        this.disableTime = disableTime;
+    }
+
+    public Date getEnableTime() {
+        return enableTime;
+    }
+
+    public void setEnableTime(Date enableTime) {
+        this.enableTime = enableTime;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
+
+    public Long getFinalLevelNode() {
+        return finalLevelNode;
+    }
+
+    public void setFinalLevelNode(Long finalLevelNode) {
+        this.finalLevelNode = finalLevelNode;
+    }
+
+    public Boolean getKeepAlive() {
+        return keepAlive;
+    }
+
+    public void setKeepAlive(Boolean keepAlive) {
+        this.keepAlive = keepAlive;
+    }
+
+    public Boolean getRequireAuth() {
+        return requireAuth;
+    }
+
+    public void setRequireAuth(Boolean requireAuth) {
+        this.requireAuth = requireAuth;
+    }
 
     @JsonIgnore
     public List<Role> getRoles() {

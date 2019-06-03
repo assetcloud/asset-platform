@@ -23,8 +23,7 @@ public class FlowableHandlerInterceptor implements HandlerInterceptor {
 				|| servletPath.endsWith(".png")) {
 			return true;
 		}
-		System.out.println(servletPath);
-		LOGGER.info(servletPath);
+		LOGGER.info("你访问的接口为：{}",servletPath);
 //		Object obj = request.getSession().getAttribute(Constants.SESSION_USER);
 //		if (obj == null) {
 //			response.sendRedirect("/");
