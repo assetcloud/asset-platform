@@ -153,7 +153,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessHandler(new LogoutSuccessHandler() {
                     @Override
                     public void onLogoutSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
-                        LOGGER.error("用户注销成功!");
+                        LOGGER.info("用户注销成功!");
                         resp.setContentType("application/json;charset=utf-8");
                         RespBean respBean = RespBean.ok("注销成功!");
                         ObjectMapper om = new ObjectMapper();
@@ -174,7 +174,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         filter.setAuthenticationSuccessHandler(new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest req, HttpServletResponse resp, Authentication authentication) throws IOException, ServletException {
-                LOGGER.error("登录成功!");
+                LOGGER.info("登录成功!");
                 resp.setContentType("application/json;charset=utf-8");
                 RespBean respBean = RespBean.ok("登录成功!", UserUtils.getCurrentUser());
                 ObjectMapper om = new ObjectMapper();
@@ -214,6 +214,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 out.close();
             }
         });
+        filter.setAuthenticationManager(authenticationManagerBean());
         return filter;
     }
 }
