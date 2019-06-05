@@ -29,7 +29,7 @@ abpm-process-center/src/main/resources/config/database/jdbc-test.properties `数
 
 运行com.asset.FlowableApplication ，访问 [http//:localhost:9000] 
 
-#asset-platform-idm
+# asset-platform-idm
 
 asset-platform-idm模块为组织架构管理模块，包含员工、用户、角色、应用等管理模块
 
