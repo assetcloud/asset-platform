@@ -10,10 +10,17 @@
     <result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
     <result column="parent_id" jdbcType="INTEGER" property="parentId" />
     <result column="enabled" jdbcType="BIT" property="enabled" />
-    <association property="meta" javaType="com.asset.bean.ResourceMeta">
-      <result column="keepAlive" property="keepAlive"/>
-      <result column="requireAuth" property="requireAuth"/>
-    </association>
+    <result column="keep_alive" jdbcType="BIT" property="keepAlive"/>
+    <result column="require_auth" jdbcType="BIT" property="requireAuth"/>
+    <result column="sort_number" jdbcType="INTEGER" property="sortNumber"/>
+    <result column="status" jdbcType="BIT" property="status"/>
+    <result column="final_level_node" jdbcType="INTEGER" property="finalLevelNode"/>
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <!--<association property="meta" javaType="com.asset.bean.ResourceMeta">
+
+    </association>-->
     <collection property="roles" ofType="com.asset.bean.Role">
       <id column="roleId" property="id"/>
       <result column="role_name" property="roleName"/>
@@ -50,28 +57,46 @@
         order by m.`id` desc
   </select>
   <select id="getResourcesByUserId" parameterType="Integer" resultMap="BaseResultMap">
-        select
-        m1.id,
-        m1.path,
-        m1.component,
-        m1.icon_cls,
-        m1.`name`,
-        m1.require_auth,
-        m1.keep_alive,
-        m2.component as component2,
-        m2.icon_cls as iconCls2,
-        m2.keep_alive as keepAlive2,
-        m2.`name` as name2,
-        m2.path as path2,
-        m2.require_auth as requireAuth2
-        from as_resource m1,as_resource m2
-        where m1.`id`=m2.`parent_id`
-        and m1.`id`!=1
-        and m2.`id`
-        in(select mr.`mid` from as_user_role h_r,as_resource_role mr where h_r.`role_id`=mr.`rid` and h_r.`uid`=#{userId})
-        and m2.`enabled`=true
-        order by m1.`id`,m2.`id`
+        SELECT
+            m1.id,
+            m1.path,
+            m1.component,
+            m1.icon_cls,
+            m1.`name`,
+            m1.require_auth,
+            m1.keep_alive
+        FROM
+            as_resource m1
+        WHERE
+            m1.`id` != 1
+            AND m1.`id` IN ( SELECT mr.`mid` FROM as_user_role h_r, as_resource_role mr WHERE h_r.`role_id` = mr.`rid` AND h_r.`uid` = 1 )
+            AND m1.`enabled` = TRUE
+        ORDER BY
+            m1.`id`
   </select>
+  <!--<select id="getResourcesByUserId" parameterType="Integer" resultMap="BaseResultMap">
+        select
+            m1.id,
+            m1.path,
+            m1.component,
+            m1.icon_cls,
+            m1.`name`,
+            m1.require_auth,
+            m1.keep_alive,
+            m2.component as component2,
+            m2.icon_cls as iconCls2,
+            m2.keep_alive as keepAlive2,
+            m2.`name` as name2,
+            m2.path as path2,
+            m2.require_auth as requireAuth2
+          from as_resource m1,as_resource m2
+          where m1.`id`=m2.`parent_id`
+          and m1.`id`!=1
+          and m2.`id`
+          in(select mr.`mid` from as_user_role h_r,as_resource_role mr where h_r.`role_id`=mr.`rid` and h_r.`uid`=#{userId})
+          and m2.`enabled`=true
+          order by m1.`id`,m2.`id`
+  </select>-->
   <select id="resourceTree" resultMap="BaseResultMap">
             select
             m1.`id`,
