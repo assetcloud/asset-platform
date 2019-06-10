@@ -11,13 +11,13 @@ public interface ApplicationMapper {
 
     List<Application> getAppList();
 
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(String id);
 
     int insert(Application record);
 
     int insertSelective(Application record);
 
-    Application selectByPrimaryKey(Long id);
+    Application selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(Application record);
 

@@ -2,6 +2,9 @@ package com.asset.service;
 
 import com.asset.bean.User;
 import com.asset.mapper.UserMapper;
+import com.asset.mapper.UuidIdGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -10,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 /**
  * Created by sang on 2017/12/28.
  */
@@ -17,8 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserService implements UserDetailsService {
 
+    final static Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    UuidIdGenerator idGenerator;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -44,10 +53,22 @@ public class UserService implements UserDetailsService {
         if (userMapper.loadUserByUsername(user.getAccountName()) != null) {
             return -1;
         }
+        if(user.getId() == null){
+            user.setId(idGenerator.generateId());
+            LOGGER.info("user: {}", user.toString());
+        }
         //密码加密
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encode = encoder.encode(user.getPassword());user.setPwd(encode);
         return userMapper.insert(user);
+    }
+
+    public User getUserById(String id){
+        return userMapper.selectByPrimaryKey(id);
+    }
+
+    public int  updateUserById(User record){
+        return userMapper.updateByPrimaryKey(record);
     }
 
     /*public List<Hr> getHrsByKeywords(String keywords) {

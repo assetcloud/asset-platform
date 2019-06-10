@@ -12,8 +12,8 @@ import java.util.List;
 
 public class User implements UserDetails {
 
-    private Integer id;
-    private Integer staffId;
+    private String id;
+    private String staffId;
     private String realName;
     private String accountName;
     private String nickname;
@@ -47,19 +47,19 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public Integer getStaffId() {
+    public String getStaffId() {
         return staffId;
     }
 
-    public void setStaffId(Integer staffId) {
+    public void setStaffId(String staffId) {
         this.staffId = staffId;
     }
 
