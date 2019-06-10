@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asset.mapper.UserMapper">
   <resultMap id="BaseResultMap" type="com.asset.bean.User">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="staff_id" jdbcType="INTEGER" property="staffId" />
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="staff_id" jdbcType="VARCHAR" property="staffId" />
     <result column="real_name" jdbcType="VARCHAR" property="realName" />
     <result column="account_name" jdbcType="VARCHAR" property="accountName" />
     <result column="nickname" jdbcType="VARCHAR" property="nickname" />
@@ -65,13 +65,13 @@
   <sql id="Blob_Column_List">
     user_remark
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
     select
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from as_user
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
   </select>
   <select id="getAllUser" resultMap="BaseResultMap">
     select * from as_user

@@ -1,7 +1,10 @@
 package com.asset.service;
 
+import com.asset.bean.AppTemplate;
 import com.asset.bean.Application;
+import com.asset.mapper.AppTemplateMapper;
 import com.asset.mapper.ApplicationMapper;
+import com.asset.mapper.UuidIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +26,16 @@ public class ApplicationService {
     @Autowired
     ApplicationMapper applicationMapper;
 
+    @Autowired
+    AppTemplateMapper appTemplateMapper;
+
+    @Autowired
+    UuidIdGenerator idGenerator;
+
     public int addApplication(Application record){
+        if (record.getId() == null){
+            record.setId(idGenerator.generateId());
+        }
         return applicationMapper.insert(record);
     }
 
@@ -35,12 +47,15 @@ public class ApplicationService {
         return applicationMapper.updateByPrimaryKey(record);
     }
 
-    public Application getById(Long id){
+    public Application getById(String id){
         Application application = applicationMapper.selectByPrimaryKey(id);
         return application;
     }
 
-    public int deleteApp(Long id){
-        return applicationMapper.deleteByPrimaryKey(id);
+    public int appPublish(AppTemplate record){
+        if(record.getId() == null){
+            record.setId(idGenerator.generateId());
+        }
+        return appTemplateMapper.insert(record);
     }
 }

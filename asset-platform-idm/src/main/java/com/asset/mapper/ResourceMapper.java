@@ -10,7 +10,7 @@ public interface ResourceMapper {
 
     List<Resource> getAllResource();
 
-    List<Resource> getResourcesByUserId(int userId);
+    List<Resource> getResourcesByUserId(String userId);
 
     List<Resource> resourceTree();
 

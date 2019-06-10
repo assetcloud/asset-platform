@@ -1,12 +1,10 @@
 package com.asset.controller.application;
 
-import com.asset.bean.Application;
-import com.asset.bean.Resource;
-import com.asset.bean.RespBean;
-import com.asset.bean.User;
+import com.asset.bean.*;
 import com.asset.common.UserUtils;
 import com.asset.service.ApplicationService;
 import com.asset.service.ResourceService;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +24,20 @@ import java.util.List;
 public class ApplicationController {
 
     final private static Logger LOGGER = LoggerFactory.getLogger(ApplicationController.class);
+
     @Autowired
     private ApplicationService applicationService;
 
     @RequestMapping(value = "/addApp", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "添加应用", notes = "应用添加",tags = "应用", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applicationName", value = "应用名称", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "iconCls", value = "应用图标", required = true, dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "新建成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
     public RespBean addApp(@RequestBody Application application){
         LOGGER.info(application.toString());
         application.setCreatedTime(new Date());
@@ -45,7 +53,12 @@ public class ApplicationController {
         }
     }
 
-    @RequestMapping(value = "/updateApp", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/updateApp", method = RequestMethod.PUT, produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "修改应用", notes = "应用修改",tags = "应用", httpMethod = "PUT")
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "修改成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
     public RespBean updateApp(@RequestBody Application application){
         LOGGER.info(application.toString());
         Application oldApp = applicationService.getById(application.getId());
@@ -63,7 +76,12 @@ public class ApplicationController {
         }
     }
 
-    @RequestMapping(value = "/deleteApp", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/deleteApp", method = RequestMethod.DELETE, produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "删除应用", notes = "应用删除",tags = "应用", httpMethod = "DELETE")
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "删除成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
     public RespBean deleteApp(@RequestBody Application application){
         Application oldApp = applicationService.getById(application.getId());
         if(null == oldApp){
@@ -79,18 +97,35 @@ public class ApplicationController {
     }
 
     @RequestMapping(value = "/appList", method = RequestMethod.GET)
+    @ApiOperation(value = "获取应用列表", tags = "应用", httpMethod = "GET")
+    @ApiResponse(code = 200, message = "", response = java.util.List.class)
     public List<Application> getAppList(){
         return applicationService.getAppList();
     }
 
+
+
     @RequestMapping(value = "/publish", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    public RespBean appPublish(@RequestBody Application application){
-        Application app = applicationService.getById(application.getId());
+    @ApiOperation(value = "发布应用", tags = "应用", httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "发布成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
+    public RespBean appPublish(@RequestBody AppTemplate appTemplate){
+        LOGGER.info(appTemplate.toString());
+        Application app = applicationService.getById(appTemplate.getApplicationId());
         app.setIsPublished(1);
         int flag = applicationService.updateApplication(app);
         if(flag < 0) {
             return RespBean.error("发布失败");
         } else {
+            appTemplate.setPublishTime(new Date());
+            appTemplate.setStatus(true);
+            appTemplate.setPublishAccount(UserUtils.getCurrentUser().getRealName());
+            flag = applicationService.appPublish(appTemplate);
+            if(flag < 0) {
+                return RespBean.error("发布失败");
+            }
             return RespBean.ok("发布成功");
         }
     }

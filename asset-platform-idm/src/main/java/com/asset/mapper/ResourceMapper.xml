@@ -56,7 +56,7 @@
         WHERE m.`enabled`=true
         order by m.`id` desc
   </select>
-  <select id="getResourcesByUserId" parameterType="Integer" resultMap="BaseResultMap">
+  <select id="getResourcesByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT
             m1.id,
             m1.path,

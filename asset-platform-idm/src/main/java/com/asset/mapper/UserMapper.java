@@ -12,11 +12,11 @@ public interface UserMapper {
 
     User loadUserByUsername(String username);
 
-    List<Role> getRolesByUserId(int id);
+    List<Role> getRolesByUserId(String id);
 
     List<User> getAllUser(int currentId);
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(String id);
 
     int userReg(@Param("accountName") String accountName, @Param("pwd") String pwd);
 
@@ -24,7 +24,7 @@ public interface UserMapper {
 
     int insertSelective(User record);
 
-    User selectByPrimaryKey(Integer id);
+    User selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(User record);
 
