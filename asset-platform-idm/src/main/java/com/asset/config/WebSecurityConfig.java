@@ -1,6 +1,7 @@
 package com.asset.config;
 
 import com.asset.bean.RespBean;
+import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
 import com.asset.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,8 +63,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web){
-        web.ignoring()
-                .antMatchers("/index.html", "/static/**", "/login_p", "/favicon.ico","/userReg","/role/**");
+        /*web.ignoring()
+                .antMatchers("/v2/api-docs",//swagger api json
+                        "/swagger-resources/configuration/ui",//用来获取支持的动作
+                        "/swagger-resources",//用来获取api-docs的URI
+                        "/swagger-resources/configuration/security",//安全选项
+                        "/swagger-ui.html", "/login_p", "/userReg");*/
+        web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", "/configuration/security", "/swagger-ui.html", "/webjars/**", "/login_p", "/userReg");
+//                .antMatchers("/index.html", "/static/**", "/login_p", "/favicon.ico","/userReg","/role/**");
+
     }
 
     /*@Override

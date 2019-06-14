@@ -2,8 +2,10 @@ package com.asset.service;
 
 import com.asset.bean.AppTemplate;
 import com.asset.bean.Application;
+import com.asset.common.UserUtils;
 import com.asset.mapper.AppTemplateMapper;
 import com.asset.mapper.ApplicationMapper;
+import com.asset.mapper.MenuMapper;
 import com.asset.mapper.UuidIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -36,6 +39,9 @@ public class ApplicationService {
         if (record.getId() == null){
             record.setId(idGenerator.generateId());
         }
+        record.setCreatedTime(new Date());
+        record.setStatus(1);
+        record.setIsPublished(0);
         return applicationMapper.insert(record);
     }
 
@@ -56,6 +62,9 @@ public class ApplicationService {
         if(record.getId() == null){
             record.setId(idGenerator.generateId());
         }
+        record.setPublishTime(new Date());
+        record.setStatus(true);
+        record.setPublishAccount(UserUtils.getCurrentUser().getRealName());
         return appTemplateMapper.insert(record);
     }
 }

@@ -26,6 +26,11 @@ public class ConfigController {
         return resourceService.getResourcesByUserId();
     }
 
+    @RequestMapping("/func_menu")
+    public List<Resource> sysmenu1() {
+        return resourceService.getResourcesByUserId();
+    }
+
     @RequestMapping("/user")
     public User currentUser() {
         return UserUtils.getCurrentUser();

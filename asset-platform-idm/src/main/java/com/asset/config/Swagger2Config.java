@@ -19,12 +19,11 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class Swagger2Config {
     @Bean
     public Docket createRestApi(){
-        System.out.println("配置Swagger");
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
                 //指定生成API文档的包名
-                .apis(RequestHandlerSelectors.basePackage("com.asset.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.asset"))
                 //指定生成API的路径。按路径生成API可支持四种模式
                 .paths(PathSelectors.any())
                 .build();
@@ -35,7 +34,7 @@ public class Swagger2Config {
                 .title("asset-platform-idm API")
                 .description("API Management for asset-platform-idm")
                 .version("1.0")
-                .contact(new Contact("hjhu", "", ""))
+                .contact(new Contact("hjhu", "", "907611206@qq.com"))
                 .build();
     }
 }
