@@ -84,5 +84,17 @@ public class Application {
         this.removeTime = removeTime;
     }
 
-
+    @Override
+    public String toString() {
+        return "Application{" +
+                "id='" + id + '\'' +
+                ", applicationName='" + applicationName + '\'' +
+                ", iconCls='" + iconCls + '\'' +
+                ", status=" + status +
+                ", isPublished=" + isPublished +
+                ", createdTime=" + createdTime +
+                ", disableTime=" + disableTime +
+                ", removeTime=" + removeTime +
+                '}';
+    }
 }

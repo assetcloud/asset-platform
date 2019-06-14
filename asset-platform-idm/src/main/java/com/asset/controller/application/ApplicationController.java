@@ -3,7 +3,7 @@ package com.asset.controller.application;
 import com.asset.bean.*;
 import com.asset.common.UserUtils;
 import com.asset.service.ApplicationService;
-import com.asset.service.ResourceService;
+import com.asset.service.MenuService;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,10 @@ public class ApplicationController {
     @Autowired
     private ApplicationService applicationService;
 
-    @RequestMapping(value = "/addApp", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @Autowired
+    private MenuService menuService;
+
+    /*@RequestMapping(value = "/addApp", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ApiOperation(value = "添加应用", notes = "应用添加",tags = "应用", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationName", value = "应用名称", required = true, dataType = "String"),
@@ -40,17 +43,36 @@ public class ApplicationController {
     })
     public RespBean addApp(@RequestBody Application application){
         LOGGER.info(application.toString());
-        application.setCreatedTime(new Date());
-        application.setStatus(1);
-        application.setIsPublished(0);
         int flag = applicationService.addApplication(application);
         if (flag < 0){
             LOGGER.info("应用新建失败");
             return RespBean.error("新建失败");
-        } else {
-            LOGGER.info("应用新建成功");
-            return RespBean.ok("新建成功");
         }
+        Menu menu = new Menu();
+        flag = menuService.addAppMenu(menu, application);
+        if (flag < 0){
+            LOGGER.info("菜单添加失败");
+            return RespBean.error("新建失败","");
+        }
+        return RespBean.ok("新建成功","");
+    }*/
+    @RequestMapping(value = "/addApp", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    @ApiOperation(value = "添加应用", notes = "应用添加",tags = "应用", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "applicationName", value = "应用名称", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "iconCls", value = "应用图标", required = true, dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "新建成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
+    public RespBean addApp(@RequestBody Application application){
+        int flag = applicationService.addApplication(application);
+        if (flag < 0){
+            LOGGER.info("应用新建失败");
+            return RespBean.error("新建失败");
+        }
+        return RespBean.ok("新建成功","");
     }
 
     @RequestMapping(value = "/updateApp", method = RequestMethod.PUT, produces = "application/json;charset=UTF-8")
@@ -78,6 +100,9 @@ public class ApplicationController {
 
     @RequestMapping(value = "/deleteApp", method = RequestMethod.DELETE, produces = "application/json;charset=UTF-8")
     @ApiOperation(value = "删除应用", notes = "应用删除",tags = "应用", httpMethod = "DELETE")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "应用id", required = true, dataType = "String"),
+    })
     @ApiResponses({
             @ApiResponse(code = 200,message = "删除成功",response = RespBean.class),
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
