@@ -35,7 +35,7 @@ public class FormDeployRelationInfo {
     public String toString() {
         return "FormDeployRelationInfo{" +
                 "proc_deploy_id='" + proc_deploy_id + '\'' +
-                ", form_model_id='" + form_model_id + '\'' +
+                ", formModelId='" + form_model_id + '\'' +
                 '}';
     }
 }

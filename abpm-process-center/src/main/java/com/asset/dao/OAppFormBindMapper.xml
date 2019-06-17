@@ -11,19 +11,19 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from asset_oapp_form
+    from as_app_form
     where oapp_id = #{oappId,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from asset_oapp_form
+    delete from as_app_form
     where oapp_id = #{oappId,jdbcType=VARCHAR}
   </delete>
   <insert id="insert" parameterType="com.asset.entity.OAppFormBind">
-    insert into asset_oapp_form (oapp_id, form_model_id)
+    insert into as_app_form (oapp_id, form_model_id)
     values (#{oappId,jdbcType=VARCHAR}, #{formModelId,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.asset.entity.OAppFormBind">
-    insert into asset_oapp_form
+    insert into as_app_form
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="oappId != null">
         oapp_id,
@@ -42,7 +42,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.asset.entity.OAppFormBind">
-    update asset_oapp_form
+    update as_app_form
     <set>
       <if test="formModelId != null">
         form_model_id = #{formModelId,jdbcType=VARCHAR},
@@ -51,14 +51,14 @@
     where oapp_id = #{oappId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.asset.entity.OAppFormBind">
-    update asset_oapp_form
+    update as_app_form
     set form_model_id = #{formModelId,jdbcType=VARCHAR}
     where oapp_id = #{oappId,jdbcType=VARCHAR}
   </update>
   <select id="getFormModelIDs" parameterType="java.lang.String" resultType="java.lang.String">
     select
       form_model_id
-    from asset_oapp_form
+    from as_app_form
     where oapp_id = #{oappID,jdbcType=VARCHAR}
   </select>
 </mapper>

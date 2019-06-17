@@ -107,7 +107,7 @@ public class FormAuthorityInfo {
     public String toString() {
         return "FormAuthorityInfo{" +
                 "id='" + id + '\'' +
-                ", form_model_id='" + form_model_id + '\'' +
+                ", formModelId='" + form_model_id + '\'' +
                 ", model_id='" + model_id + '\'' +
                 ", node_id='" + node_id + '\'' +
                 ", created_time=" + created_time +

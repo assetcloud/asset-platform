@@ -1,18 +1,21 @@
 package com.asset.controller;
 
 
+import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.Application;
+import com.asset.entity.AsFormModel;
 import com.asset.rec.RespBean;
 import com.asset.service.ApplicationService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -126,6 +129,24 @@ public class ApplicationController {
     }
 
 
+
+    /**
+     * 根据传入的OAppID获取该应用下所有表单模型
+     */
+    @RequestMapping(value = "/app/getModels", method = RequestMethod.GET)
+    public String getFormModels(@RequestParam(value = "app_id") String appID) throws JsonProcessingException {
+        ArrayList<AsFormModel> asFormModels = (ArrayList<AsFormModel>) applicationService.getFormModels(appID);
+        int code = 0;
+        if (asFormModels.size() != 0)
+            code = 1;
+
+        HashMap<String, Serializable> map = new HashMap<String, Serializable>();
+        map.put("code", code);
+        map.put("list", asFormModels);
+
+        Object json = JSONObject.toJSON(map);
+        return json.toString();
+    }
 
 //    @RequestMapping(value = "/publish", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
 //    @ApiOperation(value = "发布应用", tags = "应用", httpMethod = "POST")

@@ -69,7 +69,7 @@ public class FormAuthorityRec {
     @Override
     public String toString() {
         return "FormAuthorityRec{" +
-                "form_model_id='" + form_model_id + '\'' +
+                "formModelId='" + form_model_id + '\'' +
                 ", model_id='" + model_id + '\'' +
                 ", node_id='" + node_id + '\'' +
                 ", created_by='" + created_by + '\'' +

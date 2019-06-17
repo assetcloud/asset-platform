@@ -2,7 +2,10 @@ package com.asset.service;
 
 
 import com.asset.dao.ApplicationMapper;
+import com.asset.dao.AsFormModelMapper;
+import com.asset.dao.OAppFormBindMapper;
 import com.asset.entity.Application;
+import com.asset.entity.AsFormModel;
 import com.asset.javabean.UuidIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +28,10 @@ public class ApplicationService {
 
     @Autowired
     ApplicationMapper applicationMapper;
-
+    @Autowired
+    OAppFormBindMapper oAppFormBindMapper;
+    @Autowired
+    AsFormModelMapper asFormModelMapper;
 
     UuidIdGenerator idGenerator = new UuidIdGenerator();
 
@@ -50,6 +56,18 @@ public class ApplicationService {
     public Application getById(String id){
         Application application = applicationMapper.selectByPrimaryKey(id);
         return application;
+    }
+
+
+    /**
+     * 获取一个 OApp应用下 所有表单模型数据
+     * @return
+     */
+    public List<AsFormModel> getFormModels(String appID) {
+        //先从asset_oapp_form表中找到所有该OApp应用下 表单模型ID
+        List<String> formModelIDs = oAppFormBindMapper.getFormModelIDs(appID);
+
+        return asFormModelMapper.getFormModels(formModelIDs);
     }
 
     /*public int appPublish(AppTemplate record){

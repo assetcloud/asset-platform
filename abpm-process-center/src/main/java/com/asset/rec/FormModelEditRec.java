@@ -12,6 +12,6 @@ public class FormModelEditRec {
     String form_model_id = "";
     String form_name = "";
     List<Object> model_json = null;
-    String group_id = "";
+    int group_id ;
     String icon_cls = "";
 }

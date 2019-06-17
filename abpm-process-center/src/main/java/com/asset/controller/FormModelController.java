@@ -1,7 +1,7 @@
 package com.asset.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.asset.entity.FormModelInfo;
+import com.asset.entity.AsFormModel;
 import com.asset.rec.*;
 import com.asset.service.impl.FormModelServiceImpl;
 import com.asset.utils.JsonUtils;
@@ -11,10 +11,12 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -22,7 +24,7 @@ import java.util.HashMap;
  * 表单模型与流程部署绑定
  *
  * @author yby
- * @version 1.1_190603 0908
+ * @version 1.2_190617 1608
  * @time 190522 1056
  */
 @RestController
@@ -39,10 +41,10 @@ public class FormModelController {
     @ApiOperation(value = "表单创建、存储", notes = "", httpMethod = "POST")
     @RequestMapping(value = "/form/model/create", method = RequestMethod.POST)
     public String createFormModel(@RequestBody FormModelCreateRec rec) throws JsonProcessingException {
-        FormModelInfo curFormModel = formModelService.createFormModel(rec);
+        AsFormModel curFormModel = formModelService.createFormModel(rec);
         int code = 0;
 
-        if (curFormModel.getForm_model_id().equals(""))
+        if (curFormModel.getId().equals(""))
             code = 1;
 
         HashMap<String, Serializable> map = new HashMap<String, Serializable>();
@@ -73,7 +75,7 @@ public class FormModelController {
     /**
      * 绑定流程模型和表单模型
      */
-    @RequestMapping(value = "/form/model/bind", method = RequestMethod.PUT)
+    @RequestMapping(value = "/form/model/bind", method = RequestMethod.POST)
     public String bindFormModel(@RequestBody FormModelBindRec rec) throws JsonProcessingException {
         int code = formModelService.bindFormModel(rec);
 
@@ -82,47 +84,7 @@ public class FormModelController {
 
 
 
-    /**
-     * 根据传入的OAppID获取该应用下所有表单模型
-     */
-    @RequestMapping(value = "/form/models/get", method = RequestMethod.GET)
-    public String getFormModels(@RequestParam(value = "oapp_id") String oappID) throws JsonProcessingException {
-        ArrayList<FormModelInfo> formModelInfos = (ArrayList<FormModelInfo>) formModelService.getFormModels(oappID);
-        int code = 0;
-        if (formModelInfos.size() != 0)
-            code = 1;
-
-        HashMap<String, Serializable> map = new HashMap<String, Serializable>();
-        map.put("code", code);
-        map.put("list", formModelInfos);
-
-        Object json = JSONObject.toJSON(map);
-        return json.toString();
-    }
-
-    /**
-     * 在流程设计页面，对表单项权限信息进行存储
-     */
-    @RequestMapping(value = "/form/authority/save", method = RequestMethod.POST)
-    public String saveFormModelAuthority(@RequestBody FormAuthorityRec authorityRec) throws JsonProcessingException {
-        int code = formModelService.saveFormModelAuthority(authorityRec);
-
-        return JsonUtils.getCodeJson(code);
-    }
-
-
-    /**
-     * 后台自动完成：
-     * 表单模型与流程部署绑定，用于在流程实例运行时能找到对应的表单模型，然后生成表单实例
-     */
-    @ApiOperation(value = "用于表单模型与流程部署绑定", notes = "表单模型与流程部署绑定", httpMethod = "POST")
-    @RequestMapping(value = "/form/deploy/bind", method = RequestMethod.POST)
-    public String formDeployBind(@RequestBody FormDeployBindRec formDeployBindRec) throws JsonProcessingException {
-        int code = formModelService.formBindDeploy(formDeployBindRec);
-
-        return JsonUtils.getCodeJson(code);
-    }
-
+    //    -------------注意这里设置表单分组和上面对表单模型进行修改逻辑上是有重复的，要不要合并再说
     /**
      * 设置表单属于OApp中的哪一个组
      * @param rec
@@ -135,6 +97,46 @@ public class FormModelController {
 
         return JsonUtils.getCodeJson(code);
     }
+
+
+// ----------------------------------------------表单项权限设置，暂时先不搞-----------------------------------
+    //    /**
+//     * 在流程设计页面，对表单项权限信息进行存储
+//     */
+//    @RequestMapping(value = "/form/authority/save", method = RequestMethod.POST)
+//    public String saveFormModelAuthority(@RequestBody FormAuthorityRec authorityRec) throws JsonProcessingException {
+//        int code = formModelService.saveFormModelAuthority(authorityRec);
+//
+//        return JsonUtils.getCodeJson(code);
+//    }
+//    /**
+//     * 保存表单模型权限信息
+//     * @param formModelAuthority
+//     * @return
+//     */
+//    @Override
+//    public int saveFormModelAuthority(FormAuthorityRec formModelAuthority) {
+//        FormAuthorityInfo authorityInfo = new FormAuthorityInfo(formModelAuthority);
+//        System.out.println(formModelAuthority.toString());
+//        return asFormModelMapper.saveFormModelAuthority(authorityInfo);
+//    }
+    //    /**
+//     * 在流程模型表中绑定对应的表单模型
+//     * @param bindInfo
+//     * @return
+//     */
+//    int bindFormModel(AsFormModel bindInfo);
+//  <!--&lt;!&ndash; 在流程模型表中绑定对应的表单模型-->
+//       <!--@param FormBindInfo bindInfo &ndash;&gt;-->
+//  <!--<update id="bindFormModel" parameterType="com.asset.entity.AsFormModel">-->
+//        <!--UPDATE-->
+//        <!--act_de_model-->
+//        <!--SET-->
+//        <!--form_id = #{formModelID,jdbcType = VARCHAR}-->
+//	    <!--WHERE-->
+//	    <!--id = #{procModelID,jdbcType = VARCHAR};-->
+
+//    <!--</update>-->
 
 
 }

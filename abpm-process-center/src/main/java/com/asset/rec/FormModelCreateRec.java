@@ -11,7 +11,6 @@ import java.util.List;
  */
 @Data
 public class FormModelCreateRec {
-    String form_model_id;
     String form_name;
     List<Object> model_json = null;
     String created_by;

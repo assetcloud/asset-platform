@@ -25,7 +25,7 @@ import java.util.List;
 @Service
 public class FormInstServiceImpl implements FormInstService {
     @Autowired
-    FormModelMapper formModelMapper;
+    AsFormModelMapper asFormModelMapper;
     @Autowired
     ProcInstMapper procInstMapper;
     @Autowired
@@ -46,14 +46,14 @@ public class FormInstServiceImpl implements FormInstService {
     @Override
     public int commitFormInst(FormInstCommitRec rec) {
         //先获取与表单模型唯一绑定的流程模型ID
-        String procModelID = formModelMapper.getProcModelID(rec.getForm_model_id());
+        String procModelID = asFormModelMapper.getProcModelID(rec.getForm_model_id());
         String defID = null;
         String deployID = null;
         //直接由流程模型后台创建流程实例
         ProcessInstance procInst = createProcInstance(procModelID,defID,deployID);
 
         //创建表单实例，表单实例信息（包含了流程实例的一些信息）存入as_form_inst表中
-        String modelJson = formModelMapper.getModelJson(rec.getForm_model_id());
+        String modelJson = asFormModelMapper.getModelJson(rec.getForm_model_id());
         String executionID = getExecutionId(procInst.getProcessInstanceId());
         String taskID = getTaskID(procInst.getProcessInstanceId());
 
