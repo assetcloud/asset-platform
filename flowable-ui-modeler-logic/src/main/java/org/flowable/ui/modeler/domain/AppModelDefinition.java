@@ -15,6 +15,7 @@ package org.flowable.ui.modeler.domain;
 import java.util.Date;
 
 /**
+ * 这个应该是真正的装流程模型的对象
  * @author Tijs Rademakers
  */
 public class AppModelDefinition {

@@ -14,6 +14,9 @@ package org.flowable.ui.modeler.model;
 
 import org.flowable.ui.common.model.AbstractRepresentation;
 
+/**
+ * 这个类只是用来展示的
+ */
 public class AppDefinitionPublishRepresentation extends AbstractRepresentation {
 
     protected String comment;

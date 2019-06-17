@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.FormModelMapper">
+
+    <resultMap id="formModelInfo" type="com.asset.entity.FormModelInfo">
+        <id column="id" jdbcType="VARCHAR" property="form_model_id"/>
+        <id column="form_name" jdbcType="VARCHAR" property="form_name"/>
+        <id column="created_time" jdbcType="TIMESTAMP" property="created_time"/>
+        <id column="created_by" jdbcType="VARCHAR" property="created_by"/>
+        <id column="last_updated_time" jdbcType="TIMESTAMP" property="last_updated_time"/>
+        <id column="last_updated_by" jdbcType="VARCHAR" property="last_updated_by"/>
+        <id column="version" jdbcType="INTEGER" property="version"/>
+        <id column="model_json" jdbcType="VARCHAR" property="model_json"/>
+        <id column="group_id" jdbcType="VARCHAR" property="group_id"/>
+        <id column="icon_cls" jdbcType="VARCHAR" property="icon_cls"/>
+        <id column="status" jdbcType="INTEGER" property="status"/>
+        <id column="proc_model_id" jdbcType="VARCHAR" property="proc_model_id"/>
+    </resultMap>
+
+    <resultMap id="jsonFormInst" type="com.asset.entity.FormModelInfo">
+        <id column="FORM_JSON" jdbcType="LONGVARCHAR" property="formjson"/>
+        <id column="FORM_NAME" jdbcType="VARCHAR" property="formname"/>
+        <id column="MODEL_ID" jdbcType="VARCHAR" property="modelid"/>
+    </resultMap>
+
+
+    <!-- 保存表单模型进asset_form_model表 -->
+    <insert id="createFormModel" parameterType="com.asset.entity.FormModelInfo">
+        INSERT INTO asset_form_model
+        (id,
+        form_name,
+        created_time,
+        created_by,
+        version,
+        model_json,
+        group_id,
+        icon_cls,
+        status)
+        VALUES
+	    (
+	    #{form_model_id,jdbcType = VARCHAR},
+	    #{form_name,jdbcType = VARCHAR},
+	    now(),
+	    #{created_by,jdbcType = VARCHAR},
+	    1,
+	    #{model_json,jdbcType = VARCHAR},
+	    #{group_id,jdbcType = VARCHAR},
+	    #{icon_cls,jdbcType = VARCHAR},
+	    #{status,jdbcType = INTEGER}
+	    );
+    </insert>
+
+    <select id="getProcModelID" parameterType="java.lang.String">
+        SELECT proc_model_id
+        FROM as_form_model
+        WHERE id = #{form_model_id,jdbcType = VARCHAR}
+    </select>
+
+    <!--修改表单模型-->
+    <update id="editFormModel" parameterType="com.asset.entity.FormModelInfo">
+        UPDATE asset_form_model
+        SET
+        form_name = #{form_name,jdbcType=VARCHAR},
+        model_json = #{model_json,jdbcType=VARCHAR},
+        group_id = #{group_id,jdbcType=VARCHAR},
+        icon_cls = #{icon_cls,jdbcType=VARCHAR}
+        WHERE
+        id = #{form_model_id,jdbcType=VARCHAR};
+    </update>
+
+    <!-- 在流程模型表中绑定对应的表单模型 -->
+    <update id="bindFormModel" parameterType="com.asset.entity.FormBindInfo">
+        UPDATE
+        act_de_model
+        SET
+        form_id = #{formModelID,jdbcType = VARCHAR}
+	    WHERE
+	    id = #{procModelID,jdbcType = VARCHAR};
+    </update>
+
+    <!-- 在表单模型表中绑定对应的流程模型 -->
+    <update id="bindFormModel2" parameterType="com.asset.entity.FormBindInfo">
+        UPDATE
+        asset_form_model
+        SET
+        proc_model_id = #{procModelID,jdbcType = VARCHAR}
+	    WHERE
+	    id = #{formModelID,jdbcType = VARCHAR};
+    </update>
+
+
+    <!--根据传入的OAppID获取该应用下所有表单模型,
+    这里传入的是从其他表中取出来的-->
+    <select id="getFormModels" parameterType="java.util.List" resultMap="formModelInfo">
+        SELECT
+        id,
+        form_name,
+        created_time,
+        created_by,
+        version,
+        model_json,
+        group_id,
+        icon_cls,
+        status,
+        proc_model_id
+        FROM
+        asset_form_model
+        WHERE
+        id in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+
+    <!--获取特定表单模型-->
+    <select id="getFormModel" parameterType="java.lang.String" resultMap="formModelInfo">
+        SELECT
+	      id,
+          form_name,
+          created_time,
+          created_by,
+          last_updated_time,
+          last_updated_by,
+          version,
+          model_json
+        FROM
+	      asset_form_model
+        WHERE
+	      id = #{formModelID,jdbcType =VARCHAR };
+    </select>
+
+
+
+
+    <!-- 保存表单模型的权限数据信息 -->
+    <insert id="saveFormModelAuthority" parameterType="com.asset.entity.FormAuthorityInfo">
+        INSERT INTO asset_form_authority
+        (id,
+        form_model_id,
+        model_id,
+        node_id,
+        created_time,
+        created_by,
+        authority_json)
+        VALUES
+	    (
+	    #{id,jdbcType = VARCHAR},
+	    #{form_model_id,jdbcType = VARCHAR},
+	    #{model_id,jdbcType = VARCHAR},
+	    #{node_id,jdbcType = VARCHAR},
+	    now(),
+	    #{created_by,jdbcType = VARCHAR},
+	    #{authority_json,jdbcType = VARCHAR}
+	    );
+    </insert>
+
+
+    <!--根据流程模型ID得到绑定的表单模型ID-->
+    <select id="getFormModelID" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+          form_id
+        FROM
+          act_de_model
+        WHERE
+          id = #{procModelID,jdbcType = VARCHAR};
+    </select>
+
+    <!--往asset_form_relation表中存流程部署ID以及对应的表单模型ID-->
+    <insert id="saveFormDeployRelation" parameterType="com.asset.entity.FormDeployRelationInfo">
+        INSERT INTO asset_form_relation
+        (id,
+        proc_deploy_id,
+        form_model_id)
+        VALUES
+        (
+        #{id,jdbcType = VARCHAR},
+        #{proc_deploy_id,jdbcType = VARCHAR},
+        #{form_model_id,jdbcType = VARCHAR}
+        );
+    </insert>
+
+
+    <!--根据流程模型ID得到绑定的表单模型ID-->
+    <select id="getFormModelIdByDeploy" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+          form_model_id
+        FROM
+          asset_form_relation
+        WHERE
+          id = #{procDeployID,jdbcType = VARCHAR};
+    </select>
+
+
+    <!--根据流程模型ID得到绑定的表单模型ID-->
+    <select id="getModelJson" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+           model_json
+        FROM
+          asset_form_model
+        WHERE
+          id = #{procDeployID,jdbcType = VARCHAR};
+    </select>
+
+    <update id="setFormGroup" parameterType="com.asset.entity.FormModelInfo">
+        UPDATE
+          assert_form_model
+        SET
+          group_id = #{group_id,jdbcType = VARCHAR}
+        WHERE
+          id = #{form_model_id,jdbcType = VARCHAR}
+    </update>
+
+</mapper>

@@ -9,10 +9,9 @@
     	<version>6.4.0</version>
 	</parent>
 	<packaging>jar</packaging>
-	flowable-ui-modeler
 
 	<dependencies>
-	
+
         <!-- Flowable -->
         <dependency>
            <groupId>org.flowable</groupId>
@@ -29,7 +28,7 @@
         <dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-bpmn-layout</artifactId>
-        </dependency>        
+        </dependency>
 		<dependency>
             <groupId>org.flowable</groupId>
             <artifactId>flowable-process-validation</artifactId>
@@ -86,7 +85,7 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 		</dependency>
-        
+
 		<!-- JSON -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
@@ -201,7 +200,7 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-web</artifactId>
 		</dependency>
-    
+
         <!-- Servlet -->
         <dependency>
             <groupId>javax.servlet</groupId>

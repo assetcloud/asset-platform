@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.OAppFormBindMapper">
+  <resultMap id="BaseResultMap" type="com.asset.entity.OAppFormBind">
+    <id column="oapp_id" jdbcType="VARCHAR" property="oappId" />
+    <result column="form_model_id" jdbcType="VARCHAR" property="formModelId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    oapp_id, form_model_id
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from asset_oapp_form
+    where oapp_id = #{oappId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from asset_oapp_form
+    where oapp_id = #{oappId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.asset.entity.OAppFormBind">
+    insert into asset_oapp_form (oapp_id, form_model_id)
+    values (#{oappId,jdbcType=VARCHAR}, #{formModelId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.entity.OAppFormBind">
+    insert into asset_oapp_form
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="oappId != null">
+        oapp_id,
+      </if>
+      <if test="formModelId != null">
+        form_model_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="oappId != null">
+        #{oappId,jdbcType=VARCHAR},
+      </if>
+      <if test="formModelId != null">
+        #{formModelId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.entity.OAppFormBind">
+    update asset_oapp_form
+    <set>
+      <if test="formModelId != null">
+        form_model_id = #{formModelId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where oapp_id = #{oappId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.entity.OAppFormBind">
+    update asset_oapp_form
+    set form_model_id = #{formModelId,jdbcType=VARCHAR}
+    where oapp_id = #{oappId,jdbcType=VARCHAR}
+  </update>
+  <select id="getFormModelIDs" parameterType="java.lang.String" resultType="java.lang.String">
+    select
+      form_model_id
+    from asset_oapp_form
+    where oapp_id = #{oappID,jdbcType=VARCHAR}
+  </select>
+</mapper>

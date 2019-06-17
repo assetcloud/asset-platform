@@ -1,16 +1,11 @@
 package com.asset.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.HashMap;
 
 /**
+ * 用于解决登录flowable系统的权限问题
  * @author yby
  * @time 190527 1423
  * @version 1.0_190527 1423

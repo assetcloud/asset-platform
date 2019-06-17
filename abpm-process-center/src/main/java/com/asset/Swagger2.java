@@ -27,7 +27,7 @@ public class Swagger2 {
                 .apiInfo(apiInfo())
                 .select()
                 //为当前包路径
-                .apis(RequestHandlerSelectors.basePackage("org.flowable.rest"))
+                .apis(RequestHandlerSelectors.basePackage("com.asset"))
                 .paths(PathSelectors.any())
                 .build();
     }
@@ -38,7 +38,7 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 //页面标题
-                .title("Spring Boot 测试使用 Swagger2 构建工作流 RESTful API")
+                .title("Asset-Platform API 接口文档")
                 //创建人
                 .contact(new Contact("lichao", "", ""))
                 //版本号
