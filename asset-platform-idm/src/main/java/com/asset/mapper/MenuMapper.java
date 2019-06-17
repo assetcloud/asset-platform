@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
 
 @Component
 public interface MenuMapper {
@@ -30,7 +29,10 @@ public interface MenuMapper {
 
     int batchInsertMenuRole(List<Menu> list);
 
-    List<Menu> getMenusByRole(@Param("roleId")Integer roleId);
+    List<Menu> getMenusByRole(@Param("roleId")Long roleId);
 
-//    List<Menu> getMenusByRole2(@Param("roleId")Integer roleId);
+    List<Menu> getAppMenusByRole(@Param("roleId")Long roleId);
+
+    List<Menu> getFormMenusByApp(@Param("roleId")Long roleId, @Param("appId") String appId);
+
 }

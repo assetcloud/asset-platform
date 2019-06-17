@@ -25,6 +25,8 @@ public class Role {
 
     private Date createdTime;
 
+    private Long groupId;
+
     public Integer getId() {
         return id;
     }
@@ -111,5 +113,13 @@ public class Role {
 
     public void setCreatedTime(Date createdTime) {
         this.createdTime = createdTime;
+    }
+
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 }
