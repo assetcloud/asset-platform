@@ -1,6 +1,8 @@
 package com.asset.mapper;
 
 import com.asset.bean.Role;
+import com.asset.bean.RoleGroup;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -9,16 +11,16 @@ import java.util.List;
 public interface RoleMapper {
 
     List<Role> roles();
-
     int deleteByPrimaryKey(Integer id);
-
     int insert(Role record);
-
     int insertSelective(Role record);
-
     Role selectByPrimaryKey(Integer id);
-
     int updateByPrimaryKeySelective(Role record);
-
     int updateByPrimaryKey(Role record);
+    int addRoleGroup(RoleGroup record);
+    List<RoleGroup> getGroupByName(@Param("groupName") String groupName);
+    int deleteGroup(Long id);
+    int modifyGroup(Long id, @Param("groupName") String groupName);
+    int addRoleToGroup(@Param("rid") Long rid, @Param("groupId") Long groupId);
+    List<RoleGroup> groupRoles();
 }

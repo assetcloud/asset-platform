@@ -134,6 +134,22 @@ public class MenuService {
     }
 
     /**
+     * 为当前角色查询菜单
+     * @return
+     */
+    public List<Menu> getMenusByRoleId(Long rid){
+        return menuMapper.getMenusByRole(rid);
+    }
+
+    public List<Menu> getAppMenusByRole(){
+        return menuMapper.getAppMenusByRole(UserUtils.getCurrentUser().getRoles().get(0).getId());
+    }
+
+    public List<Menu> getFormMenusByApp(String appId){
+        return menuMapper.getFormMenusByApp(UserUtils.getCurrentUser().getRoles().get(0).getId(), appId);
+    }
+
+    /**
      * 为系统管理员增加菜单
      * @param menu
      * @return

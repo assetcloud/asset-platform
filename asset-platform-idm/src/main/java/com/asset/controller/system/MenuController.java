@@ -1,18 +1,12 @@
 package com.asset.controller.system;
 
-import com.asset.bean.Application;
-import com.asset.bean.FormModelInfo;
-import com.asset.bean.Menu;
-import com.asset.bean.RespBean;
+import com.asset.bean.*;
 import com.asset.service.MenuService;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -70,9 +64,33 @@ public class MenuController {
         return RespBean.ok("添加成功");
     }
 
-    @ApiOperation(value = "获取菜单", notes = "系统自动通过角色获取菜单",tags = "菜单", httpMethod = "GET")
+    @ApiOperation(value = "获取菜单", notes = "通过当前用户角色获取菜单",tags = "菜单", httpMethod = "GET")
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
     public List<Menu> getMenusByRole(){
         return menuService.getMenusByRole();
+    }
+
+    @ApiOperation(value = "获取菜单", notes = "通过角色id获取菜单",tags = "菜单", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer")
+    })
+    @RequestMapping(value = "/menus/{id}", method = RequestMethod.GET)
+    public List<Menu> getMenusByRoleId(@PathVariable Long id){
+        return menuService.getMenusByRoleId(id);
+    }
+
+    @ApiOperation(value = "获取应用菜单", notes = "通过当前用户角色获取应用资源，主要用于首页内容展现",tags = "菜单", httpMethod = "GET")
+    @RequestMapping(value = "/app/menus", method = RequestMethod.GET)
+    public List<Menu> getAppMenusByRole(){
+        return menuService.getAppMenusByRole();
+    }
+
+    @ApiOperation(value = "获取表单菜单", notes = "通过点击应用，展现可访问的表单资源",tags = "菜单", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "appId", value = "应用id", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/form/menus/{appId}", method = RequestMethod.GET)
+    public List<Menu> getFormMenusByApp(@PathVariable String appId){
+        return menuService.getFormMenusByApp(appId);
     }
 }

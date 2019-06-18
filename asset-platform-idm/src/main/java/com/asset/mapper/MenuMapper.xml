@@ -32,6 +32,21 @@
       </collection>
     </collection>
   </resultMap>
+  <resultMap id="AppMenuMap" type="com.asset.bean.Menu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="level" jdbcType="INTEGER" property="level" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="category" jdbcType="INTEGER" property="category" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, parent_id, code, name, icon_cls, path, level, sort, category, remark, is_deleted,
     add_time, remove_time
@@ -109,7 +124,7 @@
       m3.sort ASC
   </select>-->
 
-  <select id="getMenusByRole" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+  <select id="getMenusByRole" resultMap="BaseResultMap" parameterType="java.lang.Long">
   SELECT
     m1.*,
     m2.`id` AS id2,
@@ -137,6 +152,45 @@
     AND m3.`is_deleted` = 0
   </select>
 
+  <select id="getFormMenusByApp" resultMap="BaseResultMap">
+  SELECT
+    m1.*,
+    m2.`id` AS id2,
+    m2.`name` AS name2,
+    m2.path as path2,
+    m2.`code` as code2,
+    m2.icon_cls as iconCls2,
+    m2.`level` as level2,
+    m2.sort as sort2,
+    m3.`id` AS id3,
+    m3.`name` AS name3 ,
+    m3.path as path3,
+    m3.`code` as code3,
+    m3.icon_cls as iconCls3,
+    m3.`level` as level3,
+    m3.sort as sort3
+    FROM
+    as_menu m1,
+    as_menu m2,
+    as_menu m3
+    WHERE
+    m1.id IN (SELECT mr.menu_id FROM as_menu_role mr WHERE mr.role_id = #{roleId})
+    AND m1.`id` = m2.`parent_id`
+    AND m2.`id` = m3.`parent_id`
+    AND m3.`is_deleted` = 0
+    AND m1.path = #{appId}
+  </select>
+
+  <select id="getAppMenusByRole" resultMap="AppMenuMap" parameterType="java.lang.Long">
+    SELECT
+	    m1.*
+    FROM
+        as_menu m1
+    WHERE
+        m1.id IN (SELECT mr.menu_id FROM as_menu_role mr WHERE mr.role_id = #{roleId})
+        AND m1.`is_deleted` = 0
+        AND m1.`code` = 'app'
+  </select>
   <insert id="insertSelective" parameterType="com.asset.bean.Menu">
     insert into as_menu
     <trim prefix="(" suffix=")" suffixOverrides=",">

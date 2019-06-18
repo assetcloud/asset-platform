@@ -1,37 +1,27 @@
 package com.asset.bean;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class Role implements Serializable{
+public class Role {
 
-    private Integer id;
-
+    private Long id;
     private String roleName;
-
     private String roleNameZh;
-
     private String roleDescription;
-
     private Boolean status;
-
     private String applicableUnitLevel;
-
     private String productCode;
-
     private Date enableTime;
-
     private Date disableTime;
-
     private Date updatedTime;
-
     private Date createdTime;
+    private Long groupId;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -115,20 +105,11 @@ public class Role implements Serializable{
         this.createdTime = createdTime;
     }
 
-    @Override
-    public String toString() {
-        return "Role{" +
-                "id=" + id +
-                ", roleName='" + roleName + '\'' +
-                ", roleNameZh='" + roleNameZh + '\'' +
-                ", roleDescription='" + roleDescription + '\'' +
-                ", status=" + status +
-                ", applicableUnitLevel='" + applicableUnitLevel + '\'' +
-                ", productCode='" + productCode + '\'' +
-                ", enableTime=" + enableTime +
-                ", disableTime=" + disableTime +
-                ", updatedTime=" + updatedTime +
-                ", createdTime=" + createdTime +
-                '}';
+    public Long getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(Long groupId) {
+        this.groupId = groupId;
     }
 }
