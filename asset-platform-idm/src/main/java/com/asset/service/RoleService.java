@@ -3,6 +3,8 @@ package com.asset.service;
 import com.asset.bean.Role;
 import com.asset.bean.RoleGroup;
 import com.asset.bean.User;
+import com.asset.bean.UserRole;
+import com.asset.common.SystemConstant;
 import com.asset.mapper.RoleMapper;
 import com.asset.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +64,23 @@ public class RoleService{
         return roleMapper.addRoleToGroup(rid, groupId);
     }
 
-    public int deleteRoleById(int id) {
-        return roleMapper.deleteByPrimaryKey(id);
+    public int addUsers2Role(Long rid, String[] users){
+        List<UserRole> userList = new ArrayList<>();
+        UserRole userRole = new UserRole();
+        for (int i=0; i<users.length; i++){
+            userRole.setUid(users[i]);
+            userRole.setCreatedTime(new Date());
+            userRole.setRoleId(rid);
+            userRole.setStatus(1);
+            System.out.println(userRole.toString());
+            userList.add(userRole);
+        }
+        return roleMapper.addUsersToRole(userList);
+    }
+    public int addUsers2Role(List<UserRole> userList){
+        for (int i=0; i<userList.size(); i++){
+            userList.get(i).setCreatedTime(new Date());
+        }
+        return roleMapper.addUsersToRole(userList);
     }
 }

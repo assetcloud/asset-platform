@@ -29,10 +29,10 @@ public interface MenuMapper {
 
     int batchInsertMenuRole(List<Menu> list);
 
-    List<Menu> getMenusByRole(@Param("roleId")Long roleId);
+    List<Menu> getMenusByUser(@Param("userId")String userId);
 
-    List<Menu> getAppMenusByRole(@Param("roleId")Long roleId);
+    List<Menu> getAppMenusByUser(@Param("userId")String userId);
 
-    List<Menu> getFormMenusByApp(@Param("roleId")Long roleId, @Param("appId") String appId);
+    List<Menu> getFormMenusByApp(@Param("userId")String userId, @Param("appId") String appId);
 
 }

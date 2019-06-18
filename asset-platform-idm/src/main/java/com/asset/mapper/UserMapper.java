@@ -31,4 +31,6 @@ public interface UserMapper {
     int updateByPrimaryKeyWithBLOBs(User record);
 
     int updateByPrimaryKey(User record);
+
+    List<User> getUsersByRole(@Param("roleId") Long roleId);
 }

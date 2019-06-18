@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -57,9 +58,6 @@ public class UserNormalController {
     })
     public RespBean userReg(@RequestBody User user){
         LOGGER.info("用户注册：{}", user.toString());
-        user.setAdmin(0);
-        user.setStatus(true);
-        user.setCreatedTime(new Date());
         int flag = userService.insertUser(user);
         if(flag == -1){
             return RespBean.error("用户已存在");
@@ -106,5 +104,14 @@ public class UserNormalController {
             return RespBean.error("系统错误");
         }
         return RespBean.ok("用户审核成功");
+    }
+
+    @ApiOperation(value = "获取用户", notes = "根据角色获取用户", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long")
+    })
+    @RequestMapping(value = "/users/{roleId}", method = RequestMethod.GET)
+    public List<User> userAudit(@PathVariable("roleId") Long roleId){
+        return userService.getUsersByRole(roleId);
     }
 }
