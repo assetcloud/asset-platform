@@ -13,7 +13,7 @@
     <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
     <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
     <result column="certificate_number" jdbcType="VARCHAR" property="certificateNumber" />
-    <result column="pwd" jdbcType="VARCHAR" property="pwd" />
+<!--    <result column="pwd" jdbcType="VARCHAR" property="pwd" />-->
     <result column="authentication_method" jdbcType="INTEGER" property="authenticationMethod" />
     <result column="account_picture" jdbcType="VARCHAR" property="accountPicture" />
     <result column="admin" jdbcType="INTEGER" property="admin" />
@@ -42,7 +42,7 @@
     </collection>
   </resultMap>
   <select id="loadUserByUsername" resultMap="lazyLoadRoles">
-        select * from as_user WHERE account_name = #{accountName};
+        select * from as_user WHERE account_name = #{accountName} and status = 1;
   </select>
   <select id="getRolesByUserId" resultType="com.asset.bean.Role">
         SELECT
@@ -78,6 +78,42 @@
     <if test="currentId!=null">
       WHERE id !=#{currentId}
     </if>
+  </select>
+  <select id="getUsersByRole" resultMap="BaseResultMap" parameterType="java.lang.Long">
+   /* SELECT
+	u.id AS id,
+	u.staff_id AS staffId,
+	u.real_name AS realName,
+	u.account_name AS accountName,
+	u.nickname AS nickname,
+	u.gender AS gender,
+	u.user_birthday AS userBirthday,
+	u.user_email AS userEmail,
+	u.phone_number AS phoneNumber,
+	u.admin AS admin,
+	u.user_address AS userAdress,
+	u.`status` AS STATUS,
+	u.created_time AS createdTime,
+	u.user_photo AS userPhoto*/
+	SELECT
+	u.id AS id,
+	u.staff_id,
+	u.real_name,
+	u.account_name,
+	u.nickname,
+	u.gender,
+	u.user_birthday,
+	u.user_email,
+	u.phone_number,
+	u.admin,
+	u.user_address,
+	u.`status`,
+	u.created_time,
+	u.user_photo
+    FROM
+        as_user u
+    WHERE
+        u.id IN ( SELECT ur.uid FROM as_user_role ur WHERE role_id = #{roleId} AND ur.`status` = 1 )
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from as_user

@@ -129,24 +129,32 @@ public class MenuService {
      * 为当前角色查询菜单
      * @return
      */
-    public List<Menu> getMenusByRole(){
-        return menuMapper.getMenusByRole(UserUtils.getCurrentUser().getRoles().get(0).getId());
+    public List<Menu> getMenusByCurrentUser(){
+        return menuMapper.getMenusByUser(UserUtils.getCurrentUser().getId());
     }
 
     /**
      * 为当前角色查询菜单
      * @return
      */
-    public List<Menu> getMenusByRoleId(Long rid){
-        return menuMapper.getMenusByRole(rid);
+    public List<Menu> getMenusByUserId(String userId){
+        return menuMapper.getMenusByUser(userId);
     }
 
+    /**
+     * 通过用户id获取应用资源
+     * @return List<Menu>
+     */
     public List<Menu> getAppMenusByRole(){
-        return menuMapper.getAppMenusByRole(UserUtils.getCurrentUser().getRoles().get(0).getId());
+        return menuMapper.getAppMenusByUser(UserUtils.getCurrentUser().getId());
     }
 
+    /**
+     * 通过用户id和应用id获取表单资源
+     * @return List<Menu>
+     */
     public List<Menu> getFormMenusByApp(String appId){
-        return menuMapper.getFormMenusByApp(UserUtils.getCurrentUser().getRoles().get(0).getId(), appId);
+        return menuMapper.getFormMenusByApp(UserUtils.getCurrentUser().getId(), appId);
     }
 
     /**

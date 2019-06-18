@@ -62,6 +62,15 @@
     WHERE
         rg.is_deleted = 0
   </select>
+  <!-- 批量插入， -->
+  <insert id="addUsersToRole" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+    insert into
+    as_user_role (uid, role_id, created_time, status)
+    values
+    <foreach collection="list" separator="," item="user">
+      (#{user.uid}, #{user.roleId}, #{user.createdTime}, 1)
+    </foreach>
+  </insert>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

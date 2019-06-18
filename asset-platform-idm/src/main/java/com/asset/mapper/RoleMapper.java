@@ -2,6 +2,8 @@ package com.asset.mapper;
 
 import com.asset.bean.Role;
 import com.asset.bean.RoleGroup;
+import com.asset.bean.User;
+import com.asset.bean.UserRole;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -23,4 +25,5 @@ public interface RoleMapper {
     int modifyGroup(Long id, @Param("groupName") String groupName);
     int addRoleToGroup(@Param("rid") Long rid, @Param("groupId") Long groupId);
     List<RoleGroup> groupRoles();
+    int addUsersToRole(List<UserRole> users);
 }

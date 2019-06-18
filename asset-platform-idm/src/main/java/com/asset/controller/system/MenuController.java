@@ -67,16 +67,16 @@ public class MenuController {
     @ApiOperation(value = "获取菜单", notes = "通过当前用户角色获取菜单",tags = "菜单", httpMethod = "GET")
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
     public List<Menu> getMenusByRole(){
-        return menuService.getMenusByRole();
+        return menuService.getMenusByCurrentUser();
     }
 
-    @ApiOperation(value = "获取菜单", notes = "通过角色id获取菜单",tags = "菜单", httpMethod = "GET")
+    @ApiOperation(value = "获取菜单", notes = "通过用户id获取菜单",tags = "菜单", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer")
+            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "String")
     })
     @RequestMapping(value = "/menus/{id}", method = RequestMethod.GET)
-    public List<Menu> getMenusByRoleId(@PathVariable Long id){
-        return menuService.getMenusByRoleId(id);
+    public List<Menu> getMenusByRoleId(@PathVariable String id){
+        return menuService.getMenusByUserId(id);
     }
 
     @ApiOperation(value = "获取应用菜单", notes = "通过当前用户角色获取应用资源，主要用于首页内容展现",tags = "菜单", httpMethod = "GET")

@@ -13,6 +13,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+
 
 /**
  * Created by sang on 2017/12/28.
@@ -57,6 +60,9 @@ public class UserService implements UserDetailsService {
             user.setId(idGenerator.generateId());
             LOGGER.info("user: {}", user.toString());
         }
+        user.setAdmin(0);
+        user.setStatus(true);
+        user.setCreatedTime(new Date());
         //密码加密
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encode = encoder.encode(user.getPassword());user.setPwd(encode);
@@ -71,31 +77,7 @@ public class UserService implements UserDetailsService {
         return userMapper.updateByPrimaryKey(record);
     }
 
-    /*public List<Hr> getHrsByKeywords(String keywords) {
-        return hrMapper.getHrsByKeywords(keywords);
+    public List<User> getUsersByRole(Long roleId){
+        return userMapper.getUsersByRole(roleId);
     }
-
-    public int updateHr(Hr hr) {
-        return hrMapper.updateHr(hr);
-    }
-
-    public int updateHrRoles(Long hrId, Long[] rids) {
-        int i = hrMapper.deleteRoleByHrId(hrId);
-        return hrMapper.addRolesForHr(hrId, rids);
-    }
-
-    public Hr getHrById(Long hrId) {
-        return hrMapper.getHrById(hrId);
-    }
-
-    public int deleteHr(Long hrId) {
-        return hrMapper.deleteHr(hrId);
-    }
-
-    public List<Hr> getAllHrExceptAdmin() {
-        return hrMapper.getAllHr(HrUtils.getCurrentHr().getId());
-    }
-    public List<Hr> getAllHr() {
-        return hrMapper.getAllHr(null);
-    }*/
 }

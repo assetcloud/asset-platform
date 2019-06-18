@@ -4,6 +4,7 @@ package com.asset.controller.system;
 import com.asset.bean.RespBean;
 import com.asset.bean.Role;
 import com.asset.bean.RoleGroup;
+import com.asset.bean.UserRole;
 import com.asset.service.RoleService;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -143,5 +144,25 @@ public class RoleController {
         return roleService.roles();
     }
 
+    @ApiOperation(value = "添加角色成员",notes = "为特定角色添加成员", tags = "角色", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "rid", value = "角色id", required = true, dataType = "Long"),
+            @ApiImplicitParam(name = "users[]", value = "用户id数组", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/userToRole",method = RequestMethod.POST)
+    /*public RespBean users2Role(@RequestParam(value = "users[]") String[] users, @RequestParam(value = "rid") Long rid){
+        int flag = roleService.addUsers2Role(rid, users);
+        if (flag < 0){
+            return RespBean.error("添加失败");
+        }
+        return RespBean.ok("添加成功");
+    }*/
+    public RespBean users2Role(@RequestBody List<UserRole> userRoleList){
+        int flag = roleService.addUsers2Role(userRoleList);
+        if (flag < 0){
+            return RespBean.error("添加失败");
+        }
+        return RespBean.ok("添加成功");
+    }
 }
 
