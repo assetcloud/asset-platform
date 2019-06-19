@@ -83,4 +83,7 @@ public interface SystemConstant {
             MENU_FORM_PRINT, MENU_FORM_DELETE};
 
     List<Menu> MENU_LIST = new ArrayList<>(Arrays.asList(MENUS));
+
+    Integer NODE_ALREADY_EXISTS = -2;
+    Integer SYSTEM_ERROR = -1;
 }
