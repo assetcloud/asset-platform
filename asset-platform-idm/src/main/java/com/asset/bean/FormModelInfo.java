@@ -2,6 +2,7 @@ package com.asset.bean;
 
 import com.asset.mapper.UuidIdGenerator;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
@@ -12,6 +13,8 @@ import java.sql.Timestamp;
  * @author hjhu
  * @version 1.0
  */
+
+@ApiModel(value = "表单资源类", description = "将表单资源存储至权限时需要")
 public class FormModelInfo implements Serializable {
 
     @ApiModelProperty(value = "表单模型id")
@@ -40,6 +43,16 @@ public class FormModelInfo implements Serializable {
     private int status;
     @ApiModelProperty(value = "表单流程关联id")
     private String procModelId;
+    @ApiModelProperty(value = "表单模型分组名称")
+    private String groupName;
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
+    }
 
     public String getFormModelId() {
         return formModelId;

@@ -33,7 +33,13 @@ public class Menu {
     private Date addTime;
     @ApiModelProperty(value = "删除时间")
     private Date removeTime;
+    @ApiModelProperty(value = "表单分组id")
+    private String groupId;
+    @ApiModelProperty(value = "表单分组名称")
+    private String groupName;
 
+
+    private List<FormGroup> group;
     private List<Menu> children;
 
     public Menu(String code, String name, String iconCls, String path, Integer level, Integer sort, Integer category) {
@@ -55,6 +61,14 @@ public class Menu {
 
     public void setChildren(List<Menu> children) {
         this.children = children;
+    }
+
+    public List<FormGroup> getGroup() {
+        return group;
+    }
+
+    public void setGroup(List<FormGroup> group) {
+        this.group = group;
     }
 
     public Long getId() {
@@ -159,6 +173,22 @@ public class Menu {
 
     public void setRemoveTime(Date removeTime) {
         this.removeTime = removeTime;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     @Override

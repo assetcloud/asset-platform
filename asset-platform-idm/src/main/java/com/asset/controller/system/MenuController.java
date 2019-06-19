@@ -22,7 +22,7 @@ public class MenuController {
     @RequestMapping(value = "/app/add", method = RequestMethod.POST)
     @ApiOperation(value = "添加菜单", notes = "添加完应用后调用该接口",tags = "菜单", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "applicationId", value = "应用id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "id", value = "应用id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "applicationName", value = "应用名称", required = true, dataType = "String"),
             @ApiImplicitParam(name = "iconCls", value = "应用图标", required = true, dataType = "String")
     })
@@ -32,8 +32,7 @@ public class MenuController {
     })
     public RespBean addMenu(@RequestBody Application application){
         LOGGER.info("{}",application.toString());
-        Menu menu = new Menu();
-        int flag = menuService.addAppMenu(menu, application);
+        int flag = menuService.addAppMenu(application);
         if (flag < 0){
             RespBean.error("添加失败", flag);
         }
@@ -44,8 +43,10 @@ public class MenuController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "应用id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "formModelId", value = "表单id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "formName", value = "应用图标", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "iconCls", value = "应用图标", required = true, dataType = "String")
+            @ApiImplicitParam(name = "formName", value = "表单名称", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "iconCls", value = "表单图标", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "groupId", value = "表单分组id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "groupName", value = "表单分组名称", required = true, dataType = "String")
     })
     @ApiResponses({
             @ApiResponse(code = 200,message = "添加成功",response = RespBean.class),
@@ -82,7 +83,7 @@ public class MenuController {
     @ApiOperation(value = "获取应用菜单", notes = "通过当前用户角色获取应用资源，主要用于首页内容展现",tags = "菜单", httpMethod = "GET")
     @RequestMapping(value = "/app/menus", method = RequestMethod.GET)
     public List<Menu> getAppMenusByRole(){
-        return menuService.getAppMenusByRole();
+        return menuService.getAppMenusByUser();
     }
 
     @ApiOperation(value = "获取表单菜单", notes = "通过点击应用，展现可访问的表单资源",tags = "菜单", httpMethod = "GET")
