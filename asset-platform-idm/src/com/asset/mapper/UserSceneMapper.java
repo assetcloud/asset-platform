@@ -1,5 +1,7 @@
 package com.asset.mapper;
 
+import com.asset.bean.UserScene;
+
 public interface UserSceneMapper {
     int deleteByPrimaryKey(Long id);
 

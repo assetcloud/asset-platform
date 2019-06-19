@@ -1,146 +1,81 @@
 package com.asset.bean;
 
+import io.swagger.annotations.ApiModel;
+
 import java.util.Date;
 
+@ApiModel(value = "组织结构表")
 public class OrganTree {
+
     private String id;
-
     private String unitName;
-
     private String unitNameEn;
-
     private String parentId;
-
     private Integer organizationForm;
-
     private Integer unitType;
-
     private String parentNodeName;
-
     private Integer chargeSectionId;
-
     private String chargeSectionName;
-
     private String localFinancialCode;
-
     private String localFinancialName;
-
     private String officeAdministrationCode;
-
     private String officeAdministrationName;
-
     private String administrationDivisionCode;
-
     private String administrationDivisionName;
-
     private Integer budgetCode;
-
     private String collegeCode;
-
     private String organizationCode;
-
     private Integer unitTypeCode;
-
     private Integer unitTypeName;
-
     private Integer unitBasicProperty;
-
     private String socialCreditCode;
-
     private String budgetUnitName;
-
     private String budgetUnitCode;
-
     private Integer budgetManagementLevel;
-
     private String firmName;
-
     private String firmCode;
-
     private String telephoneNumber;
-
     private String phoneNumber;
-
     private String faxNumber;
-
     private String emailAddress;
-
     private String province;
-
     private String city;
-
     private String county;
-
     private String streetAddress;
-
     private String postalCode;
-
     private Integer fundSupplyModeName;
-
     private Integer fundSupplyModeCode;
-
     private Integer administrationLevelName;
-
     private Integer administrationLevelType;
-
     private Integer departmentCategoryName;
-
     private Integer businessDepartmentClassificationCode;
-
     private String principal;
-
     private String contact;
-
     private String corporateRepresentative;
-
     private Integer economicType;
-
     private String financialAffiliation;
-
     private Boolean isFinancialUnit;
-
     private Boolean isVerticalUnit;
-
     private Boolean isVirtualUnit;
-
     private Integer accountingSystem;
-
     private String corporateTag;
-
     private String maintainerMark;
-
     private String supplierMark;
-
     private String manufactureMark;
-
     private String assetDisposalAgencyTag;
-
     private String stateAssetManagementCompany;
-
     private Integer authorizedNumber;
-
     private String administrationAuthority;
-
     private Date enableTime;
-
     private Date disableTime;
-
     private Date sealTime;
-
     private String unitRemark;
-
     private String assetDownloadStatus;
-
     private String latitudeAndLongitude;
-
     private Date createdTime;
-
     private Integer isDeleted;
-
     private Boolean status;
-
     private Integer sort;
-
     private String tenantCode;
 
     public String getId() {

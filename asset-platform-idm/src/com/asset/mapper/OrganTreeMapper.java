@@ -1,13 +1,15 @@
 package com.asset.mapper;
 
+import com.asset.bean.OrganTree;
+
 public interface OrganTreeMapper {
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(String id);
 
     int insert(OrganTree record);
 
     int insertSelective(OrganTree record);
 
-    OrganTree selectByPrimaryKey(Long id);
+    OrganTree selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(OrganTree record);
 

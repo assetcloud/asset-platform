@@ -1,5 +1,7 @@
 package com.asset.mapper;
 
+import com.asset.bean.OrganScene;
+
 public interface OrganSceneMapper {
     int deleteByPrimaryKey(Long id);
 

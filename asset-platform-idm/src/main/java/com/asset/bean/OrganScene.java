@@ -1,14 +1,14 @@
 package com.asset.bean;
 
+import io.swagger.annotations.ApiModel;
+
+@ApiModel(value = "组织场景关联表")
 public class OrganScene {
+
     private Long id;
-
     private String nodeId;
-
     private String parentId;
-
     private String sceneId;
-
     private Integer status;
 
     public Long getId() {

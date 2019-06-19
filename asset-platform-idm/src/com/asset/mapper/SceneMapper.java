@@ -1,13 +1,15 @@
 package com.asset.mapper;
 
+import com.asset.bean.Scene;
+
 public interface SceneMapper {
-    int deleteByPrimaryKey(Long id);
+    int deleteByPrimaryKey(String id);
 
     int insert(Scene record);
 
     int insertSelective(Scene record);
 
-    Scene selectByPrimaryKey(Long id);
+    Scene selectByPrimaryKey(String id);
 
     int updateByPrimaryKeySelective(Scene record);
 
