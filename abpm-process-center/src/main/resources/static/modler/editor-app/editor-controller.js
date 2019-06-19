@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@ angular.module('flowableModeler')
     $rootScope.forceSelectionRefresh = false;
 
     $rootScope.ignoreChanges = false; // by default never ignore changes
-    
+
     $rootScope.validationErrors = [];
 
     $rootScope.staticIncludeVersion = Date.now();
@@ -48,6 +48,7 @@ angular.module('flowableModeler')
 
         $http({method: 'GET', url: modelUrl}).
             success(function (data, status, headers, config) {
+                alert(data);
                 $rootScope.editor = new ORYX.Editor(data);
                 $rootScope.modelData = angular.fromJson(data);
                 $rootScope.editorFactory.resolve();
@@ -123,7 +124,7 @@ angular.module('flowableModeler')
      * Initialize the Oryx Editor when the content has been loaded
      */
     if (!$rootScope.editorInitialized) {
-    
+
         var paletteHelpWrapper = jQuery('#paletteHelpWrapper');
 		var paletteSectionFooter = jQuery('#paletteSectionFooter');
 		var paletteSectionOpen = jQuery('#paletteSectionOpen');
@@ -154,30 +155,30 @@ angular.module('flowableModeler')
 	            } else {
 	                this.$apply(fn);
 	            }
-	            
+
         	} else {
                 this.$apply(fn);
             }
         };
-        
+
         $rootScope.addHistoryItem = function(resourceId) {
         	var modelMetaData = editorManager.getBaseModelData();
-        	
+
         	var historyItem = {
-                id: modelMetaData.modelId, 
+                id: modelMetaData.modelId,
                 name: modelMetaData.name,
                 key: modelMetaData.key,
                 stepId: resourceId,
                 type: 'bpmnmodel'
             };
-        	
+
         	if (editorManager.getCurrentModelId() != editorManager.getModelId()) {
 				historyItem.subProcessId = editorManager.getCurrentModelId();
 			}
-        	
+
         	$rootScope.editorHistory.push(historyItem);
         };
-        
+
         $rootScope.getStencilSetName = function() {
             var modelMetaData = editorManager.getBaseModelData();
             if (modelMetaData.model.stencilset.namespace == 'http://b3mn.org/stencilset/cmmn1.1#') {
@@ -249,12 +250,12 @@ angular.module('flowableModeler')
 	                $scope.subSelectionElements = undefined;
 	            }
         	}
-            
+
         	var totalAvailable = jQuery(window).height() - offset.top - editorHeader.height();
-            
+
             // 计算画布的高度
             canvas.height(totalAvailable);
-  
+
 
             // 属性窗口的高度和canvas的一致
             propSection.height(totalAvailable);
@@ -266,7 +267,7 @@ angular.module('flowableModeler')
 			var footerHeight = jQuery('#paletteSectionFooter').height();
 			var treeViewHeight = jQuery('#process-treeview-wrapper').height();
 			jQuery('#paletteSection').height(totalAvailable - treeViewHeight - footerHeight);
-      
+
             // Update positions of the resize-markers, according to the canvas
 
             var actualCanvas = null;
@@ -274,7 +275,7 @@ angular.module('flowableModeler')
                 actualCanvas = canvas[0].children[1];
             }
 
-           
+
             var canvasTop = canvas.position().top;
             var canvasLeft = canvas.position().left;
             var canvasHeight = canvas[0].clientHeight;
@@ -347,9 +348,9 @@ angular.module('flowableModeler')
 			this.editorFactory.resolve();
 			this.editorInitialized = true;
 			this.modelData = editorManager.getBaseModelData();
-			
+
 		}, $rootScope);
-		
+
 		FLOWABLE.eventBus.addListener(FLOWABLE.eventBus.EVENT_TYPE_EDITOR_READY, function() {
 			var url = window.location.href;
 		    var regex = new RegExp("[?&]subProcessId(=([^&#]*)|&|#|$)");
@@ -402,7 +403,7 @@ angular.module('flowableModeler')
 
     // Always needed, cause the DOM element on wich the scroll event listeners are attached are changed for every new model
     initScrollHandling();
-    
+
     var modelId = $routeParams.modelId;
 	editorManager.setModelId(modelId);
 	//we first initialize the stencilset used by the editor. The editorId is always the modelId.
@@ -431,7 +432,7 @@ angular.module('flowableModeler')
 	}).catch(function (error) {
 		console.log(error);
 	});
- 
+
  	//minihack to make sure mousebind events are processed if the modeler is used in an iframe.
 	//selecting an element and pressing "del" could sometimes not trigger an event.
 	jQuery(window).focus();

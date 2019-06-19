@@ -31,11 +31,11 @@ public class MenuService {
 
     /**
      * 将应用添加到菜单表中，并赋予给系统管理员和默认角色
-     * @param menu
      * @param application
      * @return int
      */
-    public int addAppMenu(Menu menu, Application application){
+    public int addAppMenu(Application application){
+        Menu menu = new Menu();
         menu.setCode(SystemConstant.CODE_APP);
         menu.setName(application.getApplicationName());
         menu.setIconCls(application.getIconCls());
@@ -50,6 +50,8 @@ public class MenuService {
         menu.setIsDeleted(0);
         menu.setAddTime(new Date());
         menu.setCategory(1);
+        menu.setGroupId("");
+        menu.setGroupName("");
         if(menuMapper.insert(menu) < 0){
             return -1;
         }
@@ -64,7 +66,7 @@ public class MenuService {
      * @param parentMenu
      * @param formModelInfo
      * @return
-     */
+     *//*
     public int addFormMenu(Menu parentMenu, FormModelInfo formModelInfo){
         Menu menu = new Menu();
         menu.setCategory(2);
@@ -77,6 +79,39 @@ public class MenuService {
         menu.setName(formModelInfo.getFormName());
         menu.setIconCls(formModelInfo.getIconCls());
         menu.setCode(SystemConstant.CODE_FORM);
+        if(menuMapper.insert(menu) < 0){
+            return -1;
+        }
+        if(addMenu4Admin(menu) < 0){
+            return -1;
+        }
+        if(addFuncMenu(menu) < 0){
+            return -1;
+        }
+        return 1;
+    }*/
+    /**
+     * 添加表单类型的菜单，并赋予给系统管理员和默认角色
+     * @param parentMenu
+     * @param formModelInfo
+     * @return
+     */
+    public int addFormMenu(Menu parentMenu, FormModelInfo formModelInfo){
+        Menu menu = new Menu();
+        //1-应用；2-表单；3-表单操作
+        menu.setCategory(2);
+        menu.setParentId(parentMenu.getId());
+        menu.setAddTime(new Date());
+        menu.setIsDeleted(0);
+        menu.setSort(0);
+        menu.setLevel(0);
+        menu.setPath(formModelInfo.getFormModelId());
+        menu.setName(formModelInfo.getFormName());
+        menu.setIconCls(formModelInfo.getIconCls());
+        menu.setCode(SystemConstant.CODE_FORM);
+        // 为表单设置分组
+        menu.setGroupId(formModelInfo.getGroupId());
+        menu.setGroupName(formModelInfo.getGroupName());
         if(menuMapper.insert(menu) < 0){
             return -1;
         }
@@ -145,7 +180,7 @@ public class MenuService {
      * 通过用户id获取应用资源
      * @return List<Menu>
      */
-    public List<Menu> getAppMenusByRole(){
+    public List<Menu> getAppMenusByUser(){
         return menuMapper.getAppMenusByUser(UserUtils.getCurrentUser().getId());
     }
 

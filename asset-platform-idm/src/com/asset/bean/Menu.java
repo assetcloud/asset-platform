@@ -3,30 +3,19 @@ package com.asset.bean;
 import java.util.Date;
 
 public class Menu {
+
     private Long id;
-
     private Long parentId;
-
     private String code;
-
     private String name;
-
     private String iconCls;
-
     private String path;
-
     private Integer level;
-
     private Integer sort;
-
     private Integer category;
-
     private String remark;
-
     private Integer isDeleted;
-
     private Date addTime;
-
     private Date removeTime;
 
     public Long getId() {
