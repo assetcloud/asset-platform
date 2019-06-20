@@ -112,4 +112,22 @@ public class Role {
     public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "id=" + id +
+                ", roleName='" + roleName + '\'' +
+                ", roleNameZh='" + roleNameZh + '\'' +
+                ", roleDescription='" + roleDescription + '\'' +
+                ", status=" + status +
+                ", applicableUnitLevel='" + applicableUnitLevel + '\'' +
+                ", productCode='" + productCode + '\'' +
+                ", enableTime=" + enableTime +
+                ", disableTime=" + disableTime +
+                ", updatedTime=" + updatedTime +
+                ", createdTime=" + createdTime +
+                ", groupId=" + groupId +
+                '}';
+    }
 }

@@ -62,8 +62,8 @@ public interface SystemConstant {
     String NAME_FORM_PRINT = "打印";
     String NAME_FORM_DELETE = "删除";
 
-    Integer ADMIN_ROLE_ID = 1;
-    Integer DEFAULT_ROLE_ID = 2;
+    Long ADMIN_ROLE_ID = 1L;
+    Long DEFAULT_ROLE_ID = 2L;
 
     Menu MENU_LIST_ADD = new Menu(CODE_FUNC, NAME_LIST_ADD, ICON_LIST_ADD, LIST_ADD ,1 , SORT_LIST_ADD, 3);
     Menu MENU_LIST_IMPORT = new Menu(CODE_FUNC, NAME_LIST_IMPORT, ICON_LIST_IMPORT, LIST_IMPORT ,1 , SORT_LIST_IMPORT, 3);
@@ -93,6 +93,7 @@ public interface SystemConstant {
     String DELETE_SUCCESS = "删除成功";
     String ADD_SUCCESS = "添加成功";
     String UPDATE_SUCCESS = "修改成功";
+    String GET_SUCCESS = "获取成功";
 
     /**
      * 错误变量
@@ -100,5 +101,11 @@ public interface SystemConstant {
     String DELETE_FAILURE = "删除失败";
     String ADD_FAILURE = "添加失败";
     String UPDATE_FAILURE = "修改失败";
+    String GET_FAILURE = "获取失败";
     String SYSTEM_FAILURE = "系统错误";
+
+    /**
+     * 用户变量
+     */
+    String ADMIN_IDENTITY = "1";
 }

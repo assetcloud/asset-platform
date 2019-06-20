@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -76,5 +77,13 @@ public class OrganService {
      */
     public OrganTree getNode(String id){
         return organTreeMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 获取组织树全部信息
+     * @return
+     */
+    public List<OrganTree> getMainTree(){
+        return organTreeMapper.getMainTree();
     }
 }

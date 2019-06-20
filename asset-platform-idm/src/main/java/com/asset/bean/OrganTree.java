@@ -3,6 +3,7 @@ package com.asset.bean;
 import io.swagger.annotations.ApiModel;
 
 import java.util.Date;
+import java.util.List;
 
 @ApiModel(value = "组织结构表")
 public class OrganTree {
@@ -77,6 +78,39 @@ public class OrganTree {
     private Boolean status;
     private Integer sort;
     private String tenantCode;
+    private List<OrganTree> childNodes;
+
+    public Boolean getFinancialUnit() {
+        return isFinancialUnit;
+    }
+
+    public void setFinancialUnit(Boolean financialUnit) {
+        isFinancialUnit = financialUnit;
+    }
+
+    public Boolean getVerticalUnit() {
+        return isVerticalUnit;
+    }
+
+    public void setVerticalUnit(Boolean verticalUnit) {
+        isVerticalUnit = verticalUnit;
+    }
+
+    public Boolean getVirtualUnit() {
+        return isVirtualUnit;
+    }
+
+    public void setVirtualUnit(Boolean virtualUnit) {
+        isVirtualUnit = virtualUnit;
+    }
+
+    public List<OrganTree> getChildNodes() {
+        return childNodes;
+    }
+
+    public void setChildNodes(List<OrganTree> childNodes) {
+        this.childNodes = childNodes;
+    }
 
     public String getId() {
         return id;
