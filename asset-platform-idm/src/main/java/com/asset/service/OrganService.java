@@ -40,12 +40,15 @@ public class OrganService {
      * @return
      */
     public int addNode(OrganTree record){
-        if(record.getId() == null){
-            record.setId(uuidIdGenerator.generateId());
-        }
         if(organTreeMapper.getNodeByName(record.getUnitName()) != null){
             //记录已存在
             return SystemConstant.NODE_ALREADY_EXISTS;
+        }
+        if(record.getId() == null){
+            record.setId(uuidIdGenerator.generateId());
+        }
+        if (record.getParentId() == null){
+            record.setParentId("0");
         }
         record.setCreatedTime(new Date());
         record.setStatus(true);

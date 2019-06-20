@@ -86,4 +86,19 @@ public interface SystemConstant {
 
     Integer NODE_ALREADY_EXISTS = -2;
     Integer SYSTEM_ERROR = -1;
+
+    /**
+     * 正确变量
+     */
+    String DELETE_SUCCESS = "删除成功";
+    String ADD_SUCCESS = "添加成功";
+    String UPDATE_SUCCESS = "修改成功";
+
+    /**
+     * 错误变量
+     */
+    String DELETE_FAILURE = "删除失败";
+    String ADD_FAILURE = "添加失败";
+    String UPDATE_FAILURE = "修改失败";
+    String SYSTEM_FAILURE = "系统错误";
 }

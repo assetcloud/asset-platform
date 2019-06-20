@@ -25,11 +25,11 @@ public class OrganController {
     public RespBean addNode(@RequestBody OrganTree organTree){
         int flag = organService.addNode(organTree);
         if (flag == SystemConstant.NODE_ALREADY_EXISTS){
-            return RespBean.error("添加失败","NODE_ALREADY_EXISTS");
+            return RespBean.error(SystemConstant.ADD_FAILURE,"NODE_ALREADY_EXISTS");
         } else if (flag == SystemConstant.SYSTEM_ERROR){
-            return RespBean.error("系统错误","SYSTEM_ERROR");
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE,"SYSTEM_ERROR");
         }
-        return RespBean.ok("添加成功");
+        return RespBean.ok(SystemConstant.ADD_SUCCESS);
     }
 
     @ApiOperation(value = "删除组织节点", notes = "删除组织节点",tags = "组织", httpMethod = "DELETE")
@@ -40,9 +40,9 @@ public class OrganController {
     public RespBean deleteNode(@RequestBody OrganTree organTree){
         int flag = organService.deleteNode(organTree);
         if (flag == SystemConstant.SYSTEM_ERROR){
-            return RespBean.error("删除失败","SYSTEM_ERROR");
+            return RespBean.error(SystemConstant.DELETE_FAILURE,"SYSTEM_ERROR");
         }
-        return RespBean.ok("删除成功");
+        return RespBean.ok(SystemConstant.DELETE_SUCCESS);
     }
 
     @ApiOperation(value = "获取单个组织节点", notes = "获取单个组织节点",tags = "组织", httpMethod = "GET")
