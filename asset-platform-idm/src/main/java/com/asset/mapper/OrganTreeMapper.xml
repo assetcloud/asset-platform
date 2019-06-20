@@ -73,6 +73,156 @@
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
   </resultMap>
+  <resultMap id="BaseMap" type="com.asset.bean.OrganTree">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="unit_name_en" jdbcType="VARCHAR" property="unitNameEn" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="organization_form" jdbcType="INTEGER" property="organizationForm" />
+    <result column="unit_type" jdbcType="INTEGER" property="unitType" />
+    <result column="parent_node_name" jdbcType="VARCHAR" property="parentNodeName" />
+    <result column="charge_section_id" jdbcType="INTEGER" property="chargeSectionId" />
+    <result column="charge_section_name" jdbcType="VARCHAR" property="chargeSectionName" />
+    <result column="local_financial_code" jdbcType="VARCHAR" property="localFinancialCode" />
+    <result column="local_financial_name" jdbcType="VARCHAR" property="localFinancialName" />
+    <result column="office_administration_code" jdbcType="VARCHAR" property="officeAdministrationCode" />
+    <result column="office_administration_name" jdbcType="VARCHAR" property="officeAdministrationName" />
+    <result column="administration_division_code" jdbcType="VARCHAR" property="administrationDivisionCode" />
+    <result column="administration_division_name" jdbcType="VARCHAR" property="administrationDivisionName" />
+    <result column="budget_code" jdbcType="INTEGER" property="budgetCode" />
+    <result column="college_code" jdbcType="VARCHAR" property="collegeCode" />
+    <result column="organization_code" jdbcType="VARCHAR" property="organizationCode" />
+    <result column="unit_type_code" jdbcType="INTEGER" property="unitTypeCode" />
+    <result column="unit_type_name" jdbcType="INTEGER" property="unitTypeName" />
+    <result column="unit_basic_property" jdbcType="INTEGER" property="unitBasicProperty" />
+    <result column="social_credit_code" jdbcType="VARCHAR" property="socialCreditCode" />
+    <result column="budget_unit_name" jdbcType="VARCHAR" property="budgetUnitName" />
+    <result column="budget_unit_code" jdbcType="VARCHAR" property="budgetUnitCode" />
+    <result column="budget_management_level" jdbcType="INTEGER" property="budgetManagementLevel" />
+    <result column="firm_name" jdbcType="VARCHAR" property="firmName" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="telephone_number" jdbcType="VARCHAR" property="telephoneNumber" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="fax_number" jdbcType="VARCHAR" property="faxNumber" />
+    <result column="email_address" jdbcType="VARCHAR" property="emailAddress" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="street_address" jdbcType="VARCHAR" property="streetAddress" />
+    <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
+    <result column="fund_supply_mode_name" jdbcType="INTEGER" property="fundSupplyModeName" />
+    <result column="fund_supply_mode_code" jdbcType="INTEGER" property="fundSupplyModeCode" />
+    <result column="administration_level_name" jdbcType="INTEGER" property="administrationLevelName" />
+    <result column="administration_level_type" jdbcType="INTEGER" property="administrationLevelType" />
+    <result column="department_category_name" jdbcType="INTEGER" property="departmentCategoryName" />
+    <result column="business_department_classification_code" jdbcType="INTEGER" property="businessDepartmentClassificationCode" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
+    <result column="economic_type" jdbcType="INTEGER" property="economicType" />
+    <result column="financial_affiliation" jdbcType="VARCHAR" property="financialAffiliation" />
+    <result column="is_financial_unit" jdbcType="BIT" property="isFinancialUnit" />
+    <result column="is_vertical_unit" jdbcType="BIT" property="isVerticalUnit" />
+    <result column="is_virtual_unit" jdbcType="BIT" property="isVirtualUnit" />
+    <result column="accounting_system" jdbcType="INTEGER" property="accountingSystem" />
+    <result column="corporate_tag" jdbcType="VARCHAR" property="corporateTag" />
+    <result column="maintainer_mark" jdbcType="VARCHAR" property="maintainerMark" />
+    <result column="supplier_mark" jdbcType="VARCHAR" property="supplierMark" />
+    <result column="manufacture_mark" jdbcType="VARCHAR" property="manufactureMark" />
+    <result column="asset_disposal_agency_tag" jdbcType="VARCHAR" property="assetDisposalAgencyTag" />
+    <result column="state_asset_management_company" jdbcType="VARCHAR" property="stateAssetManagementCompany" />
+    <result column="authorized_number" jdbcType="INTEGER" property="authorizedNumber" />
+    <result column="administration_authority" jdbcType="VARCHAR" property="administrationAuthority" />
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="seal_time" jdbcType="TIMESTAMP" property="sealTime" />
+    <result column="unit_remark" jdbcType="VARCHAR" property="unitRemark" />
+    <result column="asset_download_status" jdbcType="VARCHAR" property="assetDownloadStatus" />
+    <result column="latitude_and_longitude" jdbcType="VARCHAR" property="latitudeAndLongitude" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+    <collection property="childNodes" javaType="java.util.List" ofType="com.asset.bean.OrganTree"
+                column="id" select="recursiveSelect" >
+    </collection>
+  </resultMap>
+
+  <resultMap id="RecursiveMap" type="com.asset.bean.OrganTree">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="unit_name_en" jdbcType="VARCHAR" property="unitNameEn" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="organization_form" jdbcType="INTEGER" property="organizationForm" />
+    <result column="unit_type" jdbcType="INTEGER" property="unitType" />
+    <result column="parent_node_name" jdbcType="VARCHAR" property="parentNodeName" />
+    <result column="charge_section_id" jdbcType="INTEGER" property="chargeSectionId" />
+    <result column="charge_section_name" jdbcType="VARCHAR" property="chargeSectionName" />
+    <result column="local_financial_code" jdbcType="VARCHAR" property="localFinancialCode" />
+    <result column="local_financial_name" jdbcType="VARCHAR" property="localFinancialName" />
+    <result column="office_administration_code" jdbcType="VARCHAR" property="officeAdministrationCode" />
+    <result column="office_administration_name" jdbcType="VARCHAR" property="officeAdministrationName" />
+    <result column="administration_division_code" jdbcType="VARCHAR" property="administrationDivisionCode" />
+    <result column="administration_division_name" jdbcType="VARCHAR" property="administrationDivisionName" />
+    <result column="budget_code" jdbcType="INTEGER" property="budgetCode" />
+    <result column="college_code" jdbcType="VARCHAR" property="collegeCode" />
+    <result column="organization_code" jdbcType="VARCHAR" property="organizationCode" />
+    <result column="unit_type_code" jdbcType="INTEGER" property="unitTypeCode" />
+    <result column="unit_type_name" jdbcType="INTEGER" property="unitTypeName" />
+    <result column="unit_basic_property" jdbcType="INTEGER" property="unitBasicProperty" />
+    <result column="social_credit_code" jdbcType="VARCHAR" property="socialCreditCode" />
+    <result column="budget_unit_name" jdbcType="VARCHAR" property="budgetUnitName" />
+    <result column="budget_unit_code" jdbcType="VARCHAR" property="budgetUnitCode" />
+    <result column="budget_management_level" jdbcType="INTEGER" property="budgetManagementLevel" />
+    <result column="firm_name" jdbcType="VARCHAR" property="firmName" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="telephone_number" jdbcType="VARCHAR" property="telephoneNumber" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="fax_number" jdbcType="VARCHAR" property="faxNumber" />
+    <result column="email_address" jdbcType="VARCHAR" property="emailAddress" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="street_address" jdbcType="VARCHAR" property="streetAddress" />
+    <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
+    <result column="fund_supply_mode_name" jdbcType="INTEGER" property="fundSupplyModeName" />
+    <result column="fund_supply_mode_code" jdbcType="INTEGER" property="fundSupplyModeCode" />
+    <result column="administration_level_name" jdbcType="INTEGER" property="administrationLevelName" />
+    <result column="administration_level_type" jdbcType="INTEGER" property="administrationLevelType" />
+    <result column="department_category_name" jdbcType="INTEGER" property="departmentCategoryName" />
+    <result column="business_department_classification_code" jdbcType="INTEGER" property="businessDepartmentClassificationCode" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
+    <result column="economic_type" jdbcType="INTEGER" property="economicType" />
+    <result column="financial_affiliation" jdbcType="VARCHAR" property="financialAffiliation" />
+    <result column="is_financial_unit" jdbcType="BIT" property="isFinancialUnit" />
+    <result column="is_vertical_unit" jdbcType="BIT" property="isVerticalUnit" />
+    <result column="is_virtual_unit" jdbcType="BIT" property="isVirtualUnit" />
+    <result column="accounting_system" jdbcType="INTEGER" property="accountingSystem" />
+    <result column="corporate_tag" jdbcType="VARCHAR" property="corporateTag" />
+    <result column="maintainer_mark" jdbcType="VARCHAR" property="maintainerMark" />
+    <result column="supplier_mark" jdbcType="VARCHAR" property="supplierMark" />
+    <result column="manufacture_mark" jdbcType="VARCHAR" property="manufactureMark" />
+    <result column="asset_disposal_agency_tag" jdbcType="VARCHAR" property="assetDisposalAgencyTag" />
+    <result column="state_asset_management_company" jdbcType="VARCHAR" property="stateAssetManagementCompany" />
+    <result column="authorized_number" jdbcType="INTEGER" property="authorizedNumber" />
+    <result column="administration_authority" jdbcType="VARCHAR" property="administrationAuthority" />
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="seal_time" jdbcType="TIMESTAMP" property="sealTime" />
+    <result column="unit_remark" jdbcType="VARCHAR" property="unitRemark" />
+    <result column="asset_download_status" jdbcType="VARCHAR" property="assetDownloadStatus" />
+    <result column="latitude_and_longitude" jdbcType="VARCHAR" property="latitudeAndLongitude" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+    <collection property="childNodes" ofType="com.asset.bean.OrganTree" javaType="java.util.ArrayList" column="id" select="recursiveSelect">
+    </collection>
+  </resultMap>
   <sql id="Base_Column_List">
     id, unit_name, unit_name_en, parent_id, organization_form, unit_type, parent_node_name,
     charge_section_id, charge_section_name, local_financial_code, local_financial_name,
@@ -97,6 +247,21 @@
   </select>
   <select id="getNodeByName" parameterType="java.lang.String" resultMap="BaseResultMap">
     select * from  as_organ_tree where unit_name = #{unitName} and status = 1
+  </select>
+  <select id="getMainTree" resultMap="BaseMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  as_organ_tree
+    WHERE status = 1
+    ORDER BY sort ASC
+  </select>
+  <select id="recursiveSelect" resultMap="RecursiveMap" parameterType="java.lang.String">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  as_organ_tree
+    WHERE parent_id = #{id}
+    AND status = 1
+    ORDER BY sort ASC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from as_organ_tree

@@ -1,7 +1,10 @@
 package com.asset.mapper;
 
 import com.asset.bean.OrganTree;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public interface OrganTreeMapper {
@@ -19,4 +22,8 @@ public interface OrganTreeMapper {
     int updateByPrimaryKey(OrganTree record);
 
     OrganTree getNodeByName(String unitName);
+
+    List<OrganTree> getMainTree();
+
+    List<OrganTree> recursiveSelect(@Param("id") String id);
 }

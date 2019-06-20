@@ -21,7 +21,7 @@ public interface MenuMapper {
 
     int updateByPrimaryKey(Menu record);
 
-    int addMenuRole(@Param("menuId") Long menuId, @Param("roleId") Integer roleId);
+    int addMenuRole(@Param("menuId") Long menuId, @Param("roleId") Long roleId);
 
     Menu getByPath(String applicationId);
 

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,12 +41,15 @@ public class OrganService {
      * @return
      */
     public int addNode(OrganTree record){
-        if(record.getId() == null){
-            record.setId(uuidIdGenerator.generateId());
-        }
         if(organTreeMapper.getNodeByName(record.getUnitName()) != null){
             //记录已存在
             return SystemConstant.NODE_ALREADY_EXISTS;
+        }
+        if(record.getId() == null){
+            record.setId(uuidIdGenerator.generateId());
+        }
+        if (record.getParentId() == null){
+            record.setParentId("0");
         }
         record.setCreatedTime(new Date());
         record.setStatus(true);
@@ -73,5 +77,13 @@ public class OrganService {
      */
     public OrganTree getNode(String id){
         return organTreeMapper.selectByPrimaryKey(id);
+    }
+
+    /**
+     * 获取组织树全部信息
+     * @return
+     */
+    public List<OrganTree> getMainTree(){
+        return organTreeMapper.getMainTree();
     }
 }

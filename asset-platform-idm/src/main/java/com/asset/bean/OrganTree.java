@@ -3,6 +3,7 @@ package com.asset.bean;
 import io.swagger.annotations.ApiModel;
 
 import java.util.Date;
+import java.util.List;
 
 @ApiModel(value = "组织结构表")
 public class OrganTree {
@@ -77,6 +78,39 @@ public class OrganTree {
     private Boolean status;
     private Integer sort;
     private String tenantCode;
+    private List<OrganTree> childNodes;
+
+    public Boolean getFinancialUnit() {
+        return isFinancialUnit;
+    }
+
+    public void setFinancialUnit(Boolean financialUnit) {
+        isFinancialUnit = financialUnit;
+    }
+
+    public Boolean getVerticalUnit() {
+        return isVerticalUnit;
+    }
+
+    public void setVerticalUnit(Boolean verticalUnit) {
+        isVerticalUnit = verticalUnit;
+    }
+
+    public Boolean getVirtualUnit() {
+        return isVirtualUnit;
+    }
+
+    public void setVirtualUnit(Boolean virtualUnit) {
+        isVirtualUnit = virtualUnit;
+    }
+
+    public List<OrganTree> getChildNodes() {
+        return childNodes;
+    }
+
+    public void setChildNodes(List<OrganTree> childNodes) {
+        this.childNodes = childNodes;
+    }
 
     public String getId() {
         return id;
@@ -636,5 +670,81 @@ public class OrganTree {
 
     public void setTenantCode(String tenantCode) {
         this.tenantCode = tenantCode == null ? null : tenantCode.trim();
+    }
+
+    @Override
+    public String toString() {
+        return "OrganTree{" +
+                "id='" + id + '\'' +
+                ", unitName='" + unitName + '\'' +
+                ", unitNameEn='" + unitNameEn + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", organizationForm=" + organizationForm +
+                ", unitType=" + unitType +
+                ", parentNodeName='" + parentNodeName + '\'' +
+                ", chargeSectionId=" + chargeSectionId +
+                ", chargeSectionName='" + chargeSectionName + '\'' +
+                ", localFinancialCode='" + localFinancialCode + '\'' +
+                ", localFinancialName='" + localFinancialName + '\'' +
+                ", officeAdministrationCode='" + officeAdministrationCode + '\'' +
+                ", officeAdministrationName='" + officeAdministrationName + '\'' +
+                ", administrationDivisionCode='" + administrationDivisionCode + '\'' +
+                ", administrationDivisionName='" + administrationDivisionName + '\'' +
+                ", budgetCode=" + budgetCode +
+                ", collegeCode='" + collegeCode + '\'' +
+                ", organizationCode='" + organizationCode + '\'' +
+                ", unitTypeCode=" + unitTypeCode +
+                ", unitTypeName=" + unitTypeName +
+                ", unitBasicProperty=" + unitBasicProperty +
+                ", socialCreditCode='" + socialCreditCode + '\'' +
+                ", budgetUnitName='" + budgetUnitName + '\'' +
+                ", budgetUnitCode='" + budgetUnitCode + '\'' +
+                ", budgetManagementLevel=" + budgetManagementLevel +
+                ", firmName='" + firmName + '\'' +
+                ", firmCode='" + firmCode + '\'' +
+                ", telephoneNumber='" + telephoneNumber + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", faxNumber='" + faxNumber + '\'' +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", province='" + province + '\'' +
+                ", city='" + city + '\'' +
+                ", county='" + county + '\'' +
+                ", streetAddress='" + streetAddress + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                ", fundSupplyModeName=" + fundSupplyModeName +
+                ", fundSupplyModeCode=" + fundSupplyModeCode +
+                ", administrationLevelName=" + administrationLevelName +
+                ", administrationLevelType=" + administrationLevelType +
+                ", departmentCategoryName=" + departmentCategoryName +
+                ", businessDepartmentClassificationCode=" + businessDepartmentClassificationCode +
+                ", principal='" + principal + '\'' +
+                ", contact='" + contact + '\'' +
+                ", corporateRepresentative='" + corporateRepresentative + '\'' +
+                ", economicType=" + economicType +
+                ", financialAffiliation='" + financialAffiliation + '\'' +
+                ", isFinancialUnit=" + isFinancialUnit +
+                ", isVerticalUnit=" + isVerticalUnit +
+                ", isVirtualUnit=" + isVirtualUnit +
+                ", accountingSystem=" + accountingSystem +
+                ", corporateTag='" + corporateTag + '\'' +
+                ", maintainerMark='" + maintainerMark + '\'' +
+                ", supplierMark='" + supplierMark + '\'' +
+                ", manufactureMark='" + manufactureMark + '\'' +
+                ", assetDisposalAgencyTag='" + assetDisposalAgencyTag + '\'' +
+                ", stateAssetManagementCompany='" + stateAssetManagementCompany + '\'' +
+                ", authorizedNumber=" + authorizedNumber +
+                ", administrationAuthority='" + administrationAuthority + '\'' +
+                ", enableTime=" + enableTime +
+                ", disableTime=" + disableTime +
+                ", sealTime=" + sealTime +
+                ", unitRemark='" + unitRemark + '\'' +
+                ", assetDownloadStatus='" + assetDownloadStatus + '\'' +
+                ", latitudeAndLongitude='" + latitudeAndLongitude + '\'' +
+                ", createdTime=" + createdTime +
+                ", isDeleted=" + isDeleted +
+                ", status=" + status +
+                ", sort=" + sort +
+                ", tenantCode='" + tenantCode + '\'' +
+                '}';
     }
 }
