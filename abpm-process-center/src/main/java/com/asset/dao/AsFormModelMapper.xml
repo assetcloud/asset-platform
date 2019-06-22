@@ -115,7 +115,8 @@
           last_updated_time,
           last_updated_by,
           version,
-          model_json
+          model_json,
+          proc_model_id
         FROM
 	      as_form_model
         WHERE
@@ -148,7 +149,7 @@
 
   <!--根据传进来的表单模型ID一个一个取出来
        @param List<String> formModelIDs-->
-  <select id="getFormModels" parameterType="java.util.List" resultMap="BaseResultMap">
+  <select id="getFormModels" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT
     id,
     form_name,
@@ -164,8 +165,8 @@
     as_form_model
     WHERE
     id in
-    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
-      #{item}
+    <foreach item="formModelIDs" index="index" collection="list" open="(" separator="," close=")">
+      #{formModelIDs,jdbcType=VARCHAR}
     </foreach>
   </select>
 
@@ -182,7 +183,7 @@
 
   <!--获取与该表单模型绑定的流程模型ID
       @param String formModelId-->
-  <select id="getProcModelID" parameterType="java.lang.String">
+  <select id="getProcModelID" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT proc_model_id
         FROM as_form_model
         WHERE id = #{formModelId,jdbcType = VARCHAR}

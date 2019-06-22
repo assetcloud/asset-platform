@@ -79,7 +79,8 @@
       </if>
     </trim>
   </insert>
-  <select id="getInstIDs" parameterType="java.lang.String" resultType="java.lang.String">
+
+  <select id="getProcInstIDs" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT TASK_ID_
     FROM act_hi_actinst
     WHERE

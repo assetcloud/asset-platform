@@ -17,4 +17,11 @@ public interface AsFormProcInstBindMapper {
     int updateByPrimaryKeySelective(AsFormProcInstBind record);
 
     int updateByPrimaryKey(AsFormProcInstBind record);
+
+    /**
+     * 获取与表单实例绑定的流程实例ID
+     * @param formInstId
+     * @return
+     */
+    String getProcInstID(String formInstId);
 }

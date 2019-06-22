@@ -1,6 +1,7 @@
 package com.asset.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import com.asset.entity.AsFormInst;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -38,6 +39,17 @@ public class JsonUtils {
         map.put("code", Constants.CODE_SUCCESS);
         map.put("list", recJsonArray);
 
+        Object json = JSONObject.toJSON(map);
+        return json.toString();
+    }
+
+
+    public static String procListToString(ArrayList<AsFormInst> asFormInsts)
+    {
+        int code = Constants.CODE_SUCCESS;
+        HashMap<String, Serializable> map = new HashMap<String, Serializable>();
+        map.put("code", code);
+        map.put("list", asFormInsts);
         Object json = JSONObject.toJSON(map);
         return json.toString();
     }

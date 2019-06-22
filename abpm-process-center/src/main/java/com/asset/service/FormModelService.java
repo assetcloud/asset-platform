@@ -20,4 +20,6 @@ public interface FormModelService {
 //    int saveFormModelAuthority(FormAuthorityRec formModelAuthority);
 
     int setFormGroup(FormGroupRec rec);
+
+    String getProcModelID(String formModelID);
 }

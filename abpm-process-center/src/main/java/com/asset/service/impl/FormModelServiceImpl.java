@@ -2,9 +2,9 @@ package com.asset.service.impl;
 
 import com.asset.dao.AsFormModelMapper;
 import com.asset.dao.ModelDeployMapper;
-import com.asset.dao.OAppFormBindMapper;
+import com.asset.dao.AppFormBindMapper;
 import com.asset.entity.AsFormModel;
-import com.asset.entity.OAppFormBind;
+import com.asset.entity.AppFormBind;
 import com.asset.rec.FormGroupRec;
 import com.asset.rec.FormModelBindRec;
 import com.asset.rec.FormModelCreateRec;
@@ -24,7 +24,7 @@ public class FormModelServiceImpl implements FormModelService {
     @Autowired
     ModelDeployMapper modelDeployMapper;
     @Autowired
-    OAppFormBindMapper oAppFormBindMapper;
+    AppFormBindMapper appFormBindMapper;
 
     @Override
     public AsFormModel createFormModel(FormModelCreateRec rec) {
@@ -35,13 +35,14 @@ public class FormModelServiceImpl implements FormModelService {
                 JsonUtils.recJsonArrayToString(rec.getModel_json())
                 );
         asFormModel.setGroupId(-1);
+        asFormModel.setProcModelId("null");
 
         String formModelID = asFormModel.getId();
         //表单模型表中填数据
         int ret = asFormModelMapper.insertSelective(asFormModel);
-        //表单模型与OApp作绑定
-        OAppFormBind bind = new OAppFormBind(rec.getOapp_id(),formModelID);
-        oAppFormBindMapper.insert(bind);
+        //表单模型与App作绑定
+        AppFormBind bind = new AppFormBind(rec.getOapp_id(),formModelID);
+        appFormBindMapper.insert(bind);
 
         AsFormModel formModelRet = null;
         //ret为1，说明插入成功,返回这个插入的formModel的详细信息
@@ -49,6 +50,7 @@ public class FormModelServiceImpl implements FormModelService {
         {
             formModelRet = asFormModelMapper.getFormModel(formModelID);
         }
+
 
         return formModelRet;
     }
@@ -84,6 +86,11 @@ public class FormModelServiceImpl implements FormModelService {
     public int setFormGroup(FormGroupRec rec) {
         AsFormModel info = new AsFormModel(rec.getForm_model_id(),rec.getGroup_id());
         return asFormModelMapper.setFormGroup(info);
+    }
+
+    @Override
+    public String getProcModelID(String formModelID) {
+        return asFormModelMapper.getProcModelID(formModelID);
     }
 
 }

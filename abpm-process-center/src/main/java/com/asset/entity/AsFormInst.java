@@ -22,6 +22,8 @@ public class AsFormInst {
 
     private String formInstJson;
 
+    private int status;
+
     public AsFormInst(String formModelId, String procInstId, String executionId, String taskId, String createdBy, String formInstJson) {
         this.formModelId = formModelId;
         this.procInstId = procInstId;

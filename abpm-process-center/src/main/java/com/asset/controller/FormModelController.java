@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.AsFormModel;
 import com.asset.rec.*;
 import com.asset.service.impl.FormModelServiceImpl;
+import com.asset.utils.Constants;
 import com.asset.utils.JsonUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
@@ -11,10 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -98,6 +96,20 @@ public class FormModelController {
         return JsonUtils.getCodeJson(code);
     }
 
+
+    @RequestMapping(value = "/form/model/getBindProc",method = RequestMethod.GET)
+    public String getBindProc(@RequestParam(value = "form_model_id")String formModelID)
+    {
+        String procModelID = formModelService.getProcModelID(formModelID);
+
+        HashMap<String,Serializable> map = new HashMap<>();
+        map.put("code", Constants.CODE_SUCCESS);
+        map.put("proc_model_id",procModelID);
+
+        Object jsonOut = JSONObject.toJSON(map);
+
+        return jsonOut.toString();
+    }
 
 // ----------------------------------------------表单项权限设置，暂时先不搞-----------------------------------
     //    /**

@@ -139,4 +139,13 @@
       created_by = #{createdBy,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <!--获取与表单实例绑定的流程实例ID
+      @param String formInstId-->
+  <select id="getProcInstID" parameterType="java.lang.String">
+    SELECT proc_inst_id
+    FROM as_formproc_instbind
+    WHERE
+      form_inst_id = #{formInstId,jdbcType = VARCHAR}
+  </select>
 </mapper>

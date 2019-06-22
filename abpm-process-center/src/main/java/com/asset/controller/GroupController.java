@@ -2,11 +2,9 @@ package com.asset.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.OAppGroupBind;
-import com.asset.rec.GroupCreateRec;
-import com.asset.rec.GroupIDRec;
-import com.asset.rec.GroupRenameRec;
+import com.asset.rec.GroupRec;
 import com.asset.rec.OAppIdRec;
-import com.asset.service.impl.OAppGroupServiceImpl;
+import com.asset.service.AppGroupService;
 import com.asset.utils.Constants;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +18,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
- * OApp即仿照氚云中的应用 结构，与flowable中的APP作区分
- * 这边只管理OApp中的分组内容（这里只会得到一个OApp的ID），OApp的创建、修改有haijie那里完成
- * 这里完成分组的创建、重命名、删除、根据应用返回所有分组信息
+ * 这边只管理App中的分组内容（这里只会得到一个App的ID），App的创建、修改有haijie那里完成
+ * 这里完成分组的创建、重命名、删除,返回应用下所有分组
+ * @author YBY
+ * @time 190619 1049
+ * @version 1.1_190619 1049
  */
 @Controller
-@Api(value = "OApp分组管理接口")
-public class ApplicationGroupController {
+@Api(value = "App分组管理接口")
+public class GroupController {
 
     @Autowired
-    OAppGroupServiceImpl oAppGroupService;
+    AppGroupService groupService;
 
     /**
      * 创建分组
@@ -37,9 +37,9 @@ public class ApplicationGroupController {
      * @return
      */
     @RequestMapping(value = "/group/create" ,method = RequestMethod.POST)
-    public int createOAppGroup(@RequestBody GroupCreateRec rec)
+    public int createOAppGroup(@RequestBody GroupRec rec)
     {
-        oAppGroupService.createOAppGroup(rec);
+        groupService.createAppGroup(rec);
         return 1;
     }
 
@@ -49,9 +49,9 @@ public class ApplicationGroupController {
      * @return
      */
     @RequestMapping(value = "/group/rename" ,method = RequestMethod.PUT)
-    public int renameGroup(@RequestBody GroupRenameRec rec)
+    public int renameGroup(@RequestBody GroupRec rec)
     {
-        oAppGroupService.renameOAppGroup(rec);
+        groupService.renameAppGroup(rec);
         return 1;
     }
 
@@ -61,9 +61,9 @@ public class ApplicationGroupController {
      * @return
      */
     @RequestMapping(value = "/group/delete" ,method = RequestMethod.PUT)
-    public int deleteGroup(@RequestBody GroupIDRec rec)
+    public int deleteGroup(@RequestBody GroupRec rec)
     {
-        oAppGroupService.deleteOAppGroup(rec);
+        groupService.deleteAppGroup(rec);
         return 1;
     }
 
@@ -75,7 +75,7 @@ public class ApplicationGroupController {
     @RequestMapping(value = "/group/selectall" ,method = RequestMethod.PUT)
     public String showGroups(@RequestBody OAppIdRec rec)
     {
-        ArrayList<OAppGroupBind> groups = (ArrayList<OAppGroupBind>) oAppGroupService.showGroups(rec);
+        ArrayList<OAppGroupBind> groups = (ArrayList<OAppGroupBind>) groupService.showGroups(rec);
 
         HashMap<String, Serializable> map = new HashMap<String, Serializable>();
         map.put("code", Constants.CODE_SUCCESS);

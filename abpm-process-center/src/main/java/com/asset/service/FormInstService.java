@@ -1,6 +1,7 @@
 package com.asset.service;
 
 import com.asset.entity.AsFormInst;
+import com.asset.rec.FormInstApproveRec;
 import com.asset.rec.FormInstCommitRec;
 import org.springframework.stereotype.Service;
 
@@ -17,4 +18,5 @@ public interface FormInstService {
     public int commitFormInst(FormInstCommitRec rec);
 
     List<AsFormInst> getFormInsts(String userID, Integer form_status);
+    public int approveFormInst(FormInstApproveRec rec);
 }

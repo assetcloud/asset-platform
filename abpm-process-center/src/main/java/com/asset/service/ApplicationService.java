@@ -3,7 +3,7 @@ package com.asset.service;
 
 import com.asset.dao.ApplicationMapper;
 import com.asset.dao.AsFormModelMapper;
-import com.asset.dao.OAppFormBindMapper;
+import com.asset.dao.AppFormBindMapper;
 import com.asset.entity.Application;
 import com.asset.entity.AsFormModel;
 import com.asset.javabean.UuidIdGenerator;
@@ -29,7 +29,7 @@ public class ApplicationService {
     @Autowired
     ApplicationMapper applicationMapper;
     @Autowired
-    OAppFormBindMapper oAppFormBindMapper;
+    AppFormBindMapper appFormBindMapper;
     @Autowired
     AsFormModelMapper asFormModelMapper;
 
@@ -65,7 +65,7 @@ public class ApplicationService {
      */
     public List<AsFormModel> getFormModels(String appID) {
         //先从asset_oapp_form表中找到所有该OApp应用下 表单模型ID
-        List<String> formModelIDs = oAppFormBindMapper.getFormModelIDs(appID);
+        List<String> formModelIDs = appFormBindMapper.getFormModelIDs(appID);
 
         return asFormModelMapper.getFormModels(formModelIDs);
     }
