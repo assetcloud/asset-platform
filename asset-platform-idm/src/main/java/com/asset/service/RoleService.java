@@ -77,10 +77,30 @@ public class RoleService{
         }
         return roleMapper.addUsersToRole(userList);
     }
+
     public int addUsers2Role(List<UserRole> userList){
         for (int i=0; i<userList.size(); i++){
             userList.get(i).setCreatedTime(new Date());
         }
         return roleMapper.addUsersToRole(userList);
     }
+
+    /**
+     * 角色模糊搜索
+     * @param roleNameZh
+     * @return Role
+     */
+    public Role getRoleByName(String roleNameZh){
+        return roleMapper.roleSearchByName(roleNameZh);
+    }
+
+    /**
+     * 角色批量删除
+     * @param userList
+     * @return int
+     */
+    public int batchDelete(List<UserRole> userList){
+        return roleMapper.batchDeleteRoleMember(userList);
+    }
+
 }

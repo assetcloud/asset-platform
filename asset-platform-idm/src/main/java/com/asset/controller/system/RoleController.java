@@ -5,11 +5,13 @@ import com.asset.bean.RespBean;
 import com.asset.bean.Role;
 import com.asset.bean.RoleGroup;
 import com.asset.bean.UserRole;
+import com.asset.common.SystemConstant;
 import com.asset.service.RoleService;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.reactive.ReactiveSortingRepository;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -157,12 +159,49 @@ public class RoleController {
         }
         return RespBean.ok("添加成功");
     }*/
+
     public RespBean users2Role(@RequestBody List<UserRole> userRoleList){
         int flag = roleService.addUsers2Role(userRoleList);
         if (flag < 0){
             return RespBean.error("添加失败");
         }
         return RespBean.ok("添加成功");
+    }
+
+    @ApiOperation(value = "角色检索",notes = "通过角色名称获取（模糊搜索）", tags = "角色", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleNameZh", value = "角色名称", required = true, dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "检索成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
+    @RequestMapping(value = "/roleSearch",method = RequestMethod.GET)
+    public RespBean roleSearch(@RequestBody Role role){
+        Role target = roleService.getRoleByName(role.getRoleNameZh());
+        LOGGER.info(role.getRoleNameZh());
+        if (target == null){
+            return RespBean.error(SystemConstant.ROLE_NOT_FOUND);
+        }
+        return RespBean.ok(SystemConstant.GET_SUCCESS, target);
+    }
+
+    @ApiOperation(value = "删除角色成员",notes = "为特定角色批量删除成员", tags = "角色", httpMethod = "DELETE")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userRoleList", value = "用户角色列表", required = true, dataType = "List")
+    })
+    @RequestMapping(value = "/remove",method = RequestMethod.DELETE)
+    public RespBean removeRoleMember(@RequestBody List<UserRole> userRoleList){
+        int flag = roleService.batchDelete(userRoleList);
+        if (flag < 0){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        }
+        return RespBean.ok(SystemConstant.DELETE_SUCCESS);
+    }
+
+    @RequestMapping(value = "/rights", method = RequestMethod.POST)
+    public RespBean saveRight(){
+        return RespBean.ok(SystemConstant.ADD_SUCCESS);
     }
 }
 

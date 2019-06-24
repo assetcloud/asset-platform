@@ -108,4 +108,9 @@ public interface SystemConstant {
      * 用户变量
      */
     String ADMIN_IDENTITY = "1";
+    String REGISTER_SUCCESS = "注册成功";
+    String REGISTER_FAILURE = "注册失败";
+    String USER_ALREADY_EXISTS = "用户已存在";
+
+    String ROLE_NOT_FOUND = "未搜索到相关角色";
 }
