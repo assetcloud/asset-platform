@@ -79,7 +79,7 @@ public class RoleController {
 
     @ApiOperation(value = "删除角色组", notes = "删除角色组",tags = "角色", httpMethod = "DELETE")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "角色组id", required = true, dataType = "Integer"),
+            @ApiImplicitParam(name = "id", value = "角色组id", required = true, dataType = "Long"),
             @ApiImplicitParam(name = "roleGroupName", value = "角色组名称", required = true, dataType = "String")
     })
     @ApiResponses({
@@ -148,17 +148,9 @@ public class RoleController {
 
     @ApiOperation(value = "添加角色成员",notes = "为特定角色添加成员", tags = "角色", httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "rid", value = "角色id", required = true, dataType = "Long"),
-            @ApiImplicitParam(name = "users[]", value = "用户id数组", required = true, dataType = "String")
+            @ApiImplicitParam(name = "userRoleList", value = "用户id与角色id的json数组", required = true, example = "123")
     })
     @RequestMapping(value = "/userToRole",method = RequestMethod.POST)
-    /*public RespBean users2Role(@RequestParam(value = "users[]") String[] users, @RequestParam(value = "rid") Long rid){
-        int flag = roleService.addUsers2Role(rid, users);
-        if (flag < 0){
-            return RespBean.error("添加失败");
-        }
-        return RespBean.ok("添加成功");
-    }*/
 
     public RespBean users2Role(@RequestBody List<UserRole> userRoleList){
         int flag = roleService.addUsers2Role(userRoleList);
@@ -188,7 +180,7 @@ public class RoleController {
 
     @ApiOperation(value = "删除角色成员",notes = "为特定角色批量删除成员", tags = "角色", httpMethod = "DELETE")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "userRoleList", value = "用户角色列表", required = true, dataType = "List")
+            @ApiImplicitParam(name = "userRoleList", value = "用户角色列表", required = true, dataType = "List<UserRole>")
     })
     @RequestMapping(value = "/remove",method = RequestMethod.DELETE)
     public RespBean removeRoleMember(@RequestBody List<UserRole> userRoleList){

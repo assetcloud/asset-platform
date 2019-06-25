@@ -84,13 +84,13 @@ public interface SystemConstant {
 
     List<Menu> MENU_LIST = new ArrayList<>(Arrays.asList(MENUS));
 
-    Integer NODE_ALREADY_EXISTS = -2;
+    Integer RECORD_ALREADY_EXISTS = -2;
     Integer SYSTEM_ERROR = -1;
 
     /**
      * 正确变量
      */
-    String DELETE_SUCCESS = "删除成功";
+    String DELETE_SUCCESS = "记录已删除";
     String ADD_SUCCESS = "添加成功";
     String UPDATE_SUCCESS = "修改成功";
     String GET_SUCCESS = "获取成功";
@@ -111,6 +111,8 @@ public interface SystemConstant {
     String REGISTER_SUCCESS = "注册成功";
     String REGISTER_FAILURE = "注册失败";
     String USER_ALREADY_EXISTS = "用户已存在";
+    String SCENE_ALREADY_EXISTS = "该场景已存在，请更换名称";
+    String SCENE_NOT_FOUND = "未搜索到相关场景";
 
     String ROLE_NOT_FOUND = "未搜索到相关角色";
 }
