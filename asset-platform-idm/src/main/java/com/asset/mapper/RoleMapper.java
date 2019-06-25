@@ -26,4 +26,6 @@ public interface RoleMapper {
     int addRoleToGroup(@Param("rid") Long rid, @Param("groupId") Long groupId);
     List<RoleGroup> groupRoles();
     int addUsersToRole(List<UserRole> users);
+    Role roleSearchByName(String roleNameZh);
+    int batchDeleteRoleMember(List<UserRole> userRoleList);
 }

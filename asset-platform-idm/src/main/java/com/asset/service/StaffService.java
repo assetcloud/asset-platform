@@ -29,43 +29,33 @@ public class StaffService {
     @Autowired
     UuidIdGenerator idGenerator;
 
-    public Map<String, Object> addStaff(Staff staff) {
+    /**
+     * 添加员工
+     * @param staff
+     * @param user
+     * @return Map<String, Object>
+     */
+    public Map<String, Object> addStaff(Staff staff, User user) {
         Map<String, Object> resultMap = new HashMap<>();
         if(staff.getId() == null){
             String newId = idGenerator.generateId();
             staff.setId(newId);
             resultMap.put("staffId",newId);
         }
+        staff.setStaffName(user.getRealName());
+        staff.setGender(user.getGender());
+        staff.setUserId(user.getId());
+        staff.setContactPhoneNumber(user.getPhoneNumber());
+        staff.setStaffBirthday(user.getUserBirthday());
+        staff.setCertificateType(String.valueOf(user.getCertificateType()));
+        staff.setCertificateNumber(user.getCertificateNumber());
+        staff.setStatus("1");
+        staff.setRemoveTag(0);
+        staff.setUserCreatedTag("1");
+        staff.setAssetStatus("1");
+        staff.setFamilyAddress(user.getUserAddress());
         int flag = staffMapper.insert(staff);
         resultMap.put("flag", flag);
         return resultMap;
     }
-
-    /*public List<Hr> getHrsByKeywords(String keywords) {
-        return hrMapper.getHrsByKeywords(keywords);
-    }
-
-    public int updateHr(Hr hr) {
-        return hrMapper.updateHr(hr);
-    }
-
-    public int updateHrRoles(Long hrId, Long[] rids) {
-        int i = hrMapper.deleteRoleByHrId(hrId);
-        return hrMapper.addRolesForHr(hrId, rids);
-    }
-
-    public Hr getHrById(Long hrId) {
-        return hrMapper.getHrById(hrId);
-    }
-
-    public int deleteHr(Long hrId) {
-        return hrMapper.deleteHr(hrId);
-    }
-
-    public List<Hr> getAllHrExceptAdmin() {
-        return hrMapper.getAllHr(HrUtils.getCurrentHr().getId());
-    }
-    public List<Hr> getAllHr() {
-        return hrMapper.getAllHr(null);
-    }*/
 }

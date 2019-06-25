@@ -11,7 +11,7 @@
  Target Server Version : 50560
  File Encoding         : 65001
 
- Date: 18/06/2019 15:44:56
+ Date: 21/06/2019 16:18:54
 */
 
 SET NAMES utf8mb4;
@@ -73,40 +73,64 @@ CREATE TABLE `as_menu`  (
   `level` int(2) NULL DEFAULT NULL,
   `sort` int(2) NULL DEFAULT NULL,
   `category` int(2) NULL DEFAULT NULL,
-  `remark` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `remark` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `group_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '表单分组id',
+  `group_name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '表单分组名称',
   `is_deleted` int(2) NULL DEFAULT NULL,
   `add_time` datetime NULL DEFAULT NULL,
   `remove_time` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 101 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = MyISAM AUTO_INCREMENT = 147 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of as_menu
 -- ----------------------------
-INSERT INTO `as_menu` VALUES (77, 0, 'app', '采购管理', '2', '6fc74e52-8e6e-11e9-b311-005056c00001', 0, 0, 1, NULL, 0, '2019-06-14 14:34:37', NULL);
-INSERT INTO `as_menu` VALUES (78, 77, 'form', '测试表单', 'icon-cgfk', '1', 0, 0, 2, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (79, 78, 'func', '新增', '', '1/list/add', 1, 1, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (80, 78, 'func', '导入', '', '1/list/import', 1, 2, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (81, 78, 'func', '导出', '', '1/list/export', 1, 3, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (82, 78, 'func', '删除', '', '1/list/delete', 1, 4, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (83, 78, 'func', '暂存', '', '1/form/add_temp', 2, 5, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (84, 78, 'func', '提交', '', '1/form/save', 2, 6, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (85, 78, 'func', '提交并添加', '', '1/form/save_add', 2, 7, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (86, 78, 'func', '打印二维码', '', '1/list/printQR', 2, 8, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (87, 78, 'func', '打印', '', '1/form/print', 3, 9, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (88, 78, 'func', '删除', '', '1/form/delete', 3, 10, 3, NULL, 0, '2019-06-14 14:35:14', NULL);
-INSERT INTO `as_menu` VALUES (89, 0, 'app', '测试应用', '2', '60b16393-8e70-11e9-b311-005056c00001', 0, 0, 1, NULL, 0, '2019-06-14 14:48:34', NULL);
-INSERT INTO `as_menu` VALUES (90, 89, 'form', '测试表单2', 'icon-cgfk', '1', 0, 0, 2, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (91, 90, 'func', '新增', '', '11/list/add', 1, 1, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (92, 90, 'func', '导入', '', '11/list/import', 1, 2, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (93, 90, 'func', '导出', '', '11/list/export', 1, 3, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (94, 90, 'func', '删除', '', '11/list/delete', 1, 4, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (95, 90, 'func', '暂存', '', '11/form/add_temp', 2, 5, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (96, 90, 'func', '提交', '', '11/form/save', 2, 6, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (97, 90, 'func', '提交并添加', '', '11/form/save_add', 2, 7, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (98, 90, 'func', '打印二维码', '', '11/list/printQR', 2, 8, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (99, 90, 'func', '打印', '', '11/form/print', 3, 9, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
-INSERT INTO `as_menu` VALUES (100, 90, 'func', '删除', '', '11/form/delete', 3, 10, 3, NULL, 0, '2019-06-14 14:48:44', NULL);
+INSERT INTO `as_menu` VALUES (101, 0, 'app', '测试应用', 'icon-cgfk', '60b16393-8e70-11e9-b311-005056c00001', 0, 0, 1, NULL, '', '', 0, '2019-06-19 09:49:36', NULL);
+INSERT INTO `as_menu` VALUES (102, 101, 'form', '测试表单', '表单图标', '1', 0, 0, 2, NULL, '1', '表单分组', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (103, 102, 'func', '新增', '', '1/list/add', 1, 1, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (104, 102, 'func', '导入', '', '1/list/import', 1, 2, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (105, 102, 'func', '导出', '', '1/list/export', 1, 3, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (106, 102, 'func', '删除', '', '1/list/delete', 1, 4, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (107, 102, 'func', '暂存', '', '1/form/add_temp', 2, 5, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (108, 102, 'func', '提交', '', '1/form/save', 2, 6, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (109, 102, 'func', '提交并添加', '', '1/form/save_add', 2, 7, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (110, 102, 'func', '打印二维码', '', '1/list/printQR', 2, 8, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (111, 102, 'func', '打印', '', '1/form/print', 3, 9, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (112, 102, 'func', '删除', '', '1/form/delete', 3, 10, 3, NULL, '', '', 0, '2019-06-19 09:54:02', NULL);
+INSERT INTO `as_menu` VALUES (113, 101, 'form', '测试表单2', '表单图标2', '1', 0, 0, 2, NULL, '2', '表单分组2', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (114, 113, 'func', '新增', '', '1/list/add', 1, 1, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (115, 113, 'func', '导入', '', '1/list/import', 1, 2, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (116, 113, 'func', '导出', '', '1/list/export', 1, 3, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (117, 113, 'func', '删除', '', '1/list/delete', 1, 4, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (118, 113, 'func', '暂存', '', '1/form/add_temp', 2, 5, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (119, 113, 'func', '提交', '', '1/form/save', 2, 6, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (120, 113, 'func', '提交并添加', '', '1/form/save_add', 2, 7, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (121, 113, 'func', '打印二维码', '', '1/list/printQR', 2, 8, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (122, 113, 'func', '打印', '', '1/form/print', 3, 9, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (123, 113, 'func', '删除', '', '1/form/delete', 3, 10, 3, NULL, '', '', 0, '2019-06-19 10:03:18', NULL);
+INSERT INTO `as_menu` VALUES (124, 0, 'app', '采购管理', 'icon-cgfk', '6fc74e52-8e6e-11e9-b311-005056c00001', 0, 0, 1, NULL, '', '', 0, '2019-06-19 10:27:08', NULL);
+INSERT INTO `as_menu` VALUES (125, 124, 'form', '采购表单1', '图标', '2', 0, 0, 2, NULL, '3', '表单分组3', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (126, 125, 'func', '新增', '', '2/list/add', 1, 1, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (127, 125, 'func', '导入', '', '2/list/import', 1, 2, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (128, 125, 'func', '导出', '', '2/list/export', 1, 3, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (129, 125, 'func', '删除', '', '2/list/delete', 1, 4, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (130, 125, 'func', '暂存', '', '2/form/add_temp', 2, 5, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (131, 125, 'func', '提交', '', '2/form/save', 2, 6, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (132, 125, 'func', '提交并添加', '', '2/form/save_add', 2, 7, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (133, 125, 'func', '打印二维码', '', '2/list/printQR', 2, 8, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (134, 125, 'func', '打印', '', '2/form/print', 3, 9, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (135, 125, 'func', '删除', '', '2/form/delete', 3, 10, 3, NULL, '', '', 0, '2019-06-19 10:27:39', NULL);
+INSERT INTO `as_menu` VALUES (136, 124, 'form', '采购表单2', '图标', '3', 0, 0, 2, NULL, '4', '表单分组4', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (137, 136, 'func', '新增', '', '32/list/add', 1, 1, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (138, 136, 'func', '导入', '', '32/list/import', 1, 2, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (139, 136, 'func', '导出', '', '32/list/export', 1, 3, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (140, 136, 'func', '删除', '', '32/list/delete', 1, 4, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (141, 136, 'func', '暂存', '', '32/form/add_temp', 2, 5, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (142, 136, 'func', '提交', '', '32/form/save', 2, 6, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (143, 136, 'func', '提交并添加', '', '32/form/save_add', 2, 7, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (144, 136, 'func', '打印二维码', '', '32/list/printQR', 2, 8, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (145, 136, 'func', '打印', '', '32/form/print', 3, 9, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
+INSERT INTO `as_menu` VALUES (146, 136, 'func', '删除', '', '32/form/delete', 3, 10, 3, NULL, '', '', 0, '2019-06-19 10:27:54', NULL);
 
 -- ----------------------------
 -- Table structure for as_menu_role
@@ -117,7 +141,7 @@ CREATE TABLE `as_menu_role`  (
   `menu_id` bigint(20) NOT NULL,
   `role_id` int(20) NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = MyISAM AUTO_INCREMENT = 61 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
+) ENGINE = MyISAM AUTO_INCREMENT = 107 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Fixed;
 
 -- ----------------------------
 -- Records of as_menu_role
@@ -146,6 +170,52 @@ INSERT INTO `as_menu_role` VALUES (57, 97, 1);
 INSERT INTO `as_menu_role` VALUES (58, 98, 1);
 INSERT INTO `as_menu_role` VALUES (59, 99, 1);
 INSERT INTO `as_menu_role` VALUES (60, 100, 1);
+INSERT INTO `as_menu_role` VALUES (61, 101, 1);
+INSERT INTO `as_menu_role` VALUES (62, 102, 1);
+INSERT INTO `as_menu_role` VALUES (63, 103, 1);
+INSERT INTO `as_menu_role` VALUES (64, 104, 1);
+INSERT INTO `as_menu_role` VALUES (65, 105, 1);
+INSERT INTO `as_menu_role` VALUES (66, 106, 1);
+INSERT INTO `as_menu_role` VALUES (67, 107, 1);
+INSERT INTO `as_menu_role` VALUES (68, 108, 1);
+INSERT INTO `as_menu_role` VALUES (69, 109, 1);
+INSERT INTO `as_menu_role` VALUES (70, 110, 1);
+INSERT INTO `as_menu_role` VALUES (71, 111, 1);
+INSERT INTO `as_menu_role` VALUES (72, 112, 1);
+INSERT INTO `as_menu_role` VALUES (73, 113, 1);
+INSERT INTO `as_menu_role` VALUES (74, 114, 1);
+INSERT INTO `as_menu_role` VALUES (75, 115, 1);
+INSERT INTO `as_menu_role` VALUES (76, 116, 1);
+INSERT INTO `as_menu_role` VALUES (77, 117, 1);
+INSERT INTO `as_menu_role` VALUES (78, 118, 1);
+INSERT INTO `as_menu_role` VALUES (79, 119, 1);
+INSERT INTO `as_menu_role` VALUES (80, 120, 1);
+INSERT INTO `as_menu_role` VALUES (81, 121, 1);
+INSERT INTO `as_menu_role` VALUES (82, 122, 1);
+INSERT INTO `as_menu_role` VALUES (83, 123, 1);
+INSERT INTO `as_menu_role` VALUES (84, 124, 1);
+INSERT INTO `as_menu_role` VALUES (85, 125, 1);
+INSERT INTO `as_menu_role` VALUES (86, 126, 1);
+INSERT INTO `as_menu_role` VALUES (87, 127, 1);
+INSERT INTO `as_menu_role` VALUES (88, 128, 1);
+INSERT INTO `as_menu_role` VALUES (89, 129, 1);
+INSERT INTO `as_menu_role` VALUES (90, 130, 1);
+INSERT INTO `as_menu_role` VALUES (91, 131, 1);
+INSERT INTO `as_menu_role` VALUES (92, 132, 1);
+INSERT INTO `as_menu_role` VALUES (93, 133, 1);
+INSERT INTO `as_menu_role` VALUES (94, 134, 1);
+INSERT INTO `as_menu_role` VALUES (95, 135, 1);
+INSERT INTO `as_menu_role` VALUES (96, 136, 1);
+INSERT INTO `as_menu_role` VALUES (97, 137, 1);
+INSERT INTO `as_menu_role` VALUES (98, 138, 1);
+INSERT INTO `as_menu_role` VALUES (99, 139, 1);
+INSERT INTO `as_menu_role` VALUES (100, 140, 1);
+INSERT INTO `as_menu_role` VALUES (101, 141, 1);
+INSERT INTO `as_menu_role` VALUES (102, 142, 1);
+INSERT INTO `as_menu_role` VALUES (103, 143, 1);
+INSERT INTO `as_menu_role` VALUES (104, 144, 1);
+INSERT INTO `as_menu_role` VALUES (105, 145, 1);
+INSERT INTO `as_menu_role` VALUES (106, 146, 1);
 
 -- ----------------------------
 -- Table structure for as_module
@@ -170,9 +240,10 @@ CREATE TABLE `as_module`  (
 DROP TABLE IF EXISTS `as_organ_scene`;
 CREATE TABLE `as_organ_scene`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `node_id` bigint(20) NOT NULL,
-  `parent_id` bigint(20) NOT NULL,
-  `scene_id` bigint(20) NOT NULL COMMENT '工作场景id',
+  `node_id` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `parent_id` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `scene_id` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT '工作场景id',
+  `status` int(2) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
 
@@ -181,10 +252,10 @@ CREATE TABLE `as_organ_scene`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `as_organ_tree`;
 CREATE TABLE `as_organ_tree`  (
-  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `id` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'id',
   `unit_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '部门名称',
   `unit_name_en` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '部门英文名称',
-  `parent_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0 COMMENT '上级单位id',
+  `parent_id` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '上级单位id',
   `organization_form` int(2) NULL DEFAULT NULL COMMENT '组织形式：\r\n10、公司制企业（11.国有独资企业 12.其他有限责任公司 13.上市股份有限公司 股票代码 14。非上市股份有限公司）20.公司制企业（21.非公司制独资企业 22.其他非公司制企业） 30.企业化管理事业单位 40。其他',
   `unit_type` int(3) NULL DEFAULT NULL COMMENT '单位分类\r\n1、主管部门 \r\n2、二级单位 \r\n3、基层单位 \r\n\r\n100、政府财政事务 \r\n200、安全管理事务 \r\n300、',
   `parent_node_name` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '上级单位名称',
@@ -249,16 +320,20 @@ CREATE TABLE `as_organ_tree`  (
   `created_time` datetime NULL DEFAULT NULL COMMENT '插入时间',
   `is_deleted` int(2) NULL DEFAULT NULL,
   `status` tinyint(1) UNSIGNED NOT NULL DEFAULT 1 COMMENT '状态 1：有效 0：无效',
-  `sort` int(2) UNSIGNED ZEROFILL NULL DEFAULT NULL COMMENT '排序',
+  `sort` int(10) UNSIGNED NULL DEFAULT NULL COMMENT '排序',
   `tenant_code` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '租户代码',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of as_organ_tree
 -- ----------------------------
-INSERT INTO `as_organ_tree` VALUES (1, '浙江省政府办公厅', NULL, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2019-05-05 18:55:23', NULL, 1, NULL, NULL);
-INSERT INTO `as_organ_tree` VALUES (2, '浙江省商务厅', NULL, 1, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2019-05-05 18:58:07', NULL, 1, NULL, NULL);
+INSERT INTO `as_organ_tree` VALUES ('00e86a20-9357-11e9-846c-005056c00001', '浙江省财政厅资产处人事部', NULL, '6c7758a6-9353-11e9-8653-005056c00001', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2019-06-20 20:29:09', 0, 1, 1, NULL);
+INSERT INTO `as_organ_tree` VALUES ('1', '浙江省政府办公厅', NULL, '0', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2019-05-05 18:55:23', NULL, 1, NULL, NULL);
+INSERT INTO `as_organ_tree` VALUES ('1899f717-9290-11e9-9cc2-005056c00001', '浙江省财政厅', NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2019-06-19 20:47:19', NULL, NULL, NULL, NULL, '2019-06-19 20:45:19', 1, 0, 2, NULL);
+INSERT INTO `as_organ_tree` VALUES ('2', '浙江省商务厅', NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2019-05-05 18:58:07', NULL, 1, NULL, NULL);
+INSERT INTO `as_organ_tree` VALUES ('6c7758a6-9353-11e9-8653-005056c00001', '浙江省财政厅资产处', NULL, 'b1789bb8-9293-11e9-ae19-005056c00001', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2019-06-20 20:03:32', 0, 1, 1, NULL);
+INSERT INTO `as_organ_tree` VALUES ('b1789bb8-9293-11e9-ae19-005056c00001', '浙江省财政厅', NULL, '1', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2019-06-19 21:11:04', 0, 1, 2, NULL);
 
 -- ----------------------------
 -- Table structure for as_resource
@@ -441,13 +516,13 @@ INSERT INTO `as_role_group` VALUES (5, '开发组', 0, '2019-06-17 10:34:41');
 -- ----------------------------
 DROP TABLE IF EXISTS `as_scene`;
 CREATE TABLE `as_scene`  (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `id` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `scene_name` varchar(20) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL COMMENT '工作场景名称',
   `is_deleted` tinyint(2) UNSIGNED ZEROFILL NULL DEFAULT NULL,
   `add_time` datetime NULL DEFAULT NULL,
   `status` tinyint(2) NULL DEFAULT 1,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Table structure for as_staff
@@ -630,7 +705,7 @@ CREATE TABLE `as_user_role`  (
   `created_time` datetime NOT NULL COMMENT '插入时间',
   `status` int(2) NOT NULL COMMENT '状态 1：有效 0：无效',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 38 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
+) ENGINE = InnoDB AUTO_INCREMENT = 40 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Compact;
 
 -- ----------------------------
 -- Records of as_user_role
@@ -638,8 +713,6 @@ CREATE TABLE `as_user_role`  (
 INSERT INTO `as_user_role` VALUES (1, '1', 1, '2019-05-15 11:13:39', 1);
 INSERT INTO `as_user_role` VALUES (2, '4', 2, '2019-05-28 10:15:09', 1);
 INSERT INTO `as_user_role` VALUES (35, '1', 2, '2019-06-18 15:01:34', 1);
-INSERT INTO `as_user_role` VALUES (36, '1', 1, '2019-06-18 15:28:58', 1);
-INSERT INTO `as_user_role` VALUES (37, '1', 1, '2019-06-18 15:28:58', 1);
 
 -- ----------------------------
 -- Table structure for as_user_scene
@@ -647,8 +720,9 @@ INSERT INTO `as_user_role` VALUES (37, '1', 1, '2019-06-18 15:28:58', 1);
 DROP TABLE IF EXISTS `as_user_scene`;
 CREATE TABLE `as_user_scene`  (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `scene_id` bigint(20) NOT NULL,
+  `scene_id` varchar(100) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
   `user_id` varchar(64) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL,
+  `status` int(2) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = Compact;
 

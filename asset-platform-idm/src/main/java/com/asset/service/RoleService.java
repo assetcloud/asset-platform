@@ -67,20 +67,45 @@ public class RoleService{
     public int addUsers2Role(Long rid, String[] users){
         List<UserRole> userList = new ArrayList<>();
         UserRole userRole = new UserRole();
-        for (int i=0; i<users.length; i++){
-            userRole.setUid(users[i]);
+        for (String user : users) {
+            userRole.setUid(user);
             userRole.setCreatedTime(new Date());
             userRole.setRoleId(rid);
             userRole.setStatus(1);
-            System.out.println(userRole.toString());
             userList.add(userRole);
         }
         return roleMapper.addUsersToRole(userList);
     }
+
+    /**
+     * 添加角色成员
+     * @param userList
+     * @return int
+     */
     public int addUsers2Role(List<UserRole> userList){
-        for (int i=0; i<userList.size(); i++){
-            userList.get(i).setCreatedTime(new Date());
+        //TODO:改成批量增（若存在则不插入）
+        for (UserRole userRole : userList) {
+            userRole.setCreatedTime(new Date());
         }
         return roleMapper.addUsersToRole(userList);
     }
+
+    /**
+     * 角色模糊搜索
+     * @param roleNameZh
+     * @return Role
+     */
+    public Role getRoleByName(String roleNameZh){
+        return roleMapper.roleSearchByName(roleNameZh);
+    }
+
+    /**
+     * 角色批量删除
+     * @param userList
+     * @return int
+     */
+    public int batchDelete(List<UserRole> userList){
+        return roleMapper.batchDeleteRoleMember(userList);
+    }
+
 }

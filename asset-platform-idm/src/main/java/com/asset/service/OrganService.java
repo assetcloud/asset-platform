@@ -43,7 +43,7 @@ public class OrganService {
     public int addNode(OrganTree record){
         if(organTreeMapper.getNodeByName(record.getUnitName()) != null){
             //记录已存在
-            return SystemConstant.NODE_ALREADY_EXISTS;
+            return SystemConstant.RECORD_ALREADY_EXISTS;
         }
         if(record.getId() == null){
             record.setId(uuidIdGenerator.generateId());

@@ -1,17 +1,17 @@
 package com.asset.bean;
 
+import io.swagger.annotations.ApiModel;
+
 import java.util.Date;
 
+@ApiModel(value = "场景对象")
 public class Scene {
+
     private String id;
-
     private String sceneName;
-
-    private Byte isDeleted;
-
+    private int isDeleted;
     private Date addTime;
-
-    private Byte status;
+    private int status;
 
     public String getId() {
         return id;
@@ -29,11 +29,11 @@ public class Scene {
         this.sceneName = sceneName == null ? null : sceneName.trim();
     }
 
-    public Byte getIsDeleted() {
+    public int getIsDeleted() {
         return isDeleted;
     }
 
-    public void setIsDeleted(Byte isDeleted) {
+    public void setIsDeleted(int isDeleted) {
         this.isDeleted = isDeleted;
     }
 
@@ -45,11 +45,11 @@ public class Scene {
         this.addTime = addTime;
     }
 
-    public Byte getStatus() {
+    public int getStatus() {
         return status;
     }
 
-    public void setStatus(Byte status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 }

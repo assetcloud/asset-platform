@@ -3,7 +3,7 @@ package com.asset.controller.system;
 import com.asset.bean.RespBean;
 import com.asset.bean.Staff;
 import com.asset.bean.User;
-import com.asset.mapper.UuidIdGenerator;
+import com.asset.common.SystemConstant;
 import com.asset.service.StaffService;
 import com.asset.service.UserService;
 import io.swagger.annotations.*;
@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -60,12 +59,12 @@ public class UserNormalController {
         LOGGER.info("用户注册：{}", user.toString());
         int flag = userService.insertUser(user);
         if(flag == -1){
-            return RespBean.error("用户已存在");
+            return RespBean.error(SystemConstant.USER_ALREADY_EXISTS);
         }
         if(flag < 0){
-            return RespBean.error("注册失败");
+            return RespBean.error(SystemConstant.REGISTER_FAILURE);
         }else{
-            return RespBean.ok("注册成功");
+            return RespBean.ok(SystemConstant.REGISTER_SUCCESS);
         }
     }
 
@@ -81,32 +80,20 @@ public class UserNormalController {
     public RespBean userAudit(@PathVariable("userId") String userId){
         Staff staff = new Staff();
         User user = userService.getUserById(userId);
-        staff.setStaffName(user.getRealName());
-        staff.setGender(user.getGender());
-        staff.setUserId(user.getId());
-        staff.setContactPhoneNumber(user.getPhoneNumber());
-        staff.setStaffBirthday(user.getUserBirthday());
-        staff.setCertificateType(String.valueOf(user.getCertificateType()));
-        staff.setCertificateNumber(user.getCertificateNumber());
-        staff.setStatus("1");
-        staff.setRemoveTag(0);
-        staff.setUserCreatedTag("1");
-        staff.setAssetStatus("1");
-        staff.setFamilyAddress(user.getUserAddress());
-        Map<String, Object> map = staffService.addStaff(staff);
+        Map<String, Object> map = staffService.addStaff(staff, user);
         int flag = Integer.parseInt(String.valueOf(map.get("flag")));
         if(flag < 0){
-            return RespBean.error("系统错误");
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
         }
         user.setStaffId(String.valueOf(map.get("staffId")));
         flag = userService.updateUserById(user);
         if (flag < 0){
-            return RespBean.error("系统错误");
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
         }
         return RespBean.ok("用户审核成功");
     }
 
-    @ApiOperation(value = "获取用户", notes = "根据角色获取用户", httpMethod = "GET")
+    @ApiOperation(value = "获取用户", notes = "根据角色获取用户", tags = "用户", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long")
     })

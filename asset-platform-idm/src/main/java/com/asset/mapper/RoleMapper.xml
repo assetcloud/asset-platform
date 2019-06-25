@@ -77,9 +77,25 @@
     from as_role
     where id = #{id,jdbcType=INTEGER}
   </select>
+
+  <select id="roleSearchByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from as_role
+    where role_name_zh like CONCAT('%', #{roleNameZh,jdbcType=VARCHAR}, '%')
+    AND status = 1
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from as_role
     where id = #{id,jdbcType=INTEGER}
+  </delete>
+
+  <delete id="batchDeleteRoleMember" parameterType="java.util.List">
+    delete from as_user_role where
+    <foreach item="item" index="index" collection="list" open="(" close=")" separator="or">
+      uid = #{item.uid} and role_id = #{item.roleId} and status = 1
+    </foreach>
   </delete>
   <insert id="insert" parameterType="com.asset.bean.Role">
     insert into as_role (id, role_name, role_name_zh,
