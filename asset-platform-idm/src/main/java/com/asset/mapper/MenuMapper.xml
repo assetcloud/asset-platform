@@ -26,6 +26,7 @@
       <result column="sort2" property="sort" jdbcType="INTEGER"/>
       <result column="group_id2" jdbcType="VARCHAR" property="groupId" />
       <result column="group_name2" jdbcType="VARCHAR" property="groupName" />
+      <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
       <collection property="children" ofType="com.asset.bean.Menu">
         <id column="id3" property="id"/>
         <result column="path3" property="path" jdbcType="VARCHAR"/>
@@ -69,6 +70,7 @@
           <result column="name3" property="name" jdbcType="VARCHAR"/>
           <result column="iconCls3" property="iconCls" jdbcType="VARCHAR"/>
           <result column="sort3" property="sort" jdbcType="INTEGER"/>
+          <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
         </collection>
       </collection>
     </collection>
@@ -89,10 +91,11 @@
     <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
     <result column="group_id" jdbcType="VARCHAR" property="groupId" />
     <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, parent_id, code, name, icon_cls, path, level, sort, category, remark, is_deleted,
-    add_time, remove_time, group_id, group_name
+    add_time, remove_time, group_id, group_name, scene_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -109,12 +112,12 @@
       name, icon_cls, path,
       level, sort, category,
       remark, is_deleted, add_time,
-      remove_time, group_id, group_name)
+      remove_time, group_id, group_name, scene_id)
     values (#{id,jdbcType=BIGINT}, #{parentId,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR},
       #{name,jdbcType=VARCHAR}, #{iconCls,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR},
       #{level,jdbcType=INTEGER}, #{sort,jdbcType=INTEGER}, #{category,jdbcType=INTEGER},
       #{remark,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP},
-      #{removeTime,jdbcType=TIMESTAMP}, #{groupId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR})
+      #{removeTime,jdbcType=TIMESTAMP}, #{groupId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR})
   </insert>
   <insert id="addMenuRole">
     insert into as_menu_role (menu_id, role_id) values (#{menuId,jdbcType=BIGINT}, #{roleId,jdbcType=INTEGER})
@@ -141,31 +144,6 @@
       (#{menu.id}, 1)
     </foreach>
   </insert>
-  <!--<select id="getMenusByRole" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-    SELECT
-	m.*,
-	m2.`name` AS name2,
-	m2.`code` AS code2,
-	m2.icon_cls AS iconCls2,
-	m2.path AS path2,
-	m2.sort AS sort2,
-	m3.`name` AS name3,
-	m3.`code` AS code3,
-	m3.icon_cls AS iconCls3,
-	m3.path AS path3,
-	m3.sort AS sort3
-  FROM
-      as_menu m,
-      as_menu m2,
-      as_menu m3
-  WHERE
-      m.id IN ( SELECT mr.menu_id FROM as_menu_role mr WHERE mr.role_id = #{roleId} )
-      AND m.is_deleted = 0
-      AND m.id = m2.parent_id
-      AND m2.id = m3.parent_id
-  ORDER BY
-      m3.sort ASC
-  </select>-->
 
   <select id="getMenusByUser" resultMap="ResultMapWithGroup" parameterType="java.lang.String">
     SELECT
@@ -179,6 +157,7 @@
       m2.sort as sort2,
       m2.group_id as group_id2,
       m2.group_name as group_name2,
+      m2.scene_id as sceneId,
       m3.`id` AS id3,
       m3.`name` AS name3 ,
       m3.path as path3,
@@ -209,6 +188,7 @@
     m2.sort as sort2,
     m2.group_id as group_id2,
     m2.group_name as group_name2,
+    m2.scene_id as scene_id,
     m3.`id` AS id3,
     m3.`name` AS name3 ,
     m3.path as path3,
@@ -280,6 +260,9 @@
       <if test="removeTime != null">
         remove_time,
       </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -320,6 +303,9 @@
       </if>
       <if test="removeTime != null">
         #{removeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sceneId != null">
+        scene_id,
       </if>
     </trim>
   </insert>
@@ -368,9 +354,19 @@
       <if test="groupName != null">
         group_name = #{groupName,jdbcType=VARCHAR},
       </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+
+  <update id="updateFormInfo" parameterType="com.asset.bean.Menu">
+    update as_menu
+    SET scene_id = #{sceneId}
+    where path = #{formModelId} AND is_deleted = 0 AND category = 2
+  </update>
+
   <update id="updateByPrimaryKey" parameterType="com.asset.bean.Menu">
     update as_menu
     set parent_id = #{parentId,jdbcType=BIGINT},
@@ -386,7 +382,8 @@
       add_time = #{addTime,jdbcType=TIMESTAMP},
       remove_time = #{removeTime,jdbcType=TIMESTAMP},
       group_id = #{groupId,jdbcType=VARCHAR},
-      group_name = #{groupName,jdbcType=VARCHAR}
+      group_name = #{groupName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

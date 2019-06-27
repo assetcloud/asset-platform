@@ -37,6 +37,8 @@ public class Menu {
     private String groupId;
     @ApiModelProperty(value = "表单分组名称")
     private String groupName;
+    @ApiModelProperty(value = "场景id")
+    private String sceneId;
 
 
     private List<FormGroup> group;
@@ -53,6 +55,14 @@ public class Menu {
     }
 
     public Menu() {
+    }
+
+    public String getSceneId() {
+        return sceneId;
+    }
+
+    public void setSceneId(String sceneId) {
+        this.sceneId = sceneId;
     }
 
     public List<Menu> getChildren() {
@@ -207,7 +217,11 @@ public class Menu {
                 ", isDeleted=" + isDeleted +
                 ", addTime=" + addTime +
                 ", removeTime=" + removeTime +
-                ", children=" + children.toString() +
+                ", groupId='" + groupId + '\'' +
+                ", groupName='" + groupName + '\'' +
+                ", sceneId='" + sceneId + '\'' +
+                ", group=" + group +
+                ", children=" + children +
                 '}';
     }
 }

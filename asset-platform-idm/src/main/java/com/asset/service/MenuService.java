@@ -218,4 +218,12 @@ public class MenuService {
     public Menu getMenuByPath(String applicationId){
         return menuMapper.getByPath(applicationId);
     }
+
+    /**
+     * 更新表单信息（主要用于绑定表单流程与场景）
+     * @return
+     */
+    public int updateFormInfo(String formModelId, String sceneId){
+        return menuMapper.updateFormInfo(formModelId, sceneId);
+    }
 }

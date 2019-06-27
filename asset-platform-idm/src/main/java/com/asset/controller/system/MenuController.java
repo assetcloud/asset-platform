@@ -1,6 +1,7 @@
 package com.asset.controller.system;
 
 import com.asset.bean.*;
+import com.asset.common.SystemConstant;
 import com.asset.service.MenuService;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -63,6 +64,24 @@ public class MenuController {
             return RespBean.error("添加失败", flag);
         }
         return RespBean.ok("添加成功");
+    }
+
+    @ApiOperation(value = "绑定场景与表单", notes = "保存流程时将表单与流程相互绑定",tags = "菜单", httpMethod = "PUT")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "formModelId", value = "表单id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String"),
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "添加成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
+    @RequestMapping(value = "/form/{formModelId}/{sceneId}", method = RequestMethod.PUT)
+    public RespBean formEnvBind(@PathVariable String formModelId, @PathVariable String sceneId){
+        int flag = menuService.updateFormInfo(formModelId, sceneId);
+        if(flag < 0){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        }
+        return RespBean.ok(SystemConstant.ADD_SUCCESS);
     }
 
     @ApiOperation(value = "获取菜单", notes = "通过当前用户角色获取菜单",tags = "菜单", httpMethod = "GET")

@@ -91,7 +91,7 @@ public interface SystemConstant {
      * 正确变量
      */
     String DELETE_SUCCESS = "记录已删除";
-    String ADD_SUCCESS = "添加成功";
+    String ADD_SUCCESS = "保存成功";
     String UPDATE_SUCCESS = "修改成功";
     String GET_SUCCESS = "获取成功";
 
@@ -99,7 +99,7 @@ public interface SystemConstant {
      * 错误变量
      */
     String DELETE_FAILURE = "删除失败";
-    String ADD_FAILURE = "添加失败";
+    String ADD_FAILURE = "保存失败";
     String UPDATE_FAILURE = "修改失败";
     String GET_FAILURE = "获取失败";
     String SYSTEM_FAILURE = "系统错误";
