@@ -85,7 +85,7 @@ public class SceneService {
      * @param sceneName
      * @return List<Scene>
      */
-    public Scene findSceneByNameAlike(String sceneName){
+    public List<Scene> findSceneByNameAlike(String sceneName){
         return sceneMapper.selectByNameAlike(sceneName);
     }
 }

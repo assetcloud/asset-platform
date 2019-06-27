@@ -78,7 +78,15 @@ public class OrganTree {
     private Boolean status;
     private Integer sort;
     private String tenantCode;
-    private List<OrganTree> childNodes;
+    private List<OrganTree> children;
+
+    public List<OrganTree> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<OrganTree> children) {
+        this.children = children;
+    }
 
     public Boolean getFinancialUnit() {
         return isFinancialUnit;
@@ -102,14 +110,6 @@ public class OrganTree {
 
     public void setVirtualUnit(Boolean virtualUnit) {
         isVirtualUnit = virtualUnit;
-    }
-
-    public List<OrganTree> getChildNodes() {
-        return childNodes;
-    }
-
-    public void setChildNodes(List<OrganTree> childNodes) {
-        this.childNodes = childNodes;
     }
 
     public String getId() {

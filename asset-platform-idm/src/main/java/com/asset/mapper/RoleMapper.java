@@ -28,4 +28,5 @@ public interface RoleMapper {
     int addUsersToRole(List<UserRole> users);
     Role roleSearchByName(String roleNameZh);
     int batchDeleteRoleMember(List<UserRole> userRoleList);
+    List<User> getUsersByRole(@Param("roleId") Long roleId);
 }

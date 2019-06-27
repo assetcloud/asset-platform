@@ -7,6 +7,8 @@ public class OrganScene {
 
     private String parentId;
 
+    private String unitName;
+
     private String sceneId;
 
     private Integer status;
@@ -33,6 +35,14 @@ public class OrganScene {
 
     public void setParentId(String parentId) {
         this.parentId = parentId == null ? null : parentId.trim();
+    }
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName == null ? null : unitName.trim();
     }
 
     public String getSceneId() {

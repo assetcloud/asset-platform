@@ -113,6 +113,7 @@ public interface SystemConstant {
     String USER_ALREADY_EXISTS = "用户已存在";
     String SCENE_ALREADY_EXISTS = "该场景已存在，请更换名称";
     String SCENE_NOT_FOUND = "未搜索到相关场景";
+    String USERS_NOT_FOUND = "该角色下暂无成员";
 
     String ROLE_NOT_FOUND = "未搜索到相关角色";
 }

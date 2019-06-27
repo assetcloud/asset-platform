@@ -1,6 +1,7 @@
 package com.asset.bean;
 
 import io.swagger.annotations.ApiModel;
+import java.util.List;
 
 @ApiModel(value = "组织场景关联表")
 public class OrganScene {
@@ -10,6 +11,24 @@ public class OrganScene {
     private String parentId;
     private String sceneId;
     private Integer status;
+    private String unitName;
+    private List<OrganScene> children;
+
+    public String getUnitName() {
+        return unitName;
+    }
+
+    public void setUnitName(String unitName) {
+        this.unitName = unitName;
+    }
+
+    public List<OrganScene> getChildren() {
+        return children;
+    }
+
+    public void setChildren(List<OrganScene> children) {
+        this.children = children;
+    }
 
     public Long getId() {
         return id;
@@ -49,5 +68,18 @@ public class OrganScene {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "OrganScene{" +
+                "id=" + id +
+                ", nodeId='" + nodeId + '\'' +
+                ", parentId='" + parentId + '\'' +
+                ", sceneId='" + sceneId + '\'' +
+                ", status=" + status +
+                ", unitName='" + unitName + '\'' +
+                ", children=" + children +
+                '}';
     }
 }

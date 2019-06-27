@@ -40,6 +40,36 @@
       <result column="group_id" jdbcType="INTEGER" property="groupId" />
     </collection>
   </resultMap>
+
+  <resultMap id="UserResultMap" type="com.asset.bean.User">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="staff_id" jdbcType="VARCHAR" property="staffId" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
+    <result column="user_birthday" jdbcType="TIMESTAMP" property="userBirthday" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
+    <result column="certificate_number" jdbcType="VARCHAR" property="certificateNumber" />
+    <!--    <result column="pwd" jdbcType="VARCHAR" property="pwd" />-->
+    <result column="authentication_method" jdbcType="INTEGER" property="authenticationMethod" />
+    <result column="account_picture" jdbcType="VARCHAR" property="accountPicture" />
+    <result column="admin" jdbcType="INTEGER" property="admin" />
+    <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+    <result column="user_photo" jdbcType="VARCHAR" property="userPhoto" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+  </resultMap>
+  <resultMap extends="UserResultMap" id="ResultMapWithBLOBs" type="com.asset.bean.User">
+    <result column="user_remark" jdbcType="LONGVARCHAR" property="userRemark" />
+  </resultMap>
   <sql id="Base_Column_List">
     id, role_name, role_name_zh, role_description, status, applicable_unit_level, product_code,
     enable_time, disable_time, updated_time, created_time, group_id
@@ -61,6 +91,14 @@
         LEFT JOIN as_role_group rg ON r.group_id = rg.id
     WHERE
         rg.is_deleted = 0
+  </select>
+  <select id="getUsersByRole" parameterType="java.lang.Long" resultMap="UserResultMap">
+    SELECT
+	*
+    FROM
+	as_user u
+	LEFT JOIN as_user_role ur ON u.id = ur.uid
+	AND ur.role_id = #{roleId}
   </select>
   <!-- 批量插入， -->
   <insert id="addUsersToRole" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
