@@ -1,10 +1,7 @@
 
 package com.asset.controller.system;
 
-import com.asset.bean.RespBean;
-import com.asset.bean.Role;
-import com.asset.bean.RoleGroup;
-import com.asset.bean.UserRole;
+import com.asset.bean.*;
 import com.asset.common.SystemConstant;
 import com.asset.service.RoleService;
 import io.swagger.annotations.*;
@@ -151,7 +148,6 @@ public class RoleController {
             @ApiImplicitParam(name = "userRoleList", value = "用户id与角色id的json数组", required = true, example = "123")
     })
     @RequestMapping(value = "/userToRole",method = RequestMethod.POST)
-
     public RespBean users2Role(@RequestBody List<UserRole> userRoleList){
         int flag = roleService.addUsers2Role(userRoleList);
         if (flag < 0){
@@ -194,6 +190,23 @@ public class RoleController {
     @RequestMapping(value = "/rights", method = RequestMethod.POST)
     public RespBean saveRight(){
         return RespBean.ok(SystemConstant.ADD_SUCCESS);
+    }
+
+    @ApiOperation(value = "获取角色成员",notes = "通过角色获取角色成员", tags = "角色", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "获取成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
+    @RequestMapping(value = "/users/{roleId}",method = RequestMethod.GET)
+    public RespBean getUsersByRole(@PathVariable Long roleId){
+        List<User> users = roleService.getUsersByRole(roleId);
+        if (users.size() == 0){
+            return RespBean.ok(SystemConstant.USERS_NOT_FOUND);
+        }
+        return RespBean.ok(SystemConstant.GET_SUCCESS, users);
     }
 }
 

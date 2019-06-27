@@ -108,4 +108,7 @@ public class RoleService{
         return roleMapper.batchDeleteRoleMember(userList);
     }
 
+    public List<User> getUsersByRole(Long roleId){
+        return roleMapper.getUsersByRole(roleId);
+    }
 }

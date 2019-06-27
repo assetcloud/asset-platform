@@ -1,14 +1,12 @@
 package com.asset.controller;
 
-import com.asset.bean.OrganTree;
-import com.asset.bean.RespBean;
-import com.asset.bean.Role;
-import com.asset.bean.Scene;
+import com.asset.bean.*;
 import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
 import com.asset.service.OrganService;
 import com.asset.service.SceneService;
 import io.swagger.annotations.*;
+import io.undertow.util.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +52,7 @@ public class OrganController {
     public RespBean deleteNode(@RequestBody OrganTree organTree){
         int flag = organService.deleteNode(organTree);
         if (flag == SystemConstant.SYSTEM_ERROR){
-            return RespBean.error(SystemConstant.DELETE_FAILURE,"SYSTEM_ERROR");
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
         }
         return RespBean.ok(SystemConstant.DELETE_SUCCESS);
     }
@@ -70,6 +68,19 @@ public class OrganController {
             return RespBean.error(SystemConstant.GET_FAILURE);
         }
         return RespBean.ok(SystemConstant.GET_SUCCESS, node);
+    }
+
+    @ApiOperation(value = "编辑组织节点信息", notes = "编辑组织节点信息",tags = "组织", httpMethod = "PUT")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "节点id", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/node", method = RequestMethod.PUT)
+    public RespBean editNode(@RequestBody OrganTree organTree){
+        int flag = organService.updateNode(organTree);
+        if (flag < 0){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        }
+        return RespBean.ok(SystemConstant.UPDATE_SUCCESS);
     }
 
     /**
@@ -165,15 +176,52 @@ public class OrganController {
             @ApiImplicitParam(name = "sceneName", value = "场景名称", required = true, dataType = "String")
     })
     @ApiResponses({
-            @ApiResponse(code = 200,message = "删除成功",response = RespBean.class),
+            @ApiResponse(code = 200,message = "检索成功",response = RespBean.class),
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
     @RequestMapping(value = "/rest/scene", method = RequestMethod.GET)
     public RespBean findScene(@RequestBody Scene scene){
-        Scene target = sceneService.findSceneByNameAlike(scene.getSceneName());
-        if (target == null){
-            return RespBean.error(SystemConstant.SCENE_NOT_FOUND);
+        List<Scene> scenes = sceneService.findSceneByNameAlike(scene.getSceneName());
+        if (scenes == null){
+            return RespBean.ok(SystemConstant.SCENE_NOT_FOUND);
         }
-        return RespBean.ok(SystemConstant.GET_SUCCESS, target);
+        return RespBean.ok(SystemConstant.GET_SUCCESS, scenes);
+    }
+
+    @ApiOperation(value = "通过场景获取组织", notes = "通过场景获取对应的组织树",tags = "组织", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "场景id", required = true, dataType = "String")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "获取成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
+    @RequestMapping(value = "/rest/scene/{id}", method = RequestMethod.GET)
+    public RespBean getOrgansByScene(@PathVariable String id) throws BadRequestException {
+        if (id == null){
+            throw new BadRequestException("场景id为空");
+        }
+        List<OrganTree> organTree = organService.getTreeByScene(id);
+        if (organTree == null){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        }
+        return RespBean.ok(SystemConstant.GET_SUCCESS, organTree);
+    }
+
+    @ApiOperation(value = "修改场景组织", notes = "编辑指定场景下的组织树",tags = "组织", httpMethod = "PUT")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "organScenes", value = "场景-组织的对应数据", required = true, dataType = "List<OrganScene>")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 200,message = "保存成功",response = RespBean.class),
+            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
+    })
+    @RequestMapping(value = "/rest/edit", method = RequestMethod.PUT)
+    public RespBean changeOrganTree(@RequestBody List<OrganScene> organSceneList){
+        //TODO:编辑组织树，存在则不更新，不存在则插入
+        for (OrganScene organScene : organSceneList) {
+            LOGGER.info(organScene.toString());
+        }
+        return RespBean.ok("ok");
     }
 }

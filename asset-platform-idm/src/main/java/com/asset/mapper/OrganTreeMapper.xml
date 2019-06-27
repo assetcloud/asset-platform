@@ -144,7 +144,7 @@
     <result column="status" jdbcType="BIT" property="status" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
-    <collection property="childNodes" javaType="java.util.List" ofType="com.asset.bean.OrganTree"
+    <collection property="children" javaType="java.util.List" ofType="com.asset.bean.OrganTree"
                 column="id" select="recursiveSelect" >
     </collection>
   </resultMap>
@@ -220,9 +220,48 @@
     <result column="status" jdbcType="BIT" property="status" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
-    <collection property="childNodes" ofType="com.asset.bean.OrganTree" javaType="java.util.ArrayList" column="id" select="recursiveSelect">
+    <collection property="children" ofType="com.asset.bean.OrganTree" javaType="java.util.ArrayList" column="id" select="recursiveSelect">
     </collection>
   </resultMap>
+
+  <!--<resultMap id="ResultMapByScene" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="label" property="label"/>
+    <result column="parent_id" property="parentId" />
+    <collection property="children" javaType="java.util.List" ofType="com.asset.bean.OrganScene"
+                column="parent_id" select="recursiveSelectWithScene" >
+    </collection>
+  </resultMap>
+  <resultMap id="RecursiveMapByScene" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="label" property="label"/>
+    <result column="parent_id" property="parentId" />
+    <collection property="children" ofType="com.asset.bean.OrganScene" javaType="java.util.ArrayList"
+                column="parent_id" select="recursiveSelectWithScene">
+    </collection>
+  </resultMap>-->
+
+  <resultMap id="ResultMapByScene" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" property="unitName"/>
+    <result column="parent_id" property="parentId" />
+    <result column="scene_id" property="sceneId" />
+    <result column="node_id" property="nodeId" />
+    <collection property="children" javaType="java.util.List" ofType="com.asset.bean.OrganScene"
+                column="{parentId=node_id,sceneId=scene_id}" select="recursiveSelectWithScene" >
+    </collection>
+  </resultMap>
+  <resultMap id="RecursiveMapByScene" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" property="unitName"/>
+    <result column="parent_id" property="parentId" />
+    <result column="scene_id" property="sceneId" />
+    <result column="node_id" property="nodeId" />
+    <collection property="children" ofType="com.asset.bean.OrganScene" javaType="java.util.ArrayList"
+                column="{parentId=node_id,sceneId=scene_id}" select="recursiveSelectWithScene">
+    </collection>
+  </resultMap>
+
   <sql id="Base_Column_List">
     id, unit_name, unit_name_en, parent_id, organization_form, unit_type, parent_node_name,
     charge_section_id, charge_section_name, local_financial_code, local_financial_name,
@@ -257,11 +296,32 @@
   </select>
   <select id="recursiveSelect" resultMap="RecursiveMap" parameterType="java.lang.String">
     SELECT
-    <include refid="Base_Column_List" />
-    FROM  as_organ_tree
-    WHERE parent_id = #{id}
-    AND status = 1
+     *
+    FROM  as_organ_tree ot
+    WHERE ot.parent_id = #{id}
+    AND ot.`status` = 1
     ORDER BY sort ASC
+  </select>
+  <select id="getTreeByScene" resultMap="ResultMapByScene">
+    SELECT
+	*
+    FROM
+        as_organ_scene os
+    WHERE
+        os.`status` = 1
+        AND os.scene_id = #{id}
+        AND os.parent_id = '0'
+    ORDER BY
+        os.id ASC
+  </select>
+  <select id="recursiveSelectWithScene" resultMap="RecursiveMapByScene" parameterType="java.util.Map">
+    SELECT
+     *
+    FROM  as_organ_scene os
+    WHERE os.parent_id = #{parentId}
+    AND os.`status` = 1
+    AND os.scene_id = #{sceneId}
+    ORDER BY os.id ASC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from as_organ_tree

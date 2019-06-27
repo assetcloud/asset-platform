@@ -24,7 +24,7 @@ public interface SceneMapper {
 
     List<Scene> selectByName(@Param("sceneName") String sceneName);
 
-    Scene selectByNameAlike(@Param("sceneName") String sceneName);
+    List<Scene> selectByNameAlike(@Param("sceneName") String sceneName);
 
     int deleteScene(@Param("id") String id);
 

@@ -80,10 +80,23 @@ public class OrganService {
     }
 
     /**
+     * 编辑部门信息
+     * @param record
+     * @return int
+     */
+    public int updateNode(OrganTree record){
+        return organTreeMapper.updateByPrimaryKeySelective(record);
+    }
+
+    /**
      * 获取组织树全部信息
      * @return
      */
     public List<OrganTree> getMainTree(){
         return organTreeMapper.getMainTree();
+    }
+
+    public List<OrganTree> getTreeByScene(String sceneId){
+        return organTreeMapper.getTreeByScene(sceneId);
     }
 }
