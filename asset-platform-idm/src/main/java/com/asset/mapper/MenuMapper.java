@@ -3,6 +3,7 @@ package com.asset.mapper;
 import com.asset.bean.Menu;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -34,5 +35,7 @@ public interface MenuMapper {
     List<Menu> getAppMenusByUser(@Param("userId")String userId);
 
     List<Menu> getFormMenusByApp(@Param("userId")String userId, @Param("appId") String appId);
+
+    int updateFormInfo(@Param("formModelId")String formModelId, @Param("sceneId")String sceneId);
 
 }
