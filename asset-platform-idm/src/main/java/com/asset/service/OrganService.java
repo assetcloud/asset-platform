@@ -52,7 +52,7 @@ public class OrganService {
             record.setParentId("0");
         }
         record.setCreatedTime(new Date());
-        record.setStatus(true);
+        record.setStatus(1);
         record.setIsDeleted(0);
         return organTreeMapper.insert(record);
     }
@@ -60,14 +60,27 @@ public class OrganService {
     /**
      * 删除部门或单位节点
      * @param record
-     * @return
+     * @return int
      */
     public int deleteNode(OrganTree record){
-        record = organTreeMapper.selectByPrimaryKey(record.getId());
-        record.setStatus(false);
+        record.setStatus(0);
         record.setDisableTime(new Date());
         record.setIsDeleted(1);
-        return organTreeMapper.updateByPrimaryKey(record);
+        return organTreeMapper.updateByPrimaryKeySelective(record);
+    }
+
+    /**
+     * 批量删除部门或单位节点
+     * @param organTrees
+     * @return int
+     */
+    public int batchDeleteNode(List<OrganTree> organTrees){
+        for (OrganTree node : organTrees){
+            node.setStatus(0);
+            node.setDisableTime(new Date());
+            node.setIsDeleted(1);
+        }
+        return organTreeMapper.batchUpdate(organTrees);
     }
 
     /**

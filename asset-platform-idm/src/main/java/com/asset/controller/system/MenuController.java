@@ -109,8 +109,8 @@ public class MenuController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "appId", value = "应用id", required = true, dataType = "String")
     })
-    @RequestMapping(value = "/form/menus/{appId}", method = RequestMethod.GET)
-    public List<Menu> getFormMenusByApp(@PathVariable String appId){
-        return menuService.getFormMenusByApp(appId);
+    @RequestMapping(value = "/form/menus/{appId}/{sceneId}", method = RequestMethod.GET)
+    public List<Menu> getFormMenusByApp(@PathVariable String appId, @PathVariable String sceneId){
+        return menuService.getFormMenusByApp(appId, sceneId);
     }
 }

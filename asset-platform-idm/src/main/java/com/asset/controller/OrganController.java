@@ -57,6 +57,19 @@ public class OrganController {
         return RespBean.ok(SystemConstant.DELETE_SUCCESS);
     }
 
+    @ApiOperation(value = "批量删除组织节点", notes = "批量删除组织节点",tags = "组织", httpMethod = "DELETE")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "节点id", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/nodes", method = RequestMethod.DELETE)
+    public RespBean batchDeleteNode(@RequestBody List<OrganTree> organTrees){
+        int flag = organService.batchDeleteNode(organTrees);
+        if (flag == SystemConstant.SYSTEM_ERROR){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        }
+        return RespBean.ok(SystemConstant.DELETE_SUCCESS);
+    }
+
     @ApiOperation(value = "获取单个组织节点", notes = "获取单个组织节点",tags = "组织", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "节点id", required = true, dataType = "String")

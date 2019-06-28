@@ -3,7 +3,6 @@ package com.asset.mapper;
 import com.asset.bean.OrganTree;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -31,4 +30,6 @@ public interface OrganTreeMapper {
     List<OrganTree> recursiveSelectWithScene(@Param("parentId") String parentId, @Param("sceneId") String sceneId);
 
     List<OrganTree> getTreeByScene(@Param("id") String id);
+
+    int batchUpdate(List<OrganTree> organTrees);
 }

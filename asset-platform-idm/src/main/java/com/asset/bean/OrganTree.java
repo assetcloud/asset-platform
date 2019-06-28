@@ -75,7 +75,7 @@ public class OrganTree {
     private String latitudeAndLongitude;
     private Date createdTime;
     private Integer isDeleted;
-    private Boolean status;
+    private Integer status;
     private Integer sort;
     private String tenantCode;
     private List<OrganTree> children;
@@ -648,11 +648,11 @@ public class OrganTree {
         this.isDeleted = isDeleted;
     }
 
-    public Boolean getStatus() {
+    public Integer getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Integer status) {
         this.status = status;
     }
 

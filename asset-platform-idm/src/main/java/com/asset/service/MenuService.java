@@ -188,8 +188,8 @@ public class MenuService {
      * 通过用户id和应用id获取表单资源
      * @return List<Menu>
      */
-    public List<Menu> getFormMenusByApp(String appId){
-        return menuMapper.getFormMenusByApp(UserUtils.getCurrentUser().getId(), appId);
+    public List<Menu> getFormMenusByApp(String appId, String sceneId){
+        return menuMapper.getFormMenusByApp(UserUtils.getCurrentUser().getId(), appId, sceneId);
     }
 
     /**

@@ -69,7 +69,7 @@
     <result column="latitude_and_longitude" jdbcType="VARCHAR" property="latitudeAndLongitude" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
-    <result column="status" jdbcType="BIT" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
   </resultMap>
@@ -141,7 +141,7 @@
     <result column="latitude_and_longitude" jdbcType="VARCHAR" property="latitudeAndLongitude" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
-    <result column="status" jdbcType="BIT" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
     <collection property="children" javaType="java.util.List" ofType="com.asset.bean.OrganTree"
@@ -217,7 +217,7 @@
     <result column="latitude_and_longitude" jdbcType="VARCHAR" property="latitudeAndLongitude" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
-    <result column="status" jdbcType="BIT" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
     <collection property="children" ofType="com.asset.bean.OrganTree" javaType="java.util.ArrayList" column="id" select="recursiveSelect">
@@ -1096,4 +1096,29 @@
       tenant_code = #{tenantCode,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <update id="batchUpdate" parameterType="java.util.List">
+    update as_organ_tree
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="status =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          when id=#{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="disable_time =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          when id=#{item.id} then #{item.disableTime}
+        </foreach>
+      </trim>
+      <trim prefix="is_deleted =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          when id=#{item.id} then #{item.isDeleted}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+      #{item.id,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+
 </mapper>
