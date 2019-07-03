@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 23.0.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.0" id="图层_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 30 30" enable-background="new 0 0 30 30" xml:space="preserve">
+<g>
+	<path fill="#DDDDDD" d="M26,30H4c-2.2,0-4-1.8-4-4L0,4c0-2.2,1.8-4,4-4h22c2.2,0,4,1.8,4,4v22C30,28.2,28.2,30,26,30z"/>
+	<g>
+		<polygon fill="#E72123" points="25.64,4.51 19.05,6.27 20.95,8.17 21.92,9.14 23.87,11.09 		"/>
+		<g>
+			<path fill="#E72123" d="M4.54,24.44c-0.23,0.23-0.23,0.65,0,0.88s0.65,0.23,0.88,0l1.29-1.29l-0.88-0.88L4.54,24.44z"/>
+			
+				<rect x="11.63" y="16.81" transform="matrix(0.7073 -0.7069 0.7069 0.7073 -8.6813 13.8795)" fill="#E72123" width="1.58" height="1.23"/>
+			
+				<rect x="9.35" y="19.04" transform="matrix(0.7069 -0.7073 0.7073 0.7069 -10.9315 12.9397)" fill="#E72123" width="1.58" height="1.23"/>
+			<path fill="#E72123" d="M19.31,9.78l-1.17,1.17l0.88,0.88l1.17-1.17c0.23-0.29,0.23-0.65,0-0.88
+				C19.95,9.55,19.54,9.55,19.31,9.78z"/>
+			
+				<rect x="16.18" y="12.34" transform="matrix(0.7073 -0.7069 0.7069 0.7073 -4.1896 15.7882)" fill="#E72123" width="1.59" height="1.23"/>
+			
+				<rect x="13.9" y="14.57" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -6.4357 14.841)" fill="#E72123" width="1.58" height="1.23"/>
+			
+				<rect x="7.08" y="21.28" transform="matrix(0.7069 -0.7073 0.7073 0.7069 -13.1795 11.9854)" fill="#E72123" width="1.58" height="1.23"/>
+		</g>
+	</g>
+</g>
+</svg>

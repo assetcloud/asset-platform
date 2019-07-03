@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.asset.dao.ProcTaskMapper">
+    <resultMap id="BaseResultMap" type="com.asset.entity.ProcTaskInfo">
+        <id column="id_" jdbcType="VARCHAR" property="taskId"/>
+        <result column="name_" jdbcType="VARCHAR" property="name_"/>
+        <result column="PROC_INST_ID_" jdbcType="VARCHAR" property="procInstId"/>
+        <result column="PROC_DEF_ID_" jdbcType="VARCHAR" property="procDefId"/>
+        <result column="ACT_ID_" jdbcType="VARCHAR" property="actId"/>
+        <result column="act_name" jdbcType="VARCHAR" property="actName"/>
+        <result column="assignee_" jdbcType="VARCHAR" property="assignee"/>
+        <result column="createTime" jdbcType="VARCHAR" property="createTime"/>
+        <result column="endTime" jdbcType="VARCHAR" property="endTime"/>
+    </resultMap>
+
+    <select id="selectToDoTaskPages" resultMap="BaseResultMap">
+        SELECT p.NAME_ name_,t.ID_ id_,t.PROC_INST_ID_,t.PROC_DEF_ID_,t.TASK_DEF_KEY_ act_id_,t.NAME_ act_name,t.ASSIGNEE_,
+        LTRIM(t.CREATE_TIME_) createTime
+        from ACT_RU_TASK t,ACT_RE_PROCDEF p
+        where t.PROC_DEF_ID_=p.id_
+        <if test="id_!=null and id_!=''">
+            AND t.id_ like concat(concat('%',#{id_}),'%')
+        </if>
+        <if test="assignee!=null and assignee!=''">
+            AND t.ASSIGNEE_ like concat(concat('%t',#{assignee}),'%')
+        </if>
+        ORDER BY t.CREATE_TIME_ desc
+    </select>
+    <select id="selectCompleteTaskPages" resultMap="BaseResultMap">
+        SELECT p.NAME_ name_,t.ID_ id_,t.PROC_INST_ID_,t.PROC_DEF_ID_,t.TASK_DEF_KEY_ act_id_,t.NAME_ act_name,t.ASSIGNEE_,
+        LTRIM(t.END_TIME_) endTime
+        from ACT_HI_TASKINST t,ACT_RE_PROCDEF p
+        where t.PROC_DEF_ID_=p.id_
+        <if test="id_!=null and id_!=''">
+            AND t.id_ like concat(concat('%',#{id_}),'%')
+        </if>
+        <if test="assignee!=null and assignee!=''">
+            AND t.ASSIGNEE_ like concat(concat('%t',#{assignee}),'%')
+        </if>
+        and t.END_TIME_ !=null BY t.END_TIME_ desc
+    </select>
+</mapper>

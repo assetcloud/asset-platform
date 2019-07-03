@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.AsFormInstMapper">
+  <resultMap id="BaseResultMap" type="com.asset.entity.AsFormInst">
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="form_model_id" jdbcType="VARCHAR" property="formModelId" />
+    <result column="proc_inst_id" jdbcType="VARCHAR" property="procInstId" />
+    <result column="execution_id" jdbcType="VARCHAR" property="executionId" />
+    <result column="task_id" jdbcType="VARCHAR" property="taskId" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.asset.entity.AsFormInst">
+    <result column="form_inst_json" jdbcType="LONGVARCHAR" property="formInstJson" />
+  </resultMap>
+  <sql id="Blob_Column_List">
+    form_inst_json
+  </sql>
+  <insert id="insert" parameterType="com.asset.entity.AsFormInst">
+    insert into as_form_inst (id, form_model_id, proc_inst_id,
+      execution_id, task_id, created_time,
+      created_by, form_inst_json)
+    values (#{id,jdbcType=VARCHAR}, #{formModelId,jdbcType=VARCHAR}, #{procInstId,jdbcType=VARCHAR},
+      #{executionId,jdbcType=VARCHAR}, #{taskId,jdbcType=VARCHAR}, #{createdTime,jdbcType=TIMESTAMP},
+      #{createdBy,jdbcType=VARCHAR}, #{formInstJson,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.entity.AsFormInst">
+    insert into as_form_inst
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="formModelId != null">
+        form_model_id,
+      </if>
+      <if test="procInstId != null">
+        proc_inst_id,
+      </if>
+      <if test="executionId != null">
+        execution_id,
+      </if>
+      <if test="taskId != null">
+        task_id,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="createdBy != null">
+        created_by,
+      </if>
+      <if test="formInstJson != null">
+        form_inst_json,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="formModelId != null">
+        #{formModelId,jdbcType=VARCHAR},
+      </if>
+      <if test="procInstId != null">
+        #{procInstId,jdbcType=VARCHAR},
+      </if>
+      <if test="executionId != null">
+        #{executionId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null">
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdBy != null">
+        #{createdBy,jdbcType=VARCHAR},
+      </if>
+      <if test="formInstJson != null">
+        #{formInstJson,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="getProcInstIDs" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT TASK_ID_
+    FROM act_hi_actinst
+    WHERE
+      ASSIGNEE_ = #{userID,jdbcType = VARCHAR} and
+      ACT_TYPE_ = 'userTask' and
+      END_TIME_ = NULL
+  </select>
+
+  <select id="getFormInsts" parameterType="java.util.List" resultMap="BaseResultMap">
+    SELECT
+    id,
+    form_model_id,
+    proc_inst_id,
+    execution_id,
+    task_id,
+    created_time,
+    created_by,
+    form_inst_json
+    FROM
+    as_form_inst
+    WHERE
+    proc_inst_id in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+</mapper>

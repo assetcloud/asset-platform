@@ -1,0 +1,3271 @@
+{
+  "title": "Process editor",
+  "namespace": "http://b3mn.org/stencilset/bpmn2.0#",
+  "description": "BPMN process editor",
+  "propertyPackages": [
+    {
+      "name": "process_idpackage",
+      "properties": [
+        {
+          "id": "process_id",
+          "type": "String",
+          "title": "流程Id",
+          "value": "process",
+          "description": "Unique identifier of the process definition.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "overrideidpackage",
+      "properties": [
+        {
+          "id": "overrideid",
+          "type": "String",
+          "title": "Id",
+          "value": "",
+          "description": "Unique identifier of the element.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "namepackage",
+      "properties": [
+        {
+          "id": "name",
+          "type": "String",
+          "title": "名称",
+          "value": "",
+          "description": "The descriptive name of the BPMN element.",
+          "popular": true,
+          "refToView": "text_name"
+        }
+      ]
+    },
+    {
+      "name": "documentationpackage",
+      "properties": [
+        {
+          "id": "documentation",
+          "type": "Text",
+          "title": "描述",
+          "value": "",
+          "description": "The descriptive name of the BPMN element.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "process_authorpackage",
+      "properties": [
+        {
+          "id": "process_author",
+          "type": "String",
+          "title": "流程创建者",
+          "value": "",
+          "description": "Author of the process definition.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "process_versionpackage",
+      "properties": [
+        {
+          "id": "process_version",
+          "type": "String",
+          "title": "流程版本串",
+          "value": "",
+          "description": "Version identifier for documentation purpose.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "process_historylevelpackage",
+      "properties": [
+        {
+          "id": "process_historylevel",
+          "type": "flowable-processhistorylevel",
+          "title": "流程定义历史级别",
+          "value": "",
+          "description": "Set a specific history level for this process definition",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "isexecutablepackage",
+      "properties": [
+        {
+          "id": "isexecutable",
+          "type": "Boolean",
+          "title": "可执行",
+          "value": "true",
+          "description": "Is the process executable?",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "process_potentialstarteruserpackage",
+      "properties": [
+        {
+          "id": "process_potentialstarteruser",
+          "type": "String",
+          "title": "候选启动人",
+          "value": "",
+          "description": "Which user, can start the process?",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "process_potentialstartergrouppackage",
+      "properties": [
+        {
+          "id": "process_potentialstartergroup",
+          "type": "String",
+          "title": "候选启动用户组",
+          "value": "",
+          "description": "Which group, can start the process?",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "process_namespacepackage",
+      "properties": [
+        {
+          "id": "process_namespace",
+          "type": "String",
+          "title": "命名空间",
+          "value": "http://www.flowable.org/processdef",
+          "description": "Target namespace for the process definition.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "process_iseagerexecutionfetchpackage",
+      "properties": [
+        {
+          "id": "iseagerexecutionfetch",
+          "type": "Boolean",
+          "title": "紧急执行",
+          "value": "false",
+          "description": "Enable eager execution fetching for this process definition?",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "asynchronousdefinitionpackage",
+      "properties": [
+        {
+          "id": "asynchronousdefinition",
+          "type": "Boolean",
+          "title": "异步",
+          "value": "false",
+          "description": "Define the activity as asynchronous.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "preemptmodepackage",
+      "properties": [
+        {
+          "id": "preemptmode",
+          "type": "Boolean",
+          "title": "抢占模式",
+          "value": "false",
+          "description": "Define the activity as asynchronous.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "checkuserspackage",
+      "properties": [
+        {
+          "id": "checkusers",
+          "type": "Boolean",
+          "title": "指派人",
+          "value": "false",
+          "description": "Define the activity as asynchronous.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "datapropertiespackage",
+      "properties": [
+        {
+          "id": "dataproperties",
+          "type": "Complex",
+          "title": "运行参数",
+          "value": "",
+          "description": "Definition of the data object properties",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "exclusivedefinitionpackage",
+      "properties": [
+        {
+          "id": "exclusivedefinition",
+          "type": "Boolean",
+          "title": "独占",
+          "value": "false",
+          "description": "Define the activity as exclusive.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "executionlistenerspackage",
+      "properties": [
+        {
+          "id": "executionlisteners",
+          "type": "multiplecomplex",
+          "title": "执行监听器",
+          "value": "",
+          "description": "Listeners for an activity, process, sequence flow, start and end event.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "tasklistenerspackage",
+      "properties": [
+        {
+          "id": "tasklisteners",
+          "type": "multiplecomplex",
+          "title": "任务监听器",
+          "value": "",
+          "description": "Listeners for a user task",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "eventlistenerspackage",
+      "properties": [
+        {
+          "id": "eventlisteners",
+          "type": "multiplecomplex",
+          "title": "事件监听器",
+          "value": "",
+          "description": "Listeners for any event happening in the Flowable Engine. It's also possible to rethrow the event as a signal, message or error event",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "usertaskassignmentpackage",
+      "properties": [
+        {
+          "id": "usertaskassignment",
+          "type": "Complex",
+          "title": "用户变量",
+          "value": "",
+          "description": "Assignment definition for the user task",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "assigneepackage",
+      "properties": [
+        {
+          "id": "assignee",
+          "type": "String",
+          "title": "用户变量参数",
+          "value": "",
+          "description": "assignee definition for the user task",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "userspackage",
+      "properties": [
+        {
+          "id": "users",
+          "type": "Complex",
+          "title": "用户",
+          "value": "",
+          "description": "Users definition for the user task",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "rolespackage",
+      "properties": [
+        {
+          "id": "roles",
+          "type": "Complex",
+          "title": "角色",
+          "value": "",
+          "description": "Role definition for the user task",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "orgspackage",
+      "properties": [
+        {
+          "id": "orgs",
+          "type": "Complex",
+          "title": "组织",
+          "value": "",
+          "description": "Orgs definition for the user task",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "formpropertiespackage",
+      "properties": [
+        {
+          "id": "formproperties",
+          "type": "Complex",
+          "title": "表单属性",
+          "value": "",
+          "description": "Definition of the form with a list of form properties",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "formkeydefinitionpackage",
+      "properties": [
+        {
+          "id": "formkeydefinition",
+          "type": "String",
+          "title": "表单Key",
+          "value": "",
+          "description": "Form key that provides a reference to a form.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "duedatedefinitionpackage",
+      "properties": [
+        {
+          "id": "duedatedefinition",
+          "type": "String",
+          "title": "到期时间",
+          "value": "",
+          "description": "Due date of the user task.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "prioritydefinitionpackage",
+      "properties": [
+        {
+          "id": "prioritydefinition",
+          "type": "String",
+          "title": "优先级",
+          "value": "",
+          "description": "Priority of the user task.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "duedatedefinitionpackage",
+      "properties": [
+        {
+          "id": "duedatedefinition",
+          "type": "String",
+          "title": "到期时间",
+          "value": "",
+          "description": "Due date of the user task.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "servicetaskclasspackage",
+      "properties": [
+        {
+          "id": "servicetaskclass",
+          "type": "String",
+          "title": "类",
+          "value": "",
+          "description": "Class that implements the service task logic.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "servicetaskexpressionpackage",
+      "properties": [
+        {
+          "id": "servicetaskexpression",
+          "type": "Text",
+          "title": "表达式",
+          "value": "",
+          "description": "Service task logic defined with an expression.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "servicetaskdelegateexpressionpackage",
+      "properties": [
+        {
+          "id": "servicetaskdelegateexpression",
+          "type": "Text",
+          "title": "委托表达式",
+          "value": "",
+          "description": "Service task logic defined with a delegate expression.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "servicetaskfieldspackage",
+      "properties": [
+        {
+          "id": "servicetaskfields",
+          "type": "Complex",
+          "title": "类属性",
+          "value": "",
+          "description": "Field extensions",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "servicetaskresultvariablepackage",
+      "properties": [
+        {
+          "id": "servicetaskresultvariable",
+          "type": "String",
+          "title": "结果集变量名称",
+          "value": "",
+          "description": "Process variable name to store the service task result.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "servicetaskresultvariablepackage",
+      "properties": [
+        {
+          "id": "servicetaskUseLocalScopeForResultVariable",
+          "type": "Boolean",
+          "title": "Use local scope for result variable",
+          "value": "false",
+          "description": "Flag that marks that the used resultVariable needs to be saved as a local variable",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "servicetasktriggerablepackage",
+      "properties": [
+        {
+          "id": "servicetasktriggerable",
+          "type": "Boolean",
+          "title": "Set service task to be triggerable",
+          "value": "false",
+          "description": "Sets the service task to be triggerable",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "scriptformatpackage",
+      "properties": [
+        {
+          "id": "scriptformat",
+          "type": "String",
+          "title": "脚本格式化",
+          "value": "",
+          "description": "Script format of the script task.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "scripttextpackage",
+      "properties": [
+        {
+          "id": "scripttext",
+          "type": "Text",
+          "title": "脚本",
+          "value": "",
+          "description": "Script text of the script task.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellcommandpackage",
+      "properties": [
+        {
+          "id": "shellcommand",
+          "type": "String",
+          "title": "命令",
+          "value": "",
+          "description": "Shell task command",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellarg1package",
+      "properties": [
+        {
+          "id": "shellarg1",
+          "type": "Text",
+          "title": "参数 1",
+          "value": "",
+          "description": "Shell commnad arg 1",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellarg2package",
+      "properties": [
+        {
+          "id": "shellarg2",
+          "type": "Text",
+          "title": "参数 2",
+          "value": "",
+          "description": "Shell commnad arg 2",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellarg3package",
+      "properties": [
+        {
+          "id": "shellarg3",
+          "type": "Text",
+          "title": "参数 3",
+          "value": "",
+          "description": "Shell commnad arg 3",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellarg4package",
+      "properties": [
+        {
+          "id": "shellarg4",
+          "type": "Text",
+          "title": "参数 4",
+          "value": "",
+          "description": "Shell commnad arg 4",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellarg5package",
+      "properties": [
+        {
+          "id": "shellarg5",
+          "type": "Text",
+          "title": "参数 5",
+          "value": "",
+          "description": "Shell commnad arg 5",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellwaitpackage",
+      "properties": [
+        {
+          "id": "shellwait",
+          "type": "Text",
+          "title": "等待",
+          "value": "",
+          "description": "Flag to wait for shell command execution end",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shelloutputvariablepackage",
+      "properties": [
+        {
+          "id": "shelloutputvariable",
+          "type": "Text",
+          "title": "输出变量",
+          "value": "",
+          "description": "Variable to store shell commnad output",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellerrorcodevariablepackage",
+      "properties": [
+        {
+          "id": "shellerrorcodevariable",
+          "type": "Text",
+          "title": "变量code异常",
+          "value": "",
+          "description": "Variable to store shell commnad error code",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellredirecterrorpackage",
+      "properties": [
+        {
+          "id": "shellredirecterror",
+          "type": "Text",
+          "title": "重定向异常",
+          "value": "",
+          "description": "If true merge error output with standard output",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shellcleanenvpackage",
+      "properties": [
+        {
+          "id": "shellcleanenv",
+          "type": "Text",
+          "title": "Clean env",
+          "value": "",
+          "description": "Clean shell execution environment",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "shelldirectorypackage",
+      "properties": [
+        {
+          "id": "shelldirectory",
+          "type": "Text",
+          "title": "Directory",
+          "value": "",
+          "description": "Shell process working directory",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "ruletask_rulespackage",
+      "properties": [
+        {
+          "id": "ruletask_rules",
+          "type": "String",
+          "title": "Rules",
+          "value": "",
+          "description": "Rules of the rule task.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "ruletask_variables_inputpackage",
+      "properties": [
+        {
+          "id": "ruletask_variables_input",
+          "type": "String",
+          "title": "Input variables",
+          "value": "",
+          "description": "Input variables of the rule task.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "ruletask_excludepackage",
+      "properties": [
+        {
+          "id": "ruletask_exclude",
+          "type": "Boolean",
+          "title": "Exclude",
+          "value": "false",
+          "description": "Use the rules property as exclusion.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "ruletask_resultpackage",
+      "properties": [
+        {
+          "id": "ruletask_result",
+          "type": "String",
+          "title": "Result variable",
+          "value": "",
+          "description": "Result variable of the rule task.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "mailtasktopackage",
+      "properties": [
+        {
+          "id": "mailtaskto",
+          "type": "Text",
+          "title": "接受人",
+          "value": "",
+          "description": "The recipients if the e-mail. Multiple recipients are defined in a comma-separated list.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "mailtaskfrompackage",
+      "properties": [
+        {
+          "id": "mailtaskfrom",
+          "type": "Text",
+          "title": "发送人",
+          "value": "",
+          "description": "The sender e-mail address. If not provided, the default configured from address is used.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "mailtasksubjectpackage",
+      "properties": [
+        {
+          "id": "mailtasksubject",
+          "type": "Text",
+          "title": "Subject",
+          "value": "",
+          "description": "The subject of the e-mail.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "mailtaskccpackage",
+      "properties": [
+        {
+          "id": "mailtaskcc",
+          "type": "Text",
+          "title": "Cc",
+          "value": "",
+          "description": "The cc's of the e-mail. Multiple recipients are defined in a comma-separated list",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "mailtaskbccpackage",
+      "properties": [
+        {
+          "id": "mailtaskbcc",
+          "type": "Text",
+          "title": "Bcc",
+          "value": "",
+          "description": "The bcc's of the e-mail. Multiple recipients are defined in a comma-separated list",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "mailtasktextpackage",
+      "properties": [
+        {
+          "id": "mailtasktext",
+          "type": "Text",
+          "title": "Text",
+          "value": "",
+          "description": "The content of the e-mail, in case one needs to send plain none-rich e-mails. Can be used in combination with html, for e-mail clients that don't support rich content. The client will then fall back to this text-only alternative.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "mailtaskhtmlpackage",
+      "properties": [
+        {
+          "id": "mailtaskhtml",
+          "type": "Text",
+          "title": "Html",
+          "value": "",
+          "description": "A piece of HTML that is the content of the e-mail.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "mailtaskcharsetpackage",
+      "properties": [
+        {
+          "id": "mailtaskcharset",
+          "type": "String",
+          "title": "Charset",
+          "value": "",
+          "description": "Allows to change the charset of the email, which is necessary for many non-English languages. ",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskrequestmethodpackage",
+      "properties": [
+        {
+          "id": "httptaskrequestmethod",
+          "type": "flowable-http-request-method",
+          "title": "Request method",
+          "value": "",
+          "description": "Request method (For example - GET,POST,PUT etc).",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskrequesturlpackage",
+      "properties": [
+        {
+          "id": "httptaskrequesturl",
+          "type": "Text",
+          "title": "Request URL",
+          "value": "",
+          "description": "Request URL (For example - http://flowable.org).",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskrequestheaderspackage",
+      "properties": [
+        {
+          "id": "httptaskrequestheaders",
+          "type": "Text",
+          "title": "Request headers",
+          "value": "",
+          "description": "Line separated HTTP request headers (For example - Content-Type: application/json).",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskrequestbodypackage",
+      "properties": [
+        {
+          "id": "httptaskrequestbody",
+          "type": "Text",
+          "title": "Request body",
+          "value": "",
+          "description": "Request body (For example- ${sampleBody}).",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskrequesttimeoutpackage",
+      "properties": [
+        {
+          "id": "httptaskrequesttimeout",
+          "type": "String",
+          "title": "Request timeout",
+          "value": "",
+          "description": "Timeout in milliseconds for the request (For example - 5000).",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskdisallowredirectspackage",
+      "properties": [
+        {
+          "id": "httptaskdisallowredirects",
+          "type": "String",
+          "title": "Disallow redirects",
+          "value": "",
+          "description": "Flag to disallow HTTP redirects.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskfailstatuscodespackage",
+      "properties": [
+        {
+          "id": "httptaskfailstatuscodes",
+          "type": "String",
+          "title": "Fail status codes",
+          "value": "",
+          "description": "Comma separated list of HTTP response status codes to retry, for example 400,5XX.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskhandlestatuscodespackage",
+      "properties": [
+        {
+          "id": "httptaskhandlestatuscodes",
+          "type": "String",
+          "title": "Handle status codes",
+          "value": "",
+          "description": "Comma separated list of HTTP response status codes to ignore, for example 404,3XX.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskignoreexceptionpackage",
+      "properties": [
+        {
+          "id": "httptaskignoreexception",
+          "type": "String",
+          "title": "Ignore exception",
+          "value": "",
+          "description": "Flag to ignore exceptions.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptasksaveresponseparameterstransientpackage",
+      "properties": [
+        {
+          "id": "httptasksaveresponseparameterstransient",
+          "type": "String",
+          "title": "Save response as a transient variable",
+          "value": "",
+          "description": "Flag indicating to store the response variable(s) transient",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptasksaveresponseasjsonpackage",
+      "properties": [
+        {
+          "id": "httptasksaveresponseasjson",
+          "type": "String",
+          "title": "Save response as JSON",
+          "value": "",
+          "description": "Flag indicating to store the response variable as a JSON variable instead of a String",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "skipexpressionpackage",
+      "properties": [
+        {
+          "id": "skipexpression",
+          "type": "String",
+          "title": "跳过表达式",
+          "value": "",
+          "description": "Skip an expression execution associated with task or association or not.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskresponsevariablenamepackage",
+      "properties": [
+        {
+          "id": "httptaskresponsevariablename",
+          "type": "String",
+          "title": "Response variable name",
+          "value": "",
+          "description": "Define the variable name to store the http response.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptasksaverequestvariablespackage",
+      "properties": [
+        {
+          "id": "httptasksaverequestvariables",
+          "type": "String",
+          "title": "Save request variables",
+          "value": "",
+          "description": "Flag to save request variables.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptasksaveresponseparameterspackage",
+      "properties": [
+        {
+          "id": "httptasksaveresponseparameters",
+          "type": "String",
+          "title": "Save response status, headers",
+          "value": "",
+          "description": "Flag to save response status, headers etc.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "httptaskresultvariableprefixpackage",
+      "properties": [
+        {
+          "id": "httptaskresultvariableprefix",
+          "type": "String",
+          "title": "Result variable prefix",
+          "value": "",
+          "description": "Prefix for the execution variable names.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "callactivitycalledelementpackage",
+      "properties": [
+        {
+          "id": "callactivitycalledelement",
+          "type": "String",
+          "title": "Called element",
+          "value": "",
+          "description": "Process reference.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "callactivityinparameterspackage",
+      "properties": [
+        {
+          "id": "callactivityinparameters",
+          "type": "Complex",
+          "title": "In parameters",
+          "value": "",
+          "description": "Definition of the input parameters",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "callactivityoutparameterspackage",
+      "properties": [
+        {
+          "id": "callactivityoutparameters",
+          "type": "Complex",
+          "title": "Out parameters",
+          "value": "",
+          "description": "Definition of the output parameters",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "callactivityinheritvariablespackage",
+      "properties": [
+        {
+          "id": "callactivityinheritvariables",
+          "type": "Boolean",
+          "title": "Inherit variables in sub process",
+          "value": "false",
+          "description": "Inherit parent process variables in the sub process.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "callactivitysamedeploymentpackage",
+      "properties": [
+        {
+          "id": "callactivitysamedeployment",
+          "type": "Boolean",
+          "title": "Start the referenced process from the same deployment.",
+          "value": "false",
+          "description": "Use the referenced process from the same deployment.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "callactivityinheritbusinesskeypackage",
+      "properties": [
+        {
+          "id": "callactivityinheritbusinesskey",
+          "type": "Boolean",
+          "title": "Inherit business key",
+          "value": "false",
+          "description": "Inherit the business key from the parent process.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "callactivityuselocalscopeforoutparameterspackage",
+      "properties": [
+        {
+          "id": "callactivityuselocalscopeforoutparameters",
+          "type": "Boolean",
+          "title": "Use local scope for out parameters",
+          "value": "false",
+          "description": "Use local variable scope for out parameters.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "cameltaskcamelcontextpackage",
+      "properties": [
+        {
+          "id": "cameltaskcamelcontext",
+          "type": "String",
+          "title": "骆驼上下文",
+          "value": "",
+          "description": "An optional camel context definition, if left empty the default is used.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "muletaskendpointurlpackage",
+      "properties": [
+        {
+          "id": "muletaskendpointurl",
+          "type": "String",
+          "title": "结点url",
+          "value": "",
+          "description": "A required endpoint url to sent the message to Mule.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "muletasklanguagepackage",
+      "properties": [
+        {
+          "id": "muletasklanguage",
+          "type": "String",
+          "title": "语言",
+          "value": "",
+          "description": "A required definition for the language to resolve the payload expression, like juel.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "muletaskpayloadexpressionpackage",
+      "properties": [
+        {
+          "id": "muletaskpayloadexpression",
+          "type": "Text",
+          "title": "Payload表达式",
+          "value": "",
+          "description": "A required definition for the payload of the message sent to Mule.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "muletaskresultvariablepackage",
+      "properties": [
+        {
+          "id": "muletaskresultvariable",
+          "type": "String",
+          "title": "结果变量",
+          "value": "",
+          "description": "An optional result variable for the payload returned.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "conditionsequenceflowpackage",
+      "properties": [
+        {
+          "id": "conditionsequenceflow",
+          "type": "Complex",
+          "title": "条件",
+          "value": "",
+          "description": "The condition of the sequence flow",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "defaultflowpackage",
+      "properties": [
+        {
+          "id": "defaultflow",
+          "type": "Boolean",
+          "title": "缺省",
+          "value": "false",
+          "description": "Define the sequence flow as default",
+          "popular": true,
+          "refToView": "default"
+        }
+      ]
+    },
+    {
+      "name": "conditionalflowpackage",
+      "properties": [
+        {
+          "id": "conditionalflow",
+          "type": "Boolean",
+          "title": "条件流程",
+          "value": "false",
+          "description": "Define the sequence flow with a condition",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "timercycledefinitionpackage",
+      "properties": [
+        {
+          "id": "timercycledefinition",
+          "type": "String",
+          "title": "时间循环(如R3/PT10H)",
+          "value": "",
+          "description": "Define the timer with a ISO-8601 cycle.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "timerdatedefinitionpackage",
+      "properties": [
+        {
+          "id": "timerdatedefinition",
+          "type": "String",
+          "title": "日期(ISO-8601)",
+          "value": "",
+          "description": "Define the timer with a ISO-8601 date definition.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "timerdurationdefinitionpackage",
+      "properties": [
+        {
+          "id": "timerdurationdefinition",
+          "type": "String",
+          "title": "时长(如PT5M)",
+          "value": "",
+          "description": "Define the timer with a ISO-8601 duration.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "timerenddatedefinitionpackage",
+      "properties": [
+        {
+          "id": "timerenddatedefinition",
+          "type": "String",
+          "title": "结束日期(ISO-8601)",
+          "value": "",
+          "description": "Define the timer with a ISO-8601 duration.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "messagerefpackage",
+      "properties": [
+        {
+          "id": "messageref",
+          "type": "String",
+          "title": "消息引用",
+          "value": "",
+          "description": "Define the message name.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "signalrefpackage",
+      "properties": [
+        {
+          "id": "signalref",
+          "type": "String",
+          "title": "信号引用",
+          "value": "",
+          "description": "Define the signal name.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "errorrefpackage",
+      "properties": [
+        {
+          "id": "errorref",
+          "type": "String",
+          "title": "错误引用",
+          "value": "",
+          "description": "Define the error name.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "cancelactivitypackage",
+      "properties": [
+        {
+          "id": "cancelactivity",
+          "type": "Boolean",
+          "title": "取消活动",
+          "value": "true",
+          "description": "Should the activity be cancelled",
+          "popular": true,
+          "refToView": [
+            "frame",
+            "frame2"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "initiatorpackage",
+      "properties": [
+        {
+          "id": "initiator",
+          "type": "String",
+          "title": "发起人",
+          "value": "",
+          "description": "Initiator of the process.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "textpackage",
+      "properties": [
+        {
+          "id": "text",
+          "type": "String",
+          "title": "Text",
+          "value": "",
+          "description": "The text of the text annotation.",
+          "popular": true,
+          "refToView": "text"
+        }
+      ]
+    },
+    {
+      "name": "multiinstance_typepackage",
+      "properties": [
+        {
+          "id": "multiinstance_type",
+          "type": "flowable-multiinstance",
+          "title": "实例类型",
+          "value": "None",
+          "description": "Repeated activity execution (parallel or sequential) can be displayed through different loop types",
+          "popular": true,
+          "refToView": "multiinstance"
+        }
+      ]
+    },
+    {
+      "name": "multiinstance_cardinalitypackage",
+      "properties": [
+        {
+          "id": "multiinstance_cardinality",
+          "type": "String",
+          "title": "实例数",
+          "value": "",
+          "description": "Define the cardinality of multi instance.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "multiinstance_collectionpackage",
+      "properties": [
+        {
+          "id": "multiinstance_collection",
+          "type": "String",
+          "title": "集合",
+          "value": "",
+          "description": "Define the collection for the multi instance.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "multiinstance_variablepackage",
+      "properties": [
+        {
+          "id": "multiinstance_variable",
+          "type": "String",
+          "title": "成员变量",
+          "value": "",
+          "description": "Define the element variable for the multi instance.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "multiinstance_conditionpackage",
+      "properties": [
+        {
+          "id": "multiinstance_condition",
+          "type": "String",
+          "title": "完成条件",
+          "value": "",
+          "description": "Define the completion condition for the multi instance.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "isforcompensationpackage",
+      "properties": [
+        {
+          "id": "isforcompensation",
+          "type": "Boolean",
+          "title": "补偿",
+          "value": "false",
+          "description": "A flag that identifies whether this activity is intended for the purposes of compensation.",
+          "popular": true,
+          "refToView": "compensation"
+        }
+      ]
+    },
+    {
+      "name": "sequencefloworderpackage",
+      "properties": [
+        {
+          "id": "sequencefloworder",
+          "type": "Complex",
+          "title": "次序",
+          "value": "",
+          "description": "Order outgoing sequence flows.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "signaldefinitionspackage",
+      "properties": [
+        {
+          "id": "signaldefinitions",
+          "type": "multiplecomplex",
+          "title": "信号定义",
+          "value": "",
+          "description": "Signal definitions",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "messagedefinitionspackage",
+      "properties": [
+        {
+          "id": "messagedefinitions",
+          "type": "multiplecomplex",
+          "title": "消息定义",
+          "value": "",
+          "description": "Message definitions",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "istransactionpackage",
+      "properties": [
+        {
+          "id": "istransaction",
+          "type": "Boolean",
+          "title": "Is a transaction sub process",
+          "value": "false",
+          "description": "A flag that identifies whether this sub process is of type transaction.",
+          "popular": true,
+          "refToView": "border"
+        }
+      ]
+    },
+    {
+      "name": "formreferencepackage",
+      "properties": [
+        {
+          "id": "formreference",
+          "type": "Complex",
+          "title": "表单关联",
+          "value": "",
+          "description": "Reference to a form",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "terminateAllpackage",
+      "properties": [
+        {
+          "id": "terminateAll",
+          "type": "Boolean",
+          "title": "Terminate all",
+          "value": "false",
+          "description": "Enable to terminate the process instance",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "decisiontaskdecisiontablereferencepackage",
+      "properties": [
+        {
+          "id": "decisiontaskdecisiontablereference",
+          "type": "Complex",
+          "title": "Decision table reference",
+          "value": "",
+          "description": "Set the decision table reference",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "decisiontaskthrowerroronnohitspackage",
+      "properties": [
+        {
+          "id": "decisiontaskthrowerroronnohits",
+          "type": "Boolean",
+          "title": "Throw error if no rules were hit",
+          "value": "false",
+          "description": "Should an error be thrown if no rules of the decision table were hit and consequently no result was found.",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "interruptingpackage",
+      "properties": [
+        {
+          "id": "interrupting",
+          "type": "Boolean",
+          "title": "Interrupting",
+          "value": "true",
+          "description": "Should all parent executions be terminated?",
+          "popular": true,
+          "refToView": [
+            "frame"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "completionconditionpackage",
+      "properties": [
+        {
+          "id": "completioncondition",
+          "type": "String",
+          "title": "Completion condition",
+          "value": "",
+          "description": "The completion condition for the adhoc sub process",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "orderingpackage",
+      "properties": [
+        {
+          "id": "ordering",
+          "type": "flowable-ordering",
+          "title": "Ordering",
+          "value": "Parallel",
+          "description": "The ordering for the adhoc sub process",
+          "popular": true
+        }
+      ]
+    },
+    {
+      "name": "cancelremaininginstancespackage",
+      "properties": [
+        {
+          "id": "cancelremaininginstances",
+          "type": "Boolean",
+          "title": "Cancel remaining instances",
+          "value": "true",
+          "description": "Cancel the remaining instances for the adhoc sub process?",
+          "popular": true
+        }
+      ]
+    }
+  ],
+  "stencils": [
+    {
+      "type": "node",
+      "id": "BPMNDiagram",
+      "title": "BPMN-Diagram",
+      "description": "A BPMN 2.0 diagram.",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n   width=\"800\"\n   height=\"600\"\n   version=\"1.0\">\n  <defs></defs>\n  <g pointer-events=\"fill\" >\n    <polygon stroke=\"black\" fill=\"black\" stroke-width=\"1\" points=\"0,0 0,590 9,599 799,599 799,9 790,0\" stroke-linecap=\"butt\" stroke-linejoin=\"miter\" stroke-miterlimit=\"10\" />\n    <rect id=\"diagramcanvas\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"790\" height=\"590\" stroke=\"black\" stroke-width=\"2\" fill=\"white\" />\n    \t<text font-size=\"22\" id=\"diagramtext\" x=\"400\" y=\"25\" oryx:align=\"top center\" stroke=\"#373e48\"></text>\n  </g>\n</svg>",
+      "icon": "diagram.png",
+      "groups": [
+        "Diagram"
+      ],
+      "mayBeRoot": true,
+      "hide": true,
+      "propertyPackages": [
+        "process_idpackage",
+        "namepackage",
+        "process_potentialstarteruserpackage",
+        "datapropertiespackage",
+        "executionlistenerspackage",
+        "eventlistenerspackage",
+        "process_namespacepackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": []
+    },
+    {
+      "type": "node",
+      "id": "StartNoneEvent",
+      "title": "启动",
+      "description": "A start event without a specific trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\">\n\t<g xmlns=\"http://www.w3.org/2000/svg\">\n\t\t<circle fill=\"#7EBF36\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0   C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t</g>\n\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "startevent/none.svg",
+      "groups": [
+        "启动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "initiatorpackage",
+        "executionlistenerspackage",
+        "formkeydefinitionpackage",
+        "formreferencepackage",
+        "formpropertiespackage",
+        "documentationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "Startevents_all",
+        "StartEventsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "StartTimerEvent",
+      "title": "定时启动",
+      "description": "A start event with a timer trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.1\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<circle fill=\"#7EBF36\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0    C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t</g>\n\t<path fill=\"#FFFFFF\" d=\"M22.51,14.99h-7.65V7.37c0-0.64-0.52-1.15-1.14-1.15s-1.14,0.52-1.14,1.15v8.6c0,0.03,0,0.06,0,0.09   s0,0.06,0,0.09c0,0.64,0.52,1.15,1.14,1.15h8.79c0.63,0,1.14-0.52,1.14-1.15C23.65,15.52,23.15,14.99,22.51,14.99z\"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "startevent/timer.svg",
+      "groups": [
+        "启动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "timercycledefinitionpackage",
+        "timerdatedefinitionpackage",
+        "timerdurationdefinitionpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "Startevents_all",
+        "StartEventsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "StartSignalEvent",
+      "title": "信号启动",
+      "description": "A start event with a signal trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<circle fill=\"#7EBF36\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0    C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t</g>\n\t<polygon fill=\"#FFFFFF\" points=\"15,6.27 6,20.11 24,20.11  \"/>\n</g>\n\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "startevent/signal.svg",
+      "groups": [
+        "启动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "signalrefpackage",
+        "interruptingpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "Startevents_all",
+        "StartEventsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "StartMessageEvent",
+      "title": "消息启动",
+      "description": "A start event with a message trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<circle fill=\"#7EBF36\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0    C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t</g>\n\t<path fill=\"#FFFFFF\" d=\"M21.47,8.09H8.53c-1.83,0-3.32,1.35-3.32,3v7.83c0,1.66,1.49,3,3.32,3h12.93c1.83,0,3.32-1.35,3.32-3v-7.83   C24.79,9.44,23.3,8.09,21.47,8.09z M20.84,9.57l-6.11,4.23L8.87,9.57H20.84z M23.13,18.9c0,0.83-0.74,1.5-1.66,1.5H8.53   c-0.92,0-1.66-0.67-1.66-1.5v-7.83c0-0.22,0.05-0.41,0.13-0.59l7.64,5.19h0.05h0.05l8.17-5.3c0.12,0.2,0.2,0.44,0.2,0.7v7.83H23.13   z\"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "startevent/message.svg",
+      "groups": [
+        "启动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "messagerefpackage",
+        "interruptingpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "Startevents_all",
+        "StartEventsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "StartErrorEvent",
+      "title": "异常启动",
+      "description": "A start event that catches a thrown BPMN error",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n\n<g>\n<g>\n\t<circle fill=\"#7EBF36\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0   C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n</g>\n<path fill=\"#FFFFFF\" d=\"M10.77,7.49L6.15,19.17l5.39-5.01l6.93,8.34l5.39-12.79l-6.16,4.45L10.77,7.49z\"/>\n</g>\n\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "startevent/error.svg",
+      "groups": [
+        "启动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "errorrefpackage",
+        "interruptingpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "Startevents_all",
+        "StartEventsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "UserTask",
+      "title": "用户任务",
+      "description": "用户任务",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n\t\n\t<g id=\"userTask\" transform=\"translate(3,3)\">\n\n   <path \n   oryx:anchors=\"top left\"\n   style=\"fill:#d1b575;stroke:none;\"\n   xmlns=\"http://www.w3.org/2000/svg\" fill=\"#387EC2\" d=\"M7.95,0c2.25,0,4.07,1.79,4.07,4c0,2.21-1.82,4-4.07,4S3.89,6.21,3.89,4S5.71,0,7.95,0z M7.95,0  c2.25,0,4.07,1.79,4.07,4c0,2.21-1.82,4-4.07,4S3.89,6.21,3.89,4S5.71,0,7.95,0z M6.43,9.33h3.39c2.9,0,5.25,2.31,5.25,5.17v0.33  c0,1.12-2.35,1.17-5.25,1.17H6.43c-2.9,0-5.25,0-5.25-1.17V14.5C1.18,11.65,3.53,9.33,6.43,9.33L6.43,9.33z\"/>\n\t</g>\n  \n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\t\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.user.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "asynchronousdefinitionpackage",
+        "preemptmodepackage",
+        "checkuserspackage",
+        "userspackage",
+        "rolespackage",
+        "orgspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage",
+        "formkeydefinitionpackage",
+        "formreferencepackage",
+        "formpropertiespackage",
+        "duedatedefinitionpackage",
+        "prioritydefinitionpackage",
+        "executionlistenerspackage",
+        "skipexpressionpackage",
+        "tasklistenerspackage",
+        "documentationpackage"
+      ],
+      "hiddenPropertyPackages": [
+        "usertaskassignmentpackage",
+        "assigneepackage"
+      ],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "ServiceTask",
+      "title": "服务任务",
+      "description": "An automatic task with service logic",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n\t\n\t<g id=\"serviceTask\" transform=\"translate(3,3)\">\n   <path \n   oryx:anchors=\"top left\"\n\tstyle=\"fill:#72a7d0;stroke:none\"\n    fill=\"#387EC2\" d=\"M15.96,6.88c-0.08-0.36-0.4-0.72-0.76-0.8l-0.28-0.04c-0.6-0.2-1.16-0.6-1.48-1.2  c-0.36-0.6-0.44-1.28-0.28-1.92l0,0l0.08-0.24c0.12-0.32-0.04-0.8-0.32-1.04c0,0-0.24-0.2-0.92-0.6s-1-0.52-1-0.52  c-0.32-0.12-0.8,0-1.04,0.24l-0.2,0.2C9.28,1.4,8.68,1.68,8,1.68c-0.68,0-1.32-0.28-1.8-0.72L6.04,0.8C5.8,0.52,5.32,0.44,5,0.56  c0,0-0.32,0.12-1,0.52s-0.92,0.6-0.92,0.6C2.8,1.92,2.64,2.36,2.76,2.72l0.08,0.24C3,3.6,2.92,4.28,2.56,4.88s-0.88,1-1.52,1.2  L0.8,6.12C0.44,6.2,0.12,6.56,0.04,6.92C0.04,6.88,0,7.2,0,8s0.04,1.12,0.04,1.12c0.08,0.36,0.4,0.72,0.76,0.8l0.24,0.04l0,0  c0.6,0.2,1.16,0.6,1.52,1.2c0.36,0.6,0.44,1.28,0.28,1.92l0,0l-0.08,0.24c-0.12,0.32,0.04,0.8,0.32,1.04c0,0,0.24,0.2,0.92,0.6  c0.68,0.4,1,0.52,1,0.52c0.32,0.12,0.8,0,1.04-0.24l0.16-0.2c0.48-0.44,1.08-0.72,1.8-0.72c0.68,0,1.32,0.28,1.8,0.72l0,0l0.16,0.2  c0.24,0.28,0.72,0.36,1.04,0.24c0,0,0.32-0.12,1-0.52c0.68-0.4,0.92-0.6,0.92-0.6c0.28-0.24,0.4-0.68,0.32-1.04l-0.08-0.24  c-0.16-0.64-0.08-1.28,0.28-1.88s0.88-1,1.52-1.2l0,0l0.24-0.04c0.36-0.08,0.68-0.44,0.76-0.8c0,0,0.04-0.32,0.04-1.12  C16,7.2,15.96,6.88,15.96,6.88L15.96,6.88L15.96,6.88z M8,11.2c-1.76,0-3.2-1.44-3.2-3.2S6.24,4.8,8,4.8c1.76,0,3.2,1.44,3.2,3.2  S9.76,11.2,8,11.2L8,11.2L8,11.2z\"/>\n\n   \n   </g>\n  \n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\t\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.service.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "servicetasktriggerablepackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage",
+        "servicetaskclasspackage",
+        "servicetaskexpressionpackage",
+        "servicetaskdelegateexpressionpackage",
+        "servicetaskfieldspackage",
+        "servicetaskresultvariablepackage",
+        "skipexpressionpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "ScriptTask",
+      "title": "脚本任务",
+      "description": "An automatic task with script logic",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n\t\n\t<g id=\"scriptTask\" transform=\"translate(2,2)\">\n   <path\n   oryx:anchors=\"top left\"\n    xmlns=\"http://www.w3.org/2000/svg\" fill=\"#387EC2\" d=\"M9.6,14.4c0.88,0,1.6-0.72,1.6-1.6V1.94H4.91c-0.44,0-0.8,0.36-0.8,0.8v8.46H2.4V2.4C2.4,1.07,3.47,0,4.8,0  h8.8C14.93,0,16,1.07,16,2.4v0.8h-2.97v10.4c0,1.33-1.07,2.4-2.4,2.4H2.4C1.07,16,0,14.93,0,13.6v-0.8h8C8,13.68,8.72,14.4,9.6,14.4  z\"/>\n   \n   </g>\n  \n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\t\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.script.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "scriptformatpackage",
+        "scripttextpackage",
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "BusinessRule",
+      "title": "业务规则任务",
+      "description": "An automatic task with rule logic",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n  \t<defs>\n\t\t<radialGradient id=\"background\" cx=\"10%\" cy=\"10%\" r=\"100%\" fx=\"10%\" fy=\"10%\">\n\t\t\t<stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"1\"/>\n\t\t\t<stop id=\"fill_el\" offset=\"100%\" stop-color=\"#ffffcc\" stop-opacity=\"1\"/>\n\t\t</radialGradient>\n\t</defs>\n\t\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n    \n\t<g id=\"businessRuleTask\" transform=\"translate(4,3)\">\n\t<path \t\toryx:anchors=\"top left\" \n\t\tstyle=\"fill:#72a7d0;stroke:none\" fill=\"#387EC2\" d=\"M14.67,3.83H5.33V6.5h9.33V3.83z M1.33,3.83V6.5H4V3.83H1.33z M5.33,13.17h9.33V7.83H5.33V13.17z M4,13.17  V7.83H1.33v5.33H4z M0,1.17h16V14.5H0V1.17z\"/>\n   \n   </g>\n\t\n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.business.rule.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage",
+        "ruletask_rulespackage",
+        "ruletask_variables_inputpackage",
+        "ruletask_excludepackage",
+        "ruletask_resultpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "ReceiveTask",
+      "title": "接收任务",
+      "description": "An task that waits for a signal",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n    \n\t<g id=\"receiveTask\" transform=\"translate(4,3)\">\n    <path oryx:anchors=\"left top\" \n\t\t style=\"fill:#16964d;stroke:none;\" fill=\"#387EC2\" d=\"M13.29,1.38H2.71C1.22,1.38,0,2.65,0,4.2v7.34c0,1.55,1.22,2.81,2.71,2.81h10.57c1.5,0,2.71-1.26,2.71-2.81  V4.2C16,2.65,14.78,1.38,13.29,1.38z M12.77,2.79l-5,3l-4.8-3H12.77z M7.8,7.55l6.68-4.01c0.1,0.2,0.16,0.42,0.16,0.66v7.34  c0,0.78-0.61,1.41-1.36,1.41H2.71c-0.75,0-1.36-0.63-1.36-1.41V4.2c0-0.2,0.04-0.39,0.11-0.56l6.25,3.91\"/>\n\n\t</g>\n\t\n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.receive.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "ManualTask",
+      "title": "手工任务",
+      "description": "An automatic task with no logic",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n    <g id=\"manualTask\" transform=\"translate(3,1)\">\n       <path\n       oryx:anchors=\"top left\"\n    \t\tstyle=\"fill:#d1b575;stroke=none\"\n       xmlns=\"http://www.w3.org/2000/svg\" fill=\"#387EC2\" d=\"M12.24,15.63l-9.63-0.19c-1.46-0.03-2.63-1.29-2.61-2.8L0.1,7.62c0.01-0.74,0.31-1.44,0.83-1.95l5.39-5.3  c0,0,0.8,0.88,0.81,0.91c0.12,0.15,0.19,0.34,0.18,0.55c0,0.14-0.04,0.29-0.11,0.41C7.2,2.27,5.52,5.18,5.52,5.18l7.91,0.15  c0.55,0.01,0.99,0.48,0.98,1.05c-0.01,0.57-0.46,1.02-1.01,1.01L8.74,7.3L8.73,7.99l6.31,0.12c0.55,0.01,0.99,0.48,0.98,1.05  c-0.01,0.57-0.46,1.02-1.01,1.01l-6.31-0.12l-0.01,0.69l5.64,0.11c0.55,0.01,0.99,0.48,0.98,1.05c-0.01,0.57-0.46,1.02-1.01,1.01  L8.64,12.8l-0.01,0.69l3.65,0.07c0.55,0.01,0.99,0.48,0.98,1.05C13.24,15.18,12.79,15.64,12.24,15.63L12.24,15.63z\"/>\n\n\t</g>\n\t\n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.manual.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "MailTask",
+      "title": "邮件任务",
+      "description": "An mail task",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n    \n\t<g id=\"sendTask\" transform=\"translate(4,3)\">\n\t\n\t<!-- path here -->\n   <path oryx:anchors=\"top left\"\n\t\t style=\"fill:#16964d;stroke:none;\"\n       xmlns=\"http://www.w3.org/2000/svg\" fill=\"#387EC2\" d=\"M16,3.14c0,0.47-0.15,0.92-0.44,1.35c-0.29,0.43-0.66,0.79-1.09,1.1c-2.24,1.55-3.63,2.52-4.18,2.9  c-0.06,0.04-0.19,0.13-0.38,0.27C9.72,8.9,9.56,9.02,9.43,9.1C9.3,9.19,9.15,9.28,8.97,9.39C8.79,9.5,8.61,9.58,8.46,9.63  C8.29,9.69,8.15,9.71,8.01,9.71H7.99c-0.14,0-0.29-0.03-0.45-0.08C7.38,9.58,7.21,9.5,7.03,9.39C6.85,9.29,6.7,9.19,6.57,9.1  C6.44,9.02,6.28,8.9,6.09,8.76C5.89,8.62,5.77,8.53,5.71,8.49C5.17,8.11,4.38,7.57,3.37,6.86S1.74,5.73,1.54,5.59  C1.17,5.34,0.82,4.99,0.49,4.56C0.16,4.12,0,3.71,0,3.34c0-0.46,0.12-0.85,0.37-1.16s0.6-0.46,1.06-0.46h13.14  c0.39,0,0.72,0.14,1,0.42C15.86,2.41,16,2.75,16,3.14z M16,5.77v7.09c0,0.39-0.14,0.73-0.42,1.01c-0.28,0.28-0.62,0.42-1.01,0.42  H1.43c-0.39,0-0.73-0.14-1.01-0.42C0.14,13.59,0,13.25,0,12.86V5.77c0.26,0.29,0.56,0.55,0.9,0.78c2.15,1.46,3.63,2.49,4.44,3.08  c0.34,0.25,0.61,0.45,0.83,0.58c0.21,0.14,0.49,0.28,0.84,0.43c0.35,0.15,0.68,0.22,0.98,0.22h0.02c0.3,0,0.63-0.07,0.98-0.22  c0.35-0.15,0.63-0.29,0.84-0.43c0.21-0.14,0.49-0.33,0.83-0.58c1.01-0.73,2.49-1.76,4.45-3.08C15.45,6.31,15.74,6.05,16,5.77z\"/>\n\t</g>\n\t\n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.send.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage",
+        "mailtasktopackage",
+        "mailtaskfrompackage",
+        "mailtasksubjectpackage",
+        "mailtaskccpackage",
+        "mailtaskbccpackage",
+        "mailtasktextpackage",
+        "mailtaskhtmlpackage",
+        "mailtaskcharsetpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "CamelTask",
+      "title": "骆驼任务",
+      "description": "An task that sends a message to Camel",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n\t\n\t<g id=\"camelTask\" transform=\"translate(4,4)\">\n     <path \n     oryx:anchors=\"top left\"\n     style=\"fill:#bd4848;fill-opacity:1\"\n      fill=\"#387EC2\" d=\"M14.59,7.97c-0.05-0.49,0.04-0.45,0.2-0.94l0.09-0.29c0.03-0.1,0.06-0.22,0.09-0.36  c0.01-0.06,0.02-0.13,0.03-0.19c0.13,0.11,0.31,0.25,0.43,0.39c0.24,0.26,0.55,0.04,0.41-0.01c-0.14-0.05-0.39-0.33-0.62-0.76  c-0.07-0.12-0.17-0.22-0.28-0.3c-0.11-0.37-0.3-0.65-0.47-0.76c-0.28-0.2-0.96-1.39-2.19-2.06C11.05,2.01,11,3.11,10.16,3.03  C9.32,2.95,9.24,2.31,8.32,2.28c-0.93-0.03-1.7,1.53-2.45,2.03c-0.54,0.36-0.72,0.5-1.2,0.25c-0.69-0.36-0.69-1.4-0.69-1.4  S3.93,2.61,3.73,2.41l-0.21-0.2c0,0,0.04-0.36-0.04-0.33C3.39,1.92,3.07,1.95,3,2C2.9,2.07,2.51,2,2.14,2.24  C1.89,2.4,1.7,2.4,1.62,2.42C1.54,2.44,1.56,2.3,1.43,2.31C1.32,2.32,1.32,2.46,1.32,2.46S0.7,2.56,0.45,2.7  C0.2,2.85,0.1,3.08,0.1,3.23c0,0.1-0.19,0.46-0.05,0.62C0.19,4,0.27,3.92,0.27,3.92s-0.1,0.17,0.06,0.25  c0.16,0.07,0.3-0.13,0.38-0.16c0.08-0.02,0.43,0.07,0.65,0.14c0.07,0.02,0.18,0.03,0.3,0.04l0.33,0c0.09,0,0.16-0.01,0.16-0.01  S2.27,4.3,2.38,4.34C2.53,4.43,2.38,5.1,2.41,5.68c0.04,0.69,0.15,2.25,1.67,2.71c1.53,0.46,2.27-1.17,2.38-1.03  c0.31,0.42,0.69,0.57,0.66,0.71c-0.05,0.31-0.7,0.99-1.22,1.92c-0.36,0.63-0.07,1,0.44,1.98c0.43,0.82,0.5,1.13,0.41,1.64  c-0.09,0.51,0.34,0.26,0.55,0.07c0.22-0.19,0.38-0.54,0.14-0.72c-0.2-0.15-0.72-1.63-0.92-2.26c-0.1-0.32,0.98-1.45,1.01-1.41  c0.1,0.17,0.29,0.61,0.44,1.3c0.15,0.68,0.44,1.69,0.44,2.08c0,0.39-0.44,1.39-0.81,1.7c-0.37,0.31,0.73,0.32,1.1,0.25  c0.37-0.07,0.09-0.39,0.07-0.66c-0.02-0.27,0.05-0.95,0.17-1.88c0.11-0.93-0.24-2.05-0.37-2.44c-0.13-0.39,0.03-0.9,0.25-1.29  c0.22-0.39,0.35-0.14,1.62-0.32c1.27-0.18,1.94-0.57,2.18-0.64c0.24-0.07-0.14,0.68-0.16,1.46c-0.03,0.7,0.87,1.59,0.8,2.24  c-0.07,0.66-1.61,2.77-1.79,2.9c-0.5,0.36-0.57,0.29-0.74,0.55c-0.15,0.24,0.91,0.29,1.21,0.13c0.32-0.17,0-0.2,0.15-0.54  c0.15-0.34,2.04-2.43,2.07-2.79c0.05-0.48-0.31-1.49-0.29-1.63c0.23,0.22,0.5,0.47,0.57,0.55c0.56,0.64,0.81,0.62,0.79,0.89  c-0.04,0.49-0.47,2.89-0.58,3c-0.2,0.2-0.37,0.29-0.6,0.55c-0.22,0.25,0.45,0.16,0.69,0.18c0.37,0.03,0.34-0.14,0.34-0.31  c0-0.17,0.13-0.84,0.45-1.88c0.33-1.07,0.49-1.36,0.49-1.85C15.99,10.08,14.7,8.98,14.59,7.97\"/>\n\n\t</g>\n  \n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\t\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.camel.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage",
+        "cameltaskcamelcontextpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "HttpTask",
+      "title": "Http任务",
+      "description": "A HTTP task",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n    \n\t<g id=\"sendTask\" transform=\"translate(4,3)\">\n\t\n\t<!-- path here -->\n   <path oryx:anchors=\"top left\"\n\t\t\tstyle=\"fill:#16964d;stroke:none;\" fill=\"#387EC2\" d=\"M0.18,15.99c-0.09-0.02-0.15-0.09-0.17-0.17C0.01,15.61,0,15.41,0,15.2c0.19-0.86,0.65-1.59,1.1-2.33  c0.35-0.58,0.74-1.14,1.16-1.66c0.43-0.54,0.98-0.67,1.62-0.5c1,0.28,1.68,1.38,1.42,2.3c-0.05,0.18-0.12,0.37-0.26,0.49  C3.77,14.58,2.41,15.52,0.8,16C0.8,16,0.18,15.99,0.18,15.99z M15.98,1.94c-0.2-1.81-0.09-1.71-1.9-1.91  c-0.64-0.05-0.85-0.04-1.76,0C9.61,0.29,7.43,1.51,5.73,3.6C5.52,3.87,5.23,4.07,4.9,4.17C3.07,4.71,1.66,5.82,0.63,7.42  C0.47,7.67,0.37,7.91,0.57,8.18c0.21,0.27,0.48,0.29,0.78,0.18C1.85,8.17,2.37,8.05,2.9,8c0.42-0.04,0.74-0.11,1.1,0.39  c0.95,1.29,2.09,2.44,3.37,3.41c0.72,0.54,0.72,1.07,0.55,1.77c-0.09,0.35-0.17,0.7-0.28,1.04c-0.1,0.31-0.13,0.6,0.17,0.82  c0.29,0.22,0.54,0.09,0.8-0.07c1.55-1.01,2.65-2.38,3.19-4.17c0.11-0.37,0.33-0.7,0.63-0.94c2.08-1.69,3.29-3.87,3.53-6.55  C16,2.9,16.01,2.32,15.98,1.94z M10.52,7.41C9.45,7.4,8.59,6.52,8.6,5.45c0.01-1.06,0.87-1.92,1.93-1.92c1.06,0,1.96,0.91,1.94,1.96  C12.44,6.56,11.58,7.41,10.52,7.41L10.52,7.41z\"/>\n\t</g>\n\t\n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.http.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage",
+        "httptaskrequestmethodpackage",
+        "httptaskrequesturlpackage",
+        "httptaskrequestheaderspackage",
+        "httptaskrequestbodypackage",
+        "httptaskrequesttimeoutpackage",
+        "httptaskdisallowredirectspackage",
+        "httptaskfailstatuscodespackage",
+        "httptaskhandlestatuscodespackage",
+        "httptaskignoreexceptionpackage",
+        "httptaskresponsevariablenamepackage",
+        "httptasksaverequestvariablespackage",
+        "httptasksaveresponseparameterspackage",
+        "httptaskresultvariableprefixpackage",
+        "httptasksaveresponseparameterstransientpackage",
+        "httptasksaveresponseasjsonpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "MuleTask",
+      "title": "Mule task",
+      "description": "An task that sends a message to Mule",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n\t\n\t<g id=\"muleTask\" transform=\"translate(4,4)\">\n     <path \n      oryx:anchors=\"left top\"\n     style=\"fill:#bd4848;fill-opacity:1\"\n     xmlns=\"http://www.w3.org/2000/svg\" fill=\"#387EC2\" d=\"M13.75,2.14c-0.49-0.55-1.11-0.98-1.72-1.42l-0.25,0.37l-0.49,0.62l-0.74,0.98L9.82,3.74L7.93,6.47h0.09  L6.12,3.74L5.39,2.69L4.65,1.71L4.15,1.09L3.91,0.72C1.57,2.14-0.03,4.66-0.03,7.61c0,3.57,2.34,6.58,5.54,7.57  c0.37,0.12,0.8,0.25,1.23,0.31v-3.75c-0.43-0.12-0.86-0.31-1.23-0.62c-1.11-0.8-1.85-2.03-1.85-3.51c0-0.43,0.06-0.8,0.18-1.23  l3.2,4.31h1.85l3.2-4.31c0.12,0.37,0.18,0.8,0.18,1.23c0,1.48-0.74,2.77-1.85,3.51c-0.37,0.25-0.8,0.49-1.23,0.62v3.75  c0.43-0.06,0.8-0.18,1.23-0.31c3.2-1.05,5.54-4.06,5.54-7.57C15.97,5.46,15.11,3.55,13.75,2.14z M10.43,13.89v-1.35  c1.85-0.92,3.08-2.77,3.08-4.92c0-1.29-0.49-2.52-1.23-3.45l-0.74,1.05l-3.2,4.31H7.72l-3.2-4.31L3.66,4.11  C2.92,5.09,2.43,6.26,2.43,7.61c0,2.15,1.23,4.06,3.08,4.92v1.35C2.99,12.91,1.2,10.44,1.2,7.61c0-2.09,0.92-3.94,2.4-5.17  l0.49,0.68l0.98,1.29l2.67,3.64h0.44l2.61-3.64l0.98-1.35l0.49-0.68c0.25,0.18,0.49,0.43,0.68,0.68c1.05,1.17,1.72,2.77,1.72,4.49  C14.74,10.44,12.95,12.91,10.43,13.89z\"/>\n\n\t</g>\n  \n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\t\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.mule.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage",
+        "muletaskendpointurlpackage",
+        "muletasklanguagepackage",
+        "muletaskpayloadexpressionpackage",
+        "muletaskresultvariablepackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "SendTask",
+      "title": "发送任务",
+      "description": "An task that sends a message",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n    \n\t<g id=\"sendTask\" transform=\"translate(4,3)\">\n\t\n\t<!-- path here -->\n\t\t<path oryx:anchors=\"top left\"\n\t\t\tstyle=\"fill:#16964d;stroke:none;\"\n     \t\td=\"M 1 3 L 9 11 L 17 3 L 1 3 z M 1 5 L 1 13 L 5 9 L 1 5 z M 17 5 L 13 9 L 17 13 L 17 5 z M 6 10 L 1 15 L 17 15 L 12 10 L 9 13 L 6 10 z \"\n     \t/>\n\t</g>\n\t\n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.send.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "DecisionTask",
+      "title": "决策任务",
+      "description": "Task to use the Flowable DMN rule engine",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n\t\n\t<g id=\"decisionTask\" transform=\"translate(4,3)\">\n      <path \n      oryx:anchors=\"top left\"\n      style=\"fill:#72a7d0;stroke:none\"\n       fill=\"#387EC2\" d=\"M8.05,1h6.9C15.75,1,16,1.25,16,2.05v11.9c0,0.8-0.25,1.05-1.05,1.05H1.05C0.3,15,0,14.7,0,14V2  c0-0.7,0.3-1,1-1H8.05z M5,11.25H1v2.7h4V11.25z M10,14v-2.7H6.05V14H10z M11,13.95h4v-2.7h-4V13.95z M1.05,7.65v2.7H5v-2.7  C5,7.65,1.05,7.65,1.05,7.65z M11,10.35h3.8c0.05,0,0.2-0.1,0.2-0.2v-2.5h-4V10.35z M6,10.35h4V7.7H6V10.35z M5,6.75v-2.7H1V6.5  c0,0.1,0.15,0.25,0.25,0.25C1.25,6.75,5,6.75,5,6.75z M6,6.7h4V4.05H6V6.7z M14.95,6.7V4H11v2.7C11,6.7,14.95,6.7,14.95,6.7z\"/>\n\n\t</g>\n\n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\t\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.decision.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage",
+        "decisiontaskdecisiontablereferencepackage",
+        "decisiontaskthrowerroronnohitspackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "ShellTask",
+      "title": "Shell命令任务",
+      "description": "An automatic task with shell batch logic",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#f9f9f9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n\t\n\t<g id=\"shellTask\" transform=\"translate(2,2)\">\n         <path oryx:anchors=\"top left\" fill=\"#72a7d0\" d=\"m16,14.26l-16,0l0,-12.77l16,0l0,12.77zm-14.42,-1.58l12.84,0l0,-9.61l-12.84,0l0,9.61z\" id=\"svg_2\"/>\n         <path oryx:anchors=\"top left\" fill=\"#72a7d0\" d=\"m4.67,10.57l-1.12,-1.11l1.74,-1.74l-1.74,-1.75l1.12,-1.12l2.86,2.86l-2.86,2.86zm3.23,-1.25l4.55,0l0,1.58l-4.55,0l0,-1.58z\" id=\"svg_3\"/>\n\t</g>\n  \n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\t\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/list/type.shell.svg",
+      "groups": [
+        "活动"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "shellcommandpackage",
+        "shellarg1package",
+        "shellarg2package",
+        "shellarg3package",
+        "shellarg4package",
+        "shellarg5package",
+        "shellwaitpackage",
+        "shelloutputvariablepackage",
+        "shellerrorcodevariablepackage",
+        "shellredirecterrorpackage",
+        "shellcleanenvpackage",
+        "shelldirectorypackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "ActivitiesMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "SubProcess",
+      "title": "子流程",
+      "description": "A sub process scope",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n   width=\"200\"\n   height=\"160\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"50\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"80\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"110\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"70\" oryx:cy=\"159\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"100\" oryx:cy=\"159\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"130\" oryx:cy=\"159\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"199\" oryx:cy=\"50\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"199\" oryx:cy=\"80\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"199\" oryx:cy=\"110\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"70\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"100\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"130\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"100\" oryx:cy=\"80\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"120 100\" oryx:maximumSize=\"\" >\n    <rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"0\" y=\"0\" width=\"190\" height=\"160\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:anchors=\"bottom top right left\" x=\"0\" y=\"0\" width=\"200\" height=\"160\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#FAEBA9\" />\n\t<rect id=\"border\" oryx:anchors=\"top bottom left right\" oryx:resize=\"vertical horizontal\" x=\"2.5\" y=\"2.5\" width=\"195\" height=\"155\" rx=\"8\" ry=\"8\" stroke=\"black\" stroke-width=\"1\" fill=\"none\" />\n\t<text \n\t\tfont-size=\"12\" \n\t\tid=\"text_name\" \n\t\tx=\"8\" \n\t\ty=\"10\" \n\t\toryx:align=\"top left\"\n\t\toryx:fittoelem=\"text_frame\"\n\t\toryx:anchors=\"left top\" \n\t\tstroke=\"#373e48\">\n\t</text>\n\t\n\t<g \tid=\"parallel\"\n\t\ttransform=\"translate(1)\">\n\t\t<path \n\t\t\tid=\"parallelpath\"\n\t\t\toryx:anchors=\"bottom\" \n\t\t\tfill=\"none\" stroke=\"#bbbbbb\" d=\"M96 145 v10 M100 145 v10 M104 145 v10\" \n\t\t\tstroke-width=\"2\"\n\t\t/>\n\t</g>\n\t<g \tid=\"sequential\"\n\t\ttransform=\"translate(1)\">\n\t\t<path \n\t\t\tid=\"sequentialpath\"\n\t\t\toryx:anchors=\"bottom\" \n\t\t\tfill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M95,154h10 M95,150h10 M95,146h10\"\n\t\t/>\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/expanded.subprocess.svg",
+      "groups": [
+        "结构"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "datapropertiespackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "istransactionpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "CollapsedSubProcess",
+      "title": "补偿子流程",
+      "description": "A sub process scope",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#FAEBA9\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n\t<g id=\"subprocess\">\n\t\t<rect height=\"10\" width=\"10\" x=\"45\" y=\"65\" stroke=\"#bbbbbb\" fill=\"none\" />\n\t\t<path d=\"M50 65 L50 75\" stroke=\"black\" />\n\t\t<path d=\"M45 70 L55 70\" stroke=\"black\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/subprocess.svg",
+      "groups": [
+        "结构"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "datapropertiespackage",
+        "executionlistenerspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "istransactionpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "EventSubProcess",
+      "title": "事件子流程",
+      "description": "A event sub process scope",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n   width=\"200\"\n   height=\"160\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"0\" oryx:cy=\"80\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"100\" oryx:cy=\"160\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"200\" oryx:cy=\"80\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"100\" oryx:cy=\"0\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"100\" oryx:cy=\"80\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"120 100\" oryx:maximumSize=\"\" >\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"0\" y=\"0\" width=\"190\" height=\"160\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:anchors=\"bottom top right left\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"200\" height=\"160\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" stroke-dasharray=\"2,2,2\" fill=\"#BBD4EF\" />\n    \t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"8\" \n\t\t\ty=\"10\" \n\t\t\toryx:align=\"top left\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\toryx:anchors=\"left top\" \n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n    \t\n\t<g id=\"none\"></g>\n\t\n  </g>\n</svg>",
+      "icon": "activity/event.subprocess.svg",
+      "groups": [
+        "结构"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "all",
+        "EventSubProcess"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "CallActivity",
+      "title": "调用活动",
+      "description": "A call activity",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n\n   width=\"102\"\n   height=\"82\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"20\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"40\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"60\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"79\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"20\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"40\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"99\" oryx:cy=\"60\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"25\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"75\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"50\" oryx:cy=\"40\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"50 40\">\n\t<rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"1\" y=\"1\" width=\"94\" height=\"79\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n    <rect oryx:resize=\"vertical horizontal\" oryx:anchors=\"bottom top right left\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"4\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:resize=\"vertical horizontal\" x=\"0\" y=\"0\" width=\"100\" height=\"80\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#BFE0CC\" />\n\t\t<text \n\t\t\tfont-size=\"12\" \n\t\t\tid=\"text_name\" \n\t\t\tx=\"50\" \n\t\t\ty=\"40\" \n\t\t\toryx:align=\"middle center\"\n\t\t\toryx:fittoelem=\"text_frame\"\n\t\t\tstroke=\"#373e48\">\n\t\t</text>\n    \n\t<g id=\"parallel\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M46 70 v8 M50 70 v8 M54 70 v8\" stroke-width=\"2\" />\n\t</g>\n\t\n\t<g id=\"sequential\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" stroke-width=\"2\" d=\"M46,76h10M46,72h10 M46,68h10\"/>\n\t</g>\n\n\t<g id=\"compensation\">\n\t\t<path oryx:anchors=\"bottom\" fill=\"none\" stroke=\"#bbbbbb\" d=\"M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74\" stroke-width=\"1\" />\n\t</g>\n  </g>\n</svg>",
+      "icon": "activity/task.svg",
+      "groups": [
+        "结构"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "executionlistenerspackage",
+        "callactivitycalledelementpackage",
+        "callactivityinparameterspackage",
+        "callactivityoutparameterspackage",
+        "callactivityinheritvariablespackage",
+        "callactivitysamedeploymentpackage",
+        "callactivityinheritbusinesskeypackage",
+        "callactivityuselocalscopeforoutparameterspackage",
+        "multiinstance_typepackage",
+        "multiinstance_cardinalitypackage",
+        "multiinstance_collectionpackage",
+        "multiinstance_variablepackage",
+        "multiinstance_conditionpackage",
+        "isforcompensationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "ExclusiveGateway",
+      "title": "互斥网关",
+      "description": "A choice gateway",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns=\"http://www.w3.org/2000/svg\"\n   version=\"1.0\"\n   width=\"40\"\n   height=\"40\">\n  <defs\n     id=\"defs4\" />\n  <oryx:magnets>\n    <oryx:magnet\n       oryx:default=\"yes\"\n       oryx:cy=\"16\"\n       oryx:cx=\"16\" />\n  </oryx:magnets>\t\t\t\t\t\n  <g>\n  \n   <path id=\"bg_frame\" d=\"m14.998,29.321a1.354,1.354 0 0 1 -0.965,-0.4l-12.958,-12.955a1.371,1.371 0 0 1 0,-1.929l12.958,-12.958a1.372,1.372 0 0 1 1.93,0l12.958,12.958a1.371,1.371 0 0 1 0,1.929l-12.958,12.958a1.354,1.354 0 0 1 -0.965,0.397z\" fill=\"#43b89d\"/>\n   <path d=\"m14.998,1.364a0.678,0.678 0 0 1 0.482,0.2l12.959,12.955a0.694,0.694 0 0 1 0,0.965l-12.959,12.958a0.688,0.688 0 0 1 -0.964,0l-12.959,-12.958a0.694,0.694 0 0 1 0,-0.965l12.959,-12.958a0.678,0.678 0 0 1 0.482,-0.2m0,-1.359a2.04,2.04 0 0 0 -1.447,0.6l-12.953,12.953a2.051,2.051 0 0 0 0,2.893l12.953,12.954a2.052,2.052 0 0 0 2.894,0l12.953,-12.954a2.051,2.051 0 0 0 0,-2.893l-12.953,-12.953a2.04,2.04 0 0 0 -1.447,-0.6z\" fill=\"#666\" id=\"svg_2\"/>\n   <g id=\"cross\">\n    <rect id=\"svg_3\" fill=\"#f7f8f8\" height=\"1.364\" width=\"13.639\" y=\"14.32\" x=\"8.179\"/>\n   </g>\n   <text id=\"text_name\" x=\"26\" y=\"26\"/>\n\t\n  </g>\n</svg>\n",
+      "icon": "gateway/exclusive.databased.svg",
+      "groups": [
+        "网关"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "sequencefloworderpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "GatewaysMorph",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "ParallelGateway",
+      "title": "并行网关",
+      "description": "A parallel gateway",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns=\"http://www.w3.org/2000/svg\"\n   version=\"1.0\"\n   width=\"40\"\n   height=\"40\">\n   \n  <oryx:magnets>\n    <oryx:magnet\n       oryx:default=\"yes\"\n       oryx:cy=\"16\"\n       oryx:cx=\"16\" />\n  </oryx:magnets>\n  <g>\n   <g id=\"bg_frame\">\n    <path d=\"m14.998,29.321a1.358,1.358 0 0 1 -0.965,-0.4l-12.958,-12.955a1.371,1.371 0 0 1 0,-1.929l12.958,-12.959a1.372,1.372 0 0 1 1.93,0l12.958,12.959a1.371,1.371 0 0 1 0,1.929l-12.958,12.958a1.358,1.358 0 0 1 -0.965,0.397z\" fill=\"#43b89d\" id=\"svg_2\"/>\n    <path id=\"path1\" d=\"m14.998,1.363a0.675,0.675 0 0 1 0.482,0.2l12.959,12.956a0.693,0.693 0 0 1 0,0.964l-12.959,12.959a0.689,0.689 0 0 1 -0.964,0l-12.959,-12.954a0.693,0.693 0 0 1 0,-0.964l12.959,-12.963a0.675,0.675 0 0 1 0.482,-0.2m0,-1.363a2.036,2.036 0 0 0 -1.447,0.6l-12.953,12.956a2.052,2.052 0 0 0 0,2.894l12.953,12.955a2.052,2.052 0 0 0 2.894,0l12.953,-12.955a2.052,2.052 0 0 0 0,-2.894l-12.953,-12.954a2.036,2.036 0 0 0 -1.447,-0.6l0,-0.002z\" fill=\"#666\"/>\n   </g>\n   <rect x=\"11.945\" y=\"9.887\" width=\"1.364\" height=\"10.229\" fill=\"#f7f8f8\" id=\"svg_3\"/>\n   <rect x=\"16.687\" y=\"9.887\" width=\"1.364\" height=\"10.229\" fill=\"#f7f8f8\" id=\"svg_4\"/>\n\n  <text id=\"text_name\" x=\"26\" y=\"26\" oryx:align=\"left top\"/>\n\t\n  </g>\n</svg>\n",
+      "icon": "gateway/parallel.svg",
+      "groups": [
+        "网关"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "sequencefloworderpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "GatewaysMorph",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "InclusiveGateway",
+      "title": "包容网关",
+      "description": "An inclusive gateway",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns=\"http://www.w3.org/2000/svg\"\n   version=\"1.0\"\n   width=\"40\"\n   height=\"40\">\n  <oryx:magnets>\n    <oryx:magnet\n       oryx:default=\"yes\"\n       oryx:cy=\"16\"\n       oryx:cx=\"16\" />\n  </oryx:magnets>\n  <g>\n  <path fill=\"#45b89d\" d=\"m15.862,29.24862a1.354,1.354 0 0 1 -0.965,-0.4l-12.959,-12.957a1.371,1.371 0 0 1 0,-1.929l12.959,-12.96a1.372,1.372 0 0 1 1.93,0l12.959,12.96a1.371,1.371 0 0 1 0,1.929l-12.959,12.96a1.354,1.354 0 0 1 -0.965,0.397z\" id=\"bg_frame\"/>\n  <path d=\"m15,1.23052a0.678,0.678 0 0 1 0.482,0.2l12.96,12.96a0.693,0.693 0 0 1 0,0.965l-12.96,12.96a0.688,0.688 0 0 1 -0.964,0l-12.96,-12.963a0.693,0.693 0 0 1 0,-0.965l12.96,-12.96a0.678,0.678 0 0 1 0.482,-0.197m0,-1.36a2.044,2.044 0 0 0 -1.447,0.6l-12.953,12.952a2.053,2.053 0 0 0 0,2.895l12.953,12.953a2.052,2.052 0 0 0 2.894,0l12.953,-12.953a2.053,2.053 0 0 0 0,-2.895l-12.953,-12.952a2.044,2.044 0 0 0 -1.447,-0.6z\" fill=\"#666\" id=\"svg_2\"/>\n  <path d=\"m15,9.41452a5.456,5.456 0 1 1 -5.456,5.456l0,0a5.462,5.462 0 0 1 5.456,-5.456m0,-1.364a6.82,6.82 0 1 0 6.82,6.82a6.82,6.82 0 0 0 -6.82,-6.82z\" fill=\"#f7f8f8\" id=\"svg_3\"/>\n\n    <text id=\"text_name\" x=\"28\" y=\"28\" oryx:align=\"left top\"/>\n  </g>\n</svg>\n",
+      "icon": "gateway/inclusive.svg",
+      "groups": [
+        "网关"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "sequencefloworderpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "GatewaysMorph",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "EventGateway",
+      "title": "事件网关",
+      "description": "An event gateway",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns=\"http://www.w3.org/2000/svg\"\n   version=\"1.0\"\n   width=\"40\"\n   height=\"40\">\n\n  <oryx:magnets>\n    <oryx:magnet\n       oryx:default=\"yes\"\n       oryx:cy=\"16\"\n       oryx:cx=\"16\" />\n  </oryx:magnets>\n  <g\n     id=\"g1027\">\n       <path id=\"svg_1\" fill=\"#43b89d\" d=\"m15,29.325a1.354,1.354 0 0 1 -0.965,-0.4l-12.959,-12.957a1.371,1.371 0 0 1 0,-1.929l12.959,-12.96a1.372,1.372 0 0 1 1.93,0l12.959,12.96a1.371,1.371 0 0 1 0,1.929l-12.959,12.96a1.354,1.354 0 0 1 -0.965,0.397z\"/>\n   <path id=\"svg_2\" fill=\"#666\" d=\"m15,1.364a0.678,0.678 0 0 1 0.482,0.2l12.96,12.96a0.693,0.693 0 0 1 0,0.965l-12.96,12.96a0.688,0.688 0 0 1 -0.964,0l-12.96,-12.963a0.693,0.693 0 0 1 0,-0.965l12.96,-12.96a0.678,0.678 0 0 1 0.482,-0.197m0,-1.36a2.044,2.044 0 0 0 -1.447,0.6l-12.953,12.952a2.053,2.053 0 0 0 0,2.895l12.953,12.953a2.052,2.052 0 0 0 2.894,0l12.953,-12.953a2.053,2.053 0 0 0 0,-2.895l-12.953,-12.952a2.044,2.044 0 0 0 -1.447,-0.6z\"/>\n   <path id=\"svg_3\" fill=\"#f7f8f8\" d=\"m15,11.604l0.884,1.792l0.318,0.643l0.709,0.1l1.978,0.287l-1.431,1.4l-0.514,0.5l0.122,0.707l0.338,1.97l-1.769,-0.931l-0.635,-0.339l-0.635,0.333l-1.766,0.931l0.338,-1.97l0.122,-0.707l-0.514,-0.5l-1.431,-1.4l1.978,-0.287l0.709,-0.1l0.318,-0.643l0.881,-1.786m0,-3.081l-2.107,4.27l-4.713,0.684l3.41,3.324l-0.8,4.693l4.21,-2.221l4.215,2.216l-0.8,-4.693l3.41,-3.324l-4.713,-0.684l-2.112,-4.265z\"/>\n\n    <text\n       id=\"text_name\"\n       x=\"30\"\n       y=\"30\"\n       oryx:align=\"left top\" />\n  </g>\n\n</svg>\n",
+      "icon": "gateway/eventbased.svg",
+      "groups": [
+        "网关"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "asynchronousdefinitionpackage",
+        "exclusivedefinitionpackage",
+        "sequencefloworderpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "GatewaysMorph",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "BoundaryErrorEvent",
+      "title": "边界异常事件",
+      "description": "A boundary event that catches a BPMN error",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n\n<g>\n<g>\n\t<circle fill=\"#EC662C\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0   C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n</g>\n<path fill=\"#FFFFFF\" d=\"M10.76,7.5L6.14,19.18l5.39-5.01l6.93,8.34l5.39-12.79l-6.16,4.45L10.76,7.5z\"/>\n</g>\n\n  \t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "catching/error.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "errorrefpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "BoundaryEventsMorph",
+        "IntermediateEventOnActivityBoundary"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "BoundaryTimerEvent",
+      "title": "边界定时事件",
+      "description": "A boundary event with a timer trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<circle fill=\"#EC662C\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0    C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t</g>\n\t<path fill=\"#FFFFFF\" d=\"M22.51,14.99h-7.65V7.37c0-0.64-0.52-1.15-1.14-1.15s-1.14,0.52-1.14,1.15v8.6c0,0.03,0,0.06,0,0.09   s0,0.06,0,0.09c0,0.64,0.52,1.15,1.14,1.15h8.79c0.63,0,1.14-0.52,1.14-1.15C23.65,15.52,23.15,14.99,22.51,14.99z\"/>\n</g>\n\n  \t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "catching/timer.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "timercycledefinitionpackage",
+        "timerdatedefinitionpackage",
+        "timerdurationdefinitionpackage",
+        "timerenddatedefinitionpackage",
+        "cancelactivitypackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "BoundaryEventsMorph",
+        "IntermediateEventOnActivityBoundary"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "BoundarySignalEvent",
+      "title": "边界信号事件",
+      "description": "A boundary event with a signal trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n   \n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<circle fill=\"#EC662C\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0    C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t</g>\n\t<polygon fill=\"#FFFFFF\" points=\"15.24,6.68 6.24,20.52 24.24,20.52  \"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "catching/signal.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "signalrefpackage",
+        "cancelactivitypackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "BoundaryEventsMorph",
+        "IntermediateEventOnActivityBoundary"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "BoundaryMessageEvent",
+      "title": "边界消息事件",
+      "description": "A boundary event with a message trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<circle fill=\"#EC662C\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0    C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t</g>\n\t<path fill=\"#FFFFFF\" d=\"M21.47,8.08H8.53c-1.83,0-3.32,1.35-3.32,3v7.83c0,1.66,1.49,3,3.32,3h12.93c1.83,0,3.32-1.35,3.32-3v-7.83   C24.79,9.43,23.3,8.08,21.47,8.08z M20.84,9.57l-6.11,4.23L8.87,9.57H20.84z M23.13,18.9c0,0.83-0.74,1.5-1.66,1.5H8.53   c-0.92,0-1.66-0.67-1.66-1.5v-7.83c0-0.22,0.05-0.41,0.13-0.59l7.64,5.19h0.05h0.05l8.17-5.3c0.12,0.2,0.2,0.44,0.2,0.7V18.9z\"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n\t\n  </g>\n</svg>",
+      "icon": "catching/message.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "messagerefpackage",
+        "cancelactivitypackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "BoundaryEventsMorph",
+        "IntermediateEventOnActivityBoundary"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "BoundaryCancelEvent",
+      "title": "边界取消事件",
+      "description": "A boundary cancel event",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<g>\n\t\t\t<circle fill=\"#EC662C\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36      M15,0C6.72,0,0,6.72,0,15c0,8.28,6.72,15,15,15s15-6.72,15-15C30,6.72,23.28,0,15,0L15,0z\"/>\n\t\t</g>\n\t\t<path fill=\"#FFFFFF\" d=\"M15,5.1c5.46,0,9.9,4.44,9.9,9.9s-4.44,9.9-9.9,9.9S5.1,20.46,5.1,15S9.54,5.1,15,5.1 M15,4    C8.92,4,4,8.92,4,15s4.92,11,11,11s11-4.92,11-11S21.08,4,15,4L15,4z\"/>\n\t</g>\n\t<path fill=\"#FFFFFF\" d=\"M21.26,8.74c-0.32-0.32-0.84-0.32-1.17,0L15,13.83L9.91,8.74c-0.32-0.32-0.84-0.32-1.17,0   c-0.33,0.32-0.32,0.84,0,1.17L13.83,15l-5.09,5.09c-0.32,0.32-0.32,0.84,0,1.17c0.32,0.32,0.84,0.32,1.17,0L15,16.17l5.09,5.09   c0.32,0.32,0.84,0.32,1.17,0c0.32-0.32,0.32-0.84,0-1.17L16.17,15l5.09-5.09C21.58,9.59,21.58,9.05,21.26,8.74z\"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "catching/cancel.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "BoundaryEventsMorph",
+        "IntermediateEventOnActivityBoundary"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "BoundaryCompensationEvent",
+      "title": "边界补偿事件",
+      "description": "A boundary compensation event",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<g>\n\t\t\t<circle fill=\"#EC662C\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36      M15,0C6.72,0,0,6.72,0,15c0,8.28,6.72,15,15,15s15-6.72,15-15C30,6.72,23.28,0,15,0L15,0z\"/>\n\t\t</g>\n\t\t<path fill=\"#FFFFFF\" d=\"M15,5.1c5.46,0,9.9,4.44,9.9,9.9s-4.44,9.9-9.9,9.9S5.1,20.46,5.1,15S9.54,5.1,15,5.1 M15,4    C8.92,4,4,8.92,4,15s4.92,11,11,11s11-4.92,11-11S21.08,4,15,4L15,4z\"/>\n\t</g>\n\t<polygon fill=\"#FFFFFF\" points=\"14.44,14.88 14.44,10.05 5.85,15 14.44,19.95 14.44,15.12 22.83,19.95 22.83,10.05  \"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n </g>\n</svg>",
+      "icon": "catching/compensation.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "BoundaryEventsMorph",
+        "IntermediateEventOnActivityBoundary",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "CatchTimerEvent",
+      "title": "中间计时器捕捉事件",
+      "description": "An intermediate catching event with a timer trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n    <g>\n\t\t\t<g>\n\t\t\t\t<circle fill=\"#EC662C\" cx=\"15.06\" cy=\"15.06\" r=\"14.32\"/>\n\t\t\t\t<path fill=\"#666767\" d=\"M15.06,1.43c7.52,0,13.64,6.12,13.64,13.64S22.58,28.7,15.06,28.7S1.42,22.58,1.42,15.06   S7.54,1.43,15.06,1.43 M15.06,0.06c-8.28,0-15,6.72-15,15c0,8.28,6.72,15,15,15s15-6.72,15-15C30.06,6.78,23.34,0.06,15.06,0.06   L15.06,0.06z\"/>\n\t\t\t</g>\n\t\t\t<path fill=\"#FFFFFF\" d=\"M15.06,5.16c5.46,0,9.9,4.44,9.9,9.9s-4.44,9.9-9.9,9.9s-9.9-4.44-9.9-9.9S9.6,5.16,15.06,5.16 M15.06,4.06  c-6.08,0-11,4.92-11,11s4.92,11,11,11s11-4.92,11-11S21.13,4.06,15.06,4.06L15.06,4.06z\"/>\n\t\t\t<path fill=\"#FFFFFF\" d=\"M20.65,16.56h-6.92V9.67c0-0.58-0.47-1.04-1.03-1.04s-1.03,0.47-1.03,1.04v7.78c0,0.03,0,0.05,0,0.08  c0,0.03,0,0.05,0,0.08c0,0.58,0.47,1.04,1.03,1.04h7.95c0.57,0,1.03-0.47,1.03-1.04S21.23,16.56,20.65,16.56z\"/>\n\t\t</g>\n\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "catching/timer2.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "timercycledefinitionpackage",
+        "timerdatedefinitionpackage",
+        "timerdurationdefinitionpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "sequence_end",
+        "CatchEventsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "CatchSignalEvent",
+      "title": "中间信号捕捉事件",
+      "description": "An intermediate catching event with a signal trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n\t<g>\n\t\t<g>\n\t\t\t<circle fill=\"#EC662C\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0   C6.72,0,0,6.72,0,15c0,8.28,6.72,15,15,15s15-6.72,15-15C30,6.72,23.28,0,15,0L15,0z\"/>\n\t\t</g>\n\t\t<path fill=\"#FFFFFF\" d=\"M15,5.1c5.46,0,9.9,4.44,9.9,9.9s-4.44,9.9-9.9,9.9S5.1,20.46,5.1,15S9.54,5.1,15,5.1 M15,4  C8.92,4,4,8.92,4,15s4.92,11,11,11s11-4.92,11-11S21.08,4,15,4L15,4z\"/>\n\t\t<polygon fill=\"#FFFFFF\" points=\"15,6.8 7.66,19.51 22.34,19.51 \"/>\n\t</g>\n\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "catching/signal2.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "signalrefpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "sequence_end",
+        "CatchEventsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "CatchMessageEvent",
+      "title": "中间消息捕捉事件",
+      "description": "An intermediate catching event with a message trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n   \n\t <g>\n\t\t<g>\n\t\t\t<circle fill=\"#EC662C\" cx=\"15.01\" cy=\"15\" r=\"14.32\"/>\n\t\t\t<path fill=\"#666767\" d=\"M15.01,1.36c7.52,0,13.64,6.12,13.64,13.64s-6.12,13.64-13.64,13.64S1.38,22.52,1.38,15   S7.49,1.36,15.01,1.36 M15.01,0c-8.28,0-15,6.72-15,15c0,8.28,6.72,15,15,15s15-6.72,15-15C30.01,6.72,23.3,0,15.01,0L15.01,0z\"/>\n\t\t</g>\n\t\t<path fill=\"#FFFFFF\" d=\"M15.01,5.1c5.46,0,9.9,4.44,9.9,9.9s-4.44,9.9-9.9,9.9s-9.9-4.44-9.9-9.9S9.55,5.1,15.01,5.1 M15.01,4  c-6.08,0-11,4.92-11,11s4.92,11,11,11s11-4.92,11-11S21.09,4,15.01,4L15.01,4z\"/>\n\t\t<path fill=\"#FFFFFF\" d=\"M19.77,9.36h-9.52c-1.34,0-2.45,1.09-2.45,2.45v6.38c0,1.34,1.09,2.45,2.45,2.45h9.52  c1.34,0,2.45-1.09,2.45-2.45v-6.38C22.21,10.47,21.12,9.36,19.77,9.36z M19.31,10.59l-4.5,3.67l-4.31-3.67H19.31z M20.99,18.19  c0,0.67-0.55,1.22-1.22,1.22h-9.52c-0.67,0-1.22-0.55-1.22-1.22v-6.38c0-0.17,0.04-0.34,0.1-0.48l5.63,4.46h0.04h0.04l6.02-4.54  c0.09,0.17,0.14,0.36,0.14,0.57C20.99,11.82,20.99,18.19,20.99,18.19z\"/>\n\t</g>\n\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n\t\n  </g>\n</svg>",
+      "icon": "catching/message2.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "messagerefpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "sequence_start",
+        "sequence_end",
+        "CatchEventsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "ThrowNoneEvent",
+      "title": "中间无抛出事件",
+      "description": "An intermediate event without a specific trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<circle fill=\"#EC662C\" cx=\"15.01\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15.01,1.36c7.52,0,13.64,6.12,13.64,13.64s-6.12,13.64-13.64,13.64S1.38,22.52,1.38,15    S7.49,1.36,15.01,1.36 M15.01,0c-8.28,0-15,6.72-15,15c0,8.28,6.72,15,15,15s15-6.72,15-15C30.01,6.72,23.3,0,15.01,0L15.01,0z\"/>\n\t</g>\n\t<path fill=\"#FFFFFF\" d=\"M15.01,5.1c5.46,0,9.9,4.44,9.9,9.9s-4.44,9.9-9.9,9.9s-9.9-4.44-9.9-9.9S9.55,5.1,15.01,5.1 M15.01,4   c-6.08,0-11,4.92-11,11s4.92,11,11,11s11-4.92,11-11S21.09,4,15.01,4L15.01,4z\"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "throwing/none.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "ThrowEventsMorph",
+        "sequence_start",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "ThrowSignalEvent",
+      "title": "中间信号抛出事件",
+      "description": "An intermediate event with a signal trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<g>\n\t\t\t<circle fill=\"#EC662C\" cx=\"15.01\" cy=\"15\" r=\"14.32\"/>\n\t\t\t<path fill=\"#666767\" d=\"M15.01,1.36c7.52,0,13.64,6.12,13.64,13.64s-6.12,13.64-13.64,13.64S1.38,22.52,1.38,15     S7.49,1.36,15.01,1.36 M15.01,0c-8.28,0-15,6.72-15,15c0,8.28,6.72,15,15,15s15-6.72,15-15C30.01,6.72,23.3,0,15.01,0L15.01,0z\"/>\n\t\t</g>\n\t\t<path fill=\"#FFFFFF\" d=\"M15.01,5.1c5.46,0,9.9,4.44,9.9,9.9s-4.44,9.9-9.9,9.9s-9.9-4.44-9.9-9.9S9.55,5.1,15.01,5.1 M15.01,4    c-6.08,0-11,4.92-11,11s4.92,11,11,11s11-4.92,11-11S21.09,4,15.01,4L15.01,4z\"/>\n\t</g>\n\t<path fill=\"#F7F7F7\" d=\"M15.01,9.65l4.74,8.21h-9.48L15.01,9.65 M15.01,5.89l-8,13.86h16L15.01,5.89L15.01,5.89z\"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"33\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "throwing/signal.svg",
+      "groups": [
+        "事件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "signalrefpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "ThrowEventsMorph",
+        "sequence_start",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "EndNoneEvent",
+      "title": "结束",
+      "description": "An end event without a specific trigger",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<circle fill=\"#E72123\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0   C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"32\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "endevent/none.svg",
+      "groups": [
+        "结束"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "EndEventsMorph",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "EndErrorEvent",
+      "title": "异常结束",
+      "description": "An end event that throws an error event",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n\t<g xmlns=\"http://www.w3.org/2000/svg\">\n\t\t<g>\n\t\t\t<circle fill=\"#E72123\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0    C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t\t</g>\n\t\t<path fill=\"#FFFFFF\" d=\"M10.76,7.5L6.14,19.18l5.39-5.01l6.93,8.34l5.39-12.79l-6.16,4.45L10.76,7.5z\"/>\n\t</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"32\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "endevent/error.svg",
+      "groups": [
+        "结束"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "errorrefpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "EndEventsMorph",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "EndCancelEvent",
+      "title": "终结结束",
+      "description": "A cancel end event",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <oryx:docker oryx:cx=\"16\" oryx:cy=\"16\" />\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<circle fill=\"#E72123\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0    C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t</g>\n\t<path fill=\"#FFFFFF\" d=\"M23.52,6.48c-0.44-0.44-1.14-0.44-1.59,0L15,13.41L8.07,6.48c-0.44-0.44-1.14-0.44-1.59,0   c-0.45,0.44-0.44,1.14,0,1.59L13.41,15l-6.93,6.93c-0.44,0.44-0.44,1.14,0,1.59c0.44,0.44,1.14,0.44,1.59,0L15,16.59l6.93,6.93   c0.44,0.44,1.14,0.44,1.59,0c0.44-0.44,0.44-1.14,0-1.59L16.59,15l6.93-6.93C23.96,7.63,23.96,6.9,23.52,6.48z\"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"32\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "endevent/cancel.svg",
+      "groups": [
+        "结束"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "EndEventsMorph",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "EndTerminateEvent",
+      "title": "结束终止",
+      "description": "A terminate end event",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   width=\"40\"\n   height=\"40\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"16\" oryx:cy=\"16\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\">\n<g xmlns=\"http://www.w3.org/2000/svg\">\n\t<g>\n\t\t<circle fill=\"#E72123\" cx=\"15\" cy=\"15\" r=\"14.32\"/>\n\t\t<path fill=\"#666767\" d=\"M15,1.36c7.52,0,13.64,6.12,13.64,13.64S22.52,28.64,15,28.64S1.36,22.52,1.36,15S7.48,1.36,15,1.36 M15,0    C6.72,0,0,6.72,0,15s6.72,15,15,15s15-6.72,15-15S23.28,0,15,0L15,0z\"/>\n\t</g>\n\t<circle fill=\"#FFFFFF\" cx=\"15\" cy=\"15\" r=\"5.45\"/>\n</g>\n\t<text font-size=\"11\" \n\t\tid=\"text_name\" \n\t\tx=\"16\" y=\"32\" \n\t\toryx:align=\"top center\" \n\t\tstroke=\"#373e48\"\n\t></text>\n  </g>\n</svg>",
+      "icon": "endevent/terminate.svg",
+      "groups": [
+        "结束"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "executionlistenerspackage",
+        "terminateAllpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "EndEventsMorph",
+        "sequence_end",
+        "all"
+      ]
+    },
+    {
+      "type": "edge",
+      "id": "SequenceFlow",
+      "title": "连线",
+      "description": "Sequence flow defines the execution order of activities.",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\r\n<svg\r\n\txmlns=\"http://www.w3.org/2000/svg\"\r\n\txmlns:oryx=\"http://www.b3mn.org/oryx\"\r\n\tversion=\"1.0\"\r\n\toryx:edge=\"edge\" >\r\n\t<defs>\r\n\t  \t<marker id=\"start\" refX=\"1\" refY=\"5\" markerUnits=\"userSpaceOnUse\" markerWidth=\"17\" markerHeight=\"11\" orient=\"auto\">\r\n\t  \t\t<!-- <path id=\"conditional\"   d=\"M 0 6 L 8 1 L 15 5 L 8 9 L 1 5\" fill=\"white\" stroke=\"black\" stroke-width=\"1\" /> -->\r\n\t\t\t<path id=\"default\" d=\"M 5 0 L 11 10\" fill=\"white\" stroke=\"#585858\" stroke-width=\"1\" />\r\n\t  \t</marker>\r\n\t  \t<marker id=\"end\" refX=\"15\" refY=\"6\" markerUnits=\"userSpaceOnUse\" markerWidth=\"15\" markerHeight=\"12\" orient=\"auto\">\r\n\t  \t\t<path id=\"arrowhead\" d=\"M 0 1 L 15 6 L 0 11z\" fill=\"#585858\" stroke=\"#585858\" stroke-linejoin=\"round\" stroke-width=\"2\" />\r\n\t  \t</marker>\r\n\t</defs>\r\n\t<g id=\"edge\">\r\n\t\t<path id=\"bg_frame\" d=\"M10 50 L210 50\" stroke=\"#585858\" fill=\"none\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" marker-start=\"url(#start)\" marker-end=\"url(#end)\" />\r\n\t\t<text id=\"text_name\" x=\"0\" y=\"0\" oryx:edgePosition=\"startTop\"/>\r\n\t</g>\r\n</svg>",
+      "icon": "connector/sequenceflow.svg",
+      "groups": [
+        "连接"
+      ],
+      "layout": [
+        {
+          "type": "layout.bpmn2_0.sequenceflow"
+        }
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "conditionsequenceflowpackage",
+        "executionlistenerspackage",
+        "defaultflowpackage",
+        "skipexpressionpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "ConnectingObjectsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "edge",
+      "id": "MessageFlow",
+      "title": "信息流",
+      "description": "Message flow to connect elements in different pools.",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\r\n<svg\r\n\txmlns=\"http://www.w3.org/2000/svg\"\r\n\txmlns:oryx=\"http://www.b3mn.org/oryx\"\r\n\tversion=\"1.0\"\r\n\toryx:edge=\"edge\" >\r\n\t<defs>\r\n\t\t<marker id=\"start\" oryx:optional=\"yes\" oryx:enabled=\"yes\" refX=\"5\" refY=\"5\" markerUnits=\"userSpaceOnUse\" markerWidth=\"10\" markerHeight=\"10\" orient=\"auto\">\r\n\t  \t\t<!-- <path d=\"M 10 10 L 0 5 L 10 0\" fill=\"none\" stroke=\"#585858\" /> -->\r\n\t  \t\t<circle id=\"arrowhead\" cx=\"5\" cy=\"5\" r=\"5\" fill=\"white\" stroke=\"black\" />\r\n\t  \t</marker>\r\n\r\n\t  \t<marker id=\"end\" refX=\"10\" refY=\"5\" markerUnits=\"userSpaceOnUse\" markerWidth=\"10\" markerHeight=\"10\" orient=\"auto\">\r\n\t  \t\t<path id=\"arrowhead2\" d=\"M 0 0 L 10 5 L 0 10 L 0 0\" fill=\"white\" stroke=\"#585858\" />\r\n\t  \t</marker>\r\n\t</defs>\r\n\t<g id=\"edge\">\r\n\t    <path id=\"bg_frame\" d=\"M10 50 L210 50\" stroke=\"#585858\" fill=\"none\" stroke-width=\"2\" stroke-dasharray=\"3, 4\" marker-start=\"url(#start)\" marker-end=\"url(#end)\" />\r\n\t\t<text id=\"text_name\" x=\"0\" y=\"0\" oryx:edgePosition=\"midTop\"/>\r\n\t</g>\r\n</svg>",
+      "icon": "connector/messageflow.svg",
+      "groups": [
+        "连接"
+      ],
+      "layout": [
+        {
+          "type": "layout.bpmn2_0.sequenceflow"
+        }
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "ConnectingObjectsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "edge",
+      "id": "Association",
+      "title": "关联",
+      "description": "Associates a text annotation with an element.",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\r\n<svg\r\n\txmlns=\"http://www.w3.org/2000/svg\"\r\n\txmlns:oryx=\"http://www.b3mn.org/oryx\"\r\n\tversion=\"1.0\"\r\n\toryx:edge=\"edge\" >\r\n\t<g id=\"edge\">\r\n\t    <path id=\"bg_frame\" d=\"M10 50 L210 50\" stroke=\"#585858\" fill=\"none\" stroke-width=\"2\" stroke-dasharray=\"3, 4\" />\r\n\t\t<text id=\"name\" x=\"0\" y=\"0\" oryx:edgePosition=\"midTop\" oryx:offsetTop=\"6\" style=\"font-size:9px;\"/>\r\n\t</g>\r\n</svg>",
+      "icon": "connector/association.undirected.svg",
+      "groups": [
+        "连接"
+      ],
+      "layout": [
+        {
+          "type": "layout.bpmn2_0.sequenceflow"
+        }
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "ConnectingObjectsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "edge",
+      "id": "DataAssociation",
+      "title": "数据关联",
+      "description": "Associates a data element with an activity.",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\r\n<svg\r\n\txmlns=\"http://www.w3.org/2000/svg\"\r\n\txmlns:oryx=\"http://www.b3mn.org/oryx\"\r\n\tversion=\"1.0\"\r\n\toryx:edge=\"edge\" >\r\n\t<defs>\r\n\t  \t<marker id=\"end\" refX=\"10\" refY=\"5\" markerUnits=\"userSpaceOnUse\" markerWidth=\"10\" markerHeight=\"10\" orient=\"auto\">\r\n\t  \t\t<path id=\"arrowhead\" d=\"M 0 0 L 10 5 L 0 10\" fill=\"none\" stroke=\"#585858\" />\r\n\t  \t</marker>\r\n\t</defs>\r\n\t<g id=\"edge\">\r\n\t    <path id=\"bg_frame\" d=\"M10 50 L210 50\" stroke=\"#585858\" fill=\"none\" stroke-width=\"2\" stroke-dasharray=\"3, 4\" marker-end=\"url(#end)\" />\r\n\t\t<text id=\"name\" x=\"0\" y=\"0\" oryx:edgePosition=\"midTop\" oryx:offsetTop=\"6\" style=\"font-size:9px;\"/>\r\n\t</g>\r\n</svg>",
+      "icon": "connector/association.unidirectional.png",
+      "groups": [
+        "连接"
+      ],
+      "layout": [
+        {
+          "type": "layout.bpmn2_0.sequenceflow"
+        }
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "ConnectingObjectsMorph",
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "TextAnnotation",
+      "title": "文字注释",
+      "description": "Annotates elements with description text.",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n   width=\"102\"\n   height=\"51\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"2\" oryx:cy=\"25\" oryx:anchors=\"left\" oryx:default=\"yes\"/>\n  </oryx:magnets>\n  <g pointer-events=\"all\" oryx:minimumSize=\"10 20\" oryx:maximumSize=\"\" >\n  <rect \n\tid=\"textannotationrect\"\n\toryx:resize=\"vertical horizontal\"\n\tx=\"1\" \n\ty=\"1\"\n\twidth=\"100\"\n\theight=\"50\"\n\tstroke=\"none\"\n\tfill=\"none\" />\n  <path \n  \tid = \"frame\"\n\td=\"M20,1 L1,1 L1,50 L20,50\" \n\toryx:anchors=\"top bottom left\" \n\tstroke=\"#585858\" \n\tfill=\"none\" \n\tstroke-width=\"1\" />\n    \n    <text \n\t\tfont-size=\"12\" \n\t\tid=\"text\" \n\t\tx=\"5\" \n\t\ty=\"25\" \n\t\toryx:align=\"middle left\"\n\t\toryx:fittoelem=\"textannotationrect\"\n\t\toryx:anchors=\"left\"\n\t\tstroke=\"#373e48\">\n\t</text>\n  </g>\n</svg>",
+      "icon": "artifact/text.annotation.svg",
+      "groups": [
+        "工件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "textpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "DataStore",
+      "title": "Data store",
+      "description": "Reference to a data store.",
+      "view": "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"no\" ?>\r\n<svg \r\n\txmlns=\"http://www.w3.org/2000/svg\"\r\n\txmlns:svg=\"http://www.w3.org/2000/svg\"\r\n   \txmlns:oryx=\"http://www.b3mn.org/oryx\"\r\n   \txmlns:xlink=\"http://www.w3.org/1999/xlink\"\r\n\t\r\n\twidth=\"63.001px\" \r\n\theight=\"61.173px\"\r\n\tversion=\"1.0\">\r\n\t<defs></defs>\r\n\t<oryx:magnets>\r\n\t\t<oryx:magnet oryx:cx=\"0\" oryx:cy=\"30.5865\" oryx:anchors=\"left\" />\r\n\t\t<oryx:magnet oryx:cx=\"31.5005\" oryx:cy=\"61.173\" oryx:anchors=\"bottom\" />\r\n\t\t<oryx:magnet oryx:cx=\"63.001\" oryx:cy=\"30.5865\" oryx:anchors=\"right\" />\r\n\t\t<oryx:magnet oryx:cx=\"31.5005\" oryx:cy=\"0\" oryx:anchors=\"top\" />\r\n\t\t<oryx:magnet oryx:cx=\"31.5005\" oryx:cy=\"30.5865\" oryx:default=\"yes\" />\r\n\t</oryx:magnets>\r\n\t\r\n\t<g>\r\n\t\t<defs>\r\n\t\t\t<radialGradient id=\"background\" cx=\"30%\" cy=\"30%\" r=\"50%\" fx=\"0%\" fy=\"0%\">\r\n\t\t\t\t<stop offset=\"0%\" stop-color=\"#ffffff\" stop-opacity=\"1\"></stop>\r\n\t\t\t\t<stop offset=\"100%\" stop-color=\"#ffffff\" stop-opacity=\"1\" id=\"fill_el\"></stop>\r\n\t\t\t</radialGradient>\r\n\t\t</defs>\r\n\t\t\r\n\t\t<path id=\"bg_frame\" fill=\"url(#background) #ffffff\" stroke=\"#000000\" d=\"M31.634,0.662c20.013,0,31.292,3.05,31.292,5.729c0,2.678,0,45.096,0,48.244\r\n\t\t\tc0,3.148-16.42,6.2-31.388,6.2c-14.968,0-30.613-2.955-30.613-6.298c0-3.342,0-45.728,0-48.05\r\n\t\t\tC0.925,4.165,11.622,0.662,31.634,0.662z\"/>\r\n\t\t<path id=\"bg_frame2\" fill=\"none\" stroke=\"#000000\" d=\"\r\n\t\t\tM62.926,15.69c0,1.986-3.62,6.551-31.267,6.551c-27.646,0-30.734-4.686-30.734-6.454 M0.925,11.137\r\n\t\t\tc0,1.769,3.088,6.455,30.734,6.455c27.647,0,31.267-4.565,31.267-6.551 M0.925,6.487c0,2.35,3.088,6.455,30.734,6.455\r\n\t\t\tc27.647,0,31.267-3.912,31.267-6.552 M62.926,6.391v4.844 M0.949,6.391v4.844 M62.926,11.041v4.844 M0.949,11.041v4.844\"/>\r\n\t\t\t \t\r\n\t\t<text font-size=\"12\" id=\"text_name\" x=\"31\" y=\"66\" oryx:align=\"center top\" stroke=\"black\" />\r\n\t\t\t \r\n\t</g>\r\n</svg>\r\n",
+      "icon": "dataobject/data.store.png",
+      "groups": [
+        "工件"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "all"
+      ]
+    },
+    {
+      "type": "node",
+      "id": "AdhocSubProcess",
+      "title": "点对点子流程",
+      "description": "An adhoc sub process",
+      "view": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg\n   xmlns=\"http://www.w3.org/2000/svg\"\n   xmlns:svg=\"http://www.w3.org/2000/svg\"\n   xmlns:oryx=\"http://www.b3mn.org/oryx\"\n   xmlns:xlink=\"http://www.w3.org/1999/xlink\"\n   width=\"200\"\n   height=\"160\"\n   version=\"1.0\">\n  <defs></defs>\n  <oryx:magnets>\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"50\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"80\" oryx:anchors=\"left\" />\n  \t<oryx:magnet oryx:cx=\"1\" oryx:cy=\"110\" oryx:anchors=\"left\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"70\" oryx:cy=\"159\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"100\" oryx:cy=\"159\" oryx:anchors=\"bottom\" />\n  \t<oryx:magnet oryx:cx=\"130\" oryx:cy=\"159\" oryx:anchors=\"bottom\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"199\" oryx:cy=\"50\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"199\" oryx:cy=\"80\" oryx:anchors=\"right\" />\n  \t<oryx:magnet oryx:cx=\"199\" oryx:cy=\"110\" oryx:anchors=\"right\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"70\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"100\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t<oryx:magnet oryx:cx=\"130\" oryx:cy=\"1\" oryx:anchors=\"top\" />\n  \t\n  \t<oryx:magnet oryx:cx=\"100\" oryx:cy=\"80\" oryx:default=\"yes\" />\n  </oryx:magnets>\n  <g pointer-events=\"fill\" oryx:minimumSize=\"120 100\" oryx:maximumSize=\"\" >\n    <rect id=\"text_frame\" oryx:anchors=\"bottom top right left\" x=\"0\" y=\"0\" width=\"190\" height=\"160\" rx=\"10\" ry=\"10\" stroke=\"none\" stroke-width=\"0\" fill=\"none\" />\n\t<rect id=\"bg_frame\" oryx:anchors=\"bottom top right left\" x=\"0\" y=\"0\" width=\"200\" height=\"160\" rx=\"10\" ry=\"10\" stroke=\"#bbbbbb\" stroke-width=\"1\" fill=\"#BFE0CC\" />\n\t<text \n\t\tfont-size=\"12\" \n\t\tid=\"text_name\" \n\t\tx=\"8\" \n\t\ty=\"10\" \n\t\toryx:align=\"top left\"\n\t\toryx:fittoelem=\"text_frame\"\n\t\toryx:anchors=\"left top\" \n\t\tstroke=\"#373e48\">\n\t</text>\n\t\n\t<text \n\t\toryx:anchors=\"bottom\"\n\t\tx=\"101\"\n\t\ty=\"157\"\n\t\tfont-size=\"20\"\n\t\ttransform=\"translate(8,0)\"\n\t>~</text>\n  </g>\n</svg>",
+      "icon": "activity/adhoc.subprocess.svg",
+      "groups": [
+        "结构"
+      ],
+      "propertyPackages": [
+        "overrideidpackage",
+        "namepackage",
+        "documentationpackage",
+        "completionconditionpackage",
+        "orderingpackage",
+        "cancelremaininginstancespackage"
+      ],
+      "hiddenPropertyPackages": [],
+      "roles": [
+        "Activity",
+        "sequence_start",
+        "sequence_end",
+        "all"
+      ]
+    }
+  ],
+  "rules": {
+    "cardinalityRules": [
+      {
+        "role": "Startevents_all",
+        "incomingEdges": [
+          {
+            "role": "SequenceFlow",
+            "maximum": 0
+          }
+        ]
+      },
+      {
+        "role": "Endevents_all",
+        "outgoingEdges": [
+          {
+            "role": "SequenceFlow",
+            "maximum": 0
+          }
+        ]
+      }
+    ],
+    "connectionRules": [
+      {
+        "role": "SequenceFlow",
+        "connects": [
+          {
+            "from": "sequence_start",
+            "to": [
+              "sequence_end"
+            ]
+          }
+        ]
+      },
+      {
+        "role": "Association",
+        "connects": [
+          {
+            "from": "sequence_start",
+            "to": [
+              "TextAnnotation"
+            ]
+          },
+          {
+            "from": "sequence_end",
+            "to": [
+              "TextAnnotation"
+            ]
+          },
+          {
+            "from": "TextAnnotation",
+            "to": [
+              "sequence_end"
+            ]
+          },
+          {
+            "from": "BoundaryCompensationEvent",
+            "to": [
+              "sequence_end"
+            ]
+          },
+          {
+            "from": "TextAnnotation",
+            "to": [
+              "sequence_start"
+            ]
+          },
+          {
+            "from": "BoundaryCompensationEvent",
+            "to": [
+              "sequence_start"
+            ]
+          }
+        ]
+      },
+      {
+        "role": "DataAssociation",
+        "connects": [
+          {
+            "from": "sequence_start",
+            "to": [
+              "DataStore"
+            ]
+          },
+          {
+            "from": "sequence_end",
+            "to": [
+              "DataStore"
+            ]
+          },
+          {
+            "from": "DataStore",
+            "to": [
+              "sequence_end"
+            ]
+          },
+          {
+            "from": "DataStore",
+            "to": [
+              "sequence_start"
+            ]
+          }
+        ]
+      },
+      {
+        "role": "IntermediateEventOnActivityBoundary",
+        "connects": [
+          {
+            "from": "Activity",
+            "to": [
+              "IntermediateEventOnActivityBoundary"
+            ]
+          }
+        ]
+      }
+    ],
+    "containmentRules": [
+      {
+        "role": "BPMNDiagram",
+        "contains": [
+          "all"
+        ]
+      },
+      {
+        "role": "SubProcess",
+        "contains": [
+          "sequence_start",
+          "sequence_end",
+          "from_task_event",
+          "to_task_event",
+          "EventSubProcess",
+          "TextAnnotation",
+          "DataStore"
+        ]
+      },
+      {
+        "role": "AdhocSubProcess",
+        "contains": [
+          "sequence_start",
+          "sequence_end",
+          "from_task_event",
+          "to_task_event",
+          "TextAnnotation",
+          "DataStore"
+        ]
+      },
+      {
+        "role": "EventSubProcess",
+        "contains": [
+          "sequence_start",
+          "sequence_end",
+          "from_task_event",
+          "to_task_event",
+          "TextAnnotation",
+          "DataStore"
+        ]
+      },
+      {
+        "role": "Pool",
+        "contains": [
+          "Lane"
+        ]
+      },
+      {
+        "role": "Lane",
+        "contains": [
+          "sequence_start",
+          "sequence_end",
+          "EventSubProcess",
+          "TextAnnotation",
+          "DataStore"
+        ]
+      }
+    ],
+    "morphingRules": [
+      {
+        "role": "ActivitiesMorph",
+        "baseMorphs": [
+          "UserTask"
+        ],
+        "preserveBounds": true
+      },
+      {
+        "role": "GatewaysMorph",
+        "baseMorphs": [
+          "ExclusiveGateway"
+        ]
+      },
+      {
+        "role": "StartEventsMorph",
+        "baseMorphs": [
+          "StartNoneEvent"
+        ]
+      },
+      {
+        "role": "EndEventsMorph",
+        "baseMorphs": [
+          "StartNoneEvent"
+        ]
+      },
+      {
+        "role": "CatchEventsMorph",
+        "baseMorphs": [
+          "CatchTimerEvent"
+        ]
+      },
+      {
+        "role": "ThrowEventsMorph",
+        "baseMorphs": [
+          "ThrowNoneEvent"
+        ]
+      },
+      {
+        "role": "BoundaryEventsMorph",
+        "baseMorphs": [
+          "ThrowNoneEvent"
+        ]
+      },
+      {
+        "role": "BoundaryCompensationEvent",
+        "baseMorphs": [
+          "BoundaryCompensationEvent"
+        ]
+      },
+      {
+        "role": "TextAnnotation",
+        "baseMorphs": [
+          "TextAnnotation"
+        ]
+      },
+      {
+        "role": "DataStore",
+        "baseMorphs": [
+          "DataStore"
+        ]
+      }
+    ]
+  }
+}

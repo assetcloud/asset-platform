@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.FlowableMapper">
+
+    <resultMap id="BaseResultMap" type="com.asset.entity.TaskInst">
+        <result column="TASK_ID_" jdbcType="VARCHAR" property="taskId" />
+        <result column="ACT_ID_" jdbcType="VARCHAR" property="actId" />
+        <result column="PROC_INST_ID_" jdbcType="VARCHAR" property="procInstId" />
+    </resultMap>
+
+
+
+    <!--取出AsFormInst对象中的taskId值去 act_hi_actinst表中找到对应的ACT_ID_字段的值，用于去别的表找这个ACT是什么类型的
+     * @param List<AsFormInst> asFormInsts
+     * @return 对应的ACT_ID_字段的值-->
+    <select id="getActIDs" parameterType="com.asset.entity.AsFormInst" resultMap="BaseResultMap">
+        SELECT
+        TASK_ID_,
+        ACT_ID_
+        FROM ACT_HI_ACTINST
+        WHERE
+        TASK_ID_ in
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+            #{item.taskId,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+
+    <!--* 获取当前的任务节点的ACT_ID
+    * @param String procInstID
+    * @return-->
+    <select id="getCurActId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+        ACT_ID_
+        from
+        ACT_HI_ACTINST
+        where
+        PROC_INST_ID_ = #{procInstID,jdbcType=VARCHAR}
+        AND END_TIME_ is null
+        </select>
+
+
+    <!--获取流转到该用户的所有ACT_ID、TASK_ID信息
+     * @param String userID-->
+    <select id="getTaskInfos" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    TASK_ID_,
+    ACt_ID_,
+    PROC_INST_ID_
+    FROM ACT_HI_ACTINST
+    WHERE
+      ASSIGNEE_ = #{userID,jdbcType = VARCHAR} or
+      ASSIGNEE_ is null and
+      ACT_TYPE_ = 'userTask' and
+      END_TIME_ is NULL
+  </select>
+
+</mapper>

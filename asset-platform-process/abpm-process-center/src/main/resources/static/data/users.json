@@ -1,0 +1,43 @@
+[
+    {
+        "id": 1,
+        "pId": 0,
+        "name": "山东省财政厅",
+        "type": "org",
+        "open": true,
+        "nocheck": true
+    },
+    {
+        "id": 1001,
+        "pId": 1,
+        "name": "部门A",
+        "type": "org",
+        "open": true,
+        "nocheck": true
+    },
+    {
+        "id": 10011001,
+        "pId": 1001,
+        "type": "person",
+        "name": "adminA1"
+    },
+    {
+        "id": 1002,
+        "pId": 1,
+        "name": "部门B",
+        "type": "org",
+        "open": true
+    },
+    {
+        "id": 10021001,
+        "pId": 1002,
+        "type": "person",
+        "name": "adminB1"
+    },
+    {
+        "id": 10021002,
+        "pId": 1002,
+        "type": "person",
+        "name": "adminB2"
+    }
+]

@@ -1,0 +1,7 @@
+<span ng-if="!property.noValue">
+    <div ng-repeat="r in property.value.roles">
+        <div>{{ r.name }}</div>
+    </div>
+</span>
+<!--<span ng-if="!property.noValue">{{'PROPERTY.USERNAMES.VALUE' | translate:property.usernames}}</span>-->
+<span ng-if="property.noValue" translate>PROPERTY.ROLE.VALUE</span>

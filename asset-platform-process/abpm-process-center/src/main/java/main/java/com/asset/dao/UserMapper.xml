@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="main.resources.mybatis.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.asset.entity.User">
+    <id column="ID_" jdbcType="VARCHAR" property="id" />
+    <result column="REV_" jdbcType="INTEGER" property="rev" />
+    <result column="FIRST_" jdbcType="VARCHAR" property="first" />
+    <result column="LAST_" jdbcType="VARCHAR" property="last" />
+    <result column="DISPLAY_NAME_" jdbcType="VARCHAR" property="displayName" />
+    <result column="EMAIL_" jdbcType="VARCHAR" property="email" />
+    <result column="PHONE_NUMBER_" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="PWD_" jdbcType="VARCHAR" property="pwd" />
+    <result column="ADMIN_" jdbcType="BIT" property="admin" />
+    <result column="PICTURE_ID_" jdbcType="VARCHAR" property="pictureId" />
+    <result column="TENANT_ID_" jdbcType="VARCHAR" property="tenantId" />
+    <result column="STATUS_" jdbcType="BIT" property="status" />
+    <result column="UPDATED_TIME_" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="CREATED_TIME_" jdbcType="TIMESTAMP" property="createdTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID_, REV_, FIRST_, LAST_, DISPLAY_NAME_, EMAIL_, PHONE_NUMBER_, PWD_, ADMIN_, PICTURE_ID_, 
+    TENANT_ID_, STATUS_, UPDATED_TIME_, CREATED_TIME_
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from act_id_user
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from act_id_user
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.asset.entity.User">
+    insert into act_id_user (ID_, REV_, FIRST_, 
+      LAST_, DISPLAY_NAME_, EMAIL_, 
+      PHONE_NUMBER_, PWD_, ADMIN_, 
+      PICTURE_ID_, TENANT_ID_, STATUS_, 
+      UPDATED_TIME_, CREATED_TIME_)
+    values (#{id,jdbcType=VARCHAR}, #{rev,jdbcType=INTEGER}, #{first,jdbcType=VARCHAR}, 
+      #{last,jdbcType=VARCHAR}, #{displayName,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, 
+      #{phoneNumber,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR}, #{admin,jdbcType=BIT}, 
+      #{pictureId,jdbcType=VARCHAR}, #{tenantId,jdbcType=VARCHAR}, #{status,jdbcType=BIT}, 
+      #{updatedTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.entity.User">
+    insert into act_id_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID_,
+      </if>
+      <if test="rev != null">
+        REV_,
+      </if>
+      <if test="first != null">
+        FIRST_,
+      </if>
+      <if test="last != null">
+        LAST_,
+      </if>
+      <if test="displayName != null">
+        DISPLAY_NAME_,
+      </if>
+      <if test="email != null">
+        EMAIL_,
+      </if>
+      <if test="phoneNumber != null">
+        PHONE_NUMBER_,
+      </if>
+      <if test="pwd != null">
+        PWD_,
+      </if>
+      <if test="admin != null">
+        ADMIN_,
+      </if>
+      <if test="pictureId != null">
+        PICTURE_ID_,
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID_,
+      </if>
+      <if test="status != null">
+        STATUS_,
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME_,
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME_,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="rev != null">
+        #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="first != null">
+        #{first,jdbcType=VARCHAR},
+      </if>
+      <if test="last != null">
+        #{last,jdbcType=VARCHAR},
+      </if>
+      <if test="displayName != null">
+        #{displayName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="admin != null">
+        #{admin,jdbcType=BIT},
+      </if>
+      <if test="pictureId != null">
+        #{pictureId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null">
+        #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.entity.User">
+    update act_id_user
+    <set>
+      <if test="rev != null">
+        REV_ = #{rev,jdbcType=INTEGER},
+      </if>
+      <if test="first != null">
+        FIRST_ = #{first,jdbcType=VARCHAR},
+      </if>
+      <if test="last != null">
+        LAST_ = #{last,jdbcType=VARCHAR},
+      </if>
+      <if test="displayName != null">
+        DISPLAY_NAME_ = #{displayName,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        EMAIL_ = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        PHONE_NUMBER_ = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        PWD_ = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="admin != null">
+        ADMIN_ = #{admin,jdbcType=BIT},
+      </if>
+      <if test="pictureId != null">
+        PICTURE_ID_ = #{pictureId,jdbcType=VARCHAR},
+      </if>
+      <if test="tenantId != null">
+        TENANT_ID_ = #{tenantId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        STATUS_ = #{status,jdbcType=BIT},
+      </if>
+      <if test="updatedTime != null">
+        UPDATED_TIME_ = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        CREATED_TIME_ = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.entity.User">
+    update act_id_user
+    set REV_ = #{rev,jdbcType=INTEGER},
+      FIRST_ = #{first,jdbcType=VARCHAR},
+      LAST_ = #{last,jdbcType=VARCHAR},
+      DISPLAY_NAME_ = #{displayName,jdbcType=VARCHAR},
+      EMAIL_ = #{email,jdbcType=VARCHAR},
+      PHONE_NUMBER_ = #{phoneNumber,jdbcType=VARCHAR},
+      PWD_ = #{pwd,jdbcType=VARCHAR},
+      ADMIN_ = #{admin,jdbcType=BIT},
+      PICTURE_ID_ = #{pictureId,jdbcType=VARCHAR},
+      TENANT_ID_ = #{tenantId,jdbcType=VARCHAR},
+      STATUS_ = #{status,jdbcType=BIT},
+      UPDATED_TIME_ = #{updatedTime,jdbcType=TIMESTAMP},
+      CREATED_TIME_ = #{createdTime,jdbcType=TIMESTAMP}
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

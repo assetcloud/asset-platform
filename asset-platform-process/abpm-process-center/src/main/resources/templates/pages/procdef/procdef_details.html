@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>流程定义详情</title>
+    <link rel="shortcut icon" href="favicon.ico">
+    <link href="hplus/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link href="hplus/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
+    <link href="hplus/css/animate.min.css" rel="stylesheet">
+    <link href="hplus/css/style.min.css?v=4.1.0" rel="stylesheet">
+</head>
+<body class="gray-bg">
+    <input id="procdefid" type="hidden" th:value="${procDefId}" />
+    <input id="fxml" type="hidden" th:value="${fxml}" />
+    <div class="tabs-container">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#tab-1" aria-expanded="true">流程图</a>
+            </li>
+            <li class="">
+                <a data-toggle="tab" href="#tab-2" aria-expanded="false">流程定义</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div id="tab-1" class="tab-pane active">
+                <div class="panel-body">
+                    <img id="image1" />
+                </div>
+            </div>
+            <div id="tab-2" class="tab-pane">
+                <div class="panel-body">
+                    <div id="dfxml">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script src="hplus/js/jquery.min.js?v=2.1.4"></script>
+<script src="hplus/js/bootstrap.min.js?v=3.3.6"></script>
+<script src="hplus/js/content.min.js?v=1.0.0"></script>
+<script>
+    $(document).ready(function () {
+        var procdefid = $("#procdefid").val();
+        $("#image1").attr('src',"/showImage?procDefId=" + procdefid);
+        var fxml = $("#fxml").val();
+        $("#dfxml").html('<xmp>' + fxml + '</xmp>');
+    });
+</script>
+</body>
+</html>
