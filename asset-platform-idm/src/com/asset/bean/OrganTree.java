@@ -137,7 +137,7 @@ public class OrganTree {
 
     private Integer isDeleted;
 
-    private Boolean status;
+    private Byte status;
 
     private Integer sort;
 
@@ -679,11 +679,11 @@ public class OrganTree {
         this.isDeleted = isDeleted;
     }
 
-    public Boolean getStatus() {
+    public Byte getStatus() {
         return status;
     }
 
-    public void setStatus(Boolean status) {
+    public void setStatus(Byte status) {
         this.status = status;
     }
 

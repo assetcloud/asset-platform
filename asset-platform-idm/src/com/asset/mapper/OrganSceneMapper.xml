@@ -107,6 +107,1217 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
     <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      scene_id, status)
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, node_id, parent_id, unit_name, scene_id, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_organ_scene
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene (id, node_id, parent_id, 
+      unit_name, scene_id, status
+      )
+    values (#{id,jdbcType=BIGINT}, #{nodeId,jdbcType=VARCHAR}, #{parentId,jdbcType=VARCHAR}, 
+      #{unitName,jdbcType=VARCHAR}, #{sceneId,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="nodeId != null">
+        node_id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="nodeId != null">
+        #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    <set>
+      <if test="nodeId != null">
+        node_id = #{nodeId,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        scene_id = #{sceneId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.OrganScene">
+    update as_organ_scene
+    set node_id = #{nodeId,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      unit_name = #{unitName,jdbcType=VARCHAR},
+      scene_id = #{sceneId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <resultMap id="BaseResultMap" type="com.asset.bean.OrganScene">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
     <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
     <result column="status" jdbcType="INTEGER" property="status" />
   </resultMap>

@@ -1,6 +1,7 @@
 package com.asset.service;
 
 import com.asset.bean.*;
+import com.asset.common.GlobalConstant;
 import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
 import com.asset.mapper.AppTemplateMapper;
@@ -94,7 +95,7 @@ public class MenuService {
      * 添加表单类型的菜单，并赋予给系统管理员和默认角色
      * @param parentMenu
      * @param formModelInfo
-     * @return
+     * @return int
      */
     public int addFormMenu(Menu parentMenu, FormModelInfo formModelInfo){
         Menu menu = new Menu();
@@ -112,14 +113,16 @@ public class MenuService {
         // 为表单设置分组
         menu.setGroupId(formModelInfo.getGroupId());
         menu.setGroupName(formModelInfo.getGroupName());
+        //为表单设置默认场景
+        menu.setSceneId(GlobalConstant.CURRENT_SCENE);
         if(menuMapper.insert(menu) < 0){
-            return -1;
+            return -2;
         }
         if(addMenu4Admin(menu) < 0){
-            return -1;
+            return -3;
         }
         if(addFuncMenu(menu) < 0){
-            return -1;
+            return -4;
         }
         return 1;
     }
@@ -131,8 +134,7 @@ public class MenuService {
      */
     public int addFuncMenu(Menu formMenu){
         List<Menu> menuList = SystemConstant.MENU_LIST;
-        for(int i = 0; i<menuList.size();i++){
-            Menu menu = menuList.get(i);
+        for (Menu menu : menuList) {
             menu.setParentId(formMenu.getId());
             menu.setPath(formMenu.getPath() + menu.getPath());
             menu.setIsDeleted(0);
@@ -169,7 +171,7 @@ public class MenuService {
     }
 
     /**
-     * 为当前角色查询菜单
+     * 为当前用户获取菜单
      * @return
      */
     public List<Menu> getMenusByUserId(String userId){
@@ -177,19 +179,32 @@ public class MenuService {
     }
 
     /**
+     *
+     * @param roleId
+     * @return List<Menu>
+     */
+    public List<Menu> getMenusByRoleId(Long roleId){
+        return menuMapper.getMenusByRole(roleId);
+    }
+
+
+    /**
      * 通过用户id获取应用资源
      * @return List<Menu>
      */
-    public List<Menu> getAppMenusByUser(){
+    /*public List<Menu> getAppMenusByUser(){
         return menuMapper.getAppMenusByUser(UserUtils.getCurrentUser().getId());
+    }*/
+    public List<Menu> getAppMenusByUser(String sceneId){
+        return menuMapper.getMenusByUserAndScene(UserUtils.getCurrentUser().getId(), sceneId);
     }
 
     /**
      * 通过用户id和应用id获取表单资源
      * @return List<Menu>
      */
-    public List<Menu> getFormMenusByApp(String appId){
-        return menuMapper.getFormMenusByApp(UserUtils.getCurrentUser().getId(), appId);
+    public List<Menu> getFormMenusByApp(String appId, String sceneId){
+        return menuMapper.getFormMenusByApp(UserUtils.getCurrentUser().getId(), appId, sceneId);
     }
 
     /**

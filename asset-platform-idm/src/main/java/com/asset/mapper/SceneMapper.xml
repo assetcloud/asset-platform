@@ -18,6 +18,16 @@
     where id = #{id,jdbcType=VARCHAR}
     AND is_deleted = 0
   </select>
+  <select id="getScenesByUser" resultMap="BaseResultMap">
+    SELECT
+        *
+    FROM
+        as_scene s
+    WHERE
+        s.id IN ( SELECT us.scene_id FROM as_user_scene us WHERE us.user_id = #{userId})
+        AND s.`status` = 1
+        AND s.is_deleted = 0
+  </select>
   <select id="selectAll" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

@@ -41,32 +41,35 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public int userReg(String accountName, String pwd) {
-        //如果用户名存在，返回错误
-        if (userMapper.loadUserByUsername(accountName) != null) {
-            return -1;
-        }
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encode = encoder.encode(pwd);
-        return userMapper.userReg(accountName, encode);
-    }
-
+    /**
+     * 用户注册
+     * @param user
+     * @return int
+     */
     public int insertUser(User user) {
+        User var = userMapper.findUserByUsername(user.getAccountName());
         //如果用户名存在，返回错误
-        if (userMapper.loadUserByUsername(user.getAccountName()) != null) {
-            return -1;
+        if (var != null) {
+            if (!var.getStatus() && var.getStage() == 2){
+                //用户已注册，但待审核
+                return -2;
+            } else if (var.getStatus() && var.getStage() == 1){
+                //用户已存在
+                return -3;
+            }
         }
         if(user.getId() == null){
             user.setId(idGenerator.generateId());
-            LOGGER.info("user: {}", user.toString());
         }
-        user.setAdmin(0);
-        user.setStatus(true);
+        //待审核状态
+        user.setStage(2);
+        user.setStatus(false);
         user.setCreatedTime(new Date());
         //密码加密
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encode = encoder.encode(user.getPassword());user.setPwd(encode);
-        return userMapper.insert(user);
+        String encode = encoder.encode(user.getPassword());
+        user.setPwd(encode);
+        return userMapper.insertSelective(user);
     }
 
     public User getUserById(String id){
@@ -75,6 +78,11 @@ public class UserService implements UserDetailsService {
 
     public int  updateUserById(User record){
         return userMapper.updateByPrimaryKey(record);
+    }
+
+    public int  updateUser(User record){
+        LOGGER.info(record.toString());
+        return userMapper.updateByPrimaryKeySelective(record);
     }
 
     public List<User> getUsersByRole(Long roleId){

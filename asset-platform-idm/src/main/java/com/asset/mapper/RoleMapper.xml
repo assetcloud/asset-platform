@@ -6,6 +6,7 @@
     <result column="role_name" jdbcType="VARCHAR" property="roleName" />
     <result column="role_name_zh" jdbcType="VARCHAR" property="roleNameZh" />
     <result column="role_description" jdbcType="VARCHAR" property="roleDescription" />
+    <result column="role_default" jdbcType="INTEGER" property="roleDefault" />
     <result column="status" jdbcType="BIT" property="status" />
     <result column="applicable_unit_level" jdbcType="VARCHAR" property="applicableUnitLevel" />
     <result column="product_code" jdbcType="VARCHAR" property="productCode" />
@@ -30,6 +31,7 @@
       <result column="role_name" jdbcType="VARCHAR" property="roleName" />
       <result column="role_name_zh" jdbcType="VARCHAR" property="roleNameZh" />
       <result column="role_description" jdbcType="VARCHAR" property="roleDescription" />
+      <result column="role_default" jdbcType="INTEGER" property="roleDefault" />
       <result column="status" jdbcType="BIT" property="status" />
       <result column="applicable_unit_level" jdbcType="VARCHAR" property="applicableUnitLevel" />
       <result column="product_code" jdbcType="VARCHAR" property="productCode" />
@@ -71,7 +73,7 @@
     <result column="user_remark" jdbcType="LONGVARCHAR" property="userRemark" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, role_name, role_name_zh, role_description, status, applicable_unit_level, product_code,
+    id, role_name, role_name_zh, role_description, role_default, status, applicable_unit_level, product_code,
     enable_time, disable_time, updated_time, created_time, group_id
   </sql>
   <select id="roles" resultMap="BaseResultMap">

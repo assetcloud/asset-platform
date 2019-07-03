@@ -16,6 +16,15 @@ public class Role {
     private Date updatedTime;
     private Date createdTime;
     private Long groupId;
+    private Integer roleDefault;
+
+    public Integer getRoleDefault() {
+        return roleDefault;
+    }
+
+    public void setRoleDefault(Integer roleDefault) {
+        this.roleDefault = roleDefault;
+    }
 
     public Long getId() {
         return id;

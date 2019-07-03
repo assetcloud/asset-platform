@@ -57,13 +57,19 @@ public class MenuController {
     public RespBean addMenu(@RequestBody FormModelInfo formModelInfo){
         Menu menu = menuService.getMenuByPath(formModelInfo.getApplicationId());
         if(menu == null){
-            return RespBean.error("数据错误","");
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE,"");
         }
         int flag = menuService.addFormMenu(menu, formModelInfo);
-        if(flag < 0){
-            return RespBean.error("添加失败", flag);
+        if(flag == -2){
+            return RespBean.error("表单资源添加失败", flag);
+        } else if (flag == -3){
+            return RespBean.error("管理员权限添加失败", flag);
+        } else if (flag == -4){
+            return RespBean.error("表单操作添加失败", flag);
+        } else if (flag < 0){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE, flag);
         }
-        return RespBean.ok("添加成功");
+        return RespBean.ok(SystemConstant.ADD_SUCCESS);
     }
 
     @ApiOperation(value = "绑定场景与表单", notes = "保存流程时将表单与流程相互绑定",tags = "菜单", httpMethod = "PUT")
@@ -86,31 +92,32 @@ public class MenuController {
 
     @ApiOperation(value = "获取菜单", notes = "通过当前用户角色获取菜单",tags = "菜单", httpMethod = "GET")
     @RequestMapping(value = "/menus", method = RequestMethod.GET)
-    public List<Menu> getMenusByRole(){
+    public List<Menu> getMenusByCurrentUser(){
         return menuService.getMenusByCurrentUser();
     }
 
-    @ApiOperation(value = "获取菜单", notes = "通过用户id获取菜单",tags = "菜单", httpMethod = "GET")
+    @ApiOperation(value = "获取菜单", notes = "通过角色id获取菜单",tags = "菜单", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Long")
     })
-    @RequestMapping(value = "/menus/{id}", method = RequestMethod.GET)
-    public List<Menu> getMenusByRoleId(@PathVariable String id){
-        return menuService.getMenusByUserId(id);
+    @RequestMapping(value = "/menus/{roleId}", method = RequestMethod.GET)
+    public List<Menu> getMenusByRoleId(@PathVariable Long roleId){
+        return menuService.getMenusByRoleId(roleId);
     }
 
     @ApiOperation(value = "获取应用菜单", notes = "通过当前用户角色获取应用资源，主要用于首页内容展现",tags = "菜单", httpMethod = "GET")
-    @RequestMapping(value = "/app/menus", method = RequestMethod.GET)
-    public List<Menu> getAppMenusByRole(){
-        return menuService.getAppMenusByUser();
+    @RequestMapping(value = "/app/menus/{sceneId}", method = RequestMethod.GET)
+    public List<Menu> getAppMenusByRole(@PathVariable String sceneId){
+//        return menuService.getAppMenusByUser();
+        return menuService.getAppMenusByUser(sceneId);
     }
 
     @ApiOperation(value = "获取表单菜单", notes = "通过点击应用，展现可访问的表单资源",tags = "菜单", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "appId", value = "应用id", required = true, dataType = "String")
     })
-    @RequestMapping(value = "/form/menus/{appId}", method = RequestMethod.GET)
-    public List<Menu> getFormMenusByApp(@PathVariable String appId){
-        return menuService.getFormMenusByApp(appId);
+    @RequestMapping(value = "/form/menus/{appId}/{sceneId}", method = RequestMethod.GET)
+    public List<Menu> getFormMenusByApp(@PathVariable String appId, @PathVariable String sceneId){
+        return menuService.getFormMenusByApp(appId, sceneId);
     }
 }

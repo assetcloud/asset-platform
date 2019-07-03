@@ -42,7 +42,10 @@
     </collection>
   </resultMap>
   <select id="loadUserByUsername" resultMap="lazyLoadRoles">
-        select * from as_user WHERE account_name = #{accountName} and status = 1;
+        select * from as_user WHERE account_name = #{accountName} and status = 1 and stage = 1;
+  </select>
+  <select id="findUserByUsername" resultMap="BaseResultMap">
+    select status, stage from as_user where account_name = #{username};
   </select>
   <select id="getRolesByUserId" resultType="com.asset.bean.Role">
         SELECT
@@ -58,9 +61,8 @@
   </select>
   <sql id="Base_Column_List">
     id, staff_id, real_name, account_name, nickname, gender, user_birthday, user_email,
-    phone_number, certificate_type, certificate_number, pwd, authentication_method, account_picture,
-    admin, user_address, user_photo, status, user_type, disable_time, enable_time, updated_time,
-    remove_time, created_time
+    phone_number, certificate_type, certificate_number, authentication_method, account_picture,
+    admin, user_address, user_photo, status, user_type, created_time
   </sql>
   <sql id="Blob_Column_List">
     user_remark
@@ -80,21 +82,6 @@
     </if>
   </select>
   <select id="getUsersByRole" resultMap="BaseResultMap" parameterType="java.lang.Long">
-   /* SELECT
-	u.id AS id,
-	u.staff_id AS staffId,
-	u.real_name AS realName,
-	u.account_name AS accountName,
-	u.nickname AS nickname,
-	u.gender AS gender,
-	u.user_birthday AS userBirthday,
-	u.user_email AS userEmail,
-	u.phone_number AS phoneNumber,
-	u.admin AS admin,
-	u.user_address AS userAdress,
-	u.`status` AS STATUS,
-	u.created_time AS createdTime,
-	u.user_photo AS userPhoto*/
 	SELECT
 	u.id AS id,
 	u.staff_id,
@@ -127,16 +114,16 @@
       account_name, nickname, gender,
       user_birthday, user_email, phone_number,
       certificate_type, certificate_number, pwd,
-      authentication_method, account_picture, admin,
+      authentication_method, account_picture, admin, stage
       user_address, user_photo, status,
       user_type, disable_time, enable_time,
       updated_time, remove_time, created_time,
       user_remark)
-    values (#{id,jdbcType=INTEGER}, #{staffId,jdbcType=INTEGER}, #{realName,jdbcType=VARCHAR},
+    values (#{id,jdbcType=INTEGER}, #{staffId,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},
       #{accountName,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER},
       #{userBirthday,jdbcType=TIMESTAMP}, #{userEmail,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR},
       #{certificateType,jdbcType=INTEGER}, #{certificateNumber,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
-      #{authenticationMethod,jdbcType=INTEGER}, #{accountPicture,jdbcType=VARCHAR}, #{admin,jdbcType=INTEGER},
+      #{authenticationMethod,jdbcType=INTEGER}, #{accountPicture,jdbcType=VARCHAR}, #{admin,jdbcType=INTEGER},#{stage,jdbcType=INTEGER},
       #{userAddress,jdbcType=VARCHAR}, #{userPhoto,jdbcType=VARCHAR}, #{status,jdbcType=BIT},
       #{userType,jdbcType=INTEGER}, #{disableTime,jdbcType=TIMESTAMP}, #{enableTime,jdbcType=TIMESTAMP},
       #{updatedTime,jdbcType=TIMESTAMP}, #{removeTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP},
@@ -190,6 +177,9 @@
       <if test="admin != null">
         admin,
       </if>
+      <if test="stage != null">
+        stage,
+      </if>
       <if test="userAddress != null">
         user_address,
       </if>
@@ -226,7 +216,7 @@
         #{id,jdbcType=INTEGER},
       </if>
       <if test="staffId != null">
-        #{staffId,jdbcType=INTEGER},
+        #{staffId,jdbcType=VARCHAR},
       </if>
       <if test="realName != null">
         #{realName,jdbcType=VARCHAR},
@@ -267,6 +257,9 @@
       <if test="admin != null">
         #{admin,jdbcType=INTEGER},
       </if>
+      <if test="stage != null">
+        #{stage, jdbcType=INTEGER},
+      </if>
       <if test="userAddress != null">
         #{userAddress,jdbcType=VARCHAR},
       </if>
@@ -303,7 +296,7 @@
     update as_user
     <set>
       <if test="staffId != null">
-        staff_id = #{staffId,jdbcType=INTEGER},
+        staff_id = #{staffId,jdbcType=VARCHAR},
       </if>
       <if test="realName != null">
         real_name = #{realName,jdbcType=VARCHAR},
@@ -344,6 +337,9 @@
       <if test="admin != null">
         admin = #{admin,jdbcType=INTEGER},
       </if>
+      <if test="stage != null">
+        stage = #{stage,jdbcType=INTEGER},
+      </if>
       <if test="userAddress != null">
         user_address = #{userAddress,jdbcType=VARCHAR},
       </if>
@@ -379,7 +375,7 @@
   </update>
   <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.asset.bean.User">
     update as_user
-    set staff_id = #{staffId,jdbcType=INTEGER},
+    set staff_id = #{staffId,jdbcType=VARCHAR},
       real_name = #{realName,jdbcType=VARCHAR},
       account_name = #{accountName,jdbcType=VARCHAR},
       nickname = #{nickname,jdbcType=VARCHAR},
@@ -393,6 +389,7 @@
       authentication_method = #{authenticationMethod,jdbcType=INTEGER},
       account_picture = #{accountPicture,jdbcType=VARCHAR},
       admin = #{admin,jdbcType=INTEGER},
+      stage = #{stage,jdbcType=INTEGER},
       user_address = #{userAddress,jdbcType=VARCHAR},
       user_photo = #{userPhoto,jdbcType=VARCHAR},
       status = #{status,jdbcType=BIT},
@@ -421,6 +418,7 @@
       authentication_method = #{authenticationMethod,jdbcType=INTEGER},
       account_picture = #{accountPicture,jdbcType=VARCHAR},
       admin = #{admin,jdbcType=INTEGER},
+      stage = #{stage,jdbcType=INTEGER},
       user_address = #{userAddress,jdbcType=VARCHAR},
       user_photo = #{userPhoto,jdbcType=VARCHAR},
       status = #{status,jdbcType=BIT},
