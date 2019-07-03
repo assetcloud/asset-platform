@@ -220,7 +220,8 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="sort" jdbcType="INTEGER" property="sort" />
     <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
-    <collection property="children" ofType="com.asset.bean.OrganTree" javaType="java.util.ArrayList" column="id" select="recursiveSelect">
+    <collection property="children" ofType="com.asset.bean.OrganTree" javaType="java.util.ArrayList"
+                column="id" select="recursiveSelect">
     </collection>
   </resultMap>
 
@@ -291,7 +292,14 @@
     SELECT
     <include refid="Base_Column_List" />
     FROM  as_organ_tree
-    WHERE status = 1
+    WHERE status != 0
+    ORDER BY sort ASC
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  as_organ_tree
+    WHERE status != 0
     ORDER BY sort ASC
   </select>
   <select id="recursiveSelect" resultMap="RecursiveMap" parameterType="java.lang.String">
@@ -299,7 +307,7 @@
      *
     FROM  as_organ_tree ot
     WHERE ot.parent_id = #{id}
-    AND ot.`status` = 1
+    AND ot.`status` != 0
     ORDER BY sort ASC
   </select>
   <select id="getTreeByScene" resultMap="ResultMapByScene">
@@ -308,18 +316,21 @@
     FROM
         as_organ_scene os
     WHERE
-        os.`status` = 1
+        os.`status` != 0
         AND os.scene_id = #{id}
         AND os.parent_id = '0'
     ORDER BY
         os.id ASC
+  </select>
+  <select id="searchNode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * FROM as_organ_tree WHERE unit_name LIKE CONCAT('%', #{unitName}, '%') AND status != 0 AND is_deleted = 0
   </select>
   <select id="recursiveSelectWithScene" resultMap="RecursiveMapByScene" parameterType="java.util.Map">
     SELECT
      *
     FROM  as_organ_scene os
     WHERE os.parent_id = #{parentId}
-    AND os.`status` = 1
+    AND os.`status` != 0
     AND os.scene_id = #{sceneId}
     ORDER BY os.id ASC
   </select>
@@ -1120,5 +1131,4 @@
       #{item.id,jdbcType=VARCHAR}
     </foreach>
   </update>
-
 </mapper>

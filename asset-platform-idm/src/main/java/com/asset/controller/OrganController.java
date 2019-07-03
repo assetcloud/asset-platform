@@ -1,6 +1,7 @@
 package com.asset.controller;
 
 import com.asset.bean.*;
+import com.asset.common.GlobalConstant;
 import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
 import com.asset.service.OrganService;
@@ -12,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -30,7 +30,7 @@ public class OrganController {
     @ApiOperation(value = "添加组织节点", notes = "添加组织节点",tags = "组织", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "unitName", value = "单位名称", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "parentId", value = "父节点id，若无则为0", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "parentId", value = "父节点id，若无则为\"\"", required = true, dataType = "String"),
             @ApiImplicitParam(name = "sort", value = "排序编号，默认为0", required = true, dataType = "Integer")
     })
     @RequestMapping(value = "/node", method = RequestMethod.POST)
@@ -59,7 +59,7 @@ public class OrganController {
 
     @ApiOperation(value = "批量删除组织节点", notes = "批量删除组织节点",tags = "组织", httpMethod = "DELETE")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "节点id", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "节点id的List", required = true, dataType = "List<OrganTree>")
     })
     @RequestMapping(value = "/nodes", method = RequestMethod.DELETE)
     public RespBean batchDeleteNode(@RequestBody List<OrganTree> organTrees){
@@ -81,6 +81,19 @@ public class OrganController {
             return RespBean.error(SystemConstant.GET_FAILURE);
         }
         return RespBean.ok(SystemConstant.GET_SUCCESS, node);
+    }
+
+    @ApiOperation(value = "检索组织节点", notes = "检索组织节点",tags = "组织", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "unitName", value = "组织名称", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/node/search", method = RequestMethod.GET)
+    public RespBean getNodeByName(@RequestBody OrganTree organTree){
+        List<OrganTree> organTrees = organService.searchNode(organTree.getUnitName());
+        if (organTrees.size() == 0){
+            return RespBean.ok(SystemConstant.NODE_NOT_FOUND);
+        }
+        return RespBean.ok(SystemConstant.GET_SUCCESS, organTrees);
     }
 
     @ApiOperation(value = "编辑组织节点信息", notes = "编辑组织节点信息",tags = "组织", httpMethod = "PUT")
@@ -109,11 +122,11 @@ public class OrganController {
             if (role.getId().equals(SystemConstant.ADMIN_ROLE_ID)) {
                 //TODO:后续可以交由spring security处理
                 // an administrator has access to main trees
-                List<OrganTree> mainTrees = organService.getMainTree();
-                return RespBean.ok(SystemConstant.GET_SUCCESS, mainTrees);
+                OrganTree organTree = organService.getMainTree();
+                return RespBean.ok(SystemConstant.GET_SUCCESS, organTree);
             }
         }
-        return RespBean.error(SystemConstant.GET_FAILURE, new ArrayList<>());
+        return RespBean.error(SystemConstant.GET_FAILURE, "");
     }
 
     @ApiOperation(value = "获取场景信息", notes = "获取场景信息",tags = "组织", httpMethod = "GET")
@@ -237,4 +250,20 @@ public class OrganController {
         }
         return RespBean.ok("ok");
     }
+
+    @ApiOperation(value = "获取用户场景", notes = "根据用户获取场景", tags = "用户", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/scenes/{userId}", method = RequestMethod.GET)
+    public RespBean getUserScenes(@PathVariable("userId")String userId){
+        List<Scene> scenes = sceneService.getScenesByUser(userId);
+        return RespBean.ok(SystemConstant.GET_SUCCESS, scenes);
+    }
+
+    /*@RequestMapping(value = "/scene/{sceneId}", method = RequestMethod.PUT)
+    public RespBean setScene(@PathVariable String sceneId){
+        GlobalConstant.CURRENT_SCENE = sceneId;
+        return null;
+    }*/
 }

@@ -12,6 +12,8 @@ public interface UserMapper {
 
     User loadUserByUsername(String username);
 
+    User findUserByUsername(@Param("username") String username);
+
     List<Role> getRolesByUserId(String id);
 
     List<User> getAllUser(int currentId);

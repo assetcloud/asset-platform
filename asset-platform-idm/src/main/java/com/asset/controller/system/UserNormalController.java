@@ -49,7 +49,8 @@ public class UserNormalController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "accountName", value = "用户账号", required = true, dataType = "String"),
             @ApiImplicitParam(name = "pwd", value = "用户密码", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "realName", value = "用户真实姓名", required = true, dataType = "String")
+            @ApiImplicitParam(name = "realName", value = "用户真实姓名", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "admin", value = "是否为总管理员", required = true, dataType = "Integer")
     })
     @ApiResponses({
             @ApiResponse(code = 200,message = "注册成功",response = RespBean.class),
@@ -58,7 +59,9 @@ public class UserNormalController {
     public RespBean userReg(@RequestBody User user){
         LOGGER.info("用户注册：{}", user.toString());
         int flag = userService.insertUser(user);
-        if(flag == -1){
+        if(flag == -2){
+            return RespBean.error("用户已注册但未经过审核");
+        } else if (flag == -3){
             return RespBean.error(SystemConstant.USER_ALREADY_EXISTS);
         }
         if(flag < 0){
@@ -69,7 +72,7 @@ public class UserNormalController {
     }
 
     @RequestMapping(value = "/userAudit/{userId}", method = RequestMethod.POST)
-    @ApiOperation(value = "用户审核", notes = "对注册后用户进行审核", httpMethod = "POST")
+    @ApiOperation(value = "用户审核", notes = "对注册后的用户进行审核", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String")
     })
@@ -85,8 +88,12 @@ public class UserNormalController {
         if(flag < 0){
             return RespBean.error(SystemConstant.SYSTEM_FAILURE);
         }
-        user.setStaffId(String.valueOf(map.get("staffId")));
-        flag = userService.updateUserById(user);
+        User newUser = new User();
+        newUser.setStage(1);
+        newUser.setStatus(true);
+        newUser.setId(userId);
+        newUser.setStaffId(String.valueOf(map.get("staffId")));
+        flag = userService.updateUser(newUser);
         if (flag < 0){
             return RespBean.error(SystemConstant.SYSTEM_FAILURE);
         }

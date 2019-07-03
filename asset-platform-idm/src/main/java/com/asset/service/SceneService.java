@@ -88,4 +88,8 @@ public class SceneService {
     public List<Scene> findSceneByNameAlike(String sceneName){
         return sceneMapper.selectByNameAlike(sceneName);
     }
+
+    public List<Scene> getScenesByUser(String userId){
+        return sceneMapper.getScenesByUser(userId);
+    }
 }

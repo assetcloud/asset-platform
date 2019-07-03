@@ -1,21 +1,16 @@
 package com.asset.service;
 
-import com.asset.bean.AppTemplate;
-import com.asset.bean.Application;
 import com.asset.bean.OrganTree;
 import com.asset.common.SystemConstant;
-import com.asset.common.UserUtils;
-import com.asset.mapper.AppTemplateMapper;
-import com.asset.mapper.ApplicationMapper;
 import com.asset.mapper.OrganTreeMapper;
 import com.asset.mapper.UuidIdGenerator;
+import com.asset.utils.TreeNodeMerger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -49,7 +44,7 @@ public class OrganService {
             record.setId(uuidIdGenerator.generateId());
         }
         if (record.getParentId() == null){
-            record.setParentId("0");
+            record.setParentId("");
         }
         record.setCreatedTime(new Date());
         record.setStatus(1);
@@ -105,11 +100,24 @@ public class OrganService {
      * 获取组织树全部信息
      * @return
      */
-    public List<OrganTree> getMainTree(){
+    /*public List<OrganTree> getMainTree(){
         return organTreeMapper.getMainTree();
+    }*/
+    public OrganTree getMainTree(){
+        List<OrganTree> items = organTreeMapper.selectAll();
+        return TreeNodeMerger.merge(items);
     }
 
     public List<OrganTree> getTreeByScene(String sceneId){
         return organTreeMapper.getTreeByScene(sceneId);
+    }
+
+    /**
+     * 节点模糊检索
+     * @param unitName
+     * @return List<OrganTree>
+     */
+    public List<OrganTree> searchNode(String unitName){
+        return organTreeMapper.searchNode(unitName);
     }
 }

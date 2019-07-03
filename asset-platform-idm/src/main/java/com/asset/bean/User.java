@@ -27,6 +27,7 @@ public class User implements UserDetails {
     private Integer authenticationMethod;
     private String accountPicture;
     private Integer admin;
+    private Integer stage;
     private String userAddress;
     private String userPhoto;
     private Boolean status;
@@ -53,6 +54,14 @@ public class User implements UserDetails {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Integer getStage() {
+        return stage;
+    }
+
+    public void setStage(Integer stage) {
+        this.stage = stage;
     }
 
     public String getStaffId() {
@@ -290,8 +299,8 @@ public class User implements UserDetails {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
-                ", staffId=" + staffId +
+                "id='" + id + '\'' +
+                ", staffId='" + staffId + '\'' +
                 ", realName='" + realName + '\'' +
                 ", accountName='" + accountName + '\'' +
                 ", nickname='" + nickname + '\'' +
@@ -301,9 +310,11 @@ public class User implements UserDetails {
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", certificateType=" + certificateType +
                 ", certificateNumber='" + certificateNumber + '\'' +
+                ", pwd='" + pwd + '\'' +
                 ", authenticationMethod=" + authenticationMethod +
                 ", accountPicture='" + accountPicture + '\'' +
                 ", admin=" + admin +
+                ", stage=" + stage +
                 ", userAddress='" + userAddress + '\'' +
                 ", userPhoto='" + userPhoto + '\'' +
                 ", status=" + status +

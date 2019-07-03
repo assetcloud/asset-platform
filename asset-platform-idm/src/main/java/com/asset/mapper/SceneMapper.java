@@ -29,4 +29,6 @@ public interface SceneMapper {
     int deleteScene(@Param("id") String id);
 
     int updateSceneName(@Param("id") String id, @Param("sceneName") String sceneName);
+
+    List<Scene> getScenesByUser(@Param("userId")String userId);
 }

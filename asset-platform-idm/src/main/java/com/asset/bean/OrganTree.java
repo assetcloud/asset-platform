@@ -2,6 +2,7 @@ package com.asset.bean;
 
 import io.swagger.annotations.ApiModel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -78,7 +79,7 @@ public class OrganTree {
     private Integer status;
     private Integer sort;
     private String tenantCode;
-    private List<OrganTree> children;
+    private List<OrganTree> children = new ArrayList<>();
 
     public List<OrganTree> getChildren() {
         return children;

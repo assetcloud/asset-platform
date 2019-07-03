@@ -25,6 +25,8 @@ public interface OrganTreeMapper {
 
     List<OrganTree> getMainTree();
 
+    List<OrganTree> selectAll();
+
     List<OrganTree> recursiveSelect(@Param("id") String id);
 
     List<OrganTree> recursiveSelectWithScene(@Param("parentId") String parentId, @Param("sceneId") String sceneId);
@@ -32,4 +34,6 @@ public interface OrganTreeMapper {
     List<OrganTree> getTreeByScene(@Param("id") String id);
 
     int batchUpdate(List<OrganTree> organTrees);
+
+    List<OrganTree> searchNode(@Param("unitName") String unitName);
 }
