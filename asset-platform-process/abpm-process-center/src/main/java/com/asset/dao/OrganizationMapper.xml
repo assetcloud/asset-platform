@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.OrganizationMapper">
+
+    <resultMap id="BaseResultMap" type="com.asset.entity.Organization">
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="parent_id" jdbcType="INTEGER" property="parent_id"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="created_time" jdbcType="DATE" property="created_time"/>
+    </resultMap>
+
+    <select id="getOrganizationList" resultMap="BaseResultMap">
+        SELECT
+        a.id,
+        a.`name`,
+        a.parent_id,
+        a.`status`,
+        a.created_time
+        FROM
+            act_id_organization a
+        ORDER BY
+            a.created_time ASC
+    </select>
+</mapper>
