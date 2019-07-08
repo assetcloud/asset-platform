@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: root
+    password: root
+  redis:
+    database: 0
+    host: 10.1.18.178
+    port: 6379
+    password: none
+    jedis:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+        min-idle: 0
+#  security:
+#    user:
+#      name: hhj
+#      password: 123
+
+mybatis:
+  config-location: classpath:/mybatis-config.xml
+
+server:
+  port: 8083

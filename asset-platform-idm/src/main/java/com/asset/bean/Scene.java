@@ -1,6 +1,8 @@
 package com.asset.bean;
 
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 

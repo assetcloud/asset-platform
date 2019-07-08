@@ -23,6 +23,7 @@ spring.cache.redis.time-to-live=1800s
 #¶Ë¿ÚÅäÖÃ
 server.port=8083
 
+security.oauth2.client.client-id=233668646673605
 #spring.mail.host=smtp.qq.com
 #spring.mail.port=465
 #spring.mail.username=907611206@qq.com

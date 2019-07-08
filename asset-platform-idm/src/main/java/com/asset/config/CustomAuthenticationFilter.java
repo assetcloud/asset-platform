@@ -17,7 +17,7 @@ import java.util.Map;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(CustomAuthenticationFilter.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(CustomAuthenticationFilter.class);
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {

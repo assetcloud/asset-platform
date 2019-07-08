@@ -1,9 +1,12 @@
 package com.asset.controller.system;
 
 import com.asset.bean.RespBean;
+import com.asset.bean.Scene;
 import com.asset.bean.Staff;
 import com.asset.bean.User;
+import com.asset.common.GlobalConstant;
 import com.asset.common.SystemConstant;
+import com.asset.common.UserUtils;
 import com.asset.service.StaffService;
 import com.asset.service.UserService;
 import io.swagger.annotations.*;
@@ -107,5 +110,19 @@ public class UserNormalController {
     @RequestMapping(value = "/users/{roleId}", method = RequestMethod.GET)
     public List<User> userAudit(@PathVariable("roleId") Long roleId){
         return userService.getUsersByRole(roleId);
+    }
+
+    @ApiOperation(value = "选择工作场景", notes = "选择工作场景", tags = "用户", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "场景id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "sceneName", value = "场景名称", required = true, dataType = "String")
+    })
+    @PostMapping(value = "/load_scene")
+    public RespBean setScene(@RequestBody Scene scene){
+        GlobalConstant.USER_SCENE_MAP.put(UserUtils.getCurrentUser().getId(), scene.getId());
+        if (GlobalConstant.USER_SCENE_MAP.get(UserUtils.getCurrentUser().getId()) == null){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        }
+        return RespBean.ok(String.format("工作场景: %s 加载成功", scene.getSceneName()));
     }
 }

@@ -41,6 +41,14 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    public User findByUsername(String s) throws UsernameNotFoundException {
+        User user = userMapper.loadUserByUsername(s);
+        if (user == null) {
+            throw new UsernameNotFoundException("用户名错误");
+        }
+        return user;
+    }
+
     /**
      * 用户注册
      * @param user

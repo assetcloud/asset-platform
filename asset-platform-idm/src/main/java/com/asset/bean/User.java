@@ -40,6 +40,14 @@ public class User implements UserDetails {
     private String userRemark;
     private List<Role> roles;
 
+    public User (String accountName, String userEmail){
+        this.accountName = accountName;
+        this.userEmail = userEmail;
+    }
+
+    public User() {
+    }
+
     public List<Role> getRoles() {
         return roles;
     }
