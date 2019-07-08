@@ -260,10 +260,4 @@ public class OrganController {
         List<Scene> scenes = sceneService.getScenesByUser(userId);
         return RespBean.ok(SystemConstant.GET_SUCCESS, scenes);
     }
-
-    /*@RequestMapping(value = "/scene/{sceneId}", method = RequestMethod.PUT)
-    public RespBean setScene(@PathVariable String sceneId){
-        GlobalConstant.CURRENT_SCENE = sceneId;
-        return null;
-    }*/
 }

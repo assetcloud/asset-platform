@@ -1,6 +1,7 @@
 package com.asset.bean;
 
 public class UserScene {
+
     private Long id;
 
     private String sceneId;
@@ -8,6 +9,18 @@ public class UserScene {
     private String userId;
 
     private Integer status;
+    /**
+     * 不同场景下的角色（可有多个）
+     */
+    private Long roleId;
+
+    public Long getRoleId() {
+        return roleId;
+    }
+
+    public void setRoleId(Long roleId) {
+        this.roleId = roleId;
+    }
 
     public Long getId() {
         return id;

@@ -1,7 +1,7 @@
 package com.asset.utils;
 
 import com.asset.bean.OrganTree;
-import org.springframework.stereotype.Component;
+import com.asset.bean.PlatMenu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,25 +13,26 @@ import java.util.List;
  * @author hjhu
  *
  */
-public class TreeNodeManager {
+public class MenuNodeManager {
 
-    public List<OrganTree> list;// 树的所有节点
+    public List<PlatMenu> list;// 树的所有节点
 
-    public TreeNodeManager(OrganTree[] items) {
+
+    public MenuNodeManager(PlatMenu [] items) {
         list = new ArrayList<>();
         list.addAll(Arrays.asList(items));
     }
 
-    public TreeNodeManager(List<OrganTree> items) {
+    public MenuNodeManager(List<PlatMenu> items) {
         list = new ArrayList<>();
         list.addAll(items);
     }
 
-    public List<OrganTree> getList() {
+    public List<PlatMenu> getList() {
         return list;
     }
 
-    public void setList(List<OrganTree> list) {
+    public void setList(List<PlatMenu> list) {
         this.list = list;
     }
 
@@ -42,9 +43,9 @@ public class TreeNodeManager {
      *            节点ID
      * @return 对应的节点对象
      */
-    public OrganTree getTreeNodeAT(String id) {
-        for (OrganTree treeNode : list) {
-            if (treeNode.getId().equals(id))
+    public PlatMenu getTreeNodeAT(Long id) {
+        for (PlatMenu treeNode : list) {
+            if (treeNode.getId() == id)
                 return treeNode;
         }
         return null;
@@ -55,9 +56,9 @@ public class TreeNodeManager {
      *
      * @return 一棵树的根节点
      */
-    public OrganTree getRoot() {
-        for (OrganTree treeNode : list) {
-            if (treeNode.getParentId().equals(""))
+    public PlatMenu getRoot() {
+        for (PlatMenu treeNode : list) {
+            if (treeNode.getParentId() == 0)
                 return treeNode;
         }
         return null;
