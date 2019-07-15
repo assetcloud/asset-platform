@@ -1,17 +1,16 @@
 package com.asset.service;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.asset.controller.FormInstController;
 import com.asset.dao.*;
 import com.asset.entity.*;
+import com.asset.form.FormItem;
+import com.asset.form.ItemRuleRequired;
 import com.asset.javabean.ActType;
-import com.asset.javabean.AsFormInstPlus;
-import com.asset.javabean.FormJson;
-import com.asset.javabean.RespBean;
+import com.asset.form.FormJson;
 import com.asset.rec.*;
 import com.asset.utils.Constants;
-import org.apache.commons.lang3.StringUtils;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.*;
@@ -29,7 +28,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,6 +46,8 @@ public class FormInstService {
     AsProcModelMapper procModelMapper;
     @Autowired
     AsProcInstMapper procInstMapper;
+    @Autowired
+    FormAuthorityMapper formAuthorityMapper;
 
     @Autowired
     protected ModelService modelService;
@@ -59,10 +59,10 @@ public class FormInstService {
      * 当前任务节点完成之后，会自动流转到下一个任务节点，数据库表中会生成这个没有被完成的任务节点的信息，
      * 这里是在as_proc_inst表中写入这个信息
      */
-    public void saveUnCompleteTask(FormJson formJson,
-            String procInstId,
-                                   String formModelId,
-                                   String formInstValue) {
+    public void saveUnCompleteTask( String procInstId,
+                                    String formModelId,
+                                    String formInstValue) {
+        FormJson unCompleteFormJson = getFormJson(formModelId);
         //获取当前执行到的任务节点
         String[] taskIDs = getTaskIDs(procInstId);
         //如果下面还有任务节点要处理，就在as_proc_inst中新建这个表单实例字段（每一个TaskId对应一个新的表单实例）
@@ -70,7 +70,7 @@ public class FormInstService {
             String a = asFormInstMapper.getTaskId(taskIDs[i]);
             if (!taskIDs[i].isEmpty()&&
                     a== null )  //当前要存的taskID不能是已经有的的，否则重复保存了
-                createFormInst(formJson,
+                createFormInst(unCompleteFormJson,
                         procInstId,
                         "",
                         formModelId,
@@ -103,7 +103,7 @@ public class FormInstService {
 
 
     public List<AsFormInst> getTobeReadInsts(List<AsFormInst> formInsts) {
-        List<TaskInst> taskInsts = flowableMapper.getActIDs(formInsts);
+        List<AsTask> asTasks = flowableMapper.getActIDs(formInsts);
 //        AsProcModel model = procModelMapper.
         return null;
     }
@@ -212,8 +212,6 @@ public class FormInstService {
 
     public void completeCurTask(String taskID) {
         ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
         TaskService taskService = engine.getTaskService();
 
         taskService.complete(taskID);
@@ -267,6 +265,8 @@ public class FormInstService {
         String depResourceName = modelData.getName()+"ResName";
         String depName = modelData.getName()+"DepName";
         String depKey = modelData.getName()+"DepKey";
+
+
         //部署
         Deployment dep = builder.addBpmnModel(depResourceName,bpmnModel).
                 name(depName).
@@ -315,13 +315,13 @@ public class FormInstService {
         HashMap<String,Integer> map2 =new HashMap<String, Integer>();
 
         //1、先获取流转到该用户对应的procInstId\taskID\actId的集合
-        List<TaskInst> taskInfos = flowableMapper.getTaskInfos(userID);
+        List<AsTask> taskInfos = flowableMapper.getTaskInfos(userID);
         //2、对上面集合进行遍历，与List<ActType>进行比对，确定节点类型，与输入的taskType比对，是不是要显示的节点
         for(int i =0;i<taskInfos.size();i++)
         {
-            TaskInst curTaskInst = taskInfos.get(i);
+            AsTask curAsTask = taskInfos.get(i);
             //2.1 获取流程实例更多的信息，这里我们主要要的是proc_model_id
-            AsProcInst asProcInst = procInstMapper.selectByPrimaryKey(curTaskInst.getProcInstId());
+            AsProcInst asProcInst = procInstMapper.selectByPrimaryKey(curAsTask.getProcInstId());
             if (asProcInst==null)
                 throw new Exception("有流程实例没有与流程中间层绑定，请调用/completeAll，完成所有流程实例后，再重新尝试执行！");
             String procModelId = asProcInst.getProcModelId();
@@ -345,10 +345,10 @@ public class FormInstService {
             //这里应该对这个异常进行处理！！
             //查看当前procInstIDs.get(i)的TASK_ID是什么类型的节点
             try {
-                curActType = map.get(curTaskInst.getActId());
+                curActType = map.get(curAsTask.getActId());
             }
             catch (NullPointerException e){
-                logger.error("流程中间层生成的流程模型出错！没有如下ActID:{}",curTaskInst.getActId());
+                logger.error("流程中间层生成的流程模型出错！没有如下ActID:{}", curAsTask.getActId());
                 throw new Exception("流程中间层生成的流程模型出错！");
             }
 
@@ -358,7 +358,7 @@ public class FormInstService {
                 i--;
             }
             else {
-                map2.put(curTaskInst.getTaskId(),curActType);
+                map2.put(curAsTask.getTaskId(),curActType);
             }
 
         }
@@ -374,4 +374,110 @@ public class FormInstService {
 
         return new TaskCount(taskType,procTaskIds.length);
     }
+
+    public List<AsTask> getCurTasks(String userID) {
+        return flowableMapper.getTaskInfos(userID);
+    }
+
+    public String getProcModelIdByProc(String procInstId) {
+        return procInstMapper.getProcModelId(procInstId);
+    }
+
+    public Integer getActType(String procModelId, String actId) {
+        return procModelMapper.getActType(procModelId,actId);
+    }
+
+
+    public String getActId(String taskId) {
+        return flowableMapper.getActId(taskId);
+    }
+
+    public Integer getCurAuthority(String procModelId, String actId, String itemKey) {
+        return formAuthorityMapper.getAuthority(procModelId,actId,itemKey);
+    }
+
+    /**
+     *
+     * @param items
+     * @param j
+     * @param curAuthority 第j个表单项当前的权限应该是什么（在调用该方法前已经指定好了）
+     */
+    public void handleAuthority(List<FormItem> items, int j, Integer curAuthority) {
+        switch (curAuthority){
+            //必填，获取list中json对象的rules属性，进行修改,
+            //diable:false;required:true+rule
+            case Constants.AUTHORITY_REQUIRED:
+                //先看有没有必填项
+                List<JSONObject> rules = items.get(j).getRules();
+                if(rules==null)
+                {
+                    //添加新的 必填 rule
+                    addRequired(items.get(j));
+                    OptionsBase optionsBase = items.get(j).getOptions();
+                    optionsBase.setRequired(true);
+                    optionsBase.setDisabled(false);
+                    items.get(j).setOptions(optionsBase);
+                }
+                //还需要对rules里面的内容进行进一步的判断
+                else{
+                    for (int i = 0;i<rules.size();i++)
+                    {
+                        boolean isContain = rules.get(i).containsKey("required");
+                        //表示当前包含"required"这个字段了,没必要添加新的 必填 rule
+                        if(isContain)
+                            return;
+                    }
+                    //上面都遍历了还没有找到"required"这个字段，说明的确是没有这个字段，现在
+                    //要添加新的 必填 rule
+                    addRequired(items.get(j));
+                    OptionsBase optionsBase = items.get(j).getOptions();
+                    optionsBase.setRequired(true);
+                    optionsBase.setDisabled(false);
+                    items.get(j).setOptions(optionsBase);
+                }
+                break;
+            //不可见，就是这个表单项直接删除？先暂时不作
+            case Constants.AUTHORITY_INVISIBLE:
+                break;
+            //可见，这个就是不处理
+            //disable:false;required:false
+            case Constants.AUTHORITY_ENABLE:
+                break;
+            //无法编辑，获取list中的json对象的options属性进行修改
+            //disable:true;required:false
+            case Constants.AUTHORITY_DISABLE:
+                OptionsBase optionsBase = items.get(j).getOptions();
+                optionsBase.setDisabled(true);
+                optionsBase.setRequired(false);
+                items.get(j).setOptions(optionsBase);
+                break;
+        }
+    }
+
+    private void addRequired(FormItem formItem) {
+        List<JSONObject> rules = formItem.getRules();
+
+        ItemRuleRequired required = new ItemRuleRequired("此项必填");
+        JSONObject object = (JSONObject) JSON.toJSON(required);
+        rules.add(object);
+    }
+
+    public String getProcModelIdByForm(String form_model_id) {
+        return asFormModelMapper.getProcModelID(form_model_id);
+    }
+
+    public String getFormById(String form_model_id) {
+        return asFormModelMapper.getModelJson(form_model_id);
+    }
+
+    /**
+     * 根据formModelId找到对应的表单框架
+     * @param formModelId
+     * @return
+     */
+    public FormJson getFormJson(String formModelId) {
+        String modelStr = asFormModelMapper.getModelJson(formModelId);
+        return JSON.parseObject(modelStr,FormJson.class);
+    }
+
 }

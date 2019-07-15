@@ -23,23 +23,12 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
         </dependency>
+
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
         </dependency>
-<<<<<<< HEAD:abpm-process-center/pom.xml
-        <dependency>
-            <groupId>xom</groupId>
-            <artifactId>xom</artifactId>
-            <version>1.2.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.58</version>
-        </dependency>
 
         <!-- flowable -->
         <dependency>
@@ -48,16 +37,6 @@
             <version>${flowable.version}</version>
         </dependency>
         <dependency>
-=======
-
-        <!-- flowable -->
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-rest</artifactId>
-            <version>${flowable.version}</version>
-        </dependency>
-        <dependency>
->>>>>>> 81976e8eda16825a19e0527d42989194c8410328:asset-platform-process/abpm-process-center/pom.xml
             <groupId>org.flowable</groupId>
             <artifactId>flowable-ui-modeler-rest</artifactId>
             <version>${flowable.version}</version>
@@ -74,8 +53,6 @@
         </dependency>
         <!-- flowable end -->
 
-<<<<<<< HEAD:abpm-process-center/pom.xml
-=======
         <!--lombok start-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -89,7 +66,6 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.58</version>
         </dependency>
->>>>>>> 81976e8eda16825a19e0527d42989194c8410328:asset-platform-process/abpm-process-center/pom.xml
         <!-- 热部署 optional=true,依赖不会传递，该项目依赖devtools；之后依赖myboot项目的项目如果想要使用devtools，需要重新引入 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -97,7 +73,6 @@
             <optional>true</optional>
             <scope>true</scope>
         </dependency>
-
         <!-- database begin -->
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -114,8 +89,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.47</version>
         </dependency>
+        <!--<dependency>-->
+        <!--<groupId>mysql</groupId>-->
+        <!--<artifactId>mysql-connector-java</artifactId>-->
+        <!--<version>8.0.12</version>-->
+        <!--</dependency>-->
         <!-- database end -->
-
 
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -144,15 +123,6 @@
             <optional>true</optional>
         </dependency>
 
-        <!--lombok start-->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.20</version>
-            <scope>provided</scope>
-        </dependency>
-        <!--lombok end-->
-
         <!--分页插件-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
@@ -161,15 +131,6 @@
         </dependency>
         <!--分页插件-->
 
-        <!--ID 生成器 start-->
-        <dependency>
-            <groupId>com.fasterxml.uuid</groupId>
-            <artifactId>java-uuid-generator</artifactId>
-            <version>3.1.3</version>
-        </dependency>
-        <!--ID 生成器 end-->
-
-        <!--swagger end-->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
@@ -180,17 +141,14 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
         </dependency>
-<<<<<<< HEAD:abpm-process-center/pom.xml
+        <!--oauth-->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>2.9.8</version>
-            <scope>compile</scope>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>2.1.1.RELEASE</version>
         </dependency>
-        <!--swagger start-->
 
-=======
->>>>>>> 81976e8eda16825a19e0527d42989194c8410328:asset-platform-process/abpm-process-center/pom.xml
+
     </dependencies>
 
     <build>
@@ -199,14 +157,18 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
-<<<<<<< HEAD:abpm-process-center/pom.xml
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <!--添加mybatis generator maven插件-->
-            <!--<plugin>
+            <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
                 <version>1.3.5</version>
                 <configuration>
-                    &lt;!&ndash;generatorConfig.xml位置&ndash;&gt;
+                    <!--generatorConfig.xml位置-->
                     <configurationFile>src/main/resources/mybatis-config1.xml</configurationFile>
                     <verbose>true</verbose>
                     <overwrite>true</overwrite>
@@ -220,7 +182,7 @@
                         <phase>generate-sources</phase>
                     </execution>
                 </executions>
-                &lt;!&ndash;此处必须添加mysql驱动包&ndash;&gt;
+                <!--此处必须添加mysql驱动包-->
                 <dependencies>
                     <dependency>
                         <groupId>mysql</groupId>
@@ -229,12 +191,11 @@
                         <version>5.1.47</version>
                     </dependency>
                 </dependencies>
-            </plugin>-->
-        </plugins>
-=======
+            </plugin>
+
+
         </plugins>
         <!--这里应该是扫描mapper文件-->
->>>>>>> 81976e8eda16825a19e0527d42989194c8410328:asset-platform-process/abpm-process-center/pom.xml
         <resources>
             <resource>
                 <directory>src/main/java</directory>

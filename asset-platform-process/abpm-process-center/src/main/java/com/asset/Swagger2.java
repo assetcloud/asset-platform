@@ -38,11 +38,7 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 //页面标题
-<<<<<<< HEAD:abpm-process-center/src/main/java/com/asset/Swagger2.java
-                .title("Asset-Platform API 接口文档")
-=======
                 .title("接口说明")
->>>>>>> 81976e8eda16825a19e0527d42989194c8410328:asset-platform-process/abpm-process-center/src/main/java/com/asset/Swagger2.java
                 //创建人
                 .contact(new Contact("YBY", "", ""))
                 //版本号

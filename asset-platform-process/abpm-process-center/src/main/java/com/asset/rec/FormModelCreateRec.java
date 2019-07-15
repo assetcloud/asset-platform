@@ -1,6 +1,6 @@
 package com.asset.rec;
 
-import com.asset.javabean.FormJson;
+import com.asset.form.FormJson;
 import lombok.Data;
 
 /**
@@ -15,6 +15,4 @@ public class FormModelCreateRec {
     String icon_cls;
     String oapp_id;
     FormJson model_json;
-//    List<Object> model_json = null;
-//    String model_json;
 }

@@ -9,15 +9,6 @@
         <property name="databaseSchemaUpdate" value="true"></property>
     </bean>
 
-    <!--跑服务器-->
-    <!--<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">-->
-        <!--<property name="driverClassName" value="com.mysql.jdbc.Driver"/>-->
-        <!--<property name="url" value="jdbc:mysql://127.0.0.1:3306/asset-platform?useUnicode=true&amp;characterEncoding=UTF-8"/>-->
-        <!--<property name="username" value="root"/>-->
-        <!--<property name="password" value="123456"/>-->
-    <!--</bean>-->
-
-    <!--跑本地-->
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://127.0.0.1:3306/fbpm2.0-test?useUnicode=true&amp;characterEncoding=UTF-8"/>

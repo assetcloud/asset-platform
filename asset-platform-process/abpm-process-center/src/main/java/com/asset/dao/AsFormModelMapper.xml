@@ -201,7 +201,7 @@
         SELECT
            model_json
         FROM
-          asset_form_model
+          as_form_model
         WHERE
           id = #{formModelID,jdbcType = VARCHAR};
     </select>

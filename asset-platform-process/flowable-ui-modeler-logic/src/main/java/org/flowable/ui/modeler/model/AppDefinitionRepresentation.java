@@ -19,8 +19,7 @@ import org.flowable.ui.modeler.domain.AbstractModel;
 import org.flowable.ui.modeler.domain.AppDefinition;
 
 /**
- * Pojo representation of an app definition:
- * the metadata (name, description, etc) and the actual model ({@link AppDefinition} instance member).
+ * Pojo representation of an app definition: the metadata (name, description, etc) and the actual model ({@link AppDefinition} instance member).
  *
  */
 public class AppDefinitionRepresentation extends AbstractRepresentation {
@@ -31,9 +30,6 @@ public class AppDefinitionRepresentation extends AbstractRepresentation {
     private String description;
     private Integer version;
     private Date created;
-    // 这个definition来自于
-    // AppDefinition appDefinition = objectMapper.readValue(model.getModelEditorJson(), AppDefinition.class);
-    // 相当于这里保存的是流程模型的具体的editorJson内容
     private AppDefinition definition;
 
     public AppDefinitionRepresentation() {

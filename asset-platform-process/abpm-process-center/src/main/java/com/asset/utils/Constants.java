@@ -53,6 +53,14 @@ public interface Constants {
   public static final int DATABASE_SUCCESS = 1;      //表示对数据库插入数据或者修改数据成功
   public static final int DATABASE_FAILED = 0;      //失败
 
+  public static final int APP_PUBLISHED = 1;      //应用被发布出去
+  public static final int APP_NOT_PUBLISHED = 0;      //应用没有被发布
+
+  public static final int AUTHORITY_INVISIBLE = 1;      //表单项设置不可见权限
+  public static final int AUTHORITY_DISABLE = 2;      //可见+不可编辑
+  public static final int AUTHORITY_ENABLE = 3;      //可见+可编辑
+  public static final int AUTHORITY_REQUIRED = 4;      //必填
+
   //代表int的初始值
   int EMPTY = -1;
 }

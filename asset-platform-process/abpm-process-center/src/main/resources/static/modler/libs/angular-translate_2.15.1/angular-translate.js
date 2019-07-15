@@ -2492,7 +2492,7 @@ function $translate($STORAGE_KEY, $windowProvider, $translateSanitizationProvide
      * @methodOf pascalprecht.translate.$translate
      *
      * @description
-     * Returns a translation instantly from the internal state of loaded translation. All rules
+     * Returns a translation instantly from the internal state of loaded translation. All itemRuleBases
      * regarding the current language, the preferred language of even fallback languages will be
      * used except any promise handling. If a language was not found, an asynchronous loading
      * will be invoked in the background.

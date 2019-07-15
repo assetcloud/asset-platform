@@ -25,6 +25,7 @@ import java.util.ArrayList;
  */
 @RestController
 @Api(value = "App分组管理接口")
+@RequestMapping(value = "/api")
 public class GroupController {
 
     @Autowired

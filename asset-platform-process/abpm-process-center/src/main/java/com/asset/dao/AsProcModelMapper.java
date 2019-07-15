@@ -26,4 +26,6 @@ public interface AsProcModelMapper {
      * @param model
      */
     void editProcModel(AsProcModel model);
+
+    Integer getActType(String procModelId, String actId);
 }

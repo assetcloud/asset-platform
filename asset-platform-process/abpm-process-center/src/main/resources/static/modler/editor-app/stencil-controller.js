@@ -1311,7 +1311,7 @@ angular.module('flowableModeler')
 
           var isValid = false;
           if (stencil.type() === "node") {
-            //check containment rules
+            //check containment itemRuleBases
             var canContain = editorManager.getRules().canContain({ containingShape: candidate, containedStencil: stencil });
 
             var parentCandidate = aShapes.reverse().find(function (candidate) {
@@ -1352,7 +1352,7 @@ angular.module('flowableModeler')
                 if (targetStencil.canConnectTo || associationConnect) {
                   while (!canConnect && curCan && !(curCan instanceof ORYX.Core.Canvas)) {
                     candidate = curCan;
-                    //check connection rules
+                    //check connection itemRuleBases
                     canConnect = editorManager.getRules().canConnect({
                       sourceShape: currentSelectedShape,
                       edgeStencil: stencil,

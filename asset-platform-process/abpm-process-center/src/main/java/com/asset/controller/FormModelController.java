@@ -6,6 +6,7 @@ import com.asset.javabean.RespBean;
 import com.asset.rec.*;
 import com.asset.service.FormModelService;
 import com.asset.utils.Constants;
+import com.asset.utils.JsonUtils;
 import com.asset.utils.RecUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
@@ -122,45 +123,6 @@ public class FormModelController {
 
         return RespBean.ok("",procModelID);
     }
-
-// ----------------------------------------------表单项权限设置，暂时先不搞-----------------------------------
-    //    /**
-//     * 在流程设计页面，对表单项权限信息进行存储
-//     */
-//    @RequestMapping(value = "/form/authority/save", method = RequestMethod.POST)
-//    public String saveFormModelAuthority(@RequestBody FormAuthorityRec authorityRec) throws JsonProcessingException {
-//        int code = formModelService.saveFormModelAuthority(authorityRec);
-//
-//        return JsonUtils.getCodeJson(code);
-//    }
-//    /**
-//     * 保存表单模型权限信息
-//     * @param formModelAuthority
-//     * @return
-//     */
-//    @Override
-//    public int saveFormModelAuthority(FormAuthorityRec formModelAuthority) {
-//        FormAuthorityInfo authorityInfo = new FormAuthorityInfo(formModelAuthority);
-//        System.out.println(formModelAuthority.toString());
-//        return asFormModelMapper.saveFormModelAuthority(authorityInfo);
-//    }
-    //    /**
-//     * 在流程模型表中绑定对应的表单模型
-//     * @param bindInfo
-//     * @return
-//     */
-//    int bindFormModel(AsFormModel bindInfo);
-//  <!--&lt;!&ndash; 在流程模型表中绑定对应的表单模型-->
-//       <!--@param FormBindInfo bindInfo &ndash;&gt;-->
-//  <!--<update id="bindFormModel" parameterType="com.asset.entity.AsFormModel">-->
-//        <!--UPDATE-->
-//        <!--act_de_model-->
-//        <!--SET-->
-//        <!--form_id = #{formModelID,jdbcType = VARCHAR}-->
-//	    <!--WHERE-->
-//	    <!--id = #{procModelID,jdbcType = VARCHAR};-->
-
-//    <!--</update>-->
 
 
 }

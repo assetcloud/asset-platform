@@ -1,6 +1,6 @@
 package com.asset.rec;
 
-import com.asset.javabean.FormJson;
+import com.asset.form.FormJson;
 import lombok.Data;
 
 /**

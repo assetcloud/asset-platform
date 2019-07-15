@@ -106,7 +106,7 @@ public class AppDefinitionImportService {
                     existingProcessModelMap.put(processModel.getKey(), processModel);
                 }
             }
-
+            
             if (appDefinition.getDefinition() != null && CollectionUtils.isNotEmpty(appDefinition.getDefinition().getCmmnModels())) {
                 for (AppModelDefinition modelDef : appDefinition.getDefinition().getCmmnModels()) {
                     Model caseModel = modelService.getModel(modelDef.getId());
@@ -132,7 +132,7 @@ public class AppDefinitionImportService {
         }
     }
 
-    protected AppDefinitionRepresentation importAppDefinition(HttpServletRequest request, InputStream is, String fileName, Model existingAppModel,
+    protected AppDefinitionRepresentation importAppDefinition(HttpServletRequest request, InputStream is, String fileName, Model existingAppModel, 
                     Map<String, Model> existingProcessModelMap, Map<String, Model> existingCaseModelMap,
                     Map<String, Model> existingFormModelMap, Map<String, Model> existingDecisionTableModelMap) {
 
@@ -165,28 +165,26 @@ public class AppDefinitionImportService {
         }
     }
 
-    public AppDefinitionUpdateResultRepresentation publishAppDefinition(String modelId,
-                                                                        AppDefinitionPublishRepresentation publishModel) {
+    public AppDefinitionUpdateResultRepresentation publishAppDefinition(String modelId, AppDefinitionPublishRepresentation publishModel) {
 
         User user = SecurityUtils.getCurrentUserObject();
         Model appModel = modelService.getModel(modelId);
 
         // Create pojo representation of the model and the json
-        // 现在这里的appDefinitionRepresentation的具体内容就是把流程模型的内容复制了一份，同时保存了其editor_json的内容
         AppDefinitionRepresentation appDefinitionRepresentation = createAppDefinitionRepresentation(appModel);
         AppDefinitionUpdateResultRepresentation result = new AppDefinitionUpdateResultRepresentation();
 
-        // Actual publication，参数：发布时的评论、流程模型、当前用户
+        // Actual publication
         appDefinitionPublishService.publishAppDefinition(publishModel.getComment(), appModel, user);
 
         result.setAppDefinition(appDefinitionRepresentation);
         return result;
+
     }
 
     protected AppDefinitionRepresentation createAppDefinitionRepresentation(AbstractModel model) {
         AppDefinition appDefinition = null;
         try {
-            //这边创建的就是流程模型对象
             appDefinition = objectMapper.readValue(model.getModelEditorJson(), AppDefinition.class);
         } catch (Exception e) {
             LOGGER.error("Error deserializing app {}", model.getId(), e);
@@ -225,7 +223,7 @@ public class AppDefinitionImportService {
 
                         if (zipEntryName.startsWith("bpmn-models/")) {
                             bpmnModelMap.put(modelFileName, json);
-
+                            
                         } else if (zipEntryName.startsWith("cmmn-models/")) {
                             cmmnModelMap.put(modelFileName, json);
 
@@ -253,7 +251,7 @@ public class AppDefinitionImportService {
                     zipInputStream.closeEntry();
                 } catch (Exception e) {
                 }
-
+                
                 try {
                     zipInputStream.close();
                 } catch (Exception e) {
@@ -417,7 +415,7 @@ public class AppDefinitionImportService {
 
         return bpmnModelIdAndModelMap;
     }
-
+    
     protected Map<String, Model> importCmmnModels(Map<String, String> cmmnModelMap, Map<String, Model> formKeyAndModelMap,
                     Map<String, Model> decisionTableKeyAndModelMap, Map<String, byte[]> thumbnailMap, Map<String, Model> existingCaseModelMap) {
 
@@ -489,7 +487,7 @@ public class AppDefinitionImportService {
         return cmmnModelIdAndModelMap;
     }
 
-    protected AppDefinitionRepresentation importAppDefinitionModel(Model appDefinitionModel, Model existingAppModel,
+    protected AppDefinitionRepresentation importAppDefinitionModel(Model appDefinitionModel, Model existingAppModel, 
                     Map<String, Model> bpmnModelIdAndModelMap, Map<String, Model> cmmnModelIdAndModelMap) {
 
         AppDefinition appDefinition = null;
@@ -513,7 +511,7 @@ public class AppDefinitionImportService {
                 }
             }
         }
-
+        
         if (appDefinition.getCmmnModels() != null) {
             for (AppModelDefinition modelDef : appDefinition.getCmmnModels()) {
                 if (cmmnModelIdAndModelMap.containsKey(modelDef.getId())) {

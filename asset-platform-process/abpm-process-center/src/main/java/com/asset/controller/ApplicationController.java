@@ -5,6 +5,7 @@ import com.asset.entity.Application;
 import com.asset.entity.AsFormModel;
 import com.asset.javabean.RespBean;
 import com.asset.service.ApplicationService;
+import com.asset.utils.Constants;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -19,13 +20,14 @@ import java.util.List;
  * 应用管理控制器
  */
 @RestController
-@RequestMapping("/application")
+    @RequestMapping("/application")
 public class ApplicationController {
 
     final private static Logger LOGGER = LoggerFactory.getLogger(ApplicationController.class);
 
     @Autowired
     private ApplicationService applicationService;
+
 
 
 
@@ -104,12 +106,46 @@ public class ApplicationController {
 
 
     /**
+     * 这里接口与/form/models/get重复了，这里这个就不用了
      * 根据传入的AppID获取该应用下所有表单模型
      */
-    @RequestMapping(value = "/app/getModels", method = RequestMethod.GET)
+    @RequestMapping(value = "/getModels", method = RequestMethod.GET)
     public RespBean getFormModels(@RequestParam(value = "app_id") String appID) throws JsonProcessingException {
         ArrayList<AsFormModel> asFormModels = (ArrayList<AsFormModel>) applicationService.getFormModels(appID);
 
         return RespBean.ok("",asFormModels);
     }
+
+    /**
+     * 发布应用
+     * @param rec
+     * @return
+     */
+    @RequestMapping(value = "/publish",method = RequestMethod.POST)
+    public RespBean publishApp(@RequestBody Application rec)
+    {
+        //这里本质就是在数据库中修改一下是否publish这一项
+        rec.setIsPublished(Constants.APP_PUBLISHED);
+        int i = applicationService.updateApplication(rec);
+        if(i == Constants.DATABASE_SUCCESS)
+            return RespBean.ok("");
+        else
+            return RespBean.error("发布失败！");
+    }
+
+    /**
+     * 从数据库中找到已发布的应用模板列表
+     * @return
+     */
+    @RequestMapping(value = "/model/show",method = RequestMethod.GET)
+    public RespBean getPublishedApp(){
+        List<Application> list = applicationService.getPublishedApp();
+        if(list == null)
+        {
+            return RespBean.ok("没有发布的应用模板！");
+        }
+        return RespBean.ok("",list);
+    }
+
+
 }

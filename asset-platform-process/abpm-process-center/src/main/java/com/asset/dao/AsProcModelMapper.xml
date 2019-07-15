@@ -65,6 +65,14 @@
     #{asJson,jdbcType=VARCHAR})
   </insert>
 
+  <select id="getActType"  resultType="java.lang.Integer">
+    SELECT act_type
+    FROM as_proc_model_change
+    WHERE
+    proc_model_id = #{param1,jdbcType=VARCHAR} AND
+    act_id = #{param2,jdbcType=VARCHAR}
+  </select>
+
   <!--&lt;!&ndash;根据传入的流程模型ID，返回对应的as_json信息，自动被转成一个流程模型中的ActType列表-->
      <!--* @param String procModelId&ndash;&gt;-->
   <!--<select id="getActTypes" parameterType="java.lang.String" resultType="BaseResultMap">-->

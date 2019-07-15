@@ -54,11 +54,11 @@
 		function beforeDrop(treeId, treeNodes, targetNode, moveType) {
 			return targetNode ? targetNode.drop !== false : true;
 		}
-		
+
 		$(document).ready(function(){
 			$.fn.zTree.init($("#treeDemo"), setting, zNodes);
 			$.fn.zTree.init($("#treeDemo2"), setting);
-			
+
 		});
 		//-->
 	</SCRIPT>
@@ -72,7 +72,7 @@
 		<ul class="info">
 			<li class="title"><h2>1, Explanation of setting</h2>
 				<ul class="list">
-				<li>zTree enables drag and drop nodes between multiple trees, only need to create two draggable tree can be. And you can use the callback function and zTree method achieve a more complex operating rules, here is only the basic demo.</li>
+				<li>zTree enables drag and drop nodes between multiple trees, only need to create two draggable tree can be. And you can use the callback function and zTree method achieve a more complex operating itemRuleBases, here is only the basic demo.</li>
 				<li class="highlight_red">On the 'setting' configuration information please refer to drag and drop, edit, etc. demo's instructions</li>
 				</ul>
 			</li>

@@ -18,4 +18,6 @@ public interface AsProcInstMapper {
 
     int updateByPrimaryKey(AsProcInst record);
 
+    String getProcModelId(String procInstId);
+
 }

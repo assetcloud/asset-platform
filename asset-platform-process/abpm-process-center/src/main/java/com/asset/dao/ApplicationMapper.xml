@@ -138,4 +138,12 @@
       remove_time = #{removeTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+  <select id="getPublishedApp" resultMap="BaseResultMap">
+    SELECT
+    id,application_name
+    FROM
+    as_application
+    WHERE
+    is_published = 1;
+  </select>
 </mapper>

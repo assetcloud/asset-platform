@@ -51,7 +51,7 @@ import org.springframework.util.Assert;
 
 /**
  * Can't merge this with {@link AppDefinitionService}, as it doesn't have visibility of domain models needed to do the publication.
- *
+ * 
  * @author jbarrez
  */
 @Service
@@ -76,7 +76,6 @@ public class AppDefinitionPublishService extends BaseAppDefinitionService {
         // Create new version of the app model
         modelService.createNewModelVersion(appDefinitionModel, comment, user);
 
-        //这里发布的是APP的模型！
         String deployableZipName = appDefinitionModel.getKey() + ".zip";
 
         AppDefinition appDefinition = null;
@@ -138,7 +137,7 @@ public class AppDefinitionPublishService extends BaseAppDefinitionService {
                         }
                     })
             );
-
+            
         } catch (Exception e) {
             LOGGER.error("Could not configure SSL for http client", e);
             throw new InternalServerErrorException("Could not configure SSL for http client", e);
@@ -154,7 +153,7 @@ public class AppDefinitionPublishService extends BaseAppDefinitionService {
                 LOGGER.error("Invalid deploy result code: {}", response.getStatusLine());
                 throw new InternalServerErrorException("Invalid deploy result code: " + response.getStatusLine());
             }
-
+            
         } catch (IOException ioe) {
             LOGGER.error("Error calling deploy endpoint", ioe);
             throw new InternalServerErrorException("Error calling deploy endpoint: " + ioe.getMessage());
