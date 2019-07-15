@@ -3551,7 +3551,7 @@ function annotate(fn, strictDi, name) {
  * Invoke the method and supply the method arguments from the `$injector`.
  *
  * @param {!Function} fn The function to invoke. Function parameters are injected according to the
- *   {@link guide/di $inject Annotation} rules.
+ *   {@link guide/di $inject Annotation} itemRuleBases.
  * @param {Object=} self The `this` for the invoked method.
  * @param {Object=} locals Optional object. If preset then any argument names are read from this
  *                         object first, before the `$injector` is consulted.
@@ -10425,7 +10425,7 @@ function $IntervalProvider() {
  * @name $locale
  *
  * @description
- * $locale service provides localization rules for various Angular components. As of right now the
+ * $locale service provides localization itemRuleBases for various Angular components. As of right now the
  * only public api is:
  *
  * * `id` – `{string}` – locale id formatted as `languageId-countryId` (e.g. `en-us`)
@@ -10829,7 +10829,7 @@ var locationPrototype = {
    * @description
    * This method is getter only.
    *
-   * Return full url representation with all segments encoded according to rules specified in
+   * Return full url representation with all segments encoded according to itemRuleBases specified in
    * [RFC 3986](http://www.ietf.org/rfc/rfc3986.txt).
    *
    *
@@ -14391,7 +14391,7 @@ function $RootScopeProvider() {
        *
        * @param {(string|function())=} expression An angular expression to be executed.
        *
-       *    - `string`: execute using the rules as defined in  {@link guide/expression expression}.
+       *    - `string`: execute using the itemRuleBases as defined in  {@link guide/expression expression}.
        *    - `function(scope)`: execute the function with the current `scope` parameter.
        *
        * @param {(object)=} locals Local variables object, useful for overriding values in scope.
@@ -14426,7 +14426,7 @@ function $RootScopeProvider() {
        *
        * @param {(string|function())=} expression An angular expression to be executed.
        *
-       *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
+       *    - `string`: execute using the itemRuleBases as defined in {@link guide/expression expression}.
        *    - `function(scope)`: execute the function with the current `scope` parameter.
        *
        * @param {(object)=} locals Local variables object, useful for overriding values in scope.
@@ -14489,7 +14489,7 @@ function $RootScopeProvider() {
        *
        * @param {(string|function())=} exp An angular expression to be executed.
        *
-       *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
+       *    - `string`: execute using the itemRuleBases as defined in {@link guide/expression expression}.
        *    - `function(scope)`: execute the function with current `scope` parameter.
        *
        * @returns {*} The result of evaluating the expression.
@@ -14525,7 +14525,7 @@ function $RootScopeProvider() {
        *
        * @param {(string|function())=} exp An angular expression to be executed.
        *
-       *    - `string`: execute using the rules as defined in {@link guide/expression expression}.
+       *    - `string`: execute using the itemRuleBases as defined in {@link guide/expression expression}.
        *    - `function(scope)`: execute the function with current `scope` parameter.
        */
       $applyAsync: function(expr) {
@@ -23938,7 +23938,7 @@ var ngNonBindableDirective = ngDirective({ terminal: true, priority: 1000 });
           Person 2:<input type="text" ng-model="person2" value="Misko" /><br/>
           Number of People:<input type="text" ng-model="personCount" value="1" /><br/>
 
-          <!--- Example with simple pluralization rules for en locale --->
+          itemRuleBases
           Without Offset:
           <ng-pluralize count="personCount"
                         when="{'0': 'Nobody is viewing.',
@@ -24043,7 +24043,7 @@ var ngPluralizeDirective = ['$locale', '$interpolate', function($locale, $interp
         if (!countIsNaN && !(count in whens)) {
           // If an explicit number rule such as 1, 2, 3... is defined, just use it.
           // Otherwise, check it against pluralization rules in $locale service.
-          count = $locale.pluralCat(count - offset);
+          count = $localeitemRuleBasesalCat(count - offset);
         }
 
         // If both `count` and `lastCount` are NaN, we don't need to re-register a watch.

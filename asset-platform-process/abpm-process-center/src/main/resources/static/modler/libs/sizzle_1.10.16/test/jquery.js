@@ -6682,7 +6682,7 @@ function showHide( elements, show ) {
 		display = elem.style.display;
 		if ( show ) {
 			// Reset the inline display of this element to learn if it is
-			// being hidden by cascaded rules or not
+			// being hidden by cascaded itemRuleBases or not
 			if ( !values[ index ] && display === "none" ) {
 				elem.style.display = "";
 			}

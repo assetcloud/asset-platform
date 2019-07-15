@@ -3,7 +3,7 @@ package com.asset.controller;
 import com.asset.base.BaseController;
 import com.asset.entity.AsProcInst;
 import com.asset.entity.User;
-import com.asset.javabean.FormJson;
+import com.asset.form.FormJson;
 import com.asset.javabean.RespBean;
 import com.asset.rec.RegisterRec;
 import com.asset.service.FormInstService;
@@ -14,7 +14,6 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -122,7 +121,10 @@ public class UserController extends BaseController {
 
 
         formInstService.completeCurTask(taskIDs[0]);
-        formInstService.saveUnCompleteTask(new FormJson(),procInst.getProcessInstanceId(),registerFormModelID,rec.getResiter_value());
+        formInstService.saveUnCompleteTask(
+                procInst.getProcessInstanceId(),
+                registerFormModelID,
+                rec.getResiter_value());
 
         return RespBean.ok("");
     }

@@ -644,7 +644,7 @@ var USE_ARESS_WORKAROUNDS =		true;
 /*
  * Data management constants. Do not change these, as they are used
  * both internally and externally to communicate on events and to identify
- * command object actions in triple production and embedding rules.
+ * command object actions in triple production and embedding itemRuleBases.
  */
 
 // Resource constants
@@ -7204,7 +7204,7 @@ if(!ORYX.Core.StencilSet) {ORYX.Core.StencilSet = {};}
 /**
  * Class Rules uses Prototpye 1.5.0 uses Inheritance
  * 
- * This class implements the API to check the stencil sets' rules.
+ * This class implements the API to check the stencil sets' itemRuleBases.
  */
 ORYX.Core.StencilSet.Rules = {
 
@@ -7234,7 +7234,7 @@ ORYX.Core.StencilSet.Rules = {
 	},
 	
 	/**
-	 * Call this method to initialize the rules for a stencil set and all of its
+	 * Call this method to initialize the itemRuleBases for a stencil set and all of its
 	 * active extensions.
 	 * 
 	 * @param {Object}
@@ -7246,7 +7246,7 @@ ORYX.Core.StencilSet.Rules = {
 							return (ss.namespace() == stencilSet.namespace());
 						});
 		if (existingSS) {
-			// reinitialize all rules
+			// reinitialize all itemRuleBases
 			var stencilsets = this._stencilSets.clone();
 			stencilsets = stencilsets.without(existingSS);
 			stencilsets.push(stencilSet);
@@ -7298,7 +7298,7 @@ ORYX.Core.StencilSet.Rules = {
 			
 			this._stencils = this._stencils.concat(stencilSet.stencils());
 			
-			// init connection rules
+			// init connection itemRuleBases
 			var cr = this._connectionRules;
 			if (jsonRules.get('connectionRules')) {
 				jsonRules.get('connectionRules').each((function(rules){
@@ -7348,7 +7348,7 @@ ORYX.Core.StencilSet.Rules = {
 				}).bind(this));
 			}
 			
-			// init cardinality rules
+			// init cardinality itemRuleBases
 			var cardr = this._cardinalityRules;
 			if (jsonRules.get('cardinalityRules')) {
 				jsonRules.get('cardinalityRules').each((function(rules){
@@ -7394,7 +7394,7 @@ ORYX.Core.StencilSet.Rules = {
 				}).bind(this));
 			}
 			
-			// init containment rules
+			// init containment itemRuleBases
 			var conr = this._containmentRules;
 			if (jsonRules.get('containmentRules')) {
 				jsonRules.get('containmentRules').each((function(rules){
@@ -7420,7 +7420,7 @@ ORYX.Core.StencilSet.Rules = {
 				}).bind(this));
 			}
 			
-			// init morphing rules
+			// init morphing itemRuleBases
 			var morphr = this._morphingRules;
 			if (jsonRules.get('morphingRules')) {
 				jsonRules.get('morphingRules').each((function(rules){
@@ -7446,7 +7446,7 @@ ORYX.Core.StencilSet.Rules = {
 				}).bind(this));
 			}
 			
-			// init layouting rules
+			// init layouting itemRuleBases
 			var layoutRules = this._layoutRules;
 			if (jsonRules.get('layoutRules')) {
 				
@@ -7613,7 +7613,7 @@ ORYX.Core.StencilSet.Rules = {
 		return morphs;
 	},
 	
-	/** Begin connection rules' methods */
+	/** Begin connection itemRuleBases' methods */
 	
 	/**
 	 * 
@@ -7959,13 +7959,13 @@ ORYX.Core.StencilSet.Rules = {
 			args.edgeStencil = args.edgeShape.getStencil();
 		}
 
-		// 1. check connection rules
+		// 1. check connection itemRuleBases
 		var resultCR;
 		
-		// get all connection rules for this edge
+		// get all connection itemRuleBases for this edge
 		var edgeRules = this._getConnectionRulesOfEdgeStencil(args.edgeStencil);
 
-		// check connection rules, if the source can be connected to the target
+		// check connection itemRuleBases, if the source can be connected to the target
 		// with the specified edge.
 		if(edgeRules.keys().length === 0) {
 			resultCR = false;
@@ -7996,10 +7996,10 @@ ORYX.Core.StencilSet.Rules = {
 		return resultCR;
 	},
 
-	/** End connection rules' methods */
+	/** End connection itemRuleBases' methods */
 
 
-	/** Begin containment rules' methods */
+	/** Begin containment itemRuleBases' methods */
 
 	isContainer: function(shape) {
 		return this._containerStencils.member(shape.getStencil().id());
@@ -8100,7 +8100,7 @@ ORYX.Core.StencilSet.Rules = {
 		
 		var result;
 		
-		// check containment rules
+		// check containment itemRuleBases
 		result = args.containingStencil.roles().any((function(role) {
 			var roles = this._containmentRules.get(role);
 			if(roles) {
@@ -8115,10 +8115,10 @@ ORYX.Core.StencilSet.Rules = {
 		return result;
 	},
 	
-	/** End containment rules' methods */
+	/** End containment itemRuleBases' methods */
 	
 	
-	/** Begin morphing rules' methods */
+	/** Begin morphing itemRuleBases' methods */
 	
 	/**
 	 * 
@@ -8171,7 +8171,7 @@ ORYX.Core.StencilSet.Rules = {
 	},
 	
 	/**
-	 * Returns true if there are morphing rules defines
+	 * Returns true if there are morphing itemRuleBases defines
 	 * @return {boolean} 
 	 */
 	containsMorphingRules: function(){
@@ -8252,13 +8252,13 @@ ORYX.Core.StencilSet.Rules = {
 		})
 	},
 	
-	/** End morphing rules' methods */
+	/** End morphing itemRuleBases' methods */
 
 
-	/** Begin layouting rules' methods */
+	/** Begin layouting itemRuleBases' methods */
 	
 	/**
-	 * Returns a set on "in" and "out" layouting rules for a given shape
+	 * Returns a set on "in" and "out" layouting itemRuleBases for a given shape
 	 * @param {Object} shape
 	 * @param {Object} edgeShape (Optional)
 	 * @return {Object} "in" and "out" with a default value of {"t":1, "r":1, "b":1, "r":1} if not specified in the json
@@ -8308,7 +8308,7 @@ ORYX.Core.StencilSet.Rules = {
 		return layout;
 	},
 	
-	/** End layouting rules' methods */
+	/** End layouting itemRuleBases' methods */
 	
 	/** Helper methods */
 
@@ -8471,7 +8471,7 @@ ORYX.Core.StencilSet.Rules = {
 	 * @param {ORYX.Core.StencilSet.Stencil}
 	 *            edgeStencil
 	 * 
-	 * @return {Hash} Returns a hash map of all connection rules for
+	 * @return {Hash} Returns a hash map of all connection itemRuleBases for
 	 *         edgeStencil.
 	 */
 	_getConnectionRulesOfEdgeStencil: function(edgeStencil) {
@@ -8972,7 +8972,7 @@ ORYX.Core.StencilSet._stencilSetsByUrl = new Hash();
 //storage for stencil set namespaces by editor instances
 ORYX.Core.StencilSet._StencilSetNSByEditorInstance = new Hash();
 
-//storage for rules by editor instances
+//storage for itemRuleBases by editor instances
 ORYX.Core.StencilSet._rulesByEditorInstance = new Hash();
 
 /**
@@ -9042,7 +9042,7 @@ ORYX.Core.StencilSet.stencil = function(id) {
  * 
  * @param {String} editorId
  * 
- * @return {ORYX.Core.StencilSet.Rules} Returns the rules object for the editor
+ * @return {ORYX.Core.StencilSet.Rules} Returns the itemRuleBases object for the editor
  * 									specified by its editor id.
  */
 ORYX.Core.StencilSet.rules = function(editorId) {
@@ -9078,7 +9078,7 @@ ORYX.Core.StencilSet.loadStencilSet = function(url, stencilSet, editorId) {
 		ORYX.Core.StencilSet._StencilSetNSByEditorInstance.set(editorId, [namespace]);
 	}
 
-	//store the rules for the editor instance
+	//store the itemRuleBases for the editor instance
 	if(ORYX.Core.StencilSet._rulesByEditorInstance.get(editorId)) {
 		ORYX.Core.StencilSet._rulesByEditorInstance.get(editorId).initializeRules(stencilSet);
 	} else {
@@ -20727,7 +20727,7 @@ ORYX.Plugins.DragDropResize = ORYX.Plugins.AbstractPlugin.extend({
 			
 		} else {
 		
-			/* Check the containment and connection rules */
+			/* Check the containment and connection itemRuleBases */
 			var options = {
 				event : event,
 				underlyingNodes : underlyingNodes,
@@ -20801,7 +20801,7 @@ ORYX.Plugins.DragDropResize = ORYX.Plugins.AbstractPlugin.extend({
 //	},
 	
 	/**
-	 *  Checks the containment and connection rules for the selected shapes.
+	 *  Checks the containment and connection itemRuleBases for the selected shapes.
 	 */
 	checkRules : function(options) {
 		var event = options.event;
@@ -24025,7 +24025,7 @@ new function(){
 			
 					
 			var weight = 0;
-			// Get rules for from "out" and to "in"
+			// Get itemRuleBases for from "out" and to "in"
 			var dr1 = this.facade.getRules().getLayoutingRules(from, edge)["out"];
 			var dr2 = this.facade.getRules().getLayoutingRules(to, edge)["in"];
 

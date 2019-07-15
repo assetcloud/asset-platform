@@ -3,11 +3,11 @@ package com.asset.entity;
 import lombok.Data;
 
 @Data
-public class TaskInst {
+public class AsTask {
     String taskId;
     String actId;
     String procInstId;
 
-    public TaskInst() {
+    public AsTask() {
     }
 }

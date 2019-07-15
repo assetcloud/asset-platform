@@ -1,9 +1,7 @@
 package com.asset.rec;
 
-import com.asset.javabean.FormJson;
+import com.asset.form.FormJson;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * 对表单模型进行修改

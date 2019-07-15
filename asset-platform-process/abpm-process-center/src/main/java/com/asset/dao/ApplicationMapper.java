@@ -26,4 +26,6 @@ public interface ApplicationMapper {
     int updateByPrimaryKey(Application record);
 
     Application findAppByName(@Param("applicationName") String applicationName);
+
+    List<Application> getPublishedApp();
 }

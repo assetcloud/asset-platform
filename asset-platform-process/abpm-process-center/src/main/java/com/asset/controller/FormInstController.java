@@ -1,25 +1,21 @@
 package com.asset.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.asset.converter.FormConverter;
 import com.asset.dao.*;
 import com.asset.entity.*;
-import com.asset.javabean.ActType;
+import com.asset.form.FormItem;
+import com.asset.form.FormJsonEntity;
 import com.asset.javabean.AsFormInstPlus;
-import com.asset.javabean.FormJson;
+import com.asset.form.FormJson;
 import com.asset.javabean.RespBean;
-import com.asset.rec.FormInstRecApprove;
-import com.asset.rec.FormInstRecCreate;
-import com.asset.rec.FormInstRecHandle;
-import com.asset.rec.FormInstRecReadle;
+import com.asset.rec.*;
 import com.asset.service.FormInstService;
 import com.asset.utils.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import javafx.concurrent.Task;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.engine.runtime.ProcessInstanceQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +39,6 @@ public class FormInstController {
 
     @Autowired
     FormInstService formInstService;
-
     @Autowired
     FlowableMapper flowableMapper;
     @Autowired
@@ -54,6 +49,41 @@ public class FormInstController {
     AsFormInstMapper asFormInstMapper;
     @Autowired
     AsFormModelMapper asFormModelMapper;
+
+
+    /**
+     * 应用下选中一个表单之后，右侧再点击 新增 按钮，此时表单内容需要向服务器请求（即第一个节点所需要展示的表单内容）
+     * @return
+     */
+    @RequestMapping(value = "/form/inst/showNew",method = RequestMethod.GET)
+    public RespBean showNew(@RequestBody FormModelShowRec rec){
+        //获取对应流程模型ID以及流程模型中第一个节点ID
+        String procModelId = formInstService.getProcModelIdByForm(rec.getForm_model_id());
+        String firstAct = "task1";
+        //获取对应表单json
+        String modeljson = formInstService.getFormById(rec.getForm_model_id());
+        FormJsonEntity entity = FormConverter.jsonToEntity(modeljson);
+
+        List<FormItem> items = entity.getList();
+        for(int j=0;j<items.size();j++)
+        {
+            //获取当前Authority
+            Integer curAuthority = formInstService.getCurAuthority(procModelId,firstAct,items.get(j).getKey());
+            //添加权限信息
+            formInstService.handleAuthority(items,j,curAuthority);
+        }
+
+
+        String formJsonNew = FormConverter.entityToJson(entity);
+
+        HashMap<String,String> map = new HashMap<>();
+        map.put("form_json",formJsonNew);
+
+        JSONObject object = JSON.parseObject(JSON.toJSONString(map));
+
+        return RespBean.ok("",object);
+    }
+
 
     /**
      * 用户登录应用界面，填写表单，发起一个新的表单流程
@@ -97,10 +127,14 @@ public class FormInstController {
                 rec.getEditor());
         procInstMapper.insert(asProcInst);
 
-
         //至此，相当于把第一个任务节点要填的表单内容存进数据库了，而且绑定的流程实例也存进了数据库，当前流程应当流转到下个任务节点上了
         formInstService.completeCurTask(taskIDs[0]);
-        formInstService.saveUnCompleteTask(rec.getForm_inst_json(),procInst.getProcessInstanceId(),rec.getForm_model_id(),rec.getForm_inst_value());
+
+        //在数据库创建下一个还没执行的任务节点的条目
+        formInstService.saveUnCompleteTask(
+                procInst.getProcessInstanceId(),
+                rec.getForm_model_id(),
+                rec.getForm_inst_value());
 
         return RespBean.ok("");
     }
@@ -116,68 +150,51 @@ public class FormInstController {
     public RespBean getFormInsts(@RequestParam(value = "user_id") String userID,
                               @RequestParam(value = "task_type") Integer taskType)
     {
-        //map2是TaskId和ActType的Map
-        HashMap<String,Integer> map2 =new HashMap<String, Integer>();
+        //map是TaskId和ActType的Map
+        HashMap<String,Integer> map =new HashMap<String, Integer>();
 
         //1、先获取流转到该用户对应的procInstId\taskID\actId的集合
-        List<TaskInst> taskInfos = flowableMapper.getTaskInfos(userID);
-        //2、对上面集合进行遍历，与List<ActType>进行比对，确定节点类型，与输入的taskType比对，是不是要显示的节点
-        for(int i =0;i<taskInfos.size();i++)
+        List<AsTask> tasks = formInstService.getCurTasks(userID);
+        if (tasks.size()==0)
+            return RespBean.ok("表单实例为空");
+
+        //2、对上面集合进行遍历，从数据库中取出ActType进行比对，确定节点类型，与输入的taskType比对，看是不是要显示的节点
+        for(int i =0;i<tasks.size();i++)
         {
-            TaskInst curTaskInst = taskInfos.get(i);
-            //2.1 获取流程实例更多的信息，这里我们主要要的是proc_model_id
-            AsProcInst asProcInst = procInstMapper.selectByPrimaryKey(curTaskInst.getProcInstId());
-            if (asProcInst==null)
-                return RespBean.error("有流程实例没有与流程中间层绑定，请调用/completeAll，完成所有流程实例后，再重新尝试执行！");
-            String procModelId = asProcInst.getProcModelId();
-            //2.2 根据流程模型获取对应的ActType的list
-            AsProcModel asProcModel = procModelMapper.selectByPrimaryKey(procModelId);
-            String asJson = asProcModel.getAsJson();
-            JSONArray array = JSONArray.parseArray(asJson);
+            AsTask curAsTask = tasks.get(i);
+            //2.1 由流程实例ID获取流程模型ID
+            String procModelId = formInstService.getProcModelIdByProc(curAsTask.getProcInstId());
+            //这里说明我们在as_proc_inst表中找不到这个在ac_hi_actinst表中存在的流程实例，说明数据库中存在脏的流程实例数据
+            if (procModelId.isEmpty()){
+                logger.error("在as_proc_inst表中找不到这个在ac_hi_actinst表中存在的流程实例!没有如下ProcInstID:{}", curAsTask.getProcInstId());
+                return RespBean.error("有运行中流程实例没有与流程中间层绑定，请调用/completeAll，完成所有流程实例后，再重新尝试执行！");
+            }
 
-            List<ActType> actTypes = JSONObject.parseArray(array.toJSONString(), ActType.class);
-
-            //2.3 构造hashmap，方便查找
-            HashMap<String,Integer> map = new HashMap<String, Integer>();
-            int curActType;
-
-            for(int j= 0;j<actTypes.size();j++)
+            //2.2 根据流程模型ID、节点ID 获取对应的ActType，然后决定要不要把该taskInfos中的这一项给去掉
+            Integer actType = formInstService.getActType(procModelId, curAsTask.getActId());
+            if (actType == null)
             {
-                map.put(actTypes.get(j).getAct_id(),
-                        actTypes.get(j).getAct_type());
-            }
-
-            //这里注意一个问题，就是如果你在流程模型创建阶段输入的ACT_TYPE有错误，那么这里map就获取不到这个curActType，这里会抛出异常，
-            //这里应该对这个异常进行处理！！
-            //查看当前procInstIDs.get(i)的TASK_ID是什么类型的节点
-            try {
-                curActType = map.get(curTaskInst.getActId());
-            }
-            catch (NullPointerException e){
-                logger.error("流程中间层生成的流程模型出错！没有如下ActID:{}",curTaskInst.getActId());
+                logger.error("流程中间层生成的流程模型出错！没有如下ActID:{}", curAsTask.getActId());
                 return RespBean.error("流程中间层生成的流程模型出错！");
             }
-
-            if(!formInstService.match(curActType,taskType))
+            //判断是不是符合当前页面要找的节点类型
+            if(!formInstService.match(actType,taskType))
             {
-                taskInfos.remove(i);
+                tasks.remove(i);
                 i--;
             }
             else {
-                map2.put(curTaskInst.getTaskId(),curActType);
+                map.put(curAsTask.getTaskId(),actType);
             }
-
         }
+
         //3、把所有流程实例的taskID都取出来，然后获取对应的表单实例列表
-        String[] procTaskIds = new String[taskInfos.size()];
+        String[] procTaskIds = new String[tasks.size()];
         int k=0;
-        for(int i= 0;i<taskInfos.size();i++)
+        for(int i= 0;i<tasks.size();i++)
         {
-            procTaskIds[k++] = taskInfos.get(i).getTaskId();
+            procTaskIds[k++] = tasks.get(i).getTaskId();
         }
-        if (taskInfos.size()==0)
-            return RespBean.ok("表单实例为空");
-
         //这里得到的procTaskIds是当前该用户执行到的任务节点TaskID
         ArrayList<AsFormInst> asFormInsts = (ArrayList<AsFormInst>) asFormInstMapper.getFormInsts(procTaskIds);
         ArrayList<AsFormInstPlus> asFormInstPluses = new ArrayList<>();
@@ -187,12 +204,33 @@ public class FormInstController {
             for(int i = 0;i<asFormInsts.size();i++)
             {
                 AsFormInstPlus asFormInstPlus = new AsFormInstPlus(asFormInsts.get(i));
-                asFormInstPlus.setNodeType(map2.get(asFormInstPlus.getTaskId()));
+                asFormInstPlus.setNodeType(map.get(asFormInstPlus.getTaskId()));
+
+                //2.3、如果是经办节点，还需要对表单操作权限进行设置
+                if(asFormInstPlus.getNodeType() == Constants.AS_NODE_APPLY)
+                {
+                    //先转换
+                    String formJson = asFormInstPlus.getFormInstJson();
+                    FormJsonEntity entity = FormConverter.jsonToEntity(formJson);
+                    List<FormItem> items = entity.getList();
+                    for(int j=0;j<items.size();j++)
+                    {
+                        String procModelId = formInstService.getProcModelIdByProc(asFormInstPlus.getProcInstId());
+                        String actId = formInstService.getActId(asFormInstPlus.getTaskId());
+                        //获取当前Authority
+                        Integer curAuthority = formInstService.getCurAuthority(procModelId,actId,items.get(j).getKey());
+                        //添加权限信息
+                        formInstService.handleAuthority(items,j,curAuthority);
+                    }
+
+                    String formJsonNew = FormConverter.entityToJson(entity);
+                    asFormInstPlus.setFormInstJson(formJsonNew);
+                }
+                //啥都搞完了，添加进最后名单
                 asFormInstPluses.add(asFormInstPlus);
             }
             return RespBean.ok("",asFormInstPluses);
         }
-
         return RespBean.ok("",asFormInsts);
     }
 
@@ -214,7 +252,7 @@ public class FormInstController {
         {
             formInstService.updateFormInst(rec);
             formInstService.completeCurTask(rec.getTask_id());
-            formInstService.saveUnCompleteTask(new FormJson(),
+            formInstService.saveUnCompleteTask(
                     procInstID,
                     rec.getForm_model_id(),
                     rec.getForm_inst_value());
@@ -230,13 +268,9 @@ public class FormInstController {
             //调用Flowable的方法进行回滚
             formInstService.rollback(procInstID,rollbackActID);
         }
-
-
-
-
-
         return RespBean.ok("");
     }
+
 
     /**
      * 用户登录系统，对经办节点进行处理，填写表单，然后提交
@@ -249,7 +283,10 @@ public class FormInstController {
 
         //完成当前经办节点
         formInstService.completeCurTask(rec.getTask_id());
-        formInstService.saveUnCompleteTask(rec.getForm_inst_json(),rec.getProc_inst_id(),rec.getForm_model_id(),rec.getForm_inst_value());
+        formInstService.saveUnCompleteTask(
+                rec.getProc_inst_id(),
+                rec.getForm_model_id(),
+                rec.getForm_inst_value());
 
         return RespBean.ok("");
     }
@@ -282,6 +319,11 @@ public class FormInstController {
 
     }
 
+    /**
+     * 返回当前用户有多少的待办任务，待阅任务
+     * @param userID
+     * @return
+     */
     @RequestMapping(value = "/form/inst/count")
     public RespBean count(@RequestParam(value = "user_id")String userID){
         TaskCount toDoCount = null;
@@ -298,4 +340,7 @@ public class FormInstController {
 
         return RespBean.ok("",taskCounts);
     }
+
+
+
 }

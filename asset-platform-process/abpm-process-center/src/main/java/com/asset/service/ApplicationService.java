@@ -69,4 +69,7 @@ public class ApplicationService {
         return asFormModelMapper.getFormModels(formModelIDs);
     }
 
+    public List<Application> getPublishedApp() {
+        return applicationMapper.getPublishedApp();
+    }
 }

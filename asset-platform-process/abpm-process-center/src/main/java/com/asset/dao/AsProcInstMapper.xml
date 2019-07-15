@@ -112,4 +112,12 @@
     where proc_inst_id = #{procInstId,jdbcType=VARCHAR}
   </update>
 
+  <select id="getProcModelId" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT proc_model_id
+    FROM as_proc_inst
+    WHERE proc_inst_id = #{procInstId,jdbcType = VARCHAR}
+  </select>
+
+
+
 </mapper>

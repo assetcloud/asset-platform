@@ -1,4 +1,4 @@
-package com.asset.javabean;
+package com.asset.form;
 
 import lombok.Data;
 
