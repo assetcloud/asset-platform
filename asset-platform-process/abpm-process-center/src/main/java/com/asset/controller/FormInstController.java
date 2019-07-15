@@ -174,7 +174,7 @@ public class FormInstController {
             Integer actType = formInstService.getActType(procModelId, curAsTask.getActId());
             if (actType == null)
             {
-                logger.error("流程中间层生成的流程模型出错！没有如下ActID:{}", curAsTask.getActId());
+                logger.error("流程中间层生成的流程模型出错！procModelId为:{},没有如下ActID:{}",procModelId, curAsTask.getActId());
                 return RespBean.error("流程中间层生成的流程模型出错！");
             }
             //判断是不是符合当前页面要找的节点类型
@@ -195,9 +195,39 @@ public class FormInstController {
         {
             procTaskIds[k++] = tasks.get(i).getTaskId();
         }
+        if (procTaskIds.length==0)
+            return RespBean.ok("",null);
         //这里得到的procTaskIds是当前该用户执行到的任务节点TaskID
         ArrayList<AsFormInst> asFormInsts = (ArrayList<AsFormInst>) asFormInstMapper.getFormInsts(procTaskIds);
         ArrayList<AsFormInstPlus> asFormInstPluses = new ArrayList<>();
+
+
+//        //2.3、如果是经办节点，还需要对表单操作权限进行设置
+//        if(asFormInstPlus.getNodeType() == Constants.AS_NODE_APPLY)
+        //这里是对所有表单实例的表单模板进行一个操作权限的修正
+        for(int i = 0;i<asFormInsts.size();i++)
+        {
+            AsFormInst inst = asFormInsts.get(i);
+            //先转换
+            String formJson = inst.getFormInstJson();
+            FormJsonEntity entity = FormConverter.jsonToEntity(formJson);
+            List<FormItem> items = entity.getList();
+            for(int j=0;j<items.size();j++)
+            {
+                String procModelId = formInstService.getProcModelIdByProc(inst.getProcInstId());
+                String actId = formInstService.getActId(inst.getTaskId());
+                //获取当前Authority
+                Integer curAuthority = formInstService.getCurAuthority(procModelId,actId,items.get(j).getKey());
+                if(curAuthority==null)
+                    return RespBean.error("权限信息为空，请重新添加！");
+                //添加权限信息
+                formInstService.handleAuthority(items,j,curAuthority);
+            }
+
+            String formJsonNew = FormConverter.entityToJson(entity);
+            inst.setFormInstJson(formJsonNew);
+        }
+
         //如果当前要显示的是待办页面，需要对 经办节点和审批节点进行区分
         if(taskType == Constants.TASK_TO_DO)
         {
@@ -205,32 +235,12 @@ public class FormInstController {
             {
                 AsFormInstPlus asFormInstPlus = new AsFormInstPlus(asFormInsts.get(i));
                 asFormInstPlus.setNodeType(map.get(asFormInstPlus.getTaskId()));
-
-                //2.3、如果是经办节点，还需要对表单操作权限进行设置
-                if(asFormInstPlus.getNodeType() == Constants.AS_NODE_APPLY)
-                {
-                    //先转换
-                    String formJson = asFormInstPlus.getFormInstJson();
-                    FormJsonEntity entity = FormConverter.jsonToEntity(formJson);
-                    List<FormItem> items = entity.getList();
-                    for(int j=0;j<items.size();j++)
-                    {
-                        String procModelId = formInstService.getProcModelIdByProc(asFormInstPlus.getProcInstId());
-                        String actId = formInstService.getActId(asFormInstPlus.getTaskId());
-                        //获取当前Authority
-                        Integer curAuthority = formInstService.getCurAuthority(procModelId,actId,items.get(j).getKey());
-                        //添加权限信息
-                        formInstService.handleAuthority(items,j,curAuthority);
-                    }
-
-                    String formJsonNew = FormConverter.entityToJson(entity);
-                    asFormInstPlus.setFormInstJson(formJsonNew);
-                }
                 //啥都搞完了，添加进最后名单
                 asFormInstPluses.add(asFormInstPlus);
             }
             return RespBean.ok("",asFormInstPluses);
         }
+
         return RespBean.ok("",asFormInsts);
     }
 

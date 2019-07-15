@@ -158,11 +158,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!--添加mybatis generator maven插件-->
+            <!--mybatis generator maven start-->
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
@@ -192,7 +188,7 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
+            <!--mybatis generator maven end-->
 
         </plugins>
         <!--这里应该是扫描mapper文件-->

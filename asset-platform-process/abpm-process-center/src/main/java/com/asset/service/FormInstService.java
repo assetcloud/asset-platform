@@ -1,13 +1,11 @@
 package com.asset.service;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.dao.*;
 import com.asset.entity.*;
 import com.asset.form.FormItem;
 import com.asset.form.ItemRuleRequired;
-import com.asset.javabean.ActType;
 import com.asset.form.FormJson;
 import com.asset.rec.*;
 import com.asset.utils.Constants;
@@ -43,7 +41,7 @@ public class FormInstService {
     @Autowired
     FlowableMapper flowableMapper;
     @Autowired
-    AsProcModelMapper procModelMapper;
+    ActTypeMapper actTypeMapper;
     @Autowired
     AsProcInstMapper procInstMapper;
     @Autowired
@@ -104,7 +102,6 @@ public class FormInstService {
 
     public List<AsFormInst> getTobeReadInsts(List<AsFormInst> formInsts) {
         List<AsTask> asTasks = flowableMapper.getActIDs(formInsts);
-//        AsProcModel model = procModelMapper.
         return null;
     }
 
@@ -310,69 +307,48 @@ public class FormInstService {
         }
     }
 
-    public TaskCount getCount(String userID,int taskType) throws Exception {
-        //map2是TaskId和ActType的Map
-        HashMap<String,Integer> map2 =new HashMap<String, Integer>();
+    public TaskCount getCount(String userID,
+                              int taskType) throws Exception {
+        //map是TaskId和ActType的Map
+        HashMap<String,Integer> map =new HashMap<String, Integer>();
 
         //1、先获取流转到该用户对应的procInstId\taskID\actId的集合
-        List<AsTask> taskInfos = flowableMapper.getTaskInfos(userID);
-        //2、对上面集合进行遍历，与List<ActType>进行比对，确定节点类型，与输入的taskType比对，是不是要显示的节点
-        for(int i =0;i<taskInfos.size();i++)
+        List<AsTask> tasks = getCurTasks(userID);
+        if (tasks.size()==0)
+            return new TaskCount(taskType,0);
+
+        //2、对上面集合进行遍历，从数据库中取出ActType进行比对，确定节点类型，与输入的taskType比对，看是不是要显示的节点
+        for(int i =0;i<tasks.size();i++)
         {
-            AsTask curAsTask = taskInfos.get(i);
-            //2.1 获取流程实例更多的信息，这里我们主要要的是proc_model_id
-            AsProcInst asProcInst = procInstMapper.selectByPrimaryKey(curAsTask.getProcInstId());
-            if (asProcInst==null)
-                throw new Exception("有流程实例没有与流程中间层绑定，请调用/completeAll，完成所有流程实例后，再重新尝试执行！");
-            String procModelId = asProcInst.getProcModelId();
-            //2.2 根据流程模型获取对应的ActType的list
-            AsProcModel asProcModel = procModelMapper.selectByPrimaryKey(procModelId);
-            String asJson = asProcModel.getAsJson();
-            JSONArray array = JSONArray.parseArray(asJson);
-            List<ActType> actTypes = JSONObject.parseArray(array.toJSONString(), ActType.class);
+            AsTask curAsTask = tasks.get(i);
+            //2.1 由流程实例ID获取流程模型ID
+            String procModelId = getProcModelIdByProc(curAsTask.getProcInstId());
+            //这里说明我们在as_proc_inst表中找不到这个在ac_hi_actinst表中存在的流程实例，说明数据库中存在脏的流程实例数据
+            if (procModelId.isEmpty()){
+                logger.error("在as_proc_inst表中找不到这个在ac_hi_actinst表中存在的流程实例!没有如下ProcInstID:{}", curAsTask.getProcInstId());
+                throw new Exception("有运行中流程实例没有与流程中间层绑定，请调用/completeAll，完成所有流程实例后，再重新尝试执行！");
+            }
 
-            //2.3 构造hashmap，方便查找
-            HashMap<String,Integer> map = new HashMap<String, Integer>();
-            int curActType;
-
-            for(int j= 0;j<actTypes.size();j++)
+            //2.2 根据流程模型ID、节点ID 获取对应的ActType，然后决定要不要把该taskInfos中的这一项给去掉
+            Integer actType = getActType(procModelId, curAsTask.getActId());
+            if (actType == null)
             {
-                map.put(actTypes.get(j).getAct_id(),
-                        actTypes.get(j).getAct_type());
+                logger.error("流程中间层生成的流程模型出错！procModelId为:{},没有如下ActID:{}",procModelId, curAsTask.getActId());
+               throw new Exception("流程中间层生成的流程模型出错！");
             }
-
-            //这里注意一个问题，就是如果你在流程模型创建阶段输入的ACT_TYPE有错误，那么这里map就获取不到这个curActType，这里会抛出异常，
-            //这里应该对这个异常进行处理！！
-            //查看当前procInstIDs.get(i)的TASK_ID是什么类型的节点
-            try {
-                curActType = map.get(curAsTask.getActId());
-            }
-            catch (NullPointerException e){
-                logger.error("流程中间层生成的流程模型出错！没有如下ActID:{}", curAsTask.getActId());
-                throw new Exception("流程中间层生成的流程模型出错！");
-            }
-
-            if(!match(curActType,taskType))
+            //判断是不是符合当前页面要找的节点类型
+            if(!match(actType,taskType))
             {
-                taskInfos.remove(i);
+                tasks.remove(i);
                 i--;
             }
             else {
-                map2.put(curAsTask.getTaskId(),curActType);
+                map.put(curAsTask.getTaskId(),actType);
             }
-
         }
-        //3、把所有流程实例的taskID都取出来，然后获取对应的表单实例列表
-        String[] procTaskIds = new String[taskInfos.size()];
-        int k=0;
-        for(int i= 0;i<taskInfos.size();i++)
-        {
-            procTaskIds[k++] = taskInfos.get(i).getTaskId();
-        }
-        if (taskInfos.size()==0)
-            return new TaskCount(taskType,0);
 
-        return new TaskCount(taskType,procTaskIds.length);
+        return new TaskCount(taskType,
+                tasks.size());
     }
 
     public List<AsTask> getCurTasks(String userID) {
@@ -384,7 +360,7 @@ public class FormInstService {
     }
 
     public Integer getActType(String procModelId, String actId) {
-        return procModelMapper.getActType(procModelId,actId);
+        return actTypeMapper.getActType(procModelId,actId);
     }
 
 
@@ -407,16 +383,18 @@ public class FormInstService {
             //必填，获取list中json对象的rules属性，进行修改,
             //diable:false;required:true+rule
             case Constants.AUTHORITY_REQUIRED:
-                //先看有没有必填项
+                //对Options属性进行修改
+                OptionsBase optionsBase = items.get(j).getOptions();
+                optionsBase.setRequired(true);
+                optionsBase.setDisabled(false);
+                items.get(j).setOptions(optionsBase);
+
+                //添加Rules
                 List<JSONObject> rules = items.get(j).getRules();
                 if(rules==null)
                 {
                     //添加新的 必填 rule
-                    addRequired(items.get(j));
-                    OptionsBase optionsBase = items.get(j).getOptions();
-                    optionsBase.setRequired(true);
-                    optionsBase.setDisabled(false);
-                    items.get(j).setOptions(optionsBase);
+                    addRequiredRule(items.get(j));
                 }
                 //还需要对rules里面的内容进行进一步的判断
                 else{
@@ -429,11 +407,7 @@ public class FormInstService {
                     }
                     //上面都遍历了还没有找到"required"这个字段，说明的确是没有这个字段，现在
                     //要添加新的 必填 rule
-                    addRequired(items.get(j));
-                    OptionsBase optionsBase = items.get(j).getOptions();
-                    optionsBase.setRequired(true);
-                    optionsBase.setDisabled(false);
-                    items.get(j).setOptions(optionsBase);
+                    addRequiredRule(items.get(j));
                 }
                 break;
             //不可见，就是这个表单项直接删除？先暂时不作
@@ -442,19 +416,23 @@ public class FormInstService {
             //可见，这个就是不处理
             //disable:false;required:false
             case Constants.AUTHORITY_ENABLE:
+                OptionsBase optionsBase2 = items.get(j).getOptions();
+                optionsBase2.setDisabled(false);
+                optionsBase2.setRequired(false);
+                items.get(j).setOptions(optionsBase2);
                 break;
             //无法编辑，获取list中的json对象的options属性进行修改
             //disable:true;required:false
             case Constants.AUTHORITY_DISABLE:
-                OptionsBase optionsBase = items.get(j).getOptions();
-                optionsBase.setDisabled(true);
-                optionsBase.setRequired(false);
-                items.get(j).setOptions(optionsBase);
+                OptionsBase optionsBase1 = items.get(j).getOptions();
+                optionsBase1.setDisabled(true);
+                optionsBase1.setRequired(false);
+                items.get(j).setOptions(optionsBase1);
                 break;
         }
     }
 
-    private void addRequired(FormItem formItem) {
+    private void addRequiredRule(FormItem formItem) {
         List<JSONObject> rules = formItem.getRules();
 
         ItemRuleRequired required = new ItemRuleRequired("此项必填");
