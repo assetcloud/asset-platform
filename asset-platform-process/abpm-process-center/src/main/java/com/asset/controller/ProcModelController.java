@@ -2,6 +2,8 @@ package com.asset.controller;
 
 import com.asset.dao.FormAuthorityMapper;
 import com.asset.entity.ActAuthority;
+import com.asset.entity.ActType;
+import com.asset.javabean.ActTypeRec;
 import com.asset.javabean.RespBean;
 import com.asset.rec.AuthorityItem;
 import com.asset.rec.AuthorityRec;
@@ -26,14 +28,20 @@ public class ProcModelController {
 
     /**
      * 保存功能性节点信息，这里不管是创建还是修改都用同一个接口
-     *
      * @param rec
      * @return
-     * @throws JsonProcessingException
      */
     @RequestMapping(value = "/asproc/model/create", method = RequestMethod.POST)
     public RespBean editAsProcModel(@RequestBody ProcModelRec rec) {
-        procModelService.createFormModel(rec);
+        for(int i = 0;i<rec.getData().size();i++){
+            ActTypeRec cur = rec.getData().get(i);
+            ActType actType =new ActType(rec.getProc_model_id(),
+                    cur.getAct_id(),
+                    cur.getAct_type());
+            int a = procModelService.saveActType(actType);
+            if(a==Constants.DATABASE_FAILED)
+                return RespBean.error("插入数据失败！");
+        }
         return RespBean.ok("");
     }
 

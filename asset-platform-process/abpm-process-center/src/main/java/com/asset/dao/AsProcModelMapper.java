@@ -1,11 +1,7 @@
 package com.asset.dao;
 
-
 import com.asset.entity.AsProcModel;
-import com.asset.javabean.ActType;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface AsProcModelMapper {

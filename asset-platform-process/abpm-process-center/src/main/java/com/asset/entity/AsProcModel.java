@@ -1,7 +1,6 @@
 package com.asset.entity;
 
 import com.alibaba.fastjson.JSONObject;
-import com.asset.javabean.ActType;
 import com.asset.rec.ProcModelRec;
 import lombok.Data;
 
