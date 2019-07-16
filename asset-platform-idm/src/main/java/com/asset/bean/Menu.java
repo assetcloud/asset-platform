@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 import java.util.List;
 
-public class Menu {
+public class Menu implements Cloneable{
 
     @ApiModelProperty(value = "菜单id")
     private Long id;
@@ -223,5 +223,10 @@ public class Menu {
                 ", group=" + group +
                 ", children=" + children +
                 '}';
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

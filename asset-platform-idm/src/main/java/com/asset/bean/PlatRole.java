@@ -1,7 +1,11 @@
 package com.asset.bean;
 
+import lombok.Data;
+
+@Data
 public class PlatRole {
-    private Integer id;
+
+    private Long id;
 
     private String sceneCode;
 
@@ -13,51 +17,14 @@ public class PlatRole {
 
     private Integer isDeleted;
 
-    public Integer getId() {
-        return id;
+    public PlatRole() {
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getSceneCode() {
-        return sceneCode;
-    }
-
-    public void setSceneCode(String sceneCode) {
-        this.sceneCode = sceneCode == null ? null : sceneCode.trim();
-    }
-
-    public String getRoleName() {
-        return roleName;
-    }
-
-    public void setRoleName(String roleName) {
-        this.roleName = roleName == null ? null : roleName.trim();
-    }
-
-    public Integer getSort() {
-        return sort;
-    }
-
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
-
-    public String getRoleAlias() {
-        return roleAlias;
-    }
-
-    public void setRoleAlias(String roleAlias) {
-        this.roleAlias = roleAlias == null ? null : roleAlias.trim();
-    }
-
-    public Integer getIsDeleted() {
-        return isDeleted;
-    }
-
-    public void setIsDeleted(Integer isDeleted) {
-        this.isDeleted = isDeleted;
+    public PlatRole(String sceneCode, String roleName, String roleAlias) {
+        this.sceneCode = sceneCode;
+        this.roleName = roleName;
+        this.roleAlias = roleAlias;
+        this.sort = 0;
+        this.isDeleted = 0;
     }
 }

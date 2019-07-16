@@ -1,5 +1,6 @@
 package com.asset.mapper;
 
+import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -36,4 +37,9 @@ public interface OrganTreeMapper {
     int batchUpdate(List<OrganTree> organTrees);
 
     List<OrganTree> searchNode(@Param("unitName") String unitName);
+
+    //TODO：批量新增节点到组织场景关联表
+    int batchInsert(List<OrganScene> nodes);
+
+    OrganTree getTopNode();
 }

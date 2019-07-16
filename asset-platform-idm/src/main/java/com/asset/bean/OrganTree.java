@@ -2,6 +2,8 @@ package com.asset.bean;
 
 import io.swagger.annotations.ApiModel;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,8 +12,11 @@ import java.util.List;
 public class OrganTree {
 
     private String id;
+    @NotBlank(message = "组织名称不能为空")
+    @NotNull(message = "组织名称不能为空")
     private String unitName;
     private String unitNameEn;
+    @NotNull(message = "父节点不能为空")
     private String parentId;
     private Integer organizationForm;
     private Integer unitType;

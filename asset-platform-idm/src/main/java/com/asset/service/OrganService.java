@@ -1,5 +1,6 @@
 package com.asset.service;
 
+import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.OrganTreeMapper;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -51,6 +53,20 @@ public class OrganService {
         record.setIsDeleted(0);
         return organTreeMapper.insert(record);
     }
+
+    /**
+     * 批量新增节点
+     * @param nodes
+     * @return int
+     */
+    /*public int batchAdd(List<OrganScene> nodes){
+        List<OrganScene> newTree = new ArrayList<>();
+        for (OrganScene node : nodes) {
+            node = organTreeMapper.selectByPrimaryKey(node.getId());
+            newTree.add(node);
+        }
+        return organTreeMapper.batchInsert(newTree);
+    }*/
 
     /**
      * 删除部门或单位节点

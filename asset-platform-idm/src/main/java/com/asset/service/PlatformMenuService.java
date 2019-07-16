@@ -7,6 +7,7 @@ import com.asset.common.UserUtils;
 import com.asset.mapper.MenuMapper;
 import com.asset.mapper.PlatMenuMapper;
 import com.asset.mapper.PlatRoleMapper;
+import com.asset.utils.Func;
 import com.asset.utils.MenuNodeMerger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,5 +47,12 @@ public class PlatformMenuService {
         List<UserScene> roles = platRoleMapper.getPlatRoles(currentUser.getId(), GlobalConstant.CURRENT_SCENE);
         List<PlatMenu> platMenus = platMenuMapper.getPlatMenusByRoles(roles);
         return MenuNodeMerger.merge(platMenus);
+    }
+
+    public PlatMenu getFactoryMenus() {
+        User currentUser = UserUtils.getCurrentUser();
+        List<UserScene> roles = platRoleMapper.getPlatRoles(currentUser.getId(), GlobalConstant.CURRENT_SCENE);
+        List<PlatMenu> platMenus = platMenuMapper.getPlatMenusByRoles(roles);
+        return MenuNodeMerger.getFactoryNode(platMenus);
     }
 }

@@ -28,7 +28,7 @@
     delete from as_plat_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.asset.bean.PlatRole">
+  <insert id="insert" parameterType="com.asset.bean.PlatRole" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into as_plat_role (id, scene_code, role_name,
       sort, role_alias, is_deleted
       )
@@ -36,7 +36,7 @@
       #{sort,jdbcType=INTEGER}, #{roleAlias,jdbcType=VARCHAR}, #{isDeleted,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.asset.bean.PlatRole">
+  <insert id="insertSelective" parameterType="com.asset.bean.PlatRole" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     insert into as_plat_role
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

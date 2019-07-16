@@ -6,17 +6,23 @@ import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
 import com.asset.service.OrganService;
 import com.asset.service.SceneService;
+import com.asset.utils.Func;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import io.undertow.util.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/organ")
+@RequestMapping(value = "organ")
 public class OrganController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(OrganController.class);
@@ -35,6 +41,9 @@ public class OrganController {
     })
     @RequestMapping(value = "/node", method = RequestMethod.POST)
     public RespBean addNode(@RequestBody OrganTree organTree){
+        if (Func.isNull(organTree)){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        }
         int flag = organService.addNode(organTree);
         if (flag == SystemConstant.RECORD_ALREADY_EXISTS){
             return RespBean.error(SystemConstant.ADD_FAILURE,"NODE_ALREADY_EXISTS");
@@ -43,6 +52,26 @@ public class OrganController {
         }
         return RespBean.ok(SystemConstant.ADD_SUCCESS);
     }
+
+    /*@ApiOperation(value = "添加组织节点", notes = "添加组织节点",tags = "组织", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "unitName", value = "单位名称", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "parentId", value = "父节点id，若无则为\"\"", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "sort", value = "排序编号，默认为0", required = true, dataType = "Integer")
+    })
+    @RequestMapping(value = "/nodes", method = RequestMethod.POST)
+    public RespBean batchAddNode(@Valid List<OrganTree> organTrees){
+        if (Func.isNull(organTrees)){
+            return RespBean.error("组织数据不能为空");
+        }
+        int flag = organService.batchAdd(organTrees);
+        if (flag == SystemConstant.RECORD_ALREADY_EXISTS){
+            return RespBean.error(SystemConstant.ADD_FAILURE,"NODE_ALREADY_EXISTS");
+        } else if (flag == SystemConstant.SYSTEM_ERROR){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE,"SYSTEM_ERROR");
+        }
+        return RespBean.ok(SystemConstant.ADD_SUCCESS);
+    }*/
 
     @ApiOperation(value = "删除组织节点", notes = "删除组织节点",tags = "组织", httpMethod = "DELETE")
     @ApiImplicitParams({
@@ -143,32 +172,23 @@ public class OrganController {
         return RespBean.ok(SystemConstant.GET_SUCCESS, allScene);
     }
 
-    @ApiOperation(value = "新增场景", notes = "添加场景信息",tags = "组织", httpMethod = "POST")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sceneName", value = "场景名称", required = true, dataType = "String")
-    })
-    @ApiResponses({
-            @ApiResponse(code = 200,message = "添加成功",response = RespBean.class),
-            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
-    })
+    @ApiOperation(value = "新增场景", notes = "添加场景信息;传入Scene实体;sceneName必填",tags = "组织", httpMethod = "POST")
     @RequestMapping(value = "/rest/scene", method = RequestMethod.POST)
-    public RespBean addScene(@RequestBody Scene scene){
-        int flag = sceneService.addScene(scene);
-        if (flag == SystemConstant.RECORD_ALREADY_EXISTS){
-            return RespBean.error(SystemConstant.SCENE_ALREADY_EXISTS);
-        } else if (flag < 0) {
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+    public RespBean addScene(@Valid @RequestBody Scene scene){
+        if (Func.isNull(scene.getSceneName())){
+            return RespBean.error("场景名称不能为空");
         }
-        return RespBean.ok(SystemConstant.ADD_SUCCESS);
+        if (sceneService.getSceneByName(scene.getSceneName()).size() > 0){
+            //记录已存在
+            return RespBean.error("场景名称已被使用");
+        }
+        int flag = sceneService.addSceneNormal(scene);
+        return RespBean.ok(SystemConstant.ADD_SUCCESS, flag);
     }
 
     @ApiOperation(value = "删除场景", notes = "删除场景信息",tags = "组织", httpMethod = "DELETE")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "场景id", required = true, dataType = "String")
-    })
-    @ApiResponses({
-            @ApiResponse(code = 200,message = "删除成功",response = RespBean.class),
-            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
     @RequestMapping(value = "/rest/scene", method = RequestMethod.DELETE)
     public RespBean deleteScene(@RequestBody Scene scene){
@@ -197,7 +217,7 @@ public class OrganController {
         return RespBean.ok(SystemConstant.UPDATE_SUCCESS);
     }
 
-    @ApiOperation(value = "检索场景", notes = "场景信息的模糊检索",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "检索场景", notes = "场景信息的模糊检索;page当前页数;size当前页数据量",tags = "组织", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sceneName", value = "场景名称", required = true, dataType = "String")
     })
@@ -206,12 +226,15 @@ public class OrganController {
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
     @RequestMapping(value = "/rest/scene", method = RequestMethod.GET)
-    public RespBean findScene(@RequestBody Scene scene){
+    public RespBean findScene(@RequestBody Scene scene, @RequestParam(value = "page", defaultValue = "1") Integer page
+            , @RequestParam(value = "size", defaultValue = "10") Integer size){
+        PageHelper.startPage(page, size);
         List<Scene> scenes = sceneService.findSceneByNameAlike(scene.getSceneName());
-        if (scenes == null){
+        if (Func.isNull(scenes)){
             return RespBean.ok(SystemConstant.SCENE_NOT_FOUND);
         }
-        return RespBean.ok(SystemConstant.GET_SUCCESS, scenes);
+        PageInfo<Scene> scenePageInfo = new PageInfo<>(scenes);
+        return RespBean.ok(SystemConstant.GET_SUCCESS, scenePageInfo);
     }
 
     @ApiOperation(value = "通过场景获取组织", notes = "通过场景获取对应的组织树",tags = "组织", httpMethod = "GET")
@@ -251,13 +274,25 @@ public class OrganController {
         return RespBean.ok("ok");
     }
 
-    @ApiOperation(value = "获取用户场景", notes = "根据用户获取场景", tags = "用户", httpMethod = "GET")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String")
-    })
-    @RequestMapping(value = "/scenes/{userId}", method = RequestMethod.GET)
-    public RespBean getUserScenes(@PathVariable("userId")String userId){
-        List<Scene> scenes = sceneService.getScenesByUser(userId);
-        return RespBean.ok(SystemConstant.GET_SUCCESS, scenes);
+    @ApiOperation(value = "获取用户场景", notes = "根据用户获取场景;page起始页;size每页数据量", tags = "组织", httpMethod = "GET")
+    @RequestMapping(value = "/scenes/user", method = RequestMethod.GET)
+    public RespBean getUserScenes(@ApiParam(value = "page", defaultValue = "1", required = true) @RequestParam(defaultValue = "1") Integer page
+            , @ApiParam(value = "size", defaultValue = "10", required = true) @RequestParam(defaultValue = "10") Integer size){
+        PageHelper.startPage(page, size);
+        List<Scene> scenes = sceneService.getScenesByUser(UserUtils.getCurrentUser().getId());
+        if (Func.isNull(scenes)){
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        }
+        PageInfo<Scene> scenePageInfo = new PageInfo<>(scenes);
+        return RespBean.ok(SystemConstant.GET_SUCCESS, scenePageInfo);
+    }
+
+    @ApiOperation(value = "场景信息判空", notes = "场景信息判空;sceneId场景id",tags = "组织",httpMethod = "GET")
+    @GetMapping("scene/empty")
+    public RespBean isEmptyScene(@RequestParam(value = "sceneId") String sceneId){
+        if (sceneService.isSceneEmpty(sceneId)){
+            return RespBean.ok("", true);
+        }
+        return RespBean.ok("", false);
     }
 }

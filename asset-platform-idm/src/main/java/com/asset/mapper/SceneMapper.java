@@ -1,8 +1,8 @@
 package com.asset.mapper;
 
+import com.asset.bean.OrganScene;
 import com.asset.bean.Scene;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -31,4 +31,10 @@ public interface SceneMapper {
     int updateSceneName(@Param("id") String id, @Param("sceneName") String sceneName);
 
     List<Scene> getScenesByUser(@Param("userId")String userId);
+
+    int userSceneBind(@Param("sceneId")String sceneId, @Param("userId")String userId, @Param("roleId")long roleId);
+
+    int getSceneNodes(@Param("sceneId") String sceneId);
+
+    int addNode(OrganScene record);
 }
