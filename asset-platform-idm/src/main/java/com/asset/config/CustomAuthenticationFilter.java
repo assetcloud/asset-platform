@@ -22,8 +22,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         LOGGER.info("请求类型为：{}",request.getContentType());
-        if (request.getContentType().equals(MediaType.APPLICATION_JSON_UTF8_VALUE)
-                || request.getContentType().equals(MediaType.APPLICATION_JSON_VALUE)) {
+        if (request.getContentType().toLowerCase().equals(MediaType.APPLICATION_JSON_UTF8_VALUE.toLowerCase())
+                || request.getContentType().toLowerCase().equals(MediaType.APPLICATION_JSON_VALUE.toLowerCase())) {
             ObjectMapper mapper = new ObjectMapper();
             UsernamePasswordAuthenticationToken authRequest = null;
             try (InputStream is = request.getInputStream()) {

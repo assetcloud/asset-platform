@@ -45,4 +45,24 @@ public class MenuNodeMerger {
         }
         return menuNodeManager.getRoot();
     }
+
+    /**
+     *  将节点数组归并为一棵树（填充节点的children域）
+     *  时间复杂度为O(n^2)
+     * @param items 节点域
+     * @return OrganTree
+     */
+    public static PlatMenu getFactoryNode(List<PlatMenu> items){
+        MenuNodeManager menuNodeManager = new MenuNodeManager(items);
+        for (PlatMenu node : items) {
+            if(node.getParentId() != 0){
+                PlatMenu t = menuNodeManager.getTreeNodeAT(node.getParentId());
+                t.getChildren().add(node);
+            }
+        }
+        /**
+         * 获取应用工场（或系统管理的id）下的菜单
+         */
+        return menuNodeManager.getTreeNodeAT((long) 3);
+    }
 }

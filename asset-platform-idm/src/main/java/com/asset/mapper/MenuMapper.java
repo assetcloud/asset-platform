@@ -1,5 +1,6 @@
 package com.asset.mapper;
 
+import com.asset.bean.Application;
 import com.asset.bean.Menu;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,10 @@ public interface MenuMapper {
     int batchInsert(List<Menu> list);
 
     int batchInsertMenuRole(List<Menu> list);
+
+    List<Menu> findAppMenuByName(@Param("appName") String appName, @Param("sceneId") String sceneId);
+
+    List<Menu> findFormMenuByName(@Param("appName") String appName, @Param("sceneId") String sceneId);
 
     List<Menu> getMenusByUserAndScene(@Param("userId")String userId, @Param("sceneId")String sceneId);
 

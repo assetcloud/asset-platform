@@ -308,9 +308,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().anyRequest().authenticated()
-                /*.and()
-                .antMatcher("/api/**").httpBasic()*/
                 .and()
+                /*.antMatcher("/api/**").httpBasic()
+                .and()*/
                 .formLogin()
                 .and()
                 .logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler() {

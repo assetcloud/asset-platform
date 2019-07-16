@@ -42,7 +42,7 @@
     </collection>
   </resultMap>
   <select id="loadUserByUsername" resultMap="lazyLoadRoles">
-        select * from as_user WHERE account_name = #{accountName} and status = 1 and stage = 1;
+        select * from as_user WHERE account_name = #{accountName} and status = 1 and stage = 2;
   </select>
   <select id="findUserByUsername" resultMap="BaseResultMap">
     select status, stage from as_user where account_name = #{username};

@@ -8,6 +8,8 @@ import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,7 +18,7 @@ import java.util.List;
 @RequestMapping("/menu")
 public class MenuController {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
+    private final static Logger LOGGER = LoggerFactory.getLogger(MenuController.class);
 
     @Autowired
     private MenuService menuService;
@@ -32,13 +34,16 @@ public class MenuController {
             @ApiResponse(code = 200,message = "添加成功",response = RespBean.class),
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
+    @Transactional
     public RespBean addMenu(@RequestBody Application application){
         LOGGER.info("{}",application.toString());
-        int flag = menuService.addAppMenu(application);
-        if (flag < 0){
-            RespBean.error("添加失败", flag);
+        try{
+            menuService.addAppMenu(application);
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return RespBean.error("添加失败", e.getLocalizedMessage());
         }
-        return RespBean.ok("添加成功", flag);
+        return RespBean.ok("添加成功");
     }
 
     @ApiOperation(value = "添加菜单（表单类型）", notes = "保存表单时调用该接口",tags = "菜单", httpMethod = "POST")
@@ -55,12 +60,19 @@ public class MenuController {
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
     @RequestMapping(value = "/form/add", method = RequestMethod.POST)
+    @Transactional
     public RespBean addMenu(@RequestBody FormModelInfo formModelInfo){
         Menu menu = menuService.getMenuByPath(formModelInfo.getApplicationId());
         if(menu == null){
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE,"");
+            return RespBean.error("没有找到对应的应用");
         }
-        int flag = menuService.addFormMenu(menu, formModelInfo);
+        try {
+            menuService.addFormMenu(menu, formModelInfo);
+        }catch (Exception e){
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return RespBean.error(SystemConstant.SYSTEM_FAILURE, e.getMessage());
+        }
+        /*int flag = menuService.addFormMenu(menu, formModelInfo);
         if(flag == -2){
             return RespBean.error("表单资源添加失败", flag);
         } else if (flag == -3){
@@ -69,7 +81,7 @@ public class MenuController {
             return RespBean.error("表单操作添加失败", flag);
         } else if (flag < 0){
             return RespBean.error(SystemConstant.SYSTEM_FAILURE, flag);
-        }
+        }*/
         return RespBean.ok(SystemConstant.ADD_SUCCESS);
     }
 

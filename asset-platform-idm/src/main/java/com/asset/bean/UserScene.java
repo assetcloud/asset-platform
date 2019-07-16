@@ -1,5 +1,8 @@
 package com.asset.bean;
 
+import lombok.Data;
+
+@Data
 public class UserScene {
 
     private Long id;
@@ -14,43 +17,12 @@ public class UserScene {
      */
     private Long roleId;
 
-    public Long getRoleId() {
-        return roleId;
+    public UserScene() {
     }
 
-    public void setRoleId(Long roleId) {
+    public UserScene(String sceneId, String userId, Long roleId) {
+        this.sceneId = sceneId;
+        this.userId = userId;
         this.roleId = roleId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getSceneId() {
-        return sceneId;
-    }
-
-    public void setSceneId(String sceneId) {
-        this.sceneId = sceneId == null ? null : sceneId.trim();
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId == null ? null : userId.trim();
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
     }
 }
