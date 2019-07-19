@@ -61,8 +61,8 @@ public class MenuService {
         //从redis获取当前场景
         String currentScene = (String) redisTemplate.opsForValue().get(UserUtils.getCurrentUser().getId());
         menu.setSceneId(currentScene);
-        if(menuMapper.findAppMenuByName(application.getApplicationName(), GlobalConstant.CURRENT_SCENE).size() > 0){
-//        if(menuMapper.findAppMenuByName(application.getApplicationName(), currentScene).size() > 0){
+//        if(menuMapper.findAppMenuByName(application.getApplicationName(), GlobalConstant.CURRENT_SCENE).size() > 0){
+        if(menuMapper.findAppMenuByName(application.getApplicationName(), currentScene).size() > 0){
             throw new Exception("应用名称已被使用，请更换后再试");
         }
         menuMapper.insert(menu);
@@ -77,8 +77,8 @@ public class MenuService {
      */
     public int addFormMenu(Menu parentMenu, FormModelInfo formModelInfo) throws Exception {
         String currentScene = (String) redisTemplate.opsForValue().get(UserUtils.getCurrentUser().getId());
-        if(menuMapper.findFormMenuByName(formModelInfo.getFormName(), GlobalConstant.CURRENT_SCENE).size() > 0){
-//        if(menuMapper.findFormMenuByName(formModelInfo.getFormName(), currentScene).size() > 0){
+//        if(menuMapper.findFormMenuByName(formModelInfo.getFormName(), GlobalConstant.CURRENT_SCENE).size() > 0){
+        if(menuMapper.findFormMenuByName(formModelInfo.getFormName(), currentScene).size() > 0){
             throw new Exception("表单名称已被使用，请更换后再试");
         }
         Menu menu = new Menu();

@@ -76,8 +76,7 @@ public class RoleController {
 
     @ApiOperation(value = "删除角色组", notes = "删除角色组",tags = "角色", httpMethod = "DELETE")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "角色组id", required = true, dataType = "Long"),
-            @ApiImplicitParam(name = "roleGroupName", value = "角色组名称", required = true, dataType = "String")
+            @ApiImplicitParam(name = "id", value = "角色组id", required = true, dataType = "Long")
     })
     @ApiResponses({
             @ApiResponse(code = 200,message = "已删除",response = RespBean.class),
@@ -110,7 +109,7 @@ public class RoleController {
         return RespBean.ok("修改成功");
     }
 
-    @ApiOperation(value = "角色组转移",notes = "修改角色的角色组", tags = "角色", httpMethod = "PUT")
+    @ApiOperation(value = "角色转移",notes = "修改角色的角色组", tags = "角色", httpMethod = "PUT")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer"),
             @ApiImplicitParam(name = "groupId", value = "新角色组id", required = true, dataType = "Integer")

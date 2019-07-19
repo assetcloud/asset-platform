@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.mapper.PlatMenuMapper">
+  <resultMap id="BaseResultMap" type="com.asset.bean.PlatMenu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="alias" jdbcType="VARCHAR" property="alias" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="category" jdbcType="INTEGER" property="category" />
+    <result column="action" jdbcType="INTEGER" property="action" />
+    <result column="is_open" jdbcType="INTEGER" property="isOpen" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, parent_id, code, name, alias, path, source, sort, category, action, is_open,
+    remark, is_deleted, add_time
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from as_plat_menu
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+        *
+    from
+        as_plat_menu
+    where
+        is_deleted = 0
+  </select>
+  <select id="selectAll4SAdmin" resultMap="BaseResultMap">
+    select
+        *
+    from
+        as_plat_menu
+    where
+        is_deleted = 0
+    and
+        code in ('home', 'application', 'factory', 'organization', 'authority')
+  </select>
+  <select id="getPlatMenusByRoles" resultMap="BaseResultMap" parameterType="java.util.Map">
+    SELECT
+        *
+    FROM
+        as_plat_menu pm
+    WHERE
+        is_deleted = 0
+        AND pm.id IN ( SELECT pmr.menu_id FROM as_plat_menu_role pmr where pmr.role_id IN
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item.roleId}
+    </foreach>
+        )
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from as_plat_menu
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.asset.bean.PlatMenu">
+    insert into as_plat_menu (id, parent_id, code,
+      name, alias, path,
+      source, sort, category,
+      action, is_open, remark,
+      is_deleted, add_time)
+    values (#{id,jdbcType=BIGINT}, #{parentId,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR},
+      #{name,jdbcType=VARCHAR}, #{alias,jdbcType=VARCHAR}, #{path,jdbcType=VARCHAR},
+      #{source,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{category,jdbcType=INTEGER},
+      #{action,jdbcType=INTEGER}, #{isOpen,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
+      #{isDeleted,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="batchAddPlatMenuRole" parameterType="java.util.List">
+    insert into
+        as_plat_menu_role(menu_id, role_id, scene_code)
+    values
+      <foreach collection="list" separator="," item="item">
+        (#{item.menuId}, #{item.roleId}, #{item.sceneCode})
+      </foreach>
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.bean.PlatMenu">
+    insert into as_plat_menu
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="alias != null">
+        alias,
+      </if>
+      <if test="path != null">
+        path,
+      </if>
+      <if test="source != null">
+        source,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="category != null">
+        category,
+      </if>
+      <if test="action != null">
+        action,
+      </if>
+      <if test="isOpen != null">
+        is_open,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="alias != null">
+        #{alias,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="category != null">
+        #{category,jdbcType=INTEGER},
+      </if>
+      <if test="action != null">
+        #{action,jdbcType=INTEGER},
+      </if>
+      <if test="isOpen != null">
+        #{isOpen,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.PlatMenu">
+    update as_plat_menu
+    <set>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="alias != null">
+        alias = #{alias,jdbcType=VARCHAR},
+      </if>
+      <if test="path != null">
+        path = #{path,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null">
+        source = #{source,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="category != null">
+        category = #{category,jdbcType=INTEGER},
+      </if>
+      <if test="action != null">
+        action = #{action,jdbcType=INTEGER},
+      </if>
+      <if test="isOpen != null">
+        is_open = #{isOpen,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.asset.bean.PlatMenu">
+    update as_plat_menu
+    set parent_id = #{parentId,jdbcType=BIGINT},
+      code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      alias = #{alias,jdbcType=VARCHAR},
+      path = #{path,jdbcType=VARCHAR},
+      source = #{source,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      category = #{category,jdbcType=INTEGER},
+      action = #{action,jdbcType=INTEGER},
+      is_open = #{isOpen,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      add_time = #{addTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

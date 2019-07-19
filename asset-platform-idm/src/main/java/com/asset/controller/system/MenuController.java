@@ -36,7 +36,6 @@ public class MenuController {
     })
     @Transactional
     public RespBean addMenu(@RequestBody Application application){
-        LOGGER.info("{}",application.toString());
         try{
             menuService.addAppMenu(application);
         }catch (Exception e){

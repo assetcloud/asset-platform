@@ -1,7 +1,6 @@
 package com.asset.controller;
 
 import com.asset.bean.*;
-import com.asset.common.GlobalConstant;
 import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
 import com.asset.service.OrganService;
@@ -14,8 +13,6 @@ import io.undertow.util.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -147,7 +144,6 @@ public class OrganController {
     public RespBean getOrganMainTree(){
         List<Role> roles = UserUtils.getCurrentUser().getRoles();
         for (Role role : roles) {
-            LOGGER.info(role.toString());
             if (role.getId().equals(SystemConstant.ADMIN_ROLE_ID)) {
                 //TODO:后续可以交由spring security处理
                 // an administrator has access to main trees

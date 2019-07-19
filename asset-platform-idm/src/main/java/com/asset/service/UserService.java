@@ -5,6 +5,8 @@ import com.asset.bean.PlatRole;
 import com.asset.bean.User;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.*;
+import com.asset.utils.Func;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +27,12 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class UserService implements UserDetailsService {
+public class UserService extends ServiceImpl<UserMapper, User> implements UserDetailsService{
 
     private final static Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
     @Autowired
-    UserMapper userMapper;
+    private UserMapper userMapper;
 
     @Autowired
     UuidIdGenerator idGenerator;
@@ -45,17 +47,32 @@ public class UserService implements UserDetailsService {
     private SceneMapper sceneMapper;
 
 
-    @Override
+    /*@Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userMapper.loadUserByUsername(s);
         if (user == null) {
             throw new UsernameNotFoundException("用户名错误");
         }
         return user;
+    }*/
+
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User user = userMapper.loadUserByUsername(s);
+        if (Func.isNull(user)) {
+            throw new UsernameNotFoundException("用户名错误");
+        }
+//        List<PlatRole> roleAlias = userMapper.
+        return user;
     }
 
     public int updateUserSelective(User user){
         return userMapper.updateByPrimaryKeySelective(user);
+    }
+
+    public List<String> getPlatRoles(String userId){
+//        return userMapper.;
+        return null;
     }
 
     /**

@@ -81,6 +81,9 @@
       WHERE id !=#{currentId}
     </if>
   </select>
+  <select id="getRoleAlias" resultType="java.lang.String">
+
+  </select>
   <select id="getUsersByRole" resultMap="BaseResultMap" parameterType="java.lang.Long">
 	SELECT
 	u.id AS id,
