@@ -1,10 +1,14 @@
 package com.asset.service.impl;
 
+import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
+import com.asset.bean.User;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.OrganTreeMapper;
+import com.asset.mapper.UserMapper;
 import com.asset.mapper.UuidIdGenerator;
 import com.asset.service.IOrganService;
+import com.asset.utils.CommonUtils;
 import com.asset.utils.TreeNodeMerger;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.slf4j.Logger;
@@ -31,6 +35,9 @@ public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> im
 
     @Autowired
     UuidIdGenerator uuidIdGenerator;
+
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 添加部门或单位节点
@@ -63,6 +70,11 @@ public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> im
     public boolean batchAddNodes(List<OrganTree> nodes){
         int i = organTreeMapper.batchInsertNode(nodes);
         return i >= 0;
+    }
+
+    @Override
+    public List<User> getUsersByScene(String sceneId) {
+        return userMapper.getUsersByScene(sceneId);
     }
 
     /**
@@ -123,8 +135,10 @@ public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> im
         return TreeNodeMerger.merge(items);
     }
 
-    public List<OrganTree> getTreeByScene(String sceneId){
-        return organTreeMapper.getTreeByScene(sceneId);
+    public OrganTree getTreeByScene(String sceneId){
+        List<OrganScene> list = organTreeMapper.getTreeByScene(sceneId);
+        List<OrganTree> organTrees = CommonUtils.NodeTransformer(list);
+        return TreeNodeMerger.merge(organTrees);
     }
 
     /**

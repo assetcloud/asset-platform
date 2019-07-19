@@ -27,6 +27,7 @@ public class OrganTree implements Serializable {
     private String unitName;
     private String unitNameEn;
     @NotNull(message = "父节点不能为空")
+    @NotBlank(message = "父节点不能为空")
     private String parentId;
     private Integer organizationForm;
     private Integer unitType;

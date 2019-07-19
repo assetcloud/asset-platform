@@ -48,4 +48,11 @@ public interface ISceneRoleService extends IService<SceneRole> {
      * @return
      */
     boolean rolesInGroup(Long groupId);
+
+    /**
+     * 获取场景中的默认角色
+     * @param sceneId
+     * @return
+     */
+    SceneRole getDefaultRole(String sceneId);
 }

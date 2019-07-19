@@ -33,6 +33,9 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     private SceneMapper sceneMapper;
 
     @Autowired
+    private UserSceneMapper userSceneMapper;
+
+    @Autowired
     private UserMapper userMapper;
 
     @Autowired
@@ -116,9 +119,7 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
      * @return int
      */
     public int addSceneNormal(Scene record) {
-        if (record.getId() == null){
-            record.setId(uuidIdGenerator.generateId());
-        }
+        record.setId(uuidIdGenerator.generateId());
         record.setAddTime(new Date());
         record.setIsDeleted(0);
         record.setStatus(1);
@@ -180,5 +181,10 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     public boolean isSceneEmpty(String sceneId){
         int cnt =  sceneMapper.getSceneNodes(sceneId);
         return cnt == 0;
+    }
+
+    @Override
+    public boolean addUserScene(List<UserScene> userScenes) {
+        return false;
     }
 }

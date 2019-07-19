@@ -318,7 +318,6 @@
     WHERE
         os.`status` != 0
         AND os.scene_id = #{id}
-        AND os.parent_id = '0'
     ORDER BY
         os.id ASC
   </select>
