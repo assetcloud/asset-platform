@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.mapper.MenuMapper">
+  <resultMap id="BaseResultMap" type="com.asset.bean.Menu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="alias" jdbcType="VARCHAR" property="alias" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="category" jdbcType="INTEGER" property="category" />
+    <result column="action" jdbcType="INTEGER" property="action" />
+    <result column="is_open" jdbcType="INTEGER" property="isOpen" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, parent_id, code, name, alias, path, source, sort, category, action, is_open,
+    remark, is_deleted, add_time
+  </sql>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+        *
+    from
+        as_plat_menu
+    where
+        is_deleted = 0
+  </select>
+  <select id="selectAll4SAdmin" resultMap="BaseResultMap">
+    select
+        *
+    from
+        as_plat_menu
+    where
+        is_deleted = 0
+    and
+        code in ('home', 'application', 'factory', 'organization', 'authority')
+  </select>
+  <select id="getMenusByRoles" resultMap="BaseResultMap" parameterType="java.util.Map">
+    SELECT
+        *
+    FROM
+        as_menu pm
+    WHERE
+        is_deleted = 0
+        AND pm.id IN ( SELECT pmr.menu_id FROM as_menu_role pmr where pmr.role_id IN
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item.roleId}
+    </foreach>
+        )
+  </select>
+  <insert id="batchAddPlatMenuRole" parameterType="java.util.List">
+    insert into
+        as_plat_menu_role(menu_id, role_id, scene_code)
+    values
+      <foreach collection="list" separator="," item="item">
+        (#{item.menuId}, #{item.roleId}, #{item.sceneCode})
+      </foreach>
+  </insert>
+</mapper>

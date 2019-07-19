@@ -1,9 +1,14 @@
-package com.asset.service;
+package com.asset.service.impl;
 
+import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
+import com.asset.bean.User;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.OrganTreeMapper;
+import com.asset.mapper.UserMapper;
 import com.asset.mapper.UuidIdGenerator;
+import com.asset.service.IOrganService;
+import com.asset.utils.CommonUtils;
 import com.asset.utils.TreeNodeMerger;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.slf4j.Logger;
@@ -21,15 +26,18 @@ import java.util.List;
 
 @Service
 @Transactional
-public class OrganService extends ServiceImpl<OrganTreeMapper, OrganTree> {
+public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> implements IOrganService {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(OrganService.class);
+    final static Logger LOGGER = LoggerFactory.getLogger(OrganServiceImpl.class);
 
     @Autowired
     OrganTreeMapper organTreeMapper;
 
     @Autowired
     UuidIdGenerator uuidIdGenerator;
+
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 添加部门或单位节点
@@ -53,19 +61,21 @@ public class OrganService extends ServiceImpl<OrganTreeMapper, OrganTree> {
         return organTreeMapper.insert(record);
     }
 
+
     /**
      * 批量新增节点
      * @param nodes
      * @return int
      */
-    /*public int batchAdd(List<OrganScene> nodes){
-        List<OrganScene> newTree = new ArrayList<>();
-        for (OrganScene node : nodes) {
-            node = organTreeMapper.selectByPrimaryKey(node.getId());
-            newTree.add(node);
-        }
-        return organTreeMapper.batchInsert(newTree);
-    }*/
+    public boolean batchAddNodes(List<OrganTree> nodes){
+        int i = organTreeMapper.batchInsertNode(nodes);
+        return i >= 0;
+    }
+
+    @Override
+    public List<User> getUsersByScene(String sceneId) {
+        return userMapper.getUsersByScene(sceneId);
+    }
 
     /**
      * 删除部门或单位节点
@@ -120,16 +130,15 @@ public class OrganService extends ServiceImpl<OrganTreeMapper, OrganTree> {
      * 获取组织树全部信息
      * @return
      */
-    /*public List<OrganTree> getMainTree(){
-        return organTreeMapper.getMainTree();
-    }*/
     public OrganTree getMainTree(){
         List<OrganTree> items = organTreeMapper.selectAll();
         return TreeNodeMerger.merge(items);
     }
 
-    public List<OrganTree> getTreeByScene(String sceneId){
-        return organTreeMapper.getTreeByScene(sceneId);
+    public OrganTree getTreeByScene(String sceneId){
+        List<OrganScene> list = organTreeMapper.getTreeByScene(sceneId);
+        List<OrganTree> organTrees = CommonUtils.NodeTransformer(list);
+        return TreeNodeMerger.merge(organTrees);
     }
 
     /**
@@ -139,5 +148,16 @@ public class OrganService extends ServiceImpl<OrganTreeMapper, OrganTree> {
      */
     public List<OrganTree> searchNode(String unitName){
         return organTreeMapper.searchNode(unitName);
+    }
+
+    public boolean nodeExists(String unitName){
+        List<OrganTree> list = organTreeMapper.getByName(unitName);
+        return list.size() > 0;
+    }
+
+    @Override
+    public boolean hasParent(String parentId) {
+        OrganTree node = organTreeMapper.selectById(parentId);
+        return node != null;
     }
 }

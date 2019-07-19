@@ -11,4 +11,11 @@
         <result column="sort" property="sort"/>
         <result column="is_deleted" property="isDeleted"/>
     </resultMap>
+    <resultMap id="UserRoleMap" type="com.asset.bean.UserRole">
+        <result column="role_id" property="roleId"/>
+    </resultMap>
+
+    <select id="getRoles" resultMap="UserRoleMap">
+        select role_id from as_user_role where uid = #{userId} and status = 1
+    </select>
 </mapper>

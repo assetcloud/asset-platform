@@ -36,4 +36,6 @@ public interface UserMapper extends BaseMapper<User>{
     int updateByPrimaryKey(User record);
 
     List<User> getUsersByRole(@Param("roleId") Long roleId);
+
+    List<User> getUsersByScene(String sceneId);
 }

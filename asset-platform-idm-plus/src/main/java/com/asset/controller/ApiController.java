@@ -6,7 +6,7 @@ import com.asset.bean.RespBean;
 import com.asset.bean.Scene;
 import com.asset.common.SystemConstant;
 import com.asset.service.IResourceService;
-import com.asset.service.SceneService;
+import com.asset.service.ISceneService;
 import com.asset.utils.Func;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -26,7 +26,7 @@ import java.util.List;
 public class ApiController {
 
     @Autowired
-    SceneService sceneService;
+    private ISceneService sceneService;
 
     @Autowired
     private IResourceService resourceService;

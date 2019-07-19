@@ -45,6 +45,12 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
         List<SceneRole> sceneRoleList = sceneRoleMapper.rolesInGroup(groupId);
         return sceneRoleList.size() != 0;
     }
+
+    @Override
+    public SceneRole getDefaultRole(String sceneId) {
+        return sceneRoleMapper.getDefaultRole(sceneId);
+    }
+
 //
 
 //

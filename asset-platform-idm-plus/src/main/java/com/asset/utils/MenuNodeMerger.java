@@ -1,7 +1,6 @@
 package com.asset.utils;
 
-import com.asset.bean.OrganTree;
-import com.asset.bean.PlatMenu;
+import com.asset.bean.Menu;
 
 import java.util.List;
 
@@ -18,11 +17,11 @@ public class MenuNodeMerger {
      * @param items 节点域
      * @return
      */
-    public static PlatMenu merge(PlatMenu[] items){
+    public static Menu merge(Menu[] items){
         MenuNodeManager menuNodeManager = new MenuNodeManager(items);
-        for (PlatMenu node : items) {
+        for (Menu node : items) {
             if(node.getParentId() != 0){
-                PlatMenu t = menuNodeManager.getTreeNodeAT(node.getParentId());
+                Menu t = menuNodeManager.getTreeNodeAT(node.getParentId());
                 t.getChildren().add(node);
             }
         }
@@ -35,11 +34,11 @@ public class MenuNodeMerger {
      * @param items 节点域
      * @return OrganTree
      */
-    public static PlatMenu merge(List<PlatMenu> items){
+    public static Menu merge(List<Menu> items){
         MenuNodeManager menuNodeManager = new MenuNodeManager(items);
-        for (PlatMenu node : items) {
+        for (Menu node : items) {
             if(node.getParentId() != 0){
-                PlatMenu t = menuNodeManager.getTreeNodeAT(node.getParentId());
+                Menu t = menuNodeManager.getTreeNodeAT(node.getParentId());
                 t.getChildren().add(node);
             }
         }
@@ -52,17 +51,17 @@ public class MenuNodeMerger {
      * @param items 节点域
      * @return OrganTree
      */
-    public static PlatMenu getFactoryNode(List<PlatMenu> items){
+    public static Menu getFactoryNode(List<Menu> items){
         MenuNodeManager menuNodeManager = new MenuNodeManager(items);
-        for (PlatMenu node : items) {
+        for (Menu node : items) {
             if(node.getParentId() != 0){
-                PlatMenu t = menuNodeManager.getTreeNodeAT(node.getParentId());
+                Menu t = menuNodeManager.getTreeNodeAT(node.getParentId());
                 t.getChildren().add(node);
             }
         }
         /**
          * 获取应用工场（或系统管理的id）下的菜单
          */
-        return menuNodeManager.getTreeNodeAT((long) 3);
+        return menuNodeManager.getTreeNodeAT((long) 4);
     }
 }

@@ -67,6 +67,9 @@
     <select id="roleExist" resultType="com.asset.bean.SceneRole">
         SELECT * FROM as_scene_role WHERE role_name_zh = #{param1} and scene_code = #{param2} and status = 1
     </select>
+    <select id="getDefaultRole" resultType="com.asset.bean.SceneRole">
+        select * from as_scene_role where role_default = 1 and status = 1 and scene_code = #{sceneId}
+    </select>
     <select id="roleGroupExist" resultType="com.asset.bean.RoleGroup">
         SELECT * FROM as_role_group WHERE role_group_name = #{param1} and scene_code = #{param2} and is_deleted = 0
     </select>

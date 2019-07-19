@@ -2,7 +2,6 @@ package com.asset.service.impl;
 
 import com.asset.bean.Resource;
 import com.asset.common.SystemConstant;
-import com.asset.common.UserUtils;
 import com.asset.mapper.ResourceMapper;
 import com.asset.service.IResourceService;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -29,7 +28,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     final static Logger LOGGER = LoggerFactory.getLogger(ResourceServiceImpl.class);
 
     @Autowired
-    ResourceMapper resourceMapper;
+    private ResourceMapper resourceMapper;
 
     @Override
     public boolean appExists(String applicationName, String sceneId){

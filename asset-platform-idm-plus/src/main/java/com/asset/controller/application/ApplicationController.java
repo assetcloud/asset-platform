@@ -53,7 +53,7 @@ public class ApplicationController {
         }
         return RespBean.ok("新建成功","");
     }*/
-    @RequestMapping(value = "/addApp", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
+    /*@RequestMapping(value = "/addApp", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
     @ApiOperation(value = "添加应用", notes = "应用添加",tags = "应用", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationName", value = "应用名称", required = true, dataType = "String"),
@@ -150,5 +150,5 @@ public class ApplicationController {
             }
             return RespBean.ok("发布成功");
         }
-    }
+    }*/
 }

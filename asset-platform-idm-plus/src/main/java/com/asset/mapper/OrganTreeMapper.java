@@ -33,7 +33,7 @@ public interface OrganTreeMapper extends BaseMapper<OrganTree> {
 
     List<OrganTree> recursiveSelectWithScene(@Param("parentId") String parentId, @Param("sceneId") String sceneId);
 
-    List<OrganTree> getTreeByScene(@Param("id") String id);
+    List<OrganScene> getTreeByScene(@Param("id") String id);
 
     int batchUpdate(List<OrganTree> organTrees);
 
@@ -43,4 +43,8 @@ public interface OrganTreeMapper extends BaseMapper<OrganTree> {
     int batchInsert(List<OrganScene> nodes);
 
     OrganTree getTopNode();
+
+    List<OrganTree> getByName(String unitName);
+
+    int batchInsertNode(List<OrganTree> list);
 }

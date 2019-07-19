@@ -7,6 +7,7 @@ import lombok.Generated;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
@@ -19,6 +20,7 @@ public class Scene implements Serializable {
 
     private String id;
     @NotBlank(message = "场景名称不能为空")
+    @NotNull(message = "场景名称不能为空")
     private String sceneName;
     private String remark;
     private int isDeleted;
