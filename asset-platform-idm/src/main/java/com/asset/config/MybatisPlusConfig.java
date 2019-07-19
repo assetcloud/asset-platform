@@ -2,10 +2,13 @@ package com.asset.config;
 
 import com.baomidou.mybatisplus.MybatisConfiguration;
 import com.baomidou.mybatisplus.MybatisXMLLanguageDriver;
+import com.baomidou.mybatisplus.entity.GlobalConfiguration;
+import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.mapping.DatabaseIdProvider;
 import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.type.TypeAliasRegistry;
 import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
 import org.mybatis.spring.boot.autoconfigure.SpringBootVFS;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +52,18 @@ public class MybatisPlusConfig {
         page.setDialectType("mysql");
         return page;
     }
+
+    /**
+     * 设置数据库表前缀
+     * @return
+     */
+    @Bean
+    public GlobalConfiguration globalConfiguration(){
+        GlobalConfiguration globalConfiguration = new GlobalConfiguration();
+        globalConfiguration.setTablePrefix("as_");
+        return globalConfiguration;
+    }
+
     /**
      * 这里全部使用mybatis-autoconfigure 已经自动加载的资源。不手动指定
      * 配置文件和mybatis-boot的配置文件同步
@@ -57,6 +72,8 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean() {
         MybatisSqlSessionFactoryBean mybatisPlus = new MybatisSqlSessionFactoryBean();
+        //设置数据库表前缀
+        mybatisPlus.setGlobalConfig(globalConfiguration());
         mybatisPlus.setDataSource(dataSource);
         mybatisPlus.setVfs(SpringBootVFS.class);
         if (StringUtils.hasText(this.properties.getConfigLocation())) {

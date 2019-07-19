@@ -2,13 +2,14 @@ package com.asset.mapper;
 
 import com.asset.bean.Role;
 import com.asset.bean.User;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public interface UserMapper {
+public interface UserMapper extends BaseMapper<User>{
 
     User loadUserByUsername(String username);
 
@@ -22,7 +23,7 @@ public interface UserMapper {
 
     int userReg(@Param("accountName") String accountName, @Param("pwd") String pwd);
 
-    int insert(User record);
+    Integer insert(User record);
 
     int insertSelective(User record);
 
@@ -35,4 +36,6 @@ public interface UserMapper {
     int updateByPrimaryKey(User record);
 
     List<User> getUsersByRole(@Param("roleId") Long roleId);
+
+    List<String> getRoleAlias(String userId);
 }

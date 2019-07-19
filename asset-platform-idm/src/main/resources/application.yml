@@ -18,6 +18,8 @@ spring:
         max-idle: 8
         max-wait: -1ms
     timeout: 3000
+#server:
+#  port: 12345
 server:
   port: 8083
 mybatis:

@@ -33,6 +33,10 @@ public class CustomMetadataSource implements FilterInvocationSecurityMetadataSou
             if (antPathMatcher.match(resource.getUrl(), requestUrl)
                     &&resource.getRoles().size()>0) {
                 List<Role> roles = resource.getRoles();
+                /*System.out.println(roles.size());
+                for (Role role : roles) {
+                    System.out.println(role.toString());
+                }*/
                 int size = roles.size();
                 String[] values = new String[size];
                 for (int i = 0; i < size; i++) {

@@ -31,4 +31,8 @@ public class Func {
 
         return false;
     }
+
+    public static boolean isNotEmpty(@Nullable Object obj) {
+        return !ObjectUtils.isEmpty(obj);
+    }
 }
