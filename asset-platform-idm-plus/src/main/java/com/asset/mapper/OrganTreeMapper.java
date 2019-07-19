@@ -43,4 +43,8 @@ public interface OrganTreeMapper extends BaseMapper<OrganTree> {
     int batchInsert(List<OrganScene> nodes);
 
     OrganTree getTopNode();
+
+    List<OrganTree> getByName(String unitName);
+
+    int batchInsertNode(List<OrganTree> list);
 }

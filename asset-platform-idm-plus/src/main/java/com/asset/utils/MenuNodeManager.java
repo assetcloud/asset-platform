@@ -1,7 +1,7 @@
 package com.asset.utils;
 
 import com.asset.bean.OrganTree;
-import com.asset.bean.PlatMenu;
+import com.asset.bean.Menu;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,24 +15,24 @@ import java.util.List;
  */
 public class MenuNodeManager {
 
-    public List<PlatMenu> list;// 树的所有节点
+    public List<Menu> list;// 树的所有节点
 
 
-    public MenuNodeManager(PlatMenu [] items) {
+    public MenuNodeManager(Menu [] items) {
         list = new ArrayList<>();
         list.addAll(Arrays.asList(items));
     }
 
-    public MenuNodeManager(List<PlatMenu> items) {
+    public MenuNodeManager(List<Menu> items) {
         list = new ArrayList<>();
         list.addAll(items);
     }
 
-    public List<PlatMenu> getList() {
+    public List<Menu> getList() {
         return list;
     }
 
-    public void setList(List<PlatMenu> list) {
+    public void setList(List<Menu> list) {
         this.list = list;
     }
 
@@ -43,9 +43,9 @@ public class MenuNodeManager {
      *            节点ID
      * @return 对应的节点对象
      */
-    public PlatMenu getTreeNodeAT(Long id) {
-        for (PlatMenu treeNode : list) {
-            if (treeNode.getId() == id)
+    public Menu getTreeNodeAT(Long id) {
+        for (Menu treeNode : list) {
+            if (treeNode.getId().equals(id))
                 return treeNode;
         }
         return null;
@@ -56,8 +56,8 @@ public class MenuNodeManager {
      *
      * @return 一棵树的根节点
      */
-    public PlatMenu getRoot() {
-        for (PlatMenu treeNode : list) {
+    public Menu getRoot() {
+        for (Menu treeNode : list) {
             if (treeNode.getParentId() == 0)
                 return treeNode;
         }

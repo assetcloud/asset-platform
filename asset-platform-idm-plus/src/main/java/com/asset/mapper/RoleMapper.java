@@ -1,8 +1,12 @@
 package com.asset.mapper;
 
 import com.asset.bean.Role;
+import com.asset.bean.UserRole;
 import com.baomidou.mybatisplus.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,5 +18,6 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public interface RoleMapper extends BaseMapper<Role> {
-//    Role getRoleByUser(Long roleId);
+
+    List<UserRole> getRoles(@Param("userId")String userId);
 }

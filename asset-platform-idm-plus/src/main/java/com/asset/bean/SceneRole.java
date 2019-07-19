@@ -41,6 +41,12 @@ public class SceneRole {
     @TableField("scene_code")
     private String sceneCode;
 
+    public SceneRole(String sceneId, String sceneDefaultCh, String sceneDefault) {
+        this.sceneCode = sceneId;
+        this.roleName = sceneDefault;
+        this.roleNameZh = sceneDefaultCh;
+    }
+
     @Override
     public String toString() {
         return "SceneRole{" +

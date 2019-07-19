@@ -3,19 +3,21 @@ package com.asset.controller;
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
-import com.asset.service.OrganService;
-import com.asset.service.SceneService;
+import com.asset.service.IOrganService;
+import com.asset.service.ISceneService;
 import com.asset.utils.Func;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
-import io.undertow.util.BadRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -25,12 +27,12 @@ public class OrganController {
     private final static Logger LOGGER = LoggerFactory.getLogger(OrganController.class);
 
     @Autowired
-    OrganService organService;
+    private IOrganService organService;
 
     @Autowired
-    SceneService sceneService;
+    private ISceneService sceneService;
 
-    @ApiOperation(value = "添加组织节点", notes = "添加组织节点",tags = "组织", httpMethod = "POST")
+    @ApiOperation(value = "添加组织节点", notes = "已完成",tags = "组织", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "unitName", value = "单位名称", required = true, dataType = "String"),
             @ApiImplicitParam(name = "parentId", value = "父节点id，若无则为\"\"", required = true, dataType = "String"),
@@ -38,16 +40,51 @@ public class OrganController {
     })
     @RequestMapping(value = "/node", method = RequestMethod.POST)
     public RespBean addNode(@RequestBody OrganTree organTree){
-        if (Func.isNull(organTree)){
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        if (Func.hasEmpty(organTree.getUnitName(), organTree.getParentId())){
+            return RespBean.paramError();
         }
-        int flag = organService.addNode(organTree);
-        if (flag == SystemConstant.RECORD_ALREADY_EXISTS){
-            return RespBean.error(SystemConstant.ADD_FAILURE,"NODE_ALREADY_EXISTS");
-        } else if (flag == SystemConstant.SYSTEM_ERROR){
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE,"SYSTEM_ERROR");
+        if (Func.isNull(organTree.getSort())){
+            organTree.setSort(0);
         }
-        return RespBean.ok(SystemConstant.ADD_SUCCESS);
+        if (organService.nodeExists(organTree.getUnitName())){
+            return RespBean.error(String.format("组织部门: %s 已存在", organTree.getUnitName()));
+        }
+        if (!organService.hasParent(organTree.getParentId())){
+            return RespBean.error("目标父节点不存在");
+        }
+        organTree.setStatus(1);
+        organTree.setIsDeleted(0);
+        organTree.setEnableTime(new Date());
+        return RespBean.data(organService.insert(organTree));
+    }
+
+    @ApiOperation(value = "批量添加组织节点", notes = "已完成",tags = "组织", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "unitName", value = "单位名称", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "parentId", value = "父节点id，若无则为\"\"", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "sort", value = "排序编号，默认为0", required = true, dataType = "Integer")
+    })
+    @RequestMapping(value = "/nodes", method = RequestMethod.POST)
+    public RespBean addNodes(@RequestBody List<OrganTree> organTrees){
+        for (OrganTree organTree : organTrees) {
+            if (Func.hasEmpty(organTree.getUnitName(), organTree.getParentId())){
+                return RespBean.paramError();
+            }
+            if (Func.isNull(organTree.getSort())){
+                organTree.setSort(0);
+            }
+            if (organService.nodeExists(organTree.getUnitName())){
+                return RespBean.error(String.format("组织部门: %s 已存在", organTree.getUnitName()));
+            }
+            if (!organService.hasParent(organTree.getParentId())){
+                return RespBean.error("目标父节点不存在");
+            }
+            organTree.setStatus(1);
+            organTree.setIsDeleted(0);
+            organTree.setEnableTime(new Date());
+        }
+
+        return RespBean.data(organService.batchAddNodes(organTrees));
     }
 
     @ApiOperation(value = "删除组织节点", notes = "删除组织节点",tags = "组织", httpMethod = "DELETE")
@@ -63,56 +100,58 @@ public class OrganController {
         return RespBean.ok(SystemConstant.DELETE_SUCCESS);
     }
 
-    @ApiOperation(value = "批量删除组织节点", notes = "批量删除组织节点",tags = "组织", httpMethod = "DELETE")
+    @ApiOperation(value = "批量删除组织节点", notes = "已完成",tags = "组织", httpMethod = "DELETE")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "节点id的List", required = true, dataType = "List<OrganTree>")
+            @ApiImplicitParam(name = "id", value = "节点id的List", required = true, dataTypeClass = java.util.List.class)
     })
     @RequestMapping(value = "/nodes", method = RequestMethod.DELETE)
     public RespBean batchDeleteNode(@RequestBody List<OrganTree> organTrees){
-        int flag = organService.batchDeleteNode(organTrees);
-        if (flag == SystemConstant.SYSTEM_ERROR){
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        for (OrganTree organTree : organTrees) {
+            if (Func.isNull(organTree.getId())){
+                return RespBean.paramError();
+            }
+            organTree.setDisableTime(new Date());
+            organTree.setIsDeleted(1);
+            organTree.setStatus(0);
         }
-        return RespBean.ok(SystemConstant.DELETE_SUCCESS);
+        return RespBean.data(organService.batchDeleteNode(organTrees));
     }
 
-    @ApiOperation(value = "获取单个组织节点", notes = "获取单个组织节点",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "获取单个组织节点", notes = "已完成",tags = "组织", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "节点id", required = true, dataType = "String")
     })
     @RequestMapping(value = "/node/{id}", method = RequestMethod.GET)
     public RespBean getNode(@PathVariable String id){
-        OrganTree node = organService.getNode(id);
-        if (node == null){
-            return RespBean.error(SystemConstant.GET_FAILURE);
+        if (Func.isNull(id)){
+            return RespBean.paramError();
         }
-        return RespBean.ok(SystemConstant.GET_SUCCESS, node);
+        return RespBean.data(organService.selectById(id));
     }
 
-    @ApiOperation(value = "检索组织节点", notes = "检索组织节点",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "检索组织节点", notes = "已完成",tags = "组织", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "unitName", value = "组织名称", required = true, dataType = "String")
+            @ApiImplicitParam(name = "unitName", value = "组织名称", required = true, dataTypeClass = java.lang.String.class)
     })
     @RequestMapping(value = "/node/search", method = RequestMethod.GET)
-    public RespBean getNodeByName(@RequestBody OrganTree organTree){
-        List<OrganTree> organTrees = organService.searchNode(organTree.getUnitName());
+    public RespBean getNodeByName(@RequestParam("unitName") String unitName){
+        List<OrganTree> organTrees = organService.searchNode(unitName);
         if (organTrees.size() == 0){
             return RespBean.ok(SystemConstant.NODE_NOT_FOUND);
         }
         return RespBean.ok(SystemConstant.GET_SUCCESS, organTrees);
     }
 
-    @ApiOperation(value = "编辑组织节点信息", notes = "编辑组织节点信息",tags = "组织", httpMethod = "PUT")
+    @ApiOperation(value = "编辑组织节点信息", notes = "已完成",tags = "组织", httpMethod = "PUT")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "节点id", required = true, dataType = "String")
     })
     @RequestMapping(value = "/node", method = RequestMethod.PUT)
     public RespBean editNode(@RequestBody OrganTree organTree){
-        int flag = organService.updateNode(organTree);
-        if (flag < 0){
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+        if (Func.isNull(organTree.getId())){
+            return RespBean.error("参数错误");
         }
-        return RespBean.ok(SystemConstant.UPDATE_SUCCESS);
+        return RespBean.data(organService.updateById(organTree));
     }
 
     /**
@@ -135,10 +174,6 @@ public class OrganController {
     }
 
     @ApiOperation(value = "获取场景信息", notes = "获取场景信息",tags = "组织", httpMethod = "GET")
-    @ApiResponses({
-            @ApiResponse(code = 200,message = "获取成功",response = RespBean.class),
-            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
-    })
     @RequestMapping(value = "/rest/scenes", method = RequestMethod.GET)
     public RespBean getAllScenes(){
         List<Scene> allScene = sceneService.getAllScene();

@@ -28,6 +28,10 @@ public class RespBean {
         return new RespBean(500, msg, null);
     }
 
+    public static RespBean paramError() {
+        return new RespBean(500, "Wrong Parameters", null);
+    }
+
     private RespBean(Integer status, String msg, Object obj) {
         this.status = status;
         this.msg = msg;

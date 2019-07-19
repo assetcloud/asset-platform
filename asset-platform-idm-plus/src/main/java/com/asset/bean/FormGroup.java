@@ -8,7 +8,7 @@ import java.util.List;
 public class FormGroup {
     private String groupId;
     private String groupName;
-    private List<Menu> children;
+    private List<Resource> children;
 
     public String getGroupId() {
         return groupId;
@@ -26,11 +26,11 @@ public class FormGroup {
         this.groupName = groupName;
     }
 
-    public List<Menu> getChildren() {
+    public List<Resource> getChildren() {
         return children;
     }
 
-    public void setChildren(List<Menu> children) {
+    public void setChildren(List<Resource> children) {
         this.children = children;
     }
 }

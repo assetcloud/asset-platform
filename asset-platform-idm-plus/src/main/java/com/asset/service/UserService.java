@@ -36,25 +36,13 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
     UuidIdGenerator idGenerator;
 
     @Autowired
-    private PlatRoleMapper platRoleMapper;
+    private SceneRoleMapper sceneRoleMapper;
 
     @Autowired
-    private PlatMenuMapper platMenuMapper;
+    private ResourceMapper resourceMapper;
 
     @Autowired
     private SceneMapper sceneMapper;
-
-    @Autowired
-    private RoleMapper roleMapper;
-
-    /*@Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        User user = userMapper.loadUserByUsername(s);
-        if (user == null) {
-            throw new UsernameNotFoundException("用户名错误");
-        }
-        return user;
-    }*/
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
@@ -145,15 +133,16 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
         user.setPwd(encode);
 
         //指定为默认角色
-        PlatRole platRole = new PlatRole(sceneId, SystemConstant.SCENE_DEFAULT_CH, SystemConstant.SCENE_DEFAULT);
-        platRoleMapper.insert(platRole);
-        //为默认角色配置权限
-        PlatMenuRole platMenuRole = new PlatMenuRole(1, platRole.getId(), sceneId);
-        List<PlatMenuRole> objects = new ArrayList<>();
-        objects.add(platMenuRole);
-        platMenuMapper.batchAddPlatMenuRole(objects);
-        //用户与场景关联
-        sceneMapper.userSceneBind(sceneId, user.getId(), platRole.getId());
+        //TODO:用户注册并与已有场景绑定
+//        SceneRole sceneRole = new SceneRole(sceneId, SystemConstant.SCENE_DEFAULT_CH, SystemConstant.SCENE_DEFAULT);
+//        sceneRoleMapper.insert(sceneRole);
+//        //为默认角色配置权限
+//        UserRole userRole = new UserRole(1, sceneRole.getId(), sceneId);
+//        List<PlatMenuRole> objects = new ArrayList<>();
+//        objects.add(platMenuRole);
+//        platMenuMapper.batchAddPlatMenuRole(objects);
+//        //用户与场景关联
+//        sceneMapper.userSceneBind(sceneId, user.getId(), platRole.getId());
         return userMapper.insertSelective(user);
     }
 }

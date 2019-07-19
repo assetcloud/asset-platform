@@ -4,10 +4,9 @@ import com.asset.bean.RespBean;
 import com.asset.bean.Scene;
 import com.asset.bean.Staff;
 import com.asset.bean.User;
-import com.asset.common.GlobalConstant;
 import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
-import com.asset.service.SceneService;
+import com.asset.service.ISceneService;
 import com.asset.service.StaffService;
 import com.asset.service.UserService;
 import com.asset.utils.Func;
@@ -42,7 +41,7 @@ public class UserNormalController {
     private RedisTemplate redisTemplate;
 
     @Autowired
-    private SceneService sceneService;
+    private ISceneService sceneService;
 
     /**
      * 用户登录

@@ -1,49 +1,19 @@
 package com.asset.mapper;
 
-import com.asset.bean.Application;
-import com.asset.bean.Menu;
-import org.apache.ibatis.annotations.Param;
+import com.asset.bean.*;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public interface MenuMapper {
+public interface MenuMapper extends BaseMapper<Menu> {
 
-    int deleteByPrimaryKey(Long id);
+    List<Menu> getMenusByRoles(List<UserRole> roleIds);
 
-    int insert(Menu record);
+    int batchAddPlatMenuRole(List<PlatMenuRole> records);
 
-    int insertSelective(Menu record);
+    List<PlatMenu> selectAll();
 
-    Menu selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(Menu record);
-
-    int updateByPrimaryKey(Menu record);
-
-    int addMenuRole(@Param("menuId") Long menuId, @Param("roleId") Long roleId);
-
-    Menu getByPath(String applicationId);
-
-    int batchInsert(List<Menu> list);
-
-    int batchInsertMenuRole(List<Menu> list);
-
-    List<Menu> findAppMenuByName(@Param("appName") String appName, @Param("sceneId") String sceneId);
-
-    List<Menu> findFormMenuByName(@Param("appName") String appName, @Param("sceneId") String sceneId);
-
-    List<Menu> getMenusByUserAndScene(@Param("userId")String userId, @Param("sceneId")String sceneId);
-
-    List<Menu> getMenusByUser(@Param("userId")String userId);
-
-    List<Menu> getMenusByRole(@Param("roleId")Long roleId);
-
-    List<Menu> getAppMenusByUser(@Param("userId")String userId);
-
-    List<Menu> getFormMenusByApp(@Param("userId")String userId, @Param("appId")String appId, @Param("sceneId")String sceneId);
-
-    int updateFormInfo(@Param("formModelId")String formModelId, @Param("sceneId")String sceneId);
-
+    List<PlatMenu> selectAll4SAdmin();
 }

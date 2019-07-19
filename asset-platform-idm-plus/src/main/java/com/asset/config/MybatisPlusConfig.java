@@ -76,6 +76,7 @@ public class MybatisPlusConfig {
     public MybatisSqlSessionFactoryBean mybatisSqlSessionFactoryBean() {
         MybatisSqlSessionFactoryBean mybatisPlus = new MybatisSqlSessionFactoryBean();
         //设置数据库表前缀
+        mybatisPlus.setMapperLocations(this.properties.resolveMapperLocations());
         mybatisPlus.setGlobalConfig(globalConfiguration());
         mybatisPlus.setDataSource(dataSource);
         mybatisPlus.setVfs(SpringBootVFS.class);

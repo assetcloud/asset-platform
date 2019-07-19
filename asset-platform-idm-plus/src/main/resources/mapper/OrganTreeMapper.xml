@@ -49,9 +49,9 @@
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
     <result column="economic_type" jdbcType="INTEGER" property="economicType" />
     <result column="financial_affiliation" jdbcType="VARCHAR" property="financialAffiliation" />
-    <result column="is_financial_unit" jdbcType="BIT" property="isFinancialUnit" />
-    <result column="is_vertical_unit" jdbcType="BIT" property="isVerticalUnit" />
-    <result column="is_virtual_unit" jdbcType="BIT" property="isVirtualUnit" />
+    <result column="is_financial_unit" jdbcType="BIT" property="financialUnit" />
+    <result column="is_vertical_unit" jdbcType="BIT" property="verticalUnit" />
+    <result column="is_virtual_unit" jdbcType="BIT" property="virtualUnit" />
     <result column="accounting_system" jdbcType="INTEGER" property="accountingSystem" />
     <result column="corporate_tag" jdbcType="VARCHAR" property="corporateTag" />
     <result column="maintainer_mark" jdbcType="VARCHAR" property="maintainerMark" />
@@ -121,9 +121,9 @@
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
     <result column="economic_type" jdbcType="INTEGER" property="economicType" />
     <result column="financial_affiliation" jdbcType="VARCHAR" property="financialAffiliation" />
-    <result column="is_financial_unit" jdbcType="BIT" property="isFinancialUnit" />
-    <result column="is_vertical_unit" jdbcType="BIT" property="isVerticalUnit" />
-    <result column="is_virtual_unit" jdbcType="BIT" property="isVirtualUnit" />
+    <result column="is_financial_unit" jdbcType="BIT" property="financialUnit" />
+    <result column="is_vertical_unit" jdbcType="BIT" property="verticalUnit" />
+    <result column="is_virtual_unit" jdbcType="BIT" property="virtualUnit" />
     <result column="accounting_system" jdbcType="INTEGER" property="accountingSystem" />
     <result column="corporate_tag" jdbcType="VARCHAR" property="corporateTag" />
     <result column="maintainer_mark" jdbcType="VARCHAR" property="maintainerMark" />
@@ -197,9 +197,9 @@
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
     <result column="economic_type" jdbcType="INTEGER" property="economicType" />
     <result column="financial_affiliation" jdbcType="VARCHAR" property="financialAffiliation" />
-    <result column="is_financial_unit" jdbcType="BIT" property="isFinancialUnit" />
-    <result column="is_vertical_unit" jdbcType="BIT" property="isVerticalUnit" />
-    <result column="is_virtual_unit" jdbcType="BIT" property="isVirtualUnit" />
+    <result column="is_financial_unit" jdbcType="BIT" property="financialUnit" />
+    <result column="is_vertical_unit" jdbcType="BIT" property="verticalUnit" />
+    <result column="is_virtual_unit" jdbcType="BIT" property="virtualUnit" />
     <result column="accounting_system" jdbcType="INTEGER" property="accountingSystem" />
     <result column="corporate_tag" jdbcType="VARCHAR" property="corporateTag" />
     <result column="maintainer_mark" jdbcType="VARCHAR" property="maintainerMark" />
@@ -273,7 +273,7 @@
     email_address, province, city, county, street_address, postal_code, fund_supply_mode_name,
     fund_supply_mode_code, administration_level_name, administration_level_type, department_category_name,
     business_department_classification_code, principal, contact, corporate_representative,
-    economic_type, financial_affiliation, is_financial_unit, is_vertical_unit, is_virtual_unit,
+    economic_type, financial_affiliation, financial_unit, vertical_unit, virtual_unit,
     accounting_system, corporate_tag, maintainer_mark, supplier_mark, manufacture_mark,
     asset_disposal_agency_tag, state_asset_management_company, authorized_number, administration_authority,
     enable_time, disable_time, seal_time, unit_remark, asset_download_status, latitude_and_longitude,
@@ -356,8 +356,8 @@
       administration_level_name, administration_level_type,
       department_category_name, business_department_classification_code,
       principal, contact, corporate_representative,
-      economic_type, financial_affiliation, is_financial_unit,
-      is_vertical_unit, is_virtual_unit, accounting_system,
+      economic_type, financial_affiliation, financial_unit,
+      vertical_unit, virtual_unit, accounting_system,
       corporate_tag, maintainer_mark, supplier_mark,
       manufacture_mark, asset_disposal_agency_tag,
       state_asset_management_company, authorized_number,
@@ -383,8 +383,8 @@
       #{administrationLevelName,jdbcType=INTEGER}, #{administrationLevelType,jdbcType=INTEGER},
       #{departmentCategoryName,jdbcType=INTEGER}, #{businessDepartmentClassificationCode,jdbcType=INTEGER},
       #{principal,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, #{corporateRepresentative,jdbcType=VARCHAR},
-      #{economicType,jdbcType=INTEGER}, #{financialAffiliation,jdbcType=VARCHAR}, #{isFinancialUnit,jdbcType=BIT},
-      #{isVerticalUnit,jdbcType=BIT}, #{isVirtualUnit,jdbcType=BIT}, #{accountingSystem,jdbcType=INTEGER},
+      #{economicType,jdbcType=INTEGER}, #{financialAffiliation,jdbcType=VARCHAR}, #{financialUnit,jdbcType=BIT},
+      #{verticalUnit,jdbcType=BIT}, #{virtualUnit,jdbcType=BIT}, #{accountingSystem,jdbcType=INTEGER},
       #{corporateTag,jdbcType=VARCHAR}, #{maintainerMark,jdbcType=VARCHAR}, #{supplierMark,jdbcType=VARCHAR},
       #{manufactureMark,jdbcType=VARCHAR}, #{assetDisposalAgencyTag,jdbcType=VARCHAR},
       #{stateAssetManagementCompany,jdbcType=VARCHAR}, #{authorizedNumber,jdbcType=INTEGER},
@@ -401,12 +401,75 @@
             (#{item.nodeId}, #{item.parentId}, #{item.unitName}, #{item.sceneId}, #{item.status})
         </foreach>
     </insert>
+  <insert id="batchInsertNode" parameterType="java.util.List">
+    insert into as_organ_tree (id, unit_name, unit_name_en,
+      parent_id, organization_form, unit_type,
+      parent_node_name, charge_section_id, charge_section_name,
+      local_financial_code, local_financial_name,
+      office_administration_code, office_administration_name,
+      administration_division_code, administration_division_name,
+      budget_code, college_code, organization_code,
+      unit_type_code, unit_type_name, unit_basic_property,
+      social_credit_code, budget_unit_name, budget_unit_code,
+      budget_management_level, firm_name, firm_code,
+      telephone_number, phone_number, fax_number,
+      email_address, province, city,
+      county, street_address, postal_code,
+      fund_supply_mode_name, fund_supply_mode_code,
+      administration_level_name, administration_level_type,
+      department_category_name, business_department_classification_code,
+      principal, contact, corporate_representative,
+      economic_type, financial_affiliation, financial_unit,
+      vertical_unit, virtual_unit, accounting_system,
+      corporate_tag, maintainer_mark, supplier_mark,
+      manufacture_mark, asset_disposal_agency_tag,
+      state_asset_management_company, authorized_number,
+      administration_authority, enable_time,
+      disable_time, seal_time, unit_remark,
+      asset_download_status, latitude_and_longitude,
+      created_time, is_deleted, status,
+      sort, tenant_code)
+    values
+    <foreach collection="list" separator="," item="item">
+      (#{item.id,jdbcType=VARCHAR}, #{item.unitName,jdbcType=VARCHAR}, #{item.unitNameEn,jdbcType=VARCHAR},
+      #{item.parentId,jdbcType=VARCHAR}, #{item.organizationForm,jdbcType=INTEGER}, #{item.unitType,jdbcType=INTEGER},
+      #{item.parentNodeName,jdbcType=VARCHAR}, #{item.chargeSectionId,jdbcType=INTEGER}, #{item.chargeSectionName,jdbcType=VARCHAR},
+      #{item.localFinancialCode,jdbcType=VARCHAR}, #{item.localFinancialName,jdbcType=VARCHAR},
+      #{item.officeAdministrationCode,jdbcType=VARCHAR}, #{item.officeAdministrationName,jdbcType=VARCHAR},
+      #{item.administrationDivisionCode,jdbcType=VARCHAR}, #{item.administrationDivisionName,jdbcType=VARCHAR},
+      #{item.budgetCode,jdbcType=INTEGER}, #{item.collegeCode,jdbcType=VARCHAR}, #{item.organizationCode,jdbcType=VARCHAR},
+      #{item.unitTypeCode,jdbcType=INTEGER}, #{item.unitTypeName,jdbcType=INTEGER}, #{item.unitBasicProperty,jdbcType=INTEGER},
+      #{item.socialCreditCode,jdbcType=VARCHAR}, #{item.budgetUnitName,jdbcType=VARCHAR}, #{item.budgetUnitCode,jdbcType=VARCHAR},
+      #{item.budgetManagementLevel,jdbcType=INTEGER}, #{item.firmName,jdbcType=VARCHAR}, #{item.firmCode,jdbcType=VARCHAR},
+      #{item.telephoneNumber,jdbcType=VARCHAR}, #{item.phoneNumber,jdbcType=VARCHAR}, #{item.faxNumber,jdbcType=VARCHAR},
+      #{item.emailAddress,jdbcType=VARCHAR}, #{item.province,jdbcType=VARCHAR}, #{item.city,jdbcType=VARCHAR},
+      #{item.county,jdbcType=VARCHAR}, #{item.streetAddress,jdbcType=VARCHAR}, #{item.postalCode,jdbcType=VARCHAR},
+      #{item.fundSupplyModeName,jdbcType=INTEGER}, #{item.fundSupplyModeCode,jdbcType=INTEGER},
+      #{item.administrationLevelName,jdbcType=INTEGER}, #{item.administrationLevelType,jdbcType=INTEGER},
+      #{item.departmentCategoryName,jdbcType=INTEGER}, #{item.businessDepartmentClassificationCode,jdbcType=INTEGER},
+      #{item.principal,jdbcType=VARCHAR}, #{item.contact,jdbcType=VARCHAR}, #{item.corporateRepresentative,jdbcType=VARCHAR},
+      #{item.economicType,jdbcType=INTEGER}, #{item.financialAffiliation,jdbcType=VARCHAR}, #{item.financialUnit,jdbcType=BIT},
+      #{item.verticalUnit,jdbcType=BIT}, #{item.virtualUnit,jdbcType=BIT}, #{item.accountingSystem,jdbcType=INTEGER},
+      #{item.corporateTag,jdbcType=VARCHAR}, #{item.maintainerMark,jdbcType=VARCHAR}, #{item.supplierMark,jdbcType=VARCHAR},
+      #{item.manufactureMark,jdbcType=VARCHAR}, #{item.assetDisposalAgencyTag,jdbcType=VARCHAR},
+      #{item.stateAssetManagementCompany,jdbcType=VARCHAR}, #{item.authorizedNumber,jdbcType=INTEGER},
+      #{item.administrationAuthority,jdbcType=VARCHAR}, #{item.enableTime,jdbcType=TIMESTAMP},
+      #{item.disableTime,jdbcType=TIMESTAMP}, #{item.sealTime,jdbcType=TIMESTAMP}, #{item.unitRemark,jdbcType=VARCHAR},
+      #{item.assetDownloadStatus,jdbcType=VARCHAR}, #{item.latitudeAndLongitude,jdbcType=VARCHAR},
+      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.isDeleted,jdbcType=INTEGER}, #{item.status,jdbcType=BIT},
+      #{item.sort,jdbcType=INTEGER}, #{item.tenantCode,jdbcType=VARCHAR})
+    </foreach>
+
+  </insert>
     <select id="getTopNode" resultMap="BaseResultMap">
         select * from
             as_organ_tree
         where
             parent_id = '' and  id = 'top' and status = 1 and is_deleted = 0
     </select>
+  <select id="getByName" resultMap="BaseResultMap">
+    select id from as_organ_tree where unit_name = #{unitName} and status = 1 and is_deleted = 0
+  </select>
   <!--<insert id="batchInsert1" parameterType="java.util.List">
     insert into as_organ_tree
     <trim prefix="(" suffix=")" suffixOverrides=",">
