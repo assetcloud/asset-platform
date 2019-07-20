@@ -1,13 +1,11 @@
 package com.asset.controller;
 
-import com.asset.dao.AsFormModelMapper;
-import com.asset.entity.AsFormModel;
+import com.asset.dao.FormModelMapper;
+import com.asset.entity.FormModel;
 import com.asset.javabean.RespBean;
-import com.asset.rec.*;
+import com.asset.dto.*;
 import com.asset.service.FormModelService;
 import com.asset.utils.Constants;
-import com.asset.utils.JsonUtils;
-import com.asset.utils.RecUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -32,7 +30,7 @@ public class FormModelController {
     final static Logger LOGGER = LoggerFactory.getLogger(FormModelController.class);
 
     @Autowired
-    AsFormModelMapper asFormModelMapper;
+    FormModelMapper formModelMapper;
     @Autowired
     FormModelService formModelService;
 
@@ -42,7 +40,7 @@ public class FormModelController {
     @ApiOperation(value = "表单创建、存储", notes = "", httpMethod = "POST")
     @RequestMapping(value = "/form/model/create", method = RequestMethod.POST)
     public RespBean createFormModel(@RequestBody FormModelCreateRec rec) throws JsonProcessingException {
-        AsFormModel curFormModel = formModelService.createFormModel(rec);
+        FormModel curFormModel = formModelService.createFormModel(rec);
 
         return RespBean.ok("",curFormModel);
     }
@@ -57,8 +55,8 @@ public class FormModelController {
      */
     @RequestMapping(value = "/form/model/edit", method = RequestMethod.PUT)
     public RespBean editFormModel(@RequestBody FormModelEditRec rec) throws JsonProcessingException {
-        AsFormModel asFormModel = new AsFormModel(rec);
-        int i= asFormModelMapper.editFormModel(asFormModel);
+        FormModel formModel = new FormModel(rec);
+        int i= formModelMapper.editFormModel(formModel);
         if(i==0)
             return RespBean.error("修改失败！");
 
@@ -92,8 +90,8 @@ public class FormModelController {
                                 ){
 //        if(RecUtils.check(appId,groupId,formStatus))
 //            return RespBean.error()
-        List<AsFormModel> asFormModels = formModelService.getFormModels(appId,userId,groupId,formStatus);
-        return RespBean.ok("", asFormModels);
+        List<FormModel> formModels = formModelService.getFormModels(appId,userId,groupId,formStatus);
+        return RespBean.ok("", formModels);
     }
 
 
@@ -108,8 +106,8 @@ public class FormModelController {
      */
     @RequestMapping(value = "/form/model/setgroup", method = RequestMethod.PUT)
     public RespBean setFormGroup(@RequestBody FormGroupRec rec) throws JsonProcessingException {
-        AsFormModel info = new AsFormModel(rec.getForm_model_id(),rec.getGroup_id());
-        int i =asFormModelMapper.setFormGroup(info);
+        FormModel info = new FormModel(rec.getForm_model_id(),rec.getGroup_id());
+        int i = formModelMapper.setFormGroup(info);
         if(i== Constants.DATABASE_FAILED)
             return RespBean.error("修改失败！");
         return RespBean.ok("");

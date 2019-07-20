@@ -11,9 +11,9 @@
 
 
     <!--取出AsFormInst对象中的taskId值去 act_hi_actinst表中找到对应的ACT_ID_字段的值，用于去别的表找这个ACT是什么类型的
-     * @param List<AsFormInst> asFormInsts
+     * @param List<FormInst> formInsts
      * @return 对应的ACT_ID_字段的值-->
-    <select id="getActIDs" parameterType="com.asset.entity.AsFormInst" resultMap="BaseResultMap">
+    <select id="getActIDs" parameterType="com.asset.entity.FormInst" resultMap="BaseResultMap">
         SELECT
         TASK_ID_,
         ACT_ID_

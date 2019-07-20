@@ -3,7 +3,7 @@ package com.asset.entity;
 import lombok.Data;
 
 @Data
-public class AsGroup {
+public class Group {
     protected Integer groupId;
 
     protected String appId;

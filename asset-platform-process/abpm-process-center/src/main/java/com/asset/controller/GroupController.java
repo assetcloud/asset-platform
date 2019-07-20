@@ -1,17 +1,15 @@
 package com.asset.controller;
 
 import com.asset.dao.AsGroupMapper;
-import com.asset.entity.AsGroup;
-import com.asset.entity.AsGroupCreate;
-import com.asset.entity.AsGroupDelete;
-import com.asset.entity.AsGroupEdit;
+import com.asset.entity.*;
+import com.asset.entity.GroupDelete;
+import com.asset.entity.Group;
 import com.asset.javabean.RespBean;
-import com.asset.rec.GroupRec;
+import com.asset.dto.GroupRec;
 import com.asset.service.AppGroupService;
 import com.asset.utils.Constants;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -41,11 +39,11 @@ public class GroupController {
     @RequestMapping(value = "/group/create" ,method = RequestMethod.POST)
     public RespBean createOAppGroup(@RequestBody GroupRec rec)
     {
-        AsGroup asGroup = new AsGroupCreate(
+        Group group = new GroupCreate(
                 rec.getApp_id(),
                 rec.getGroup_name(),
                 Constants.GROUP_ENABLED);
-        int i =groupMapper.insertSelective(asGroup);
+        int i =groupMapper.insertSelective(group);
         if(i==Constants.DATABASE_FAILED)
             return RespBean.error("创建失败！");
 
@@ -60,7 +58,7 @@ public class GroupController {
     @RequestMapping(value = "/group/edit" ,method = RequestMethod.PUT)
     public RespBean updateGroup(@RequestBody GroupRec rec)
     {
-        AsGroup info = new AsGroupEdit(rec.getGroup_id(),
+        Group info = new GroupEdit(rec.getGroup_id(),
                 rec.getApp_id(),
                 rec.getGroup_name());
         int i = groupMapper.updateGroup(info);
@@ -77,7 +75,7 @@ public class GroupController {
     @RequestMapping(value = "/group/delete" ,method = RequestMethod.DELETE)
     public RespBean deleteGroup(@RequestBody GroupRec rec)
     {
-        AsGroup info = new AsGroupDelete(rec.getGroup_id(),
+        Group info = new GroupDelete(rec.getGroup_id(),
                 Constants.GROUP_DISABLED);
         int  i = groupMapper.deleteGroup(info);
         if(i==Constants.DATABASE_FAILED)
@@ -93,18 +91,18 @@ public class GroupController {
     @RequestMapping(value = "/group/all" ,method = RequestMethod.GET)
     public RespBean showGroups(@RequestParam(value = "app_id") String appID)
     {
-        ArrayList<AsGroup> asGroups = (ArrayList<AsGroup>) groupMapper.selectAll(appID);
-        for(int i = 0;i<asGroups.size();i++)
+        ArrayList<Group> groups = (ArrayList<Group>) groupMapper.selectAll(appID);
+        for(int i = 0; i< groups.size(); i++)
         {
-            if(asGroups.get(i).getStatus()== Constants.GROUP_DISABLED)
+            if(groups.get(i).getStatus()== Constants.GROUP_DISABLED)
             {
-                asGroups.remove(i);
+                groups.remove(i);
                 i--;
             }
         }
-        if (asGroups.size()==0)
+        if (groups.size()==0)
             return RespBean.ok("分组为空！");
-        return RespBean.ok("", asGroups);
+        return RespBean.ok("", groups);
     }
 
 

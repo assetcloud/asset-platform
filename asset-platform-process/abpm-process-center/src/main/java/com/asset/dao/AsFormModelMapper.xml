@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.asset.dao.AsFormModelMapper">
-  <resultMap id="BaseResultMap" type="com.asset.entity.AsFormModel">
+<mapper namespace="com.asset.dao.FormModelMapper">
+  <resultMap id="BaseResultMap" type="com.asset.entity.FormModel">
     <result column="id" jdbcType="VARCHAR" property="id" />
     <result column="form_name" jdbcType="VARCHAR" property="formName" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
@@ -14,13 +14,13 @@
     <result column="status" jdbcType="INTEGER" property="status" />
     <result column="proc_model_id" jdbcType="VARCHAR" property="procModelId" />
   </resultMap>
-  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.asset.entity.AsFormModel">
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.asset.entity.FormModel">
     <result column="model_json" jdbcType="LONGVARCHAR" property="modelJson" />
   </resultMap>
   <sql id="Blob_Column_List">
     model_json
   </sql>
-  <insert id="insert" parameterType="com.asset.entity.AsFormModel">
+  <insert id="insert" parameterType="com.asset.entity.FormModel">
     insert into as_form_model (id, form_name, created_time,
       created_by, last_updated_time, last_updated_by,
       version, group_id, icon_cls,
@@ -32,7 +32,7 @@
       #{status,jdbcType=TINYINT}, #{procModelId,jdbcType=VARCHAR}, #{modelJson,jdbcType=LONGVARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.asset.entity.AsFormModel">
+  <insert id="insertSelective" parameterType="com.asset.entity.FormModel">
     insert into as_form_model
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -124,8 +124,8 @@
     </select>
 
   <!--修改表单模型
-      @param AsFormModel asFormModel-->
-  <update id="editFormModel" parameterType="com.asset.entity.AsFormModel">
+      @param FormModel formModel-->
+  <update id="editFormModel" parameterType="com.asset.entity.FormModel">
         UPDATE as_form_model
         SET
         form_name = #{formName,jdbcType=VARCHAR},
@@ -137,13 +137,13 @@
     </update>
 
   <!-- 在表单模型表中绑定对应的流程模型，还需要修改表单模型的状态
-       @param AsFormModel bindInfo
+       @param FormModel bindInfo
        其中：
   表单模型创建之后的状态：
   public static final int FORM_MODEL_UNBIND = 0;   //还没和流程模型绑定
   public static final int FORM_MODEL_BINDED = 1;  //已绑定，表单流程已经可以被发起
   public static final int FORM_MODEL_DELETED = 2;  //表单流程已被删除-->
-  <update id="bindProcModel" parameterType="com.asset.entity.AsFormModel">
+  <update id="bindProcModel" parameterType="com.asset.entity.FormModel">
         UPDATE
         as_form_model
         SET
@@ -177,8 +177,8 @@
   </select>
 
   <!--给应用下的表单模型进行分组
-      @param AsFormModel groupInfo-->
-  <update id="setFormGroup" parameterType="com.asset.entity.AsFormModel">
+      @param FormModel groupInfo-->
+  <update id="setFormGroup" parameterType="com.asset.entity.FormModel">
         UPDATE
           as_form_model
         SET

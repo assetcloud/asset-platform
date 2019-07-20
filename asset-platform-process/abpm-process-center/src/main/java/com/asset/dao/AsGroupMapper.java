@@ -1,7 +1,7 @@
 package com.asset.dao;
 
 
-import com.asset.entity.AsGroup;
+import com.asset.entity.Group;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,24 +10,24 @@ import java.util.List;
 public interface AsGroupMapper {
     int deleteByPrimaryKey(Integer groupId);
 
-    int insert(AsGroup record);
+    int insert(Group record);
 
-    int insertSelective(AsGroup record);
+    int insertSelective(Group record);
 
-    AsGroup selectByPrimaryKey(Integer groupId);
+    Group selectByPrimaryKey(Integer groupId);
 
-    int updateByPrimaryKeySelective(AsGroup record);
+    int updateByPrimaryKeySelective(Group record);
 
-    int updateByPrimaryKey(AsGroup record);
+    int updateByPrimaryKey(Group record);
 
     /**
      * 获取一个App下的所有分组
      * @param appID
      * @return
      */
-    List<AsGroup> selectAll(String appID);
+    List<Group> selectAll(String appID);
 
-    int deleteGroup(AsGroup info);
+    int deleteGroup(Group info);
 
-    int updateGroup(AsGroup info);
+    int updateGroup(Group info);
 }

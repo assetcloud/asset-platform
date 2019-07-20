@@ -1,11 +1,10 @@
 package com.asset.test;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.FlowableApplication;
 import com.asset.converter.FormConverter;
-import com.asset.entity.AsFormInst;
+import com.asset.entity.FormInst;
 import com.asset.entity.OptionsBase;
 import com.asset.form.FormItem;
 import com.asset.form.FormJsonEntity;
@@ -19,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.io.Serializable;
-import java.time.Period;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +124,7 @@ public class Json {
         String jsonStr = json.toString();
         System.out.println(json.get("aa"));
 
-        JSON.parseObject(json.toJSONString(), AsFormInst.class);
+        JSON.parseObject(json.toJSONString(), FormInst.class);
 
         Map map = new HashMap();
         map.put("a","aaa");

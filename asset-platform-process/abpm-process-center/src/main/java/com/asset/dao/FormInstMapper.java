@@ -1,15 +1,15 @@
 package com.asset.dao;
 
 
-import com.asset.entity.AsFormInst;
+import com.asset.entity.FormInst;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface AsFormInstMapper {
-    int insert(AsFormInst record);
-    int insertSelective(AsFormInst record);
+public interface FormInstMapper {
+    int insert(FormInst record);
+    int insertSelective(FormInst record);
 
     /**
      * 根据表单实例ID获取对应的流程实例ID
@@ -24,7 +24,7 @@ public interface AsFormInstMapper {
      * @param procTaskIds 这里的procTaskIds是当前该用户执行到的任务节点TaskID
      * @return
      */
-    List<AsFormInst> getFormInsts(String[] procTaskIds);
+    List<FormInst> getFormInsts(String[] procTaskIds);
 
     String getFormModelId(String formInstId);
 
@@ -32,19 +32,19 @@ public interface AsFormInstMapper {
      * 审批
      * @param inst
      */
-    void approveFormInst(AsFormInst inst);
+    void approveFormInst(FormInst inst);
 
     /**
      * 经办
      * @param inst
      */
-    void handleFormInst(AsFormInst inst);
+    void handleFormInst(FormInst inst);
 
     /**
      * 已阅
      * @param inst
      */
-    void readFormInst(AsFormInst inst);
+    void readFormInst(FormInst inst);
 
 
     String getTaskId(String taskId);

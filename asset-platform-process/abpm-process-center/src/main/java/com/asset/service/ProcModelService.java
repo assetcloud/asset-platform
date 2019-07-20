@@ -2,12 +2,11 @@ package com.asset.service;
 
 import com.asset.dao.ActTypeMapper;
 import com.asset.entity.ActType;
-import com.asset.rec.ProcModelRec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AsProcModelService {
+public class ProcModelService {
 
     @Autowired
     ActTypeMapper actTypeMapper;

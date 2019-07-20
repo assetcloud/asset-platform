@@ -7,20 +7,9 @@ import com.asset.entity.*;
 import com.asset.form.FormItem;
 import com.asset.form.ItemRuleRequired;
 import com.asset.form.FormJson;
-import com.asset.rec.*;
+import com.asset.dto.*;
 import com.asset.utils.Constants;
-import org.flowable.bpmn.converter.BpmnXMLConverter;
-import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.*;
-import org.flowable.engine.repository.Deployment;
-import org.flowable.engine.repository.DeploymentBuilder;
-import org.flowable.engine.repository.ProcessDefinition;
-import org.flowable.engine.runtime.Execution;
-import org.flowable.engine.runtime.ExecutionQuery;
-import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.engine.runtime.ProcessInstanceQuery;
-import org.flowable.task.api.Task;
-import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,9 +24,9 @@ import java.util.List;
 @Service
 public class FormInstService {
     @Autowired
-    AsFormModelMapper asFormModelMapper;
+    FormModelMapper formModelMapper;
     @Autowired
-    AsFormInstMapper asFormInstMapper;
+    FormInstMapper formInstMapper;
     @Autowired
     FlowableMapper flowableMapper;
     @Autowired
@@ -46,36 +35,14 @@ public class FormInstService {
     AsProcInstMapper procInstMapper;
     @Autowired
     FormAuthorityMapper formAuthorityMapper;
-
     @Autowired
-    protected ModelService modelService;
+    ProcInstService procInstService;
+
 
     Logger logger = LoggerFactory.getLogger(FormInstService.class);
 
 
-    /**
-     * 当前任务节点完成之后，会自动流转到下一个任务节点，数据库表中会生成这个没有被完成的任务节点的信息，
-     * 这里是在as_proc_inst表中写入这个信息
-     */
-    public void saveUnCompleteTask( String procInstId,
-                                    String formModelId,
-                                    String formInstValue) {
-        FormJson unCompleteFormJson = getFormJson(formModelId);
-        //获取当前执行到的任务节点
-        String[] taskIDs = getTaskIDs(procInstId);
-        //如果下面还有任务节点要处理，就在as_proc_inst中新建这个表单实例字段（每一个TaskId对应一个新的表单实例）
-        for (int i=0;i<taskIDs.length;i++){
-            String a = asFormInstMapper.getTaskId(taskIDs[i]);
-            if (!taskIDs[i].isEmpty()&&
-                    a== null )  //当前要存的taskID不能是已经有的的，否则重复保存了
-                createFormInst(unCompleteFormJson,
-                        procInstId,
-                        "",
-                        formModelId,
-                        formInstValue,
-                        taskIDs[i]);
-        }
-    }
+
 
 
     /**
@@ -100,7 +67,7 @@ public class FormInstService {
     }
 
 
-    public List<AsFormInst> getTobeReadInsts(List<AsFormInst> formInsts) {
+    public List<FormInst> getTobeReadInsts(List<FormInst> formInsts) {
         List<AsTask> asTasks = flowableMapper.getActIDs(formInsts);
         return null;
     }
@@ -132,20 +99,20 @@ public class FormInstService {
         RuntimeService runtimeService = engine.getRuntimeService();
 
         runtimeService.createChangeActivityStateBuilder().processInstanceId(procInstID)
-                .moveExecutionToActivityId(getExecutionId(procInstID), rollbackActID).changeState();
+                .moveExecutionToActivityId(procInstService.getExecutionId(procInstID), rollbackActID).changeState();
     }
 
     //创建表单实例，表单实例信息（包含了流程实例的一些信息）存入as_form_inst表中
-    public AsFormInst createFormInst(FormJson formJson,
-                                      String procInstId,
-                                      String editor,
-                                      String formModelId,
-                                     String formInstValue,
-                                     String taskId){
-        String executionID = getExecutionId(procInstId);
+    public FormInst createFormInst(FormJson formJson,
+                                   String procInstId,
+                                   String editor,
+                                   String formModelId,
+                                   String formInstValue,
+                                   String taskId){
+        String executionID = procInstService.getExecutionId(procInstId);
         String formInstJson = JSONObject.toJSONString(formJson);
 
-        AsFormInst inst = new AsFormInst(
+        FormInst inst = new FormInst(
                 formModelId,
                 procInstId,
                 executionID,
@@ -154,158 +121,50 @@ public class FormInstService {
                 formInstValue,
                 formInstJson
         );
-        asFormInstMapper.insertSelective(inst);
+        formInstMapper.insertSelective(inst);
         return inst;
     }
 
     //as_form_inst表中中包含这条表单实例信息，但是是属于还没完成的那种类型，需要填写表单信息后对这项进行更新
-    public AsFormInst updateFormInst(FormInstRecBase recBase){
-        AsFormInst inst = null;
+    public FormInst updateFormInst(FormInstRecBase recBase){
+        FormInst inst = null;
         // 审批表单实例
         if (recBase instanceof FormInstRecApprove)
         {
-            inst = new AsFormInst(
+            inst = new FormInst(
                     ((FormInstRecApprove) recBase).getForm_inst_id(),
                     recBase.getForm_inst_value(),
                     recBase.getEditor()
             );
-            asFormInstMapper.approveFormInst(inst);
+            formInstMapper.approveFormInst(inst);
         }
         // 经办节点
         if (recBase instanceof FormInstRecHandle)
         {
             String formInstJson = JSONObject.toJSONString(((FormInstRecHandle) recBase).getForm_inst_json());
 
-            inst = new AsFormInst(
+            inst = new FormInst(
                     ((FormInstRecHandle) recBase).getForm_inst_id(),
                     formInstJson,
                     recBase.getForm_inst_value(),
                     recBase.getEditor()
             );
-            asFormInstMapper.handleFormInst(inst);
+            formInstMapper.handleFormInst(inst);
         }
         // 待阅
         if(recBase instanceof FormInstRecReadle)
         {
-            inst = new AsFormInst(
+            inst = new FormInst(
                     ((FormInstRecReadle) recBase).getForm_inst_id(),
                     recBase.getForm_inst_value(),
                     recBase.getEditor()
             );
-            asFormInstMapper.readFormInst(inst);
+            formInstMapper.readFormInst(inst);
         }
         return inst;
     }
 
-    public ProcessInstance getProcInst(String procInstId){
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
 
-        return runtimeService.createProcessInstanceQuery().processInstanceId(procInstId).singleResult();
-    }
-
-
-    public void completeCurTask(String taskID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        TaskService taskService = engine.getTaskService();
-
-        taskService.complete(taskID);
-    }
-
-    public String[] getTaskIDs(String procInstID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
-
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(procInstID).list();
-        String[] taskIDs = new String[tasks.size()];
-        for (int i=0;i<tasks.size();i++)
-            taskIDs[i]=tasks.get(i).getId();
-        return taskIDs;
-    }
-
-    public String getExecutionId(String procInstID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RuntimeService runtimeService = engine.getRuntimeService();
-
-        ExecutionQuery executionQuery = runtimeService.createExecutionQuery().processInstanceId(procInstID);
-        List<Execution> executions = executionQuery.list();
-
-        Execution temp = null;
-        for (int j = 0; j < executions.size(); j++) {
-            temp = executions.get(j);
-            if (temp.getActivityId() == null)
-                continue;
-            else
-                break;
-        }
-        return temp.getId();
-    }
-
-    //直接由流程模型ID创建相应的流程实例
-    public ProcessInstance createProcInstance(String procModelId,String defID,String deployID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
-
-
-        org.flowable.ui.modeler.domain.Model modelData = modelService.getModel(procModelId);
-        BpmnModel bpmnModel = modelService.getBpmnModel(modelData);
-
-        DeploymentBuilder builder = repositoryService.createDeployment();
-        byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(bpmnModel);
-        String processXMLName = modelData.getName()+".bpmn20.xml";
-        String depResourceName = modelData.getName()+"ResName";
-        String depName = modelData.getName()+"DepName";
-        String depKey = modelData.getName()+"DepKey";
-
-
-        //部署
-        Deployment dep = builder.addBpmnModel(depResourceName,bpmnModel).
-                name(depName).
-                key(depKey).
-                addBytes(processXMLName,bpmnBytes).   //必须加这个，否则流程定义文件会为空
-                deploy();
-        //获取流程定义
-        deployID = dep.getId();
-        ProcessDefinition def = repositoryService.createProcessDefinitionQuery().deploymentId(dep.getId()).singleResult();
-        defID = def.getId();
-        //创建流程实例
-        ProcessInstance instance = runtimeService.startProcessInstanceById(def.getId());
-        return instance;
-    }
-
-    public void completeAll() {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
-
-        ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
-
-        List<ProcessInstance> lists = query.active().list();
-
-        for(int j = 0 ; j<lists.size() ; j++) {
-            ProcessInstance instance = lists.get(j);
-
-            for (int i = 0; i < Integer.MAX_VALUE; i++)
-            {
-                List<Task> tasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
-
-                if (tasks.size() == 0)
-                    break;
-
-                //遍历，然后完成
-                for (Task task : tasks) {
-                    taskService.complete(task.getId());
-                }
-            }
-        }
-    }
 
     public TaskCount getCount(String userID,
                               int taskType) throws Exception {
@@ -313,7 +172,7 @@ public class FormInstService {
         HashMap<String,Integer> map =new HashMap<String, Integer>();
 
         //1、先获取流转到该用户对应的procInstId\taskID\actId的集合
-        List<AsTask> tasks = getCurTasks(userID);
+        List<AsTask> tasks = procInstService.getCurTasks(userID);
         if (tasks.size()==0)
             return new TaskCount(taskType,0);
 
@@ -322,7 +181,7 @@ public class FormInstService {
         {
             AsTask curAsTask = tasks.get(i);
             //2.1 由流程实例ID获取流程模型ID
-            String procModelId = getProcModelIdByProc(curAsTask.getProcInstId());
+            String procModelId = procInstService.getProcModelIdByProc(curAsTask.getProcInstId());
             //这里说明我们在as_proc_inst表中找不到这个在ac_hi_actinst表中存在的流程实例，说明数据库中存在脏的流程实例数据
             if (procModelId.isEmpty()){
                 logger.error("在as_proc_inst表中找不到这个在ac_hi_actinst表中存在的流程实例!没有如下ProcInstID:{}", curAsTask.getProcInstId());
@@ -330,7 +189,7 @@ public class FormInstService {
             }
 
             //2.2 根据流程模型ID、节点ID 获取对应的ActType，然后决定要不要把该taskInfos中的这一项给去掉
-            Integer actType = getActType(procModelId, curAsTask.getActId());
+            Integer actType = procInstService.getActType(procModelId, curAsTask.getActId());
             if (actType == null)
             {
                 logger.error("流程中间层生成的流程模型出错！procModelId为:{},没有如下ActID:{}",procModelId, curAsTask.getActId());
@@ -351,22 +210,7 @@ public class FormInstService {
                 tasks.size());
     }
 
-    public List<AsTask> getCurTasks(String userID) {
-        return flowableMapper.getTaskInfos(userID);
-    }
 
-    public String getProcModelIdByProc(String procInstId) {
-        return procInstMapper.getProcModelId(procInstId);
-    }
-
-    public Integer getActType(String procModelId, String actId) {
-        return actTypeMapper.getActType(procModelId,actId);
-    }
-
-
-    public String getActId(String taskId) {
-        return flowableMapper.getActId(taskId);
-    }
 
     public Integer getCurAuthority(String procModelId, String actId, String itemKey) {
         return formAuthorityMapper.getAuthority(procModelId,actId,itemKey);
@@ -374,8 +218,8 @@ public class FormInstService {
 
     /**
      *
-     * @param items
-     * @param j
+     * @param items 一个表单模型中的表单项列表
+     * @param j 表单项列表要修改第几个表单项
      * @param curAuthority 第j个表单项当前的权限应该是什么（在调用该方法前已经指定好了）
      */
     public void handleAuthority(List<FormItem> items, int j, Integer curAuthority) {
@@ -441,11 +285,11 @@ public class FormInstService {
     }
 
     public String getProcModelIdByForm(String form_model_id) {
-        return asFormModelMapper.getProcModelID(form_model_id);
+        return formModelMapper.getProcModelID(form_model_id);
     }
 
     public String getFormById(String form_model_id) {
-        return asFormModelMapper.getModelJson(form_model_id);
+        return formModelMapper.getModelJson(form_model_id);
     }
 
     /**
@@ -454,8 +298,16 @@ public class FormInstService {
      * @return
      */
     public FormJson getFormJson(String formModelId) {
-        String modelStr = asFormModelMapper.getModelJson(formModelId);
+        String modelStr = formModelMapper.getModelJson(formModelId);
         return JSON.parseObject(modelStr,FormJson.class);
     }
 
+    /**
+     *
+     * @param items
+     */
+
+    public void handleAuthoritys(List<FormItem> items) {
+
+    }
 }

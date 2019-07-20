@@ -2,15 +2,13 @@ package com.asset.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.asset.dao.AppFormBindMapper;
-import com.asset.dao.AsFormModelMapper;
+import com.asset.dao.FormModelMapper;
 import com.asset.entity.AppFormBind;
-import com.asset.entity.AsFormModel;
-import com.asset.rec.FormGroupRec;
-import com.asset.rec.FormModelBindRec;
-import com.asset.rec.FormModelCreateRec;
-import com.asset.rec.FormModelEditRec;
+import com.asset.entity.FormModel;
+import com.asset.dto.FormGroupRec;
+import com.asset.dto.FormModelBindRec;
+import com.asset.dto.FormModelCreateRec;
 import com.asset.utils.Constants;
-import com.asset.utils.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +20,7 @@ import java.util.List;
 public class FormModelService {
 
     @Autowired
-    AsFormModelMapper asFormModelMapper;
+    FormModelMapper formModelMapper;
     @Autowired
     AppFormBindMapper appFormBindMapper;
     @Autowired
@@ -30,29 +28,29 @@ public class FormModelService {
 
 
 
-    public AsFormModel createFormModel(FormModelCreateRec rec) {
+    public FormModel createFormModel(FormModelCreateRec rec) {
         String jsonString = JSONObject.toJSONString(rec.getModel_json());
-        AsFormModel asFormModel = new AsFormModel(rec.getForm_name(),
+        FormModel formModel = new FormModel(rec.getForm_name(),
                 rec.getCreated_by(),
                 rec.getIcon_cls(),
                 Constants.FORM_MODEL_UNBIND,
                 jsonString
                 );
-        asFormModel.setGroupId(-1);
-        asFormModel.setProcModelId("null");
+        formModel.setGroupId(-1);
+        formModel.setProcModelId("null");
 
-        String formModelID = asFormModel.getId();
+        String formModelID = formModel.getId();
         //表单模型表中填数据
-        int ret = asFormModelMapper.insertSelective(asFormModel);
+        int ret = formModelMapper.insertSelective(formModel);
         //表单模型与App作绑定
         AppFormBind bind = new AppFormBind(rec.getOapp_id(),formModelID);
         appFormBindMapper.insert(bind);
 
-        AsFormModel formModelRet = null;
+        FormModel formModelRet = null;
         //ret为1，说明插入成功,返回这个插入的formModel的详细信息
         if(ret == 1)
         {
-            formModelRet = asFormModelMapper.getFormModel(formModelID);
+            formModelRet = formModelMapper.getFormModel(formModelID);
         }
 
 
@@ -61,10 +59,10 @@ public class FormModelService {
 
 //    /**
 //     * 修改表单模型
-//     * @param rec
+//     * @param dto
 //     * @return
 //     */
-//    public int editFormModel(FormModelEditRec rec) {
+//    public int editFormModel(FormModelEditRec dto) {
 //
 //    }
 
@@ -72,11 +70,11 @@ public class FormModelService {
      * 把相应的表单模型与流程模型绑定
      */
     public int bindFormModel(FormModelBindRec rec) {
-        AsFormModel asFormModel = new AsFormModel(rec.getForm_model_id(),rec.getProc_model_id());
+        FormModel formModel = new FormModel(rec.getForm_model_id(),rec.getProc_model_id());
         //在表单模型表中绑定流程模型ID
-        int ret = asFormModelMapper.bindProcModel(asFormModel);
+        int ret = formModelMapper.bindProcModel(formModel);
         //下面的是在流程模型中绑定表单模型，先不做，这个要做的话，需要对原来flowable的数据库表进行修改，这里暂时不修改了
-        //        asFormModelMapper.bindFormModel2(bindInfo);
+        //        formModelMapper.bindFormModel2(bindInfo);
         return ret;
     }
 
@@ -86,13 +84,13 @@ public class FormModelService {
 
 
     public int setFormGroup(FormGroupRec rec) {
-        AsFormModel info = new AsFormModel(rec.getForm_model_id(),rec.getGroup_id());
-        return asFormModelMapper.setFormGroup(info);
+        FormModel info = new FormModel(rec.getForm_model_id(),rec.getGroup_id());
+        return formModelMapper.setFormGroup(info);
     }
 
 
     public String getProcModelID(String formModelID) {
-        return asFormModelMapper.getProcModelID(formModelID);
+        return formModelMapper.getProcModelID(formModelID);
     }
 
     /**
@@ -104,15 +102,15 @@ public class FormModelService {
      * @return
      */
 
-    public List<AsFormModel> getFormModels(String appId, String userId, int groupId, int formStatus) {
-        ArrayList<AsFormModel> asFormModels = (ArrayList<AsFormModel>) applicationService.getFormModels(appId);
-        for(int i=0;i<asFormModels.size();i++)
+    public List<FormModel> getFormModels(String appId, String userId, int groupId, int formStatus) {
+        ArrayList<FormModel> formModels = (ArrayList<FormModel>) applicationService.getFormModels(appId);
+        for(int i = 0; i< formModels.size(); i++)
         {
             //筛选分组ID（存储时默认值是-1）
             if (groupId != -1) {
-                if(asFormModels.get(i).getGroupId()!=groupId)
+                if(formModels.get(i).getGroupId()!=groupId)
                 {
-                    asFormModels.remove(i);
+                    formModels.remove(i);
                     i--;
                     //当前列表项已经被处理，继续处理下一条
                     continue;
@@ -122,15 +120,15 @@ public class FormModelService {
             //筛选表单模型状态
             //-1代表获取全部，不筛选
             if (formStatus == -1)
-                return asFormModels;
-            if(asFormModels.get(i).getStatus()!=formStatus)
+                return formModels;
+            if(formModels.get(i).getStatus()!=formStatus)
             {
-                asFormModels.remove(i);
+                formModels.remove(i);
                 i--;
             }
 
         }
-        return asFormModels;
+        return formModels;
     }
 
 }

@@ -1,4 +1,4 @@
-package com.asset.rec;
+package com.asset.dto;
 
 import lombok.Data;
 

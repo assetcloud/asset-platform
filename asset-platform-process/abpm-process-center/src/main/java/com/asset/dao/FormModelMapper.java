@@ -1,49 +1,49 @@
 package com.asset.dao;
 
-import com.asset.entity.AsFormModel;
+import com.asset.entity.FormModel;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface AsFormModelMapper {
-    int insert(AsFormModel record);
+public interface FormModelMapper {
+    int insert(FormModel record);
 
-    int insertSelective(AsFormModel record);
+    int insertSelective(FormModel record);
 
     /**
      * 返回对应的表单模型
      * @param formModelID
      * @return
      */
-    AsFormModel getFormModel(String formModelID);
+    FormModel getFormModel(String formModelID);
 
     /**
      * 修改表单模型
-     * @param asFormModel
+     * @param formModel
      * @return
      */
-    int editFormModel(AsFormModel asFormModel);
+    int editFormModel(FormModel formModel);
 
     /**
      * 在表单模型表中绑定对应的流程模型
      * @param bindInfo
      */
-    int bindProcModel(AsFormModel bindInfo);
+    int bindProcModel(FormModel bindInfo);
 
     /**
      * 根据传进来的表单模型ID一个一个取出来
      * @param  formModelIDs
      * @return
      */
-    List<AsFormModel> getFormModels(List<String> formModelIDs);
+    List<FormModel> getFormModels(List<String> formModelIDs);
 
     /**
      * 给应用下的表单模型进行分组
      * @param groupInfo
      * @return
      */
-    int setFormGroup(AsFormModel groupInfo);
+    int setFormGroup(FormModel groupInfo);
 
     /**
      * 获取与该表单模型绑定的流程模型ID

@@ -1,10 +1,8 @@
 package com.asset.entity;
 
 import com.alibaba.fastjson.JSONObject;
-import com.asset.rec.ProcModelRec;
+import com.asset.dto.ProcModelRec;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class AsProcModel {

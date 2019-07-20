@@ -2,7 +2,7 @@ package com.asset.controller;
 
 
 import com.asset.entity.Application;
-import com.asset.entity.AsFormModel;
+import com.asset.entity.FormModel;
 import com.asset.javabean.RespBean;
 import com.asset.service.ApplicationService;
 import com.asset.utils.Constants;
@@ -111,9 +111,9 @@ public class ApplicationController {
      */
     @RequestMapping(value = "/getModels", method = RequestMethod.GET)
     public RespBean getFormModels(@RequestParam(value = "app_id") String appID) throws JsonProcessingException {
-        ArrayList<AsFormModel> asFormModels = (ArrayList<AsFormModel>) applicationService.getFormModels(appID);
+        ArrayList<FormModel> formModels = (ArrayList<FormModel>) applicationService.getFormModels(appID);
 
-        return RespBean.ok("",asFormModels);
+        return RespBean.ok("", formModels);
     }
 
     /**

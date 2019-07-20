@@ -1,6 +1,6 @@
 package com.asset.dao;
 
-import com.asset.entity.AsFormInst;
+import com.asset.entity.FormInst;
 import com.asset.entity.AsTask;
 import org.springframework.stereotype.Repository;
 
@@ -12,10 +12,10 @@ public interface FlowableMapper {
     /**
      * 取出AsFormInst对象中的taskId值去act_hi_actinst表中找到对应的ACT_ID_字段的值，
      * 用于去别的表找这个ACT是什么类型的
-     * @param asFormInsts
+     * @param formInsts
      * @return 对应的ACT_ID_字段的值
      */
-    public List<AsTask> getActIDs(List<AsFormInst> asFormInsts);
+    public List<AsTask> getActIDs(List<FormInst> formInsts);
 
     /**
      * 获取当前流程实例要执行的任务节点的ACT_ID

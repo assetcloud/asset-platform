@@ -7,7 +7,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class AsFormInst {
+public class FormInst {
     private String id;
 
     private String formModelId;
@@ -28,39 +28,39 @@ public class AsFormInst {
 
     private String formValue;
 
-    public AsFormInst() {
+    public FormInst() {
     }
 
-    public AsFormInst(String id, String formValue, String editor) {
+    public FormInst(String id, String formValue, String editor) {
         this.id = id;
         this.formValue = formValue;
         this.createdBy = editor;
     }
 
-    public AsFormInst(String id, String formInstJson, String formValue,String editor) {
+    public FormInst(String id, String formInstJson, String formValue, String editor) {
         this.id = id;
         this.formInstJson = formInstJson;
         this.createdBy = editor;
         this.formValue = formValue;
     }
 
-    public AsFormInst(String createdBy) {
+    public FormInst(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    public AsFormInst(String id, String formInstJson) {
+    public FormInst(String id, String formInstJson) {
         this.id = id;
         this.formInstJson = formInstJson;
     }
 
 
-    public AsFormInst(String formModelId,
-                      String procInstId,
-                      String executionId,
-                      String taskId,
-                      String createdBy,
-                      String formInstValue,
-                      String formInstJson) {
+    public FormInst(String formModelId,
+                    String procInstId,
+                    String executionId,
+                    String taskId,
+                    String createdBy,
+                    String formInstValue,
+                    String formInstJson) {
         IDGenerator generator = new UuidIdGenerator();
         id = generator.generateID();
         formValue = formInstValue;

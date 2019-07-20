@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asset.dao.AsGroupMapper">
-  <resultMap id="BaseResultMap" type="com.asset.entity.AsGroup">
+  <resultMap id="BaseResultMap" type="com.asset.entity.Group">
     <id column="group_id" jdbcType="INTEGER" property="groupId" />
     <result column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="group_name" jdbcType="VARCHAR" property="groupName" />
@@ -20,13 +20,13 @@
     delete from as_app_group
     where group_id = #{groupId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.asset.entity.AsGroup">
+  <insert id="insert" parameterType="com.asset.entity.Group">
     insert into as_app_group (group_id, app_id, group_name,
       status)
     values (#{groupId,jdbcType=INTEGER}, #{appId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR},
       #{status,jdbcType=INTEGER})
   </insert>
-  <insert id="insertSelective" parameterType="com.asset.entity.AsGroup">
+  <insert id="insertSelective" parameterType="com.asset.entity.Group">
     insert into as_app_group
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="groupId != null">
@@ -57,7 +57,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.asset.entity.AsGroup">
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.entity.Group">
     update as_app_group
     <set>
       <if test="appId != null">
@@ -72,7 +72,7 @@
     </set>
     where group_id = #{groupId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.asset.entity.AsGroup">
+  <update id="updateByPrimaryKey" parameterType="com.asset.entity.Group">
     update as_app_group
     set app_id = #{appId,jdbcType=VARCHAR},
       group_name = #{groupName,jdbcType=VARCHAR},
@@ -89,14 +89,14 @@
     where app_id = #{appID,jdbcType=VARCHAR}
   </select>
 
-  <update id="deleteGroup" parameterType="com.asset.entity.AsGroup">
+  <update id="deleteGroup" parameterType="com.asset.entity.Group">
     update
     as_app_group
     set status = 0
     where id = #{groupId,jdbcType=VARCHAR}
   </update>
 
-  <update id="updateGroup" parameterType="com.asset.entity.AsGroup">
+  <update id="updateGroup" parameterType="com.asset.entity.Group">
     update
     as_app_group
     set group_name = #{groupName,jdbcType = VARCHAR}

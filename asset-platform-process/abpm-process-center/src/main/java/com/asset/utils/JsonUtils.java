@@ -1,8 +1,8 @@
 package com.asset.utils;
 
 import com.alibaba.fastjson.JSONObject;
-import com.asset.entity.AsFormInst;
-import com.asset.entity.AsFormModel;
+import com.asset.entity.FormInst;
+import com.asset.entity.FormModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class JsonUtils {
      * selectAll之后得到的对象列表，加上code字段返回给前台解析
      * @param recJsonArray
      */
-    public static String formModelsToJson(ArrayList<AsFormModel> recJsonArray){
+    public static String formModelsToJson(ArrayList<FormModel> recJsonArray){
         HashMap<String, Serializable> map = new HashMap<String, Serializable>();
         map.put("code", Constants.CODE_SUCCESS);
         map.put("list", recJsonArray);
@@ -46,12 +46,12 @@ public class JsonUtils {
     }
 
 
-    public static String procInstsToJson(ArrayList<AsFormInst> asFormInsts)
+    public static String procInstsToJson(ArrayList<FormInst> formInsts)
     {
         int code = Constants.CODE_SUCCESS;
         HashMap<String, Serializable> map = new HashMap<String, Serializable>();
         map.put("code", code);
-        map.put("list", asFormInsts);
+        map.put("list", formInsts);
         Object json = JSONObject.toJSON(map);
         return json.toString();
     }

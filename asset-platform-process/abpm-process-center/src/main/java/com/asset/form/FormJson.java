@@ -5,8 +5,11 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * 表单模型类
+ */
 @Data
 public class FormJson {
-    List<Object> list;
+    List<FormItem> list;
     FormConfig config;
 }

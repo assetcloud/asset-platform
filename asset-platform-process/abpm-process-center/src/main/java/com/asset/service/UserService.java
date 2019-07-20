@@ -1,13 +1,16 @@
 package com.asset.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.asset.dao.AsFormInstMapper;
+import com.asset.dao.FormInstMapper;
 import com.asset.dao.AsProcInstMapper;
 import com.asset.dao.UserMapper;
-import com.asset.entity.AsFormInst;
+import com.asset.entity.FormInst;
 import com.asset.entity.AsProcInst;
 import com.asset.entity.User;
-import com.asset.form.FormJson;
+import com.asset.exception.ProcExeception;
+import com.asset.form.FormItem;
+import com.asset.form.FormJsonEntity;
+import com.asset.dto.RegisterDTO;
 import com.asset.utils.PageGrids;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -34,9 +37,11 @@ public class UserService{
     @Autowired
     FormInstService formInstService;
     @Autowired
-    AsFormInstMapper asFormInstMapper;
+    FormInstMapper formInstMapper;
     @Autowired
     AsProcInstMapper procInstMapper;
+    @Autowired
+    ProcInstService procInstService;
 
     public PageGrids getUsers(Integer pageNum, Integer pageSize, String id, String displayName) {
         PageGrids pageGrids = new PageGrids();
@@ -87,23 +92,28 @@ public class UserService{
     }
 
     /**
-     * 根据上面创建的注册流程创建相应的注册表单实例
-     * @param model_json
+     * 根据上面创建的注册流程创建相应的注册表单实例，这里需要对 modelJson中的内容进行修改，设置disable为false
+     * @param modelJson
      * @param processInstanceId
      * @param editor
      * @param registerFormModelID
      * @param taskID
      */
-    public AsFormInst createRegisterFormInst(FormJson model_json,
-                                       String registerFormValue,
-                                       String processInstanceId,
-                                       String editor,
-                                       String registerFormModelID,
-                                       String taskID) {
-        String executionID = formInstService.getExecutionId(processInstanceId);
-        String formInstJson = JSONObject.toJSONString(model_json);
+    public FormInst createRegisterFormInst(FormJsonEntity modelJson,
+                                           String registerFormValue,
+                                           String processInstanceId,
+                                           String editor,
+                                           String registerFormModelID,
+                                           String taskID) {
+        String executionID = procInstService.getExecutionId(processInstanceId);
+        String formInstJson = JSONObject.toJSONString(modelJson);
 
-        AsFormInst inst = new AsFormInst(
+
+        List<FormItem> items = modelJson.getList();
+        //添加权限信息
+        formInstService.handleAuthoritys(items);
+
+        FormInst inst = new FormInst(
                 registerFormModelID,
                 processInstanceId,
                 executionID,
@@ -112,7 +122,7 @@ public class UserService{
                 registerFormValue,
                 formInstJson
         );
-        asFormInstMapper.insertSelective(inst);
+        formInstMapper.insertSelective(inst);
 
         return inst;
     }
@@ -120,5 +130,46 @@ public class UserService{
 
     public void insertProcInst(AsProcInst asProcInst) {
         procInstMapper.insert(asProcInst);
+    }
+
+    /**
+     * 发起一个注册流程，注册流程表单、绑定的流程模型、绑定的权限数据、流程模型中节点类型都需要事先创建好！！
+     * @param dto
+     * @throws ProcExeception
+     */
+    public void createRegisterProc(RegisterDTO dto) throws ProcExeception {
+        String registerProcModelID = "088c97ce-9bdd-11e9-b8c8-ba15de269d3a";
+        ProcessInstance procInst = createRegisterTask(registerProcModelID);
+        if (procInst==null)
+        {
+            throw new ProcExeception("无法创建流程实例，流程模型ID："+registerProcModelID);
+        }
+        String[] taskIDs = procInstService.getTaskIDs(procInst.getProcessInstanceId());
+
+        //注册页面绑定的表单模型ID，需要在系统创建之后自动生成
+        String registerFormModelID = "0af6e7db-98d5-11e9-993a-0215444863d4";
+
+        createRegisterFormInst(dto.getModel_json(),
+                dto.getResiter_value(),
+                procInst.getProcessInstanceId(),
+                dto.getEditor(),
+                registerFormModelID,
+                taskIDs[0]);
+
+        //3、持久化流程实例
+        AsProcInst asProcInst = new AsProcInst(
+                procInst.getProcessInstanceId(),
+                registerProcModelID,
+                "",
+                "",
+                dto.getEditor());
+        insertProcInst(asProcInst);
+
+
+        procInstService.completeCurTask(taskIDs[0]);
+        procInstService.saveUnCompleteTask(
+                procInst.getProcessInstanceId(),
+                        registerFormModelID,
+                        dto.getResiter_value());
     }
 }

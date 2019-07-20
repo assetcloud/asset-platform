@@ -5,13 +5,11 @@ import com.asset.entity.ActAuthority;
 import com.asset.entity.ActType;
 import com.asset.javabean.ActTypeRec;
 import com.asset.javabean.RespBean;
-import com.asset.rec.AuthorityItem;
-import com.asset.rec.AuthorityRec;
-import com.asset.rec.ProcModelRec;
-import com.asset.service.AsProcModelService;
+import com.asset.dto.AuthorityItem;
+import com.asset.dto.AuthorityRec;
+import com.asset.dto.ProcModelRec;
+import com.asset.service.ProcModelService;
 import com.asset.utils.Constants;
-import com.asset.utils.JsonUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProcModelController {
 
     @Autowired
-    AsProcModelService procModelService;
+    ProcModelService procModelService;
     @Autowired
     FormAuthorityMapper authorityMapper;
 
