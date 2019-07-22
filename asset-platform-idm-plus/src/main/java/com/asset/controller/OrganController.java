@@ -1,12 +1,10 @@
 package com.asset.controller;
 
 import com.asset.bean.*;
+import com.asset.common.GlobalConstant;
 import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
-import com.asset.service.IOrganService;
-import com.asset.service.ISceneRoleService;
-import com.asset.service.ISceneService;
-import com.asset.service.IUserSceneService;
+import com.asset.service.*;
 import com.asset.utils.Func;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -14,9 +12,11 @@ import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -37,6 +37,9 @@ public class OrganController {
 
     @Autowired
     private IUserSceneService userSceneService;
+
+    @Autowired
+    private IRoleGroupService roleGroupService;
 
     @ApiOperation(value = "添加组织节点", notes = "已完成",tags = "组织", httpMethod = "POST")
     @ApiImplicitParams({
@@ -194,12 +197,32 @@ public class OrganController {
 
     @ApiOperation(value = "新增场景", notes = "（已完成）添加场景信息;传入Scene实体;sceneName必填",tags = "组织", httpMethod = "POST")
     @RequestMapping(value = "/scene", method = RequestMethod.POST)
+    @Transactional
     public RespBean addScene(@Valid @RequestBody Scene scene){
         if (sceneService.getSceneByName(scene.getSceneName()).size() > 0){
             //记录已存在
             return RespBean.error("场景名称已被使用");
         }
-        return RespBean.data(sceneService.addSceneNormal(scene));
+        sceneService.addSceneNormal(scene);
+        //新增角色组
+        RoleGroup roleGroup = new RoleGroup(SystemConstant.DEFAULT_GROUP_NAME, 0, new Date(), scene.getId());
+        roleGroupService.insert(roleGroup);
+        //在场景中新增两个默认角色
+        SceneRole roleAdmin = new SceneRole(scene.getId(), SystemConstant.SCENE_ADMIN_CH, SystemConstant.SCENE_ADMIN);
+        SceneRole roleDefault = new SceneRole(scene.getId(), SystemConstant.SCENE_DEFAULT_CH, SystemConstant.SCENE_DEFAULT);
+        List<SceneRole> list = new ArrayList<>();
+        roleAdmin.setGroupId(roleGroup.getId());
+        roleAdmin.setStatus(true);
+        roleAdmin.setCreatedTime(new Date());
+        roleAdmin.setEnableTime(new Date());
+        roleDefault.setGroupId(roleGroup.getId());
+        roleDefault.setStatus(true);
+        roleDefault.setRoleDefault(1);
+        roleDefault.setCreatedTime(new Date());
+        roleDefault.setEnableTime(new Date());
+        list.add(roleAdmin);
+        list.add(roleDefault);
+        return RespBean.data(sceneRoleService.addRoles4Scene(scene.getId(), list));
     }
 
     @ApiOperation(value = "删除场景", notes = "删除场景信息",tags = "组织", httpMethod = "DELETE")
@@ -300,7 +323,6 @@ public class OrganController {
             //设置为默认角色
             userScene.setRoleId(defaultRole.getId());
         }
-        //TODO:明天改为真批量增
         return RespBean.data(userSceneService.insertBatch(users));
     }
 
@@ -324,19 +346,25 @@ public class OrganController {
             , @ApiParam(value = "userId", required = true) @RequestParam String userId){
         PageHelper.startPage(page, size);
         List<Scene> scenes = sceneService.getScenesByUser(userId);
-        if (Func.isNull(scenes)){
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
-        }
         PageInfo<Scene> scenePageInfo = new PageInfo<>(scenes);
-        return RespBean.ok(SystemConstant.GET_SUCCESS, scenePageInfo);
+        return RespBean.data(scenePageInfo);
     }
 
-    @ApiOperation(value = "场景信息判空", notes = "场景信息判空;sceneId场景id",tags = "组织",httpMethod = "GET")
-    @GetMapping("scene/empty")
-    public RespBean isEmptyScene(@RequestParam(value = "sceneId") String sceneId){
-        if (sceneService.isSceneEmpty(sceneId)){
-            return RespBean.ok("", true);
+    @ApiOperation(value = "装载工作场景", notes = "已完成", tags = "用户", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/scene/load", method = RequestMethod.POST)
+    public RespBean setScene(@RequestParam("userId") String userId, @RequestParam("sceneId") String sceneId){
+        if (Func.hasEmpty(userId, sceneId)){
+            return RespBean.paramError();
         }
-        return RespBean.ok("", false);
+        if (!sceneService.hasScene(userId, sceneId)){
+            return RespBean.error("工作场景加载失败");
+        }
+        GlobalConstant.USER_SCENE_MAP.put(userId, sceneId);
+//        redisTemplate.opsForValue().set(UserUtils.getCurrentUser().getId(), scene.getId());
+        return RespBean.ok("工作场景加载成功");
     }
 }

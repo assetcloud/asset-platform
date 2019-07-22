@@ -3,19 +3,17 @@ package com.asset.bean;
 import lombok.Data;
 
 @Data
-public class PlatMenuRole {
+public class MenuRole {
 
     private long id;
     private long menuId;
     private long roleId;
-    private String sceneCode;
 
-    public PlatMenuRole() {
+    public MenuRole() {
     }
 
-    public PlatMenuRole(long menuId, long roleId, String sceneCode) {
+    public MenuRole(long menuId, long roleId) {
         this.menuId = menuId;
         this.roleId = roleId;
-        this.sceneCode = sceneCode;
     }
 }

@@ -35,15 +35,6 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
     @Autowired
     UuidIdGenerator idGenerator;
 
-    @Autowired
-    private SceneRoleMapper sceneRoleMapper;
-
-    @Autowired
-    private ResourceMapper resourceMapper;
-
-    @Autowired
-    private SceneMapper sceneMapper;
-
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userMapper.loadUserByUsername(s);
@@ -63,15 +54,6 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
      * @return int
      */
     public int insertUser(User user) {
-        User var = userMapper.findUserByUsername(user.getAccountName());
-        //如果用户名存在，返回错误
-        if (var != null) {
-            if (!var.getStatus() && var.getStage() == 1){
-                throw new RuntimeException("用户已注册，处于待审核阶段");
-            } else if (var.getStatus() && var.getStage() == 2){
-                throw new RuntimeException("用户已存在");
-            }
-        }
         if(user.getId() == null){
             user.setId(idGenerator.generateId());
         }
@@ -102,47 +84,8 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
         return userMapper.getUsersByRole(roleId);
     }
 
-    /**
-     * 用户注册
-     * @param user
-     * @return int
-     */
-    public int insertUserWithScene(User user, String sceneId) throws Exception {
-        if (sceneMapper.selectByPrimaryKey(sceneId) == null){
-            throw new RuntimeException("该场景不存在");
-        }
-        User var = userMapper.findUserByUsername(user.getAccountName());
-        //如果用户名存在，返回错误
-        if (var != null) {
-            if (!var.getStatus() && var.getStage() == 1){
-                throw new Exception("用户已注册，处于待审核阶段");
-            } else if (var.getStatus() && var.getStage() == 2){
-                throw new Exception("用户已存在");
-            }
-        }
-        if(user.getId() == null){
-            user.setId(idGenerator.generateId());
-        }
-        //待审核状态
-        user.setStage(1);
-        user.setStatus(false);
-        user.setCreatedTime(new Date());
-        //密码加密
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String encode = encoder.encode(user.getPassword());
-        user.setPwd(encode);
-
-        //指定为默认角色
-        //TODO:用户注册并与已有场景绑定
-//        SceneRole sceneRole = new SceneRole(sceneId, SystemConstant.SCENE_DEFAULT_CH, SystemConstant.SCENE_DEFAULT);
-//        sceneRoleMapper.insert(sceneRole);
-//        //为默认角色配置权限
-//        UserRole userRole = new UserRole(1, sceneRole.getId(), sceneId);
-//        List<PlatMenuRole> objects = new ArrayList<>();
-//        objects.add(platMenuRole);
-//        platMenuMapper.batchAddPlatMenuRole(objects);
-//        //用户与场景关联
-//        sceneMapper.userSceneBind(sceneId, user.getId(), platRole.getId());
-        return userMapper.insertSelective(user);
+    public boolean userExists(String accountName){
+        List<User> userList = userMapper.userExists(accountName);
+        return userList.size() > 0;
     }
 }

@@ -123,4 +123,7 @@ public interface SystemConstant {
     String SCENE_DEFAULT = "scene_default";
     String SCENE_DEFAULT_CH = "终端普通用户";
 
+    String DEFAULT_GROUP_NAME = "默认分组";
+
+    Long SYSTEM_DEFAULT_USER = (long) 2;
 }

@@ -37,4 +37,6 @@ public interface SceneRoleMapper extends BaseMapper<SceneRole> {
     List<SceneRole> rolesInGroup(Long groupId);
 
     SceneRole getDefaultRole(String sceneId);
+
+    List<SceneRole> getRolesByScene(String sceneId);
 }

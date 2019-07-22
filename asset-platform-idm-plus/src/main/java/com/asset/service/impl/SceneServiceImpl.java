@@ -3,7 +3,6 @@ package com.asset.service.impl;
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.*;
-import com.asset.service.ISceneRoleService;
 import com.asset.service.ISceneService;
 import com.asset.utils.CommonUtils;
 import com.asset.utils.Func;
@@ -11,7 +10,6 @@ import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,13 +34,13 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     private UserSceneMapper userSceneMapper;
 
     @Autowired
-    private UserMapper userMapper;
-
-    @Autowired
     private OrganTreeMapper organTreeMapper;
 
     @Autowired
     UuidIdGenerator uuidIdGenerator;
+
+    @Autowired
+    MenuMapper menuMapper;
 
     /**
      * 获取所有场景
@@ -51,67 +49,6 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     public List<Scene> getAllScene(){
         return sceneMapper.selectAll();
     }
-
-    /**
-     * 用户注册时添加场景
-     * @param scene
-     * @param user
-     * @return
-     */
-    //TODO:用户注册时添加场景
-    @Override
-    public int addScene4User(Scene scene, User user) throws Exception {
-        return 0;
-    }
-//    @Transactional
-//    public int addScene4User(Scene scene, User user) throws Exception {
-//        User var = userMapper.findUserByUsername(user.getAccountName());
-//        //如果用户名存在，返回错误
-//        if (var != null) {
-//            if (!var.getStatus() && var.getStage() == 1){
-//                throw new Exception("用户已注册，请联系管理员进行审核");
-//            } else if (var.getStatus() && var.getStage() == 2){
-//                throw new Exception("用户已存在");
-//            }
-//        }
-//        if(user.getId() == null){
-//            user.setId(uuidIdGenerator.generateId());
-//        }
-//        //待审核状态
-//        user.setStage(1);
-//        user.setStatus(false);
-//        user.setCreatedTime(new Date());
-//        //密码加密
-//        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-//        String encode = encoder.encode(user.getPassword());
-//        user.setPwd(encode);
-//        //添加用户
-//        userMapper.insertSelective(user);
-//        if (getSceneByName(scene.getSceneName()).size() > 0){
-//            //记录已存在
-//            throw new Exception("场景已存在");
-//        }
-//        if (scene.getId() == null){
-//            scene.setId(uuidIdGenerator.generateId());
-//        }
-//        //创建组织管理员
-//        PlatRole platRole = new PlatRole(scene.getId(), SystemConstant.SCENE_ADMIN_CH, SystemConstant.SCENE_ADMIN);
-//        platRoleMapper.insert(platRole);
-//        //为组织管理员初始化菜单
-//        List<PlatMenu> menus = platMenuMapper.selectAll();
-//        List<PlatMenuRole> menuRoles = new ArrayList<>();
-//        for (PlatMenu menu : menus) {
-//            PlatMenuRole v = new PlatMenuRole(menu.getId(), platRole.getId(), scene.getId());
-//            menuRoles.add(v);
-//        }
-//        platMenuMapper.batchAddPlatMenuRole(menuRoles);
-//        //用户与场景关联
-//        sceneMapper.userSceneBind(scene.getId(), user.getId(), platRole.getId());
-//        scene.setAddTime(new Date());
-//        scene.setIsDeleted(0);
-//        scene.setStatus(0);
-//        return sceneMapper.insert(scene);
-//    }
 
     /**
      * 新增场景
@@ -186,5 +123,28 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     @Override
     public boolean addUserScene(List<UserScene> userScenes) {
         return false;
+    }
+
+    /**
+     * 判断用户是否属于某个场景
+     * @param userId
+     * @param sceneId
+     * @return
+     */
+    @Override
+    public boolean hasScene(String userId, String sceneId) {
+        UserScene userScene = userSceneMapper.hasScene(userId, sceneId);
+        return null != userScene;
+    }
+
+    public boolean userSceneBind(String sceneId, String userId, Long roleId){
+        int flag = sceneMapper.userSceneBind(sceneId, userId, roleId);
+        return flag > 0;
+    }
+
+    @Override
+    public boolean sceneAvailable(String sceneId) {
+        List<Scene> availableScene = sceneMapper.getAvailableScene(sceneId);
+        return availableScene.size() > 0;
     }
 }

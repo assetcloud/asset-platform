@@ -11,9 +11,9 @@ public interface MenuMapper extends BaseMapper<Menu> {
 
     List<Menu> getMenusByRoles(List<UserRole> roleIds);
 
-    int batchAddPlatMenuRole(List<PlatMenuRole> records);
+    int batchAddMenuRole(List<MenuRole> records);
 
-    List<PlatMenu> selectAll();
+    List<Menu> selectAll();
 
-    List<PlatMenu> selectAll4SAdmin();
+    List<Menu> selectAll4SAdmin();
 }

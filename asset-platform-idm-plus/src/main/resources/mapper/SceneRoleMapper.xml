@@ -78,4 +78,7 @@
         FROM as_role_group rg, as_scene_role sr
         WHERE rg.scene_code = sr.scene_code AND sr.group_id = rg.id AND rg.is_deleted = 0 and sr.`status` = 1 AND rg.id = #{groupId}
     </select>
+    <select id="getRolesByScene" resultMap="BaseResultMap">
+        select * from as_scene_role where status = 0 and scene_code = #{sceneId}
+    </select>
 </mapper>

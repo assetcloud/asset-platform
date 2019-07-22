@@ -51,6 +51,23 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
         return sceneRoleMapper.getDefaultRole(sceneId);
     }
 
+    @Override
+    public boolean addRoles4Scene(String sceneId, List<SceneRole> list) {
+        for (SceneRole sceneRole : list) {
+            sceneRole.setSceneCode(sceneId);
+        }
+        return this.insertBatch(list);
+    }
+
+    @Override
+    public boolean roleAvailable(String sceneId) {
+        List<SceneRole> rolesByScene = sceneRoleMapper.getRolesByScene(sceneId);
+        for (SceneRole sceneRole : rolesByScene) {
+            sceneRoleMapper.updateById(sceneRole);
+        }
+        return true;
+    }
+
 //
 
 //

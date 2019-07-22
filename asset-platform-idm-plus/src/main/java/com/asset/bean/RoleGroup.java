@@ -34,4 +34,13 @@ public class RoleGroup {
     @TableField(exist = false)
     private List<SceneRole> sceneRoles;
 
+    public RoleGroup(String roleGroupName, Integer isDeleted, Date addTime, String sceneCode) {
+        this.roleGroupName = roleGroupName;
+        this.isDeleted = isDeleted;
+        this.addTime = addTime;
+        this.sceneCode = sceneCode;
+    }
+
+    public RoleGroup() {
+    }
 }

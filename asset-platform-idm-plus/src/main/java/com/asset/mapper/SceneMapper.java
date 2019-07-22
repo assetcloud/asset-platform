@@ -38,4 +38,7 @@ public interface SceneMapper extends BaseMapper<Scene> {
     int getSceneNodes(@Param("sceneId") String sceneId);
 
     int addNode(OrganScene record);
+
+    List<Scene> getAvailableScene(String sceneId);
+
 }

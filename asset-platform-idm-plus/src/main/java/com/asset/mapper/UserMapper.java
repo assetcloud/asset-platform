@@ -38,4 +38,6 @@ public interface UserMapper extends BaseMapper<User>{
     List<User> getUsersByRole(@Param("roleId") Long roleId);
 
     List<User> getUsersByScene(String sceneId);
+
+    List<User> userExists(String accountName);
 }

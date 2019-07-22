@@ -47,6 +47,9 @@
         AND s.`status` = 1
         AND s.is_deleted = 0
   </select>
+  <select id="getAvailableScene" resultMap="BaseResultMap">
+    select * from as_scene where id = #{sceneId} and status = 1
+  </select>
   <select id="selectAll" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
