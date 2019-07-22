@@ -1,8 +1,8 @@
 package com.asset.common;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 public class GlobalConstant {
 
-    //场景id
-    public static String CURRENT_SCENE = "e65edc60-96ee-11e9-ac96-005056c00001";
-
+    public static ConcurrentHashMap USER_SCENE_MAP = new ConcurrentHashMap();
 }

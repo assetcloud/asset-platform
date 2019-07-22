@@ -48,11 +48,23 @@ public interface ISceneRoleService extends IService<SceneRole> {
      * @return
      */
     boolean rolesInGroup(Long groupId);
-
     /**
      * 获取场景中的默认角色
      * @param sceneId
      * @return
      */
     SceneRole getDefaultRole(String sceneId);
+    /**
+     * 为场景添加默认角色
+     * @param sceneId
+     * @param list
+     * @return boolean
+     */
+    boolean addRoles4Scene(String sceneId, List<SceneRole> list);
+    /**
+     * 将场景中的默认角色有效化
+     * @param sceneId
+     * @return
+     */
+    boolean roleAvailable(String sceneId);
 }

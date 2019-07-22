@@ -52,7 +52,7 @@
     </foreach>
         )
   </select>
-  <insert id="batchAddPlatMenuRole" parameterType="java.util.List">
+  <insert id="batchAddMenuRole" parameterType="java.util.List">
     insert into
         as_plat_menu_role(menu_id, role_id, scene_code)
     values
