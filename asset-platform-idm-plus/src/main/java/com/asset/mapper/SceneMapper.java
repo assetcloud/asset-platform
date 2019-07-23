@@ -40,5 +40,4 @@ public interface SceneMapper extends BaseMapper<Scene> {
     int addNode(OrganScene record);
 
     List<Scene> getAvailableScene(String sceneId);
-
 }

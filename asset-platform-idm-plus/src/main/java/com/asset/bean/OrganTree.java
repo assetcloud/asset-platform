@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotations.TableLogic;
 import com.baomidou.mybatisplus.annotations.TableName;
 import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -24,6 +25,7 @@ public class OrganTree implements Serializable {
     private String id;
     @NotBlank(message = "组织名称不能为空")
     @NotNull(message = "组织名称不能为空")
+    @ApiModelProperty(value = "组织名称", name = "unitName", required = true)
     private String unitName;
     private String unitNameEn;
     @NotNull(message = "父节点不能为空")
@@ -102,4 +104,7 @@ public class OrganTree implements Serializable {
     //表示该属性不为数据库表字段，但又是必须使用的
     @TableField(exist = false)
     private List<OrganTree> children = new ArrayList<>();
+    //编辑场景中组织时，用于判断该节点是否在场景中
+    @TableField(exist = false)
+    private Integer checked;
 }

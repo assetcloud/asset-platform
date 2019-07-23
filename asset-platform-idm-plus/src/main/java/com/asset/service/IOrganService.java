@@ -76,8 +76,11 @@ public interface IOrganService extends IService<OrganTree> {
      * @return
      */
     boolean batchAddNodes(List<OrganTree> nodes);
+
     /**
-     * 获取单个场景下的所有用户（不依赖组织树）
+     * 获取单个场景下的所有用户
+     * @param sceneId
+     * @return
      */
     List<User> getUsersByScene(String sceneId);
 }

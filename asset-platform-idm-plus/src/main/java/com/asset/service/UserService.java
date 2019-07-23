@@ -44,10 +44,6 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
         return user;
     }
 
-    public int updateUserSelective(User user){
-        return userMapper.updateByPrimaryKeySelective(user);
-    }
-
     /**
      * 用户注册
      * @param user
@@ -68,18 +64,6 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
         return userMapper.insertSelective(user);
     }
 
-    public User getUserById(String id){
-        return userMapper.selectByPrimaryKey(id);
-    }
-
-    public int  updateUserById(User record){
-        return userMapper.updateByPrimaryKey(record);
-    }
-
-    public int  updateUser(User record){
-        return userMapper.updateByPrimaryKeySelective(record);
-    }
-
     public List<User> getUsersByRole(Long roleId){
         return userMapper.getUsersByRole(roleId);
     }
@@ -87,5 +71,14 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
     public boolean userExists(String accountName){
         List<User> userList = userMapper.userExists(accountName);
         return userList.size() > 0;
+    }
+
+    public boolean enableUser(String userId){
+        User user = userMapper.selectById(userId);
+        user.setId(userId);
+        user.setStatus(true);
+        user.setStage(2);
+        user.setRoleId(SystemConstant.SYSTEM_DEFAULT_USER);
+        return userMapper.updateById(user) > 0;
     }
 }
