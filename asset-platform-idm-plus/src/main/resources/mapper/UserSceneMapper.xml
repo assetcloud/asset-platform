@@ -4,4 +4,7 @@
     <select id="hasScene" resultType="com.asset.bean.UserScene">
         select * from as_user_scene where user_id = #{param1} and scene_id = #{param2} and status =1
     </select>
+    <update id="updateByUserAndScene">
+        update as_user_scene set status = 1 where user_id = #{param1} and scene_id = #{param2} and status = 0
+    </update>
 </mapper>

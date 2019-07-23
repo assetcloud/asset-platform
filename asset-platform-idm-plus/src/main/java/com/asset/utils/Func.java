@@ -3,6 +3,7 @@ package com.asset.utils;
 import com.github.pagehelper.util.StringUtil;
 import org.springframework.lang.Nullable;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Array;
 import java.util.*;
@@ -72,5 +73,21 @@ public class Func {
                 return defaultValue;
             }
         }
+    }
+
+    public static String[] toStrArray(String str) {
+        return toStrArray(",", str);
+    }
+
+    public static String[] toStrArray(String split, String str) {
+        return !StringUtils.hasText(str) ? new String[0] : str.split(split);
+    }
+
+    public static List<String> toStrList(String str) {
+        return Arrays.asList(toStrArray(str));
+    }
+
+    public static List<String> toStrList(String split, String str) {
+        return Arrays.asList(toStrArray(split, str));
     }
 }

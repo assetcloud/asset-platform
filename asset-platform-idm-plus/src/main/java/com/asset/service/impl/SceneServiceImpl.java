@@ -1,8 +1,8 @@
 package com.asset.service.impl;
 
 import com.asset.bean.*;
-import com.asset.common.SystemConstant;
 import com.asset.mapper.*;
+import com.asset.service.IOrganSceneService;
 import com.asset.service.ISceneService;
 import com.asset.utils.CommonUtils;
 import com.asset.utils.Func;
@@ -28,6 +28,9 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     final static Logger LOGGER = LoggerFactory.getLogger(SceneServiceImpl.class);
 
     @Autowired
+    private IOrganSceneService organSceneService;
+
+    @Autowired
     private SceneMapper sceneMapper;
 
     @Autowired
@@ -42,6 +45,9 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     @Autowired
     MenuMapper menuMapper;
 
+    @Autowired
+    private OrganSceneMapper organSceneMapper;
+
     /**
      * 获取所有场景
      * @return List<Scene>
@@ -51,7 +57,7 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     }
 
     /**
-     * 新增场景
+     * 控制台-新增场景
      * @param record
      * @return int
      */
@@ -63,7 +69,34 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
         OrganTree topNode = organTreeMapper.getTopNode();
         OrganScene organScene = CommonUtils.NodeTransformer(topNode);
         organScene.setSceneId(record.getId());
-        sceneMapper.addNode(organScene);
+        organSceneMapper.insert(organScene);
+        return sceneMapper.insertSelective(record);
+    }
+
+    /**
+     * 用户注册时，新增场景
+     * @param record
+     * @return int
+     */
+    public int addScene4Reg(Scene record, List<String> nodeList) {
+        record.setId(uuidIdGenerator.generateId());
+        record.setAddTime(new Date());
+        record.setIsDeleted(0);
+        record.setStatus(0);
+        //在场景中添加顶级节点
+        List<OrganScene> nodes = new ArrayList<>();
+        OrganTree topNode = organTreeMapper.getTopNode();
+        OrganScene organScene = CommonUtils.NodeTransformer(topNode);
+        organScene.setSceneId(record.getId());
+        nodes.add(organScene);
+        // 在场景中添加至少一个非顶级节点
+        List<OrganTree> treeNodes = organTreeMapper.selectBatchIds(nodeList);
+        for (OrganTree treeNode : treeNodes) {
+            OrganScene obj = CommonUtils.NodeTransformer(treeNode);
+            obj.setSceneId(record.getId());
+            nodes.add(obj);
+        }
+        organSceneService.insertBatch(nodes);
         return sceneMapper.insertSelective(record);
     }
 
@@ -138,13 +171,22 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     }
 
     public boolean userSceneBind(String sceneId, String userId, Long roleId){
-        int flag = sceneMapper.userSceneBind(sceneId, userId, roleId);
-        return flag > 0;
+        OrganScene rootNode = organSceneMapper.getRootNode(sceneId);
+        UserScene userScene = new UserScene(sceneId, userId, roleId, rootNode.getId(), 0);
+        return userSceneMapper.insert(userScene) > 0;
     }
 
     @Override
     public boolean sceneAvailable(String sceneId) {
         List<Scene> availableScene = sceneMapper.getAvailableScene(sceneId);
         return availableScene.size() > 0;
+    }
+
+    public boolean enableScene(String userId, String sceneId){
+        Scene scene = sceneMapper.selectByPrimaryKey(sceneId);
+        scene.setStatus(1);
+        scene.setIsDeleted(0);
+        sceneMapper.updateById(scene);
+        return userSceneMapper.updateByUserAndScene(userId, sceneId) > 0;
     }
 }

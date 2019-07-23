@@ -1,11 +1,16 @@
 package com.asset.bean;
 
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 import java.util.List;
 
 @ApiModel(value = "组织场景关联表")
 public class OrganScene {
 
+    @TableField("id")
+    @TableId(type = IdType.AUTO)
     private Long id;
     private String nodeId;
     private String parentId;

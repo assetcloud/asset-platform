@@ -12,6 +12,12 @@ public interface ISceneService extends IService<Scene> {
     List<Scene> getAllScene();
 
     int addSceneNormal(Scene record);
+    /**
+     * 用户注册时新增场景
+     * @param record
+     * @return
+     */
+    int addScene4Reg(Scene record, List<String> nodeList);
 
     int deleteScene(String sceneId);
 
@@ -39,7 +45,7 @@ public interface ISceneService extends IService<Scene> {
      */
     boolean hasScene(String userId, String sceneId);
     /**
-     * 用户注册时，设置该用户在该场景中的角色
+     * 用户注册时，设置该用户在该场景中的角色和所属部门（默认为根部门）
      * @param sceneId
      * @param userId
      * @param roleId
@@ -52,4 +58,12 @@ public interface ISceneService extends IService<Scene> {
      * @return
      */
     boolean sceneAvailable(String sceneId);
+
+    /**
+     * 用户审核，更新user_scene表
+     * @param sceneId
+     * @param userId
+     * @return
+     */
+    boolean enableScene(String userId, String sceneId);
 }

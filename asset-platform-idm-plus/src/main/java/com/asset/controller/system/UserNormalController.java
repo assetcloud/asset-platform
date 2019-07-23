@@ -5,6 +5,7 @@ import com.asset.common.SystemConstant;
 import com.asset.common.UserUtils;
 import com.asset.service.*;
 import com.asset.utils.Func;
+import com.sun.org.apache.bcel.internal.generic.LOOKUPSWITCH;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,10 @@ public class UserNormalController {
     private final static Logger LOGGER = LoggerFactory.getLogger(UserNormalController.class);
 
     @Autowired
-    private UserService userService;
+    private IOrganService organService;
 
     @Autowired
-    private StaffService staffService;
+    private UserService userService;
 
     @Autowired
     private ISceneRoleService sceneRoleService;
@@ -66,22 +67,24 @@ public class UserNormalController {
             @ApiImplicitParam(name = "accountName", value = "用户账号", required = true, dataType = "String"),
             @ApiImplicitParam(name = "pwd", value = "用户密码", required = true, dataType = "String"),
             @ApiImplicitParam(name = "realName", value = "用户真实姓名", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "admin", value = "是否为总管理员", required = true, dataType = "Integer")
+            @ApiImplicitParam(name = "admin", value = "是否为总管理员", required = true, dataType = "Integer"),
+            @ApiImplicitParam(name = "nodeId", value = "节点id的数组", required = true, dataTypeClass = java.lang.String.class)
     })
     @Transactional
     public RespBean userReg(@RequestBody User user
-            , @ApiParam(value = "sceneId") @RequestParam(value = "sceneId") String sceneId
-            , @ApiParam(value = "sceneName") @RequestParam(value = "sceneName") String sceneName){
+            , @RequestParam(value = "sceneId") String sceneId
+            , @RequestParam(value = "sceneName") String sceneName
+            , @RequestParam(value = "nodeId") String nodeIds){
         Map<String, String> jsonMap = new HashMap<>();
         jsonMap.put("sceneId", "");
+        if (Func.isNull(nodeIds)){
+            return RespBean.paramError();
+        }
         if (Func.hasEmpty(sceneId)){
             if (userService.userExists(user.getAccountName())){
                 return RespBean.error("用户名已被占用，请更换后重试");
             }
             //用户设置并新增
-            user.setStage(1);
-            user.setStatus(false);
-            user.setCreatedTime(new Date());
             userService.insertUser(user);
             jsonMap.put("userId", user.getId());
             if (sceneService.getSceneByName(sceneName).size() > 0){
@@ -90,8 +93,7 @@ public class UserNormalController {
             }
             Scene scene = new Scene();
             scene.setSceneName(sceneName);
-            scene.setStatus(0);
-            sceneService.addSceneNormal(scene);
+            sceneService.addScene4Reg(scene, Func.toStrList(",", nodeIds));
             jsonMap.put("sceneId", scene.getId());
             //新增角色组
             RoleGroup roleGroup = new RoleGroup(SystemConstant.DEFAULT_GROUP_NAME, 0, new Date(), scene.getId());
@@ -111,10 +113,11 @@ public class UserNormalController {
             roleDefault.setEnableTime(new Date());
             list.add(roleAdmin);
             list.add(roleDefault);
-            sceneRoleService.addRoles4Scene(scene.getId(), list);
+            sceneRoleService.addDefaultRole4Reg(scene.getId(), list);
             //将该用户设置为组织管理员
             sceneService.userSceneBind(scene.getId(), user.getId(), roleAdmin.getId());
         } else {
+            jsonMap.put("sceneId", sceneId);
             if (!sceneService.sceneAvailable(sceneId)){
                 return RespBean.error("目标场景不存在");
             }
@@ -174,36 +177,24 @@ public class UserNormalController {
         return userService.getUsersByRole(roleId);
     }
 
-    @ApiOperation(value = "注册用户激活", notes = "用户审核时调用;sceneId场景ID;userId用户ID;组织管理员审核时sceneId置null或\"\"",tags = "用户", httpMethod = "POST")
+    @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;组织管理员审核时sceneId置null或\"\"",tags = "用户", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "sceneId", required = true, name = "场景id", dataTypeClass = String.class),
+            @ApiImplicitParam(value = "userId", required = true, name = "用户id", dataTypeClass = String.class),
+            @ApiImplicitParam(value = "auditType", required = true, name = "审核类型:1-组织审核；2-平台审核", dataTypeClass = Integer.class)
+    })
     @PostMapping(value = "user/active")
     @Transactional
-    public RespBean userActivate(@ApiParam(value = "sceneId", required = true)@RequestParam String sceneId
-            , @ApiParam(value = "userId", required = true) @RequestParam String userId) {
-        if (Func.isNull(userId)){
-            return RespBean.paramError();
-        }
+    public RespBean userActivate(@RequestParam String sceneId, @RequestParam String userId, @RequestParam Integer auditType) {
         if (userService.selectById(userId).getAdmin() == 1){
             //TODO:
             return RespBean.error("注册为平台管理员的接口还没做");
         }
-        User user = new User();
-        user.setId(userId);
-        user.setStatus(true);
-        user.setStage(2);
-        user.setRoleId(SystemConstant.SYSTEM_DEFAULT_USER);
-        userService.updateById(user);
-        if (!Func.hasEmpty(sceneId)) {
-            //要求新建场景的情况
-            //平台管理员审核
-            //场景有效化
-            Scene scene = new Scene();
-            scene.setId(sceneId);
-            scene.setStatus(1);
-            scene.setIsDeleted(0);
-            sceneService.updateById(scene);
+        if (auditType == 2){
             //场景的默认角色有效化
             sceneRoleService.roleAvailable(sceneId);
         }
+        userService.enableUser(userId);
         //设置平台级权限
         UserRole userRole = new UserRole();
         userRole.setCreatedTime(new Date());
@@ -211,6 +202,7 @@ public class UserNormalController {
         userRole.setStatus(1);
         userRole.setRoleId(SystemConstant.SYSTEM_DEFAULT_USER);
         userRoleService.insert(userRole);
+        sceneService.enableScene(userId, sceneId);
         return RespBean.ok("用户审核通过");
     }
 

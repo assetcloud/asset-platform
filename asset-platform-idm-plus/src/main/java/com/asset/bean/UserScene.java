@@ -24,6 +24,10 @@ public class UserScene {
      */
     @TableField("role_id")
     private Long roleId;
+    @TableField("node_id")
+    private Long nodeId;
+    @TableField("node_principal")
+    private Integer nodePrincipal;
 
     public UserScene() {
     }
@@ -32,5 +36,13 @@ public class UserScene {
         this.sceneId = sceneId;
         this.userId = userId;
         this.roleId = roleId;
+    }
+
+    public UserScene(String sceneId, String userId, Long roleId, Long nodeId, Integer nodePrincipal) {
+        this.sceneId = sceneId;
+        this.userId = userId;
+        this.roleId = roleId;
+        this.nodeId = nodeId;
+        this.nodePrincipal = nodePrincipal;
     }
 }

@@ -1,7 +1,9 @@
 package com.asset.service.impl;
 
 import com.asset.bean.*;
+import com.asset.common.SystemConstant;
 import com.asset.mapper.SceneRoleMapper;
+import com.asset.service.IRoleGroupService;
 import com.asset.service.ISceneRoleService;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
@@ -23,6 +25,9 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
 
     @Autowired
     private SceneRoleMapper sceneRoleMapper;
+
+    @Autowired
+    private IRoleGroupService roleGroupService;
 
 //    @PreAuthorize(value = "administrator")
     public List<SceneRole> getAllRoles() {
@@ -52,7 +57,33 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     }
 
     @Override
-    public boolean addRoles4Scene(String sceneId, List<SceneRole> list) {
+    public boolean addRoles4Scene(String sceneId) {
+        //新场景中新增2个默认角色
+        RoleGroup roleGroup = new RoleGroup(SystemConstant.DEFAULT_GROUP_NAME, 0, new Date(), sceneId);
+        roleGroupService.insert(roleGroup);
+        //在场景中新增两个默认角色
+        SceneRole roleAdmin = new SceneRole(sceneId, SystemConstant.SCENE_ADMIN_CH, SystemConstant.SCENE_ADMIN);
+        SceneRole roleDefault = new SceneRole(sceneId, SystemConstant.SCENE_DEFAULT_CH, SystemConstant.SCENE_DEFAULT);
+        List<SceneRole> list = new ArrayList<>();
+        roleAdmin.setGroupId(roleGroup.getId());
+        roleAdmin.setStatus(true);
+        roleAdmin.setCreatedTime(new Date());
+        roleAdmin.setEnableTime(new Date());
+        roleDefault.setGroupId(roleGroup.getId());
+        roleDefault.setStatus(true);
+        roleDefault.setRoleDefault(1);
+        roleDefault.setCreatedTime(new Date());
+        roleDefault.setEnableTime(new Date());
+        list.add(roleAdmin);
+        list.add(roleDefault);
+        for (SceneRole sceneRole : list) {
+            sceneRole.setSceneCode(sceneId);
+        }
+        return this.insertBatch(list);
+    }
+
+    @Override
+    public boolean addDefaultRole4Reg(String sceneId, List<SceneRole> list) {
         for (SceneRole sceneRole : list) {
             sceneRole.setSceneCode(sceneId);
         }
@@ -63,6 +94,7 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     public boolean roleAvailable(String sceneId) {
         List<SceneRole> rolesByScene = sceneRoleMapper.getRolesByScene(sceneId);
         for (SceneRole sceneRole : rolesByScene) {
+            sceneRole.setStatus(true);
             sceneRoleMapper.updateById(sceneRole);
         }
         return true;
