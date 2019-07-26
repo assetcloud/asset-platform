@@ -83,4 +83,9 @@ public interface IOrganService extends IService<OrganTree> {
      * @return
      */
     List<User> getUsersByScene(String sceneId);
+    /**
+     * 获取主组织树（散点式）
+     * @return OrganTree
+     */
+    OrganTree selectAllWithoutMerge(String sceneId);
 }

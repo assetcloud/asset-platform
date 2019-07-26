@@ -2,15 +2,12 @@ package com.asset.controller.system;
 
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
-import com.asset.common.UserUtils;
 import com.asset.service.*;
 import com.asset.utils.Func;
-import com.sun.org.apache.bcel.internal.generic.LOOKUPSWITCH;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +21,11 @@ import java.util.*;
 @RestController
 public class UserNormalController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(UserNormalController.class);
-
     @Autowired
     private IOrganService organService;
 
     @Autowired
-    private UserService userService;
+    private IUserService userService;
 
     @Autowired
     private ISceneRoleService sceneRoleService;
@@ -93,6 +88,10 @@ public class UserNormalController {
             }
             Scene scene = new Scene();
             scene.setSceneName(sceneName);
+            if (Func.hasEmpty(nodeIds)){
+                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+                return RespBean.error("至少选择一个组织节点");
+            }
             sceneService.addScene4Reg(scene, Func.toStrList(",", nodeIds));
             jsonMap.put("sceneId", scene.getId());
             //新增角色组
@@ -221,5 +220,24 @@ public class UserNormalController {
             , @RequestParam(value = "userId") String userId){
 
         return null;
+    }
+
+    @ApiOperation(value = "获取不在某一场景下的用户", notes = "/", tags = "用户", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long")
+    })
+    @GetMapping("users/noScene")
+    public RespBean getUsersWithoutScene(@RequestParam String accountName, @RequestParam String realName
+            , @RequestParam String email, @RequestParam String sceneId){
+        if (Func.hasEmpty(sceneId)){
+            return RespBean.paramError();
+        }
+
+        LoggerFactory.getLogger(this.getClass()).info(accountName + realName + email);
+        accountName = accountName == null ? "" : accountName;
+        realName = realName == null ? "" : realName;
+        email = email == null ? "" : email;
+        LoggerFactory.getLogger(this.getClass()).info(accountName + realName + email);
+        return RespBean.data(userService.getUsersWithoutScene(accountName, realName, email, sceneId));
     }
 }

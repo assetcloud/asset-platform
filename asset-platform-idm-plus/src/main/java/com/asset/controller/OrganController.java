@@ -158,19 +158,20 @@ public class OrganController {
      * 获取主组织树（需为管理员角色）
      * @return RespBean
      */
+    @ApiOperation(value = "获取主组织树（用于场景的组织树编辑）", notes = "已完成",tags = "组织", httpMethod = "GET")
+    @ApiImplicitParam(value = "sceneId", name = "场景id", required = true)
+    @RequestMapping(value = "/mainTree/checked", method = RequestMethod.GET)
+    public RespBean getTreeChecked(@RequestParam("sceneId") String sceneId){
+        return RespBean.data(organService.selectAllWithoutMerge(sceneId));
+    }
+
+    /**
+     * 获取主组织树（需为管理员角色）
+     * @return RespBean
+     */
     @ApiOperation(value = "获取主组织树", notes = "已完成",tags = "组织", httpMethod = "GET")
     @RequestMapping(value = "/mainTree", method = RequestMethod.GET)
     public RespBean getOrganMainTree(){
-//        List<Role> roles = UserUtils.getCurrentUser().getRoles();
-//        for (Role role : roles) {
-//            if (role.getId().equals(SystemConstant.ADMIN_ROLE_ID)) {
-//                //TODO:后续可以交由spring security处理
-//                // an administrator has access to main trees
-//                OrganTree organTree = organService.getMainTree();
-//                return RespBean.ok(SystemConstant.GET_SUCCESS, organTree);
-//            }
-//        }
-//        return RespBean.error(SystemConstant.GET_FAILURE, "");
         return RespBean.data(organService.getMainTree());
     }
 
@@ -179,16 +180,6 @@ public class OrganController {
     public RespBean getOneScene(@RequestParam("sceneId") String sceneId){
         return RespBean.data(sceneService.selectById(sceneId));
     }
-
-//    @ApiOperation(value = "获取所有场景信息", notes = "",tags = "组织", httpMethod = "GET")
-//    @RequestMapping(value = "/rest/scenes", method = RequestMethod.GET)
-//    public RespBean getAllScenes(){
-//        List<Scene> allScene = sceneService.getAllScene();
-//        if (allScene == null){
-//            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
-//        }
-//        return RespBean.ok(SystemConstant.GET_SUCCESS, allScene);
-//    }
 
     @ApiOperation(value = "新增场景", notes = "（已完成）添加场景信息;传入Scene实体;sceneName必填",tags = "组织", httpMethod = "POST")
     @RequestMapping(value = "/scene", method = RequestMethod.POST)

@@ -2,8 +2,8 @@ package com.asset.config;
 
 import com.asset.bean.RespBean;
 import com.asset.bean.User;
-import com.asset.common.UserUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,7 +64,10 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                                             HttpServletResponse res,
                                             FilterChain chain,
                                             Authentication auth) throws IOException, ServletException {
-
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("accountName", ((User) auth.getPrincipal()).getAccountName());
+        map.put("roles", ((User) auth.getPrincipal()).getRoles());
+        map.put("userId", ((User) auth.getPrincipal()).getId());
         String token = Jwts.builder()
                 .setSubject(((User) auth.getPrincipal()).getAccountName())
 //                .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())
@@ -70,15 +75,14 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, "MyJwtSecret")
                 .compact();
         res.setContentType("application/json;charset=utf-8");
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("accountName", ((User) auth.getPrincipal()).getAccountName());
-        map.put("roles", ((User) auth.getPrincipal()).getRoles());
+        map.put("Authorization", "Bearer " + token);
+        map.put("Expire", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000)));
         RespBean respBean = RespBean.ok("登录成功!", map);
         ObjectMapper om = new ObjectMapper();
         PrintWriter out = res.getWriter();
+        res.addHeader("Authorization", "Bearer " + token);
         out.write(om.writeValueAsString(respBean));
         out.flush();
         out.close();
-        res.addHeader("Authorization", "Bearer " + token);
     }
 }

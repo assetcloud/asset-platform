@@ -26,6 +26,18 @@
     <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
   </resultMap>
+  <resultMap id="BaseMap" type="com.asset.bean.User">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="account_picture" jdbcType="VARCHAR" property="accountPicture" />
+    <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+    <result column="status" jdbcType="BIT" property="status" />
+  </resultMap>
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.asset.bean.User">
     <result column="user_remark" jdbcType="LONGVARCHAR" property="userRemark" />
   </resultMap>
@@ -50,6 +62,16 @@
   </select>
   <select id="userExists" resultMap="BaseResultMap">
     select status, stage from as_user where account_name = #{accountName} and stage > 0
+  </select>
+  <select id="usersWithoutScene" resultMap="BaseMap">
+    select account_name, id, real_name, account_name, user_email, phone_number, account_picture, user_address, status
+    from as_user
+    where 1 = 1
+        <if test="param1!=''">and account_name like CONCAT(CONCAT('%',#{param1}),'%')</if>
+        <if test="param2!=''">and real_name like CONCAT(CONCAT('%',#{param2}),'%')</if>
+        <if test="param3!=''">and user_email like CONCAT(CONCAT('%',#{param3}),'%')</if>
+    and stage = 2 and status = 1 and account_name != 'admin'
+    AND id NOT IN (SELECT us.user_id from as_user_scene us where status = 1 and scene_id = #{param4})
   </select>
   <select id="getRolesByUserId" resultType="com.asset.bean.Role">
       SELECT

@@ -40,4 +40,6 @@ public interface UserMapper extends BaseMapper<User>{
     List<User> getUsersByScene(String sceneId);
 
     List<User> userExists(String accountName);
+
+    List<User> usersWithoutScene(String accountName, String realName, String email, String sceneId);
 }

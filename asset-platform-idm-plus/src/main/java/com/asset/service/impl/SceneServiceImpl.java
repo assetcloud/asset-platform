@@ -4,8 +4,10 @@ import com.asset.bean.*;
 import com.asset.mapper.*;
 import com.asset.service.IOrganSceneService;
 import com.asset.service.ISceneService;
+import com.asset.service.IUserSceneService;
 import com.asset.utils.CommonUtils;
 import com.asset.utils.Func;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +31,9 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
 
     @Autowired
     private IOrganSceneService organSceneService;
+
+    @Autowired
+    private IUserSceneService userSceneService;
 
     @Autowired
     private SceneMapper sceneMapper;
@@ -172,8 +177,16 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
 
     public boolean userSceneBind(String sceneId, String userId, Long roleId){
         OrganScene rootNode = organSceneMapper.getRootNode(sceneId);
-        UserScene userScene = new UserScene(sceneId, userId, roleId, rootNode.getId(), 0);
+        UserScene userScene = new UserScene(sceneId, userId, roleId, rootNode.getNodeId(), 0);
         return userSceneMapper.insert(userScene) > 0;
+    }
+
+    @Override
+    public boolean addSceneMembers(List<String> userIds, String sceneId, Long roleId) {
+        OrganScene rootNode = organSceneMapper.getRootNode(sceneId);
+        List<UserScene> records = new ArrayList<>();
+        userIds.forEach(map -> records.add(new UserScene(sceneId, map, roleId, rootNode.getNodeId(), 0, 1)));
+        return userSceneService.insertBatch(records);
     }
 
     @Override
@@ -188,5 +201,10 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
         scene.setIsDeleted(0);
         sceneMapper.updateById(scene);
         return userSceneMapper.updateByUserAndScene(userId, sceneId) > 0;
+    }
+
+    @Override
+    public List<OrganScene> getNodesByNameAlike(String keyword, String sceneId) {
+        return sceneMapper.getNameAlike(keyword, sceneId);
     }
 }

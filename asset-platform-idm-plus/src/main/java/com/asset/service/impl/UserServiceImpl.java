@@ -1,8 +1,10 @@
-package com.asset.service;
+package com.asset.service.impl;
 
-import com.asset.bean.*;
+import com.asset.bean.User;
 import com.asset.common.SystemConstant;
-import com.asset.mapper.*;
+import com.asset.mapper.UserMapper;
+import com.asset.mapper.UuidIdGenerator;
+import com.asset.service.IUserService;
 import com.asset.utils.Func;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.slf4j.Logger;
@@ -15,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -25,9 +26,7 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class UserService extends ServiceImpl<UserMapper, User> implements UserDetailsService{
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(UserService.class);
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserDetailsService, IUserService {
 
     @Autowired
     private UserMapper userMapper;
@@ -80,5 +79,17 @@ public class UserService extends ServiceImpl<UserMapper, User> implements UserDe
         user.setStage(2);
         user.setRoleId(SystemConstant.SYSTEM_DEFAULT_USER);
         return userMapper.updateById(user) > 0;
+    }
+
+    /**
+     * 获取不在某个场景中的用户
+     * @param accountName
+     * @param realName
+     * @param email
+     * @param sceneId
+     * @return
+     */
+    public List<User> getUsersWithoutScene(String accountName, String realName, String email, String sceneId){
+        return userMapper.usersWithoutScene(accountName, realName, email, sceneId);
     }
 }

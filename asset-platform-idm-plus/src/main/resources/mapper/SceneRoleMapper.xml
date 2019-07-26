@@ -81,4 +81,7 @@
     <select id="getRolesByScene" resultMap="BaseResultMap">
         select * from as_scene_role where status = 0 and scene_code = #{sceneId}
     </select>
+    <select id="getAllByScene" resultType="com.asset.bean.SceneRole">
+        select * from as_scene_role where status = 1 and scene_code = #{sceneId}
+    </select>
 </mapper>
