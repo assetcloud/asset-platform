@@ -40,6 +40,8 @@ public class SceneRole {
     private Integer roleDefault;
     @TableField("scene_code")
     private String sceneCode;
+    @TableField(exist = false)
+    private Integer checked = 0;
 
     public SceneRole(String sceneId, String sceneDefaultCh, String sceneDefault) {
         this.sceneCode = sceneId;

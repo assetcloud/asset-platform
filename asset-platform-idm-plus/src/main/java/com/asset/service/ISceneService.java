@@ -1,5 +1,6 @@
 package com.asset.service;
 
+import com.asset.bean.OrganScene;
 import com.asset.bean.Scene;
 import com.asset.bean.User;
 import com.asset.bean.UserScene;
@@ -53,6 +54,13 @@ public interface ISceneService extends IService<Scene> {
      */
     boolean userSceneBind(String sceneId, String userId, Long roleId);
     /**
+     * 向场景中批量增加成员
+     * @param userIds
+     * @param sceneId
+     * @return boolean
+     */
+    boolean addSceneMembers(List<String> userIds, String sceneId, Long roleId);
+    /**
      * 判断场景是否有效
      * @param sceneId
      * @return
@@ -66,4 +74,6 @@ public interface ISceneService extends IService<Scene> {
      * @return
      */
     boolean enableScene(String userId, String sceneId);
+
+    List<OrganScene> getNodesByNameAlike(String keyword, String sceneId);
 }

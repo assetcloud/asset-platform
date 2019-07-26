@@ -19,13 +19,48 @@ spring:
         max-idle: 8
         max-wait: -1ms
     timeout: 3000
+  mail:
+    default-encoding: UTF-8
+    #授权码
+#    host: smtp.qq.com
+#    username: huhaijie1995@foxmail.com
+#    password: eebupkgykzagbfgi
+    password: asset0726
+    host: smtp.yeah.net
+    username: haijiehu@yeah.net
+  freemarker:
+    template-loader-path: classpath:/static/template/
+    suffix: .flt
+    enabled: true
+    cache: false
+    charset: UTF-8
+    content-type: text/html
+    allow-request-override: false
+    check-template-location: true
+    expose-request-attributes: false
+    expose-session-attributes: false
+    expose-spring-macro-helpers: false
 #server:
 #  port: 12345
 server:
   port: 8083
-mybatis:
+  path: http://localhost:8083/
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+##  mapper-locations: classpath:resources/mapper/*Mapper.xml
+#  type-aliases-package: com.asset.**
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    cache-enabled: true
+#    call-setters-on-nulls: true
+mybatis-plus:
   mapper-locations: classpath:mapper/*.xml
-#  mapper-locations: classpath:resources/mapper/*Mapper.xml
   type-aliases-package: com.asset.**
   configuration:
     map-underscore-to-camel-case: true
+    cache-enabled: true
+    call-setters-on-nulls: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      table-prefix: as_

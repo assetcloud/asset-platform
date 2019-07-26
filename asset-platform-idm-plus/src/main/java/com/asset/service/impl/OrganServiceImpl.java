@@ -4,6 +4,7 @@ import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
 import com.asset.bean.User;
 import com.asset.common.SystemConstant;
+import com.asset.mapper.OrganSceneMapper;
 import com.asset.mapper.OrganTreeMapper;
 import com.asset.mapper.UserMapper;
 import com.asset.mapper.UuidIdGenerator;
@@ -32,6 +33,9 @@ public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> im
 
     @Autowired
     OrganTreeMapper organTreeMapper;
+
+    @Autowired
+    OrganSceneMapper organSceneMapper;
 
     @Autowired
     UuidIdGenerator uuidIdGenerator;
@@ -159,5 +163,15 @@ public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> im
     public boolean hasParent(String parentId) {
         OrganTree node = organTreeMapper.selectById(parentId);
         return node != null;
+    }
+
+    @Override
+    public OrganTree selectAllWithoutMerge(String sceneId) {
+        List<OrganTree> items = organTreeMapper.selectAll();
+        List<OrganScene> organScenes = organTreeMapper.getTreeByScene(sceneId);
+        items.stream()
+                .filter(map -> organScenes.stream().anyMatch(map1 -> map.getId().equals(map1.getNodeId())))
+                .forEach(map1 -> map1.setChecked(1));
+        return TreeNodeMerger.merge(items);
     }
 }

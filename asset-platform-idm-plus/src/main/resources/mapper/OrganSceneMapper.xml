@@ -7,4 +7,16 @@
     <select id="getRootNode" resultType="com.asset.bean.OrganScene">
         select * FROM as_organ_scene where parent_id = 'top' and scene_id = #{sceneId} and status = 1
     </select>
+    <update id="batchDeleteByNodeId">
+        update as_organ_scene set status = 0 where status = 1 and scene_id = #{param2} and node_id IN
+        <foreach collection="param1" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="batchDeleteByUserId">
+        update as_organ_scene set status = 0 where status = 1 and scene_id = #{param2} and user_id IN
+        <foreach collection="param1" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
 </mapper>
