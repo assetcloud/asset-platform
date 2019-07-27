@@ -2,7 +2,7 @@ package com.asset.controller;
 
 
 import com.asset.entity.Application;
-import com.asset.entity.AsFormModel;
+import com.asset.entity.FormModelDO;
 import com.asset.javabean.RespBean;
 import com.asset.service.ApplicationService;
 import com.asset.utils.Constants;
@@ -18,6 +18,9 @@ import java.util.List;
 
 /**
  * 应用管理控制器
+ * @author YBY and HHJ
+ * @time 190720
+ * @version 1.0_190720
  */
 @RestController
     @RequestMapping("/application")
@@ -105,16 +108,7 @@ public class ApplicationController {
 
 
 
-    /**
-     * 这里接口与/form/models/get重复了，这里这个就不用了
-     * 根据传入的AppID获取该应用下所有表单模型
-     */
-    @RequestMapping(value = "/getModels", method = RequestMethod.GET)
-    public RespBean getFormModels(@RequestParam(value = "app_id") String appID) throws JsonProcessingException {
-        ArrayList<AsFormModel> asFormModels = (ArrayList<AsFormModel>) applicationService.getFormModels(appID);
-
-        return RespBean.ok("",asFormModels);
-    }
+//
 
     /**
      * 发布应用

@@ -1,13 +1,10 @@
 package com.asset.controller;
 
-import com.asset.dao.AsFormModelMapper;
-import com.asset.entity.AsFormModel;
+import com.asset.exception.DatabaseException;
+import com.asset.javabean.FormModelBO;
 import com.asset.javabean.RespBean;
-import com.asset.rec.*;
+import com.asset.dto.*;
 import com.asset.service.FormModelService;
-import com.asset.utils.Constants;
-import com.asset.utils.JsonUtils;
-import com.asset.utils.RecUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,10 +26,9 @@ import java.util.List;
 @RestController
 @Api(value = "表单模型接口")
 public class FormModelController {
+
     final static Logger LOGGER = LoggerFactory.getLogger(FormModelController.class);
 
-    @Autowired
-    AsFormModelMapper asFormModelMapper;
     @Autowired
     FormModelService formModelService;
 
@@ -40,27 +36,34 @@ public class FormModelController {
      * 表单创建、存储
      */
     @ApiOperation(value = "表单创建、存储", notes = "", httpMethod = "POST")
-    @RequestMapping(value = "/form/model/create", method = RequestMethod.POST)
-    public RespBean createFormModel(@RequestBody FormModelCreateRec rec) throws JsonProcessingException {
-        AsFormModel curFormModel = formModelService.createFormModel(rec);
+    @RequestMapping(value = "/form_model/save", method = RequestMethod.POST)
+    public RespBean createFormModel(@RequestBody FormModelCreateDTO dto)  {
+        FormModelBO formModelBO = null;
+        try {
+            formModelBO = formModelService.createFormModel(dto);
+        } catch (DatabaseException databaseException) {
+            databaseException.printStackTrace();
+            return RespBean.error(databaseException.getMessage());
+        }
 
-        return RespBean.ok("",curFormModel);
+        return RespBean.ok("", formModelBO);
     }
 
 
     /**
      * 表单模型修改
-     *
-     * @param rec
+     * @param dto
      * @return
      * @throws JsonProcessingException
      */
-    @RequestMapping(value = "/form/model/edit", method = RequestMethod.PUT)
-    public RespBean editFormModel(@RequestBody FormModelEditRec rec) throws JsonProcessingException {
-        AsFormModel asFormModel = new AsFormModel(rec);
-        int i= asFormModelMapper.editFormModel(asFormModel);
-        if(i==0)
-            return RespBean.error("修改失败！");
+    @RequestMapping(value = "/form_model/update", method = RequestMethod.PATCH)
+    public RespBean updateFormModel(@RequestBody FormModelEditDTO dto) {
+        try {
+            formModelService.updateFormModel(dto);
+        } catch (DatabaseException databaseException) {
+            databaseException.printStackTrace();
+            return RespBean.error(databaseException.getMessage());
+        }
 
         return RespBean.ok("");
     }
@@ -69,9 +72,15 @@ public class FormModelController {
     /**
      * 绑定流程模型和表单模型
      */
-    @RequestMapping(value = "/form/model/bind", method = RequestMethod.PUT)
-    public RespBean bindFormModel(@RequestBody FormModelBindRec rec) throws JsonProcessingException {
-        formModelService.bindFormModel(rec);
+    @RequestMapping(value = "/form_model/bind", method = RequestMethod.PATCH)
+    public RespBean bindFormModel(@RequestParam(value = "form_model_id") String formModelId,
+                                  @RequestParam(value = "proc_model_id") String procModelId)  {
+        try {
+            formModelService.bindFormAndProcModel(formModelId,procModelId);
+        } catch (DatabaseException databaseException) {
+            databaseException.printStackTrace();
+            return RespBean.error(databaseException.getMessage());
+        }
 
         return RespBean.ok("");
     }
@@ -79,50 +88,31 @@ public class FormModelController {
     /**
      * 在应用页面或者在管理工厂页面 获取当前页面应该显示的表单模型
      * @param appId
-     * @param userId
-     * @param groupId
-     * @param formStatus
+     * @param groupId 传入的值为-1时表示不对分组进行限制，某一个具体值表示只筛选这个分组的表单模型
+     * @param formStatus -1:全部 0:还没和流程模型绑定  1:和流程模型绑定  2:已删除
      * @return
      */
-    @RequestMapping(value = "/form/models/get",method = RequestMethod.GET)
+    @RequestMapping(value = "/form_model/models",method = RequestMethod.GET)
     public RespBean getFormModels(@RequestParam(value = "app_id")String appId,
-                                @RequestParam(value = "user_id")String userId,
                                 @RequestParam(value = "group_id")int groupId,
                                 @RequestParam(value = "form_status")int formStatus
                                 ){
-//        if(RecUtils.check(appId,groupId,formStatus))
-//            return RespBean.error()
-        List<AsFormModel> asFormModels = formModelService.getFormModels(appId,userId,groupId,formStatus);
-        return RespBean.ok("", asFormModels);
+        List<FormModelBO> formModelDOS = formModelService.getFormModels(appId,groupId,formStatus);
+        return RespBean.ok("", formModelDOS);
     }
 
 
-
-
-    //-------------注意这里设置表单分组和上面对表单模型进行修改逻辑上是有重复的，要不要合并再说
     /**
-     * 设置表单属于OApp中的哪一个组
-     * @param rec
+     * 获取绑定的流程模型id
+     * @param formModelID
      * @return
-     * @throws JsonProcessingException
      */
-    @RequestMapping(value = "/form/model/setgroup", method = RequestMethod.PUT)
-    public RespBean setFormGroup(@RequestBody FormGroupRec rec) throws JsonProcessingException {
-        AsFormModel info = new AsFormModel(rec.getForm_model_id(),rec.getGroup_id());
-        int i =asFormModelMapper.setFormGroup(info);
-        if(i== Constants.DATABASE_FAILED)
-            return RespBean.error("修改失败！");
-        return RespBean.ok("");
-    }
-
-
-    @RequestMapping(value = "/form/model/getBindProc",method = RequestMethod.GET)
+    @RequestMapping(value = "/form_model/proc_model_id",method = RequestMethod.GET)
     public RespBean getBindProc(@RequestParam(value = "form_model_id")String formModelID)
     {
         String procModelID = formModelService.getProcModelID(formModelID);
-
+        if(procModelID.equals("null"))
+            return RespBean.error("表单模型未绑定流程模型！");
         return RespBean.ok("",procModelID);
     }
-
-
 }

@@ -1,28 +1,20 @@
 package com.asset.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.asset.dao.AsFormInstMapper;
-import com.asset.dao.AsProcInstMapper;
+import com.asset.dao.FormInstMapper;
+import com.asset.dao.ProcInstMapper;
+import com.asset.dao.ProcNodeMapper;
 import com.asset.dao.UserMapper;
-import com.asset.entity.AsFormInst;
-import com.asset.entity.AsProcInst;
 import com.asset.entity.User;
-import com.asset.form.FormJson;
 import com.asset.utils.PageGrids;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.flowable.bpmn.converter.BpmnXMLConverter;
-import org.flowable.bpmn.model.BpmnModel;
-import org.flowable.engine.*;
-import org.flowable.engine.repository.Deployment;
-import org.flowable.engine.repository.DeploymentBuilder;
-import org.flowable.engine.repository.ProcessDefinition;
-import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static org.flowable.engine.impl.test.AbstractTestCase.assertEquals;
 
 @Service
 public class UserService{
@@ -34,9 +26,17 @@ public class UserService{
     @Autowired
     FormInstService formInstService;
     @Autowired
-    AsFormInstMapper asFormInstMapper;
+    FormInstMapper formInstMapper;
     @Autowired
-    AsProcInstMapper procInstMapper;
+    ProcInstMapper procInstMapper;
+    @Autowired
+    ProcInstService procInstService;
+    @Autowired
+    ProcNodeMapper procNodeMapper;
+    @Autowired
+    FormModelService formModelService;
+    @Autowired
+    FlowableService flowableService;
 
     public PageGrids getUsers(Integer pageNum, Integer pageSize, String id, String displayName) {
         PageGrids pageGrids = new PageGrids();
@@ -53,72 +53,25 @@ public class UserService{
         return userMapper.insert(user);
     }
 
-    /**
-     * 发起一个流程，专门用于新用户注册审批
-     */
-    public ProcessInstance createRegisterTask(String registerProcModelID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
 
-        //这边系统需要创建一个含有两个节点的流程模型，并创建相应的ActType列表
-        org.flowable.ui.modeler.domain.Model modelData = modelService.getModel(registerProcModelID);
-        BpmnModel bpmnModel = modelService.getBpmnModel(modelData);
-
-        DeploymentBuilder builder = repositoryService.createDeployment();
-        byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(bpmnModel);
-        String processXMLName = modelData.getName()+".bpmn20.xml";
-        String depResourceName = modelData.getName()+"ResName";
-        String depName = modelData.getName()+"DepName";
-        String depKey = modelData.getName()+"DepKey";
-        //部署
-        Deployment dep = builder.addBpmnModel(depResourceName,bpmnModel).
-                name(depName).
-                key(depKey).
-                addBytes(processXMLName,bpmnBytes).   //必须加这个，否则流程定义文件会为空
-                deploy();
-
-        ProcessDefinition def = repositoryService.createProcessDefinitionQuery().deploymentId(dep.getId()).singleResult();
-
-        //创建流程实例
-        ProcessInstance instance = runtimeService.startProcessInstanceById(def.getId());
-        return instance;
-    }
 
     /**
-     * 根据上面创建的注册流程创建相应的注册表单实例
-     * @param model_json
-     * @param processInstanceId
-     * @param editor
-     * @param registerFormModelID
-     * @param taskID
+     *
+     * @param taskId 当前分配到的任务节点Id，可以去as_proc_node表中获取候选人信息中是不是包含 curUserId
+     * @param curUserId 当前登录的userId
+     * @return
      */
-    public AsFormInst createRegisterFormInst(FormJson model_json,
-                                       String registerFormValue,
-                                       String processInstanceId,
-                                       String editor,
-                                       String registerFormModelID,
-                                       String taskID) {
-        String executionID = formInstService.getExecutionId(processInstanceId);
-        String formInstJson = JSONObject.toJSONString(model_json);
+    public boolean validateFormInst(String taskId,String curUserId) {
+        String formModelId = formInstService.getFormModelId(taskId);
+        String procModelId = formModelService.getProcModelID(formModelId);
+        String actId = flowableService.getNodeId(taskId);
 
-        AsFormInst inst = new AsFormInst(
-                registerFormModelID,
-                processInstanceId,
-                executionID,
-                taskID,
-                editor,
-                registerFormValue,
-                formInstJson
-        );
-        asFormInstMapper.insertSelective(inst);
+        String candidateUsers = procNodeMapper.getCandidateUsers(procModelId,actId);
+        String candidateGroups = procNodeMapper.getCandidateGroups(procModelId,actId);
 
-        return inst;
+        return true;
     }
 
 
-    public void insertProcInst(AsProcInst asProcInst) {
-        procInstMapper.insert(asProcInst);
-    }
+
 }

@@ -1,60 +1,25 @@
 package com.asset.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.asset.entity.AsFormInst;
-import com.asset.entity.AsFormModel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
 
+/**
+ * 使用json-path对json进行解析
+ * @author YBY
+ */
 public class JsonUtils {
 
-    /**
-     * 返回这样的json数据： {"code": 0}
-     * @param code
-     * @return
-     */
-    public static String getCodeJson(int code){
-        HashMap<String, Serializable> map = new HashMap<String, Serializable>();
-        map.put("code",code);
-        Object json = JSONObject.toJSON(map);
-        return json.toString();
+    public static HashMap<String,Object> constructHashMap(String jsonStr){
+        HashMap<String,Object> hashMap = new HashMap<>();
+        JSONObject jsonObj = JSON.parseObject(jsonStr);
+        for (Map.Entry<String, Object> entry : jsonObj.entrySet()) {
+            hashMap.put(entry.getKey(),entry.getValue());
+        }
+
+        return hashMap;
     }
-
-    /**
-     * 创建表单模型、修改表单模型时，需要把前端传入的model_json的字段先解析为String字符串，再存入数据库
-     */
-    public static String recJsonArrayToString(List<Object> recJsonArray){
-        List<Object> model_json_before = recJsonArray;
-        Object json = JSONObject.toJSON(model_json_before);
-        return json.toString();
-    }
-
-    /**
-     * selectAll之后得到的对象列表，加上code字段返回给前台解析
-     * @param recJsonArray
-     */
-    public static String formModelsToJson(ArrayList<AsFormModel> recJsonArray){
-        HashMap<String, Serializable> map = new HashMap<String, Serializable>();
-        map.put("code", Constants.CODE_SUCCESS);
-        map.put("list", recJsonArray);
-
-        Object json = JSONObject.toJSON(map);
-        return json.toString();
-    }
-
-
-    public static String procInstsToJson(ArrayList<AsFormInst> asFormInsts)
-    {
-        int code = Constants.CODE_SUCCESS;
-        HashMap<String, Serializable> map = new HashMap<String, Serializable>();
-        map.put("code", code);
-        map.put("list", asFormInsts);
-        Object json = JSONObject.toJSON(map);
-        return json.toString();
-    }
-
 
 }

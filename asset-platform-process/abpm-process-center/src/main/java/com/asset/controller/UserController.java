@@ -1,16 +1,15 @@
 package com.asset.controller;
 
 import com.asset.base.BaseController;
-import com.asset.entity.AsProcInst;
 import com.asset.entity.User;
-import com.asset.form.FormJson;
+import com.asset.exception.ProcException;
 import com.asset.javabean.RespBean;
-import com.asset.rec.RegisterRec;
+import com.asset.dto.RegisterDTO;
 import com.asset.service.FormInstService;
+import com.asset.service.ProcInstService;
 import com.asset.service.UserService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
-import org.flowable.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,8 @@ public class UserController extends BaseController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
+    @Autowired
+    ProcInstService procInstService;
     @Autowired
     UserService userService;
     @Autowired
@@ -53,10 +54,10 @@ public class UserController extends BaseController {
                                 @RequestParam String id,
                                 @RequestParam String displayName) {
 
-        if(pageNum==null ||pageNum<=0){
+        if (pageNum == null || pageNum <= 0) {
             pageNum = 1;
         }
-        if(pageSize==null||pageSize<=0){
+        if (pageSize == null || pageSize <= 0) {
             pageSize = Constants.PageSize;
         }
         PageGrids pageGrids = userService.getUsers(pageNum, pageSize, id, displayName);
@@ -65,6 +66,7 @@ public class UserController extends BaseController {
 
     /**
      * 添加用户
+     *
      * @param displayName
      * @return
      */
@@ -83,51 +85,32 @@ public class UserController extends BaseController {
         user.setPhoneNumber(phoneNumber);
         user.setCreatedTime(new Date());
         int flag = userService.addUser(user);
-        if (flag > 0){
+        if (flag > 0) {
             return "pages/identity/user_list";
-        }else {
+        } else {
             return "index";
         }
     }
 
     /**
-     * 前端发起注册，生成一个固定表单样式，然后发起一个流程
-     * @param rec
+     * 前端发起注册，生成一个固定表单样式，固定的表单样式以及对应的审批流程模型应该在数据库创建时就存在数据库表中
+     *
+     * @param dto
      * @return
      */
-    @RequestMapping(value = "/user/register",method = RequestMethod.GET)
-    public RespBean register(@RequestBody RegisterRec rec){
-        String registerProcModelID =  "088c97ce-9bdd-11e9-b8c8-ba15de269d3a";
-        ProcessInstance procInst = userService.createRegisterTask(registerProcModelID);
-        String[] taskIDs = formInstService.getTaskIDs(procInst.getProcessInstanceId());
+    @RequestMapping(value = "/form_inst/register/save", method = RequestMethod.POST)
+    public RespBean register(@RequestBody RegisterDTO dto) {
+        String[] urls = null;
+        try {
+            urls = procInstService.createRegisterProcByXml(dto);
+        } catch (ProcException procException) {
+            LOGGER.error(procException.getMessage());
+            return RespBean.error("创建注册流程出错！");
+        }
 
-        //注册页面绑定的表单模型ID，需要在系统创建之后自动生成
-                String registerFormModelID = "0af6e7db-98d5-11e9-993a-0215444863d4";
-        userService.createRegisterFormInst(rec.getModel_json(),
-                rec.getResiter_value(),
-                procInst.getProcessInstanceId(),
-                rec.getEditor(),
-                registerFormModelID,
-                taskIDs[0]);
-
-        //3、持久化流程实例
-        AsProcInst asProcInst = new AsProcInst(
-                procInst.getProcessInstanceId(),
-                registerProcModelID,
-                "",
-                "",
-                rec.getEditor());
-        userService.insertProcInst(asProcInst);
-
-
-        formInstService.completeCurTask(taskIDs[0]);
-        formInstService.saveUnCompleteTask(
-                procInst.getProcessInstanceId(),
-                registerFormModelID,
-                rec.getResiter_value());
-
-        return RespBean.ok("");
+        return RespBean.ok("",urls);
     }
+
 
 
 }
