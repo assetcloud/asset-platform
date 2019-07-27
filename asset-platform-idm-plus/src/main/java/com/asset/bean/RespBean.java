@@ -82,6 +82,6 @@ public class RespBean {
     }
 
     public static RespBean error(Integer status, String msg, Object obj) {
-        return new RespBean(403, msg, obj);
+        return new RespBean(status, msg, obj);
     }
 }

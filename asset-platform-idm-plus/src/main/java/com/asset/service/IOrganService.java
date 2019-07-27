@@ -13,7 +13,7 @@ public interface IOrganService extends IService<OrganTree> {
      * @param record
      * @return
      */
-    int addNode(OrganTree record);
+    boolean addNode(OrganTree record);
 
     /**
      * 删除部门或单位节点

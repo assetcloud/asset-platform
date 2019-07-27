@@ -16,7 +16,8 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
                 // which means "123"
                 .secret("$2a$10$ySG2lkvjFHY5O0./CPIE1OI8VJsuKYEzOYzqIa7AJR6sEgSzUFOAm")
                 .authorizedGrantTypes("client_credentials")
-                .accessTokenValiditySeconds(432000)
+                // 12小时过期
+                .accessTokenValiditySeconds(43200)
                 .scopes("admin");
     }
 }

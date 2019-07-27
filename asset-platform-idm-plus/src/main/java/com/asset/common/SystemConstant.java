@@ -127,6 +127,8 @@ public interface SystemConstant {
 
     Long SYSTEM_DEFAULT_USER = (long) 2;
 
+    String DEFAULT_PASSWORD = "123456";
+
     /**
      * 分割符
      */

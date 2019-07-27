@@ -48,10 +48,10 @@ public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> im
      * @param record
      * @return
      */
-    public int addNode(OrganTree record){
+    public boolean addNode(OrganTree record){
         if(organTreeMapper.getNodeByName(record.getUnitName()) != null){
             //记录已存在
-            return SystemConstant.RECORD_ALREADY_EXISTS;
+            return false;
         }
         if(record.getId() == null){
             record.setId(uuidIdGenerator.generateId());
@@ -62,7 +62,7 @@ public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> im
         record.setCreatedTime(new Date());
         record.setStatus(1);
         record.setIsDeleted(0);
-        return organTreeMapper.insert(record);
+        return this.save(record);
     }
 
 
