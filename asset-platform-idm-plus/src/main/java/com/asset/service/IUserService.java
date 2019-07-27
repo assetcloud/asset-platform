@@ -47,4 +47,11 @@ public interface IUserService extends IService<User> {
      * @return
      */
     boolean removeUser(String userId);
+
+    /**
+     * 重置用户密码
+     * @param userId
+     * @return
+     */
+    boolean resetPassword(String userId);
 }

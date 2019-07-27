@@ -232,4 +232,21 @@ public class SceneController {
     public RespBean getMemberRoleInvert(@RequestParam String userId, @RequestParam String sceneId){
         return RespBean.data(userSceneService.rolesChecked(userId, sceneId));
     }
+
+    //TODO：用户登录后请求创建新场景
+    @ApiOperation(value = "用户请求创建新场景", notes = "")
+    @PostMapping("create")
+    public RespBean createScene(@RequestBody Scene scene){
+
+        return null;
+    }
+
+    //TODO：用户登录后请求绑定其它场景
+    @ApiOperation(value = "用户请求绑定其它场景", notes = "")
+    @PostMapping("bind/another")
+    public RespBean bindScene(@RequestParam(value = "sceneId") String sceneId
+            , @RequestParam(value = "userId") String userId){
+
+        return null;
+    }
 }

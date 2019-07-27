@@ -24,8 +24,6 @@ import java.util.List;
 @RequestMapping(value = "organ")
 public class OrganController {
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(OrganController.class);
-
     @Autowired
     private IOrganService organService;
 
@@ -39,15 +37,12 @@ public class OrganController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "unitName", value = "单位名称", required = true, dataType = "String"),
             @ApiImplicitParam(name = "parentId", value = "父节点id，若无则为\"\"", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "sort", value = "排序编号，默认为0", required = true, dataType = "Integer")
+            @ApiImplicitParam(name = "sort", value = "排序编号，默认为0", defaultValue = "0", required = true, dataType = "Integer")
     })
     @RequestMapping(value = "/node", method = RequestMethod.POST)
     public RespBean addNode(@RequestBody OrganTree organTree){
         if (Func.hasEmpty(organTree.getUnitName(), organTree.getParentId())){
             return RespBean.paramError();
-        }
-        if (Func.isNull(organTree.getSort())){
-            organTree.setSort(0);
         }
         if (organService.nodeExists(organTree.getUnitName())){
             return RespBean.error(String.format("组织部门: %s 已存在", organTree.getUnitName()));
@@ -55,10 +50,7 @@ public class OrganController {
         if (!organService.hasParent(organTree.getParentId())){
             return RespBean.error("目标父节点不存在");
         }
-        organTree.setStatus(1);
-        organTree.setIsDeleted(0);
-        organTree.setEnableTime(new Date());
-        return RespBean.data(organService.save(organTree));
+        return RespBean.data(organService.addNode(organTree));
     }
 
     @ApiOperation(value = "批量添加组织节点", notes = "已完成",tags = "组织", httpMethod = "POST")
@@ -110,9 +102,6 @@ public class OrganController {
             if (Func.isNull(organTree.getId())){
                 return RespBean.paramError();
             }
-            organTree.setDisableTime(new Date());
-            organTree.setIsDeleted(1);
-            organTree.setStatus(0);
         }
         return RespBean.data(organService.batchDeleteNode(organTrees));
     }

@@ -72,10 +72,4 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
         }
         return null;
     }
-
-    @Override
-    protected void onUnsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response
-            , AuthenticationException failed) throws IOException {
-        System.out.println("=====================================================");
-    }
 }

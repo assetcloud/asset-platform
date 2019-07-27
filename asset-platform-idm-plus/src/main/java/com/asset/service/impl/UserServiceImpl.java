@@ -116,4 +116,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setDisableTime(new Date());
         return userMapper.updateById(user) > 0;
     }
+
+    @Override
+    public boolean resetPassword(String userId) {
+        User user = new User();
+        user.setId(userId);
+        user.setPwd(new BCryptPasswordEncoder().encode(SystemConstant.DEFAULT_PASSWORD));
+        return userMapper.updateById(user) > 0;
+    }
 }

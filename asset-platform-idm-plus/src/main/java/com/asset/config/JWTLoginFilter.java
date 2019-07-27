@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -81,6 +82,26 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         ObjectMapper om = new ObjectMapper();
         PrintWriter out = res.getWriter();
         res.addHeader("Authorization", "Bearer " + token);
+        out.write(om.writeValueAsString(respBean));
+        out.flush();
+        out.close();
+    }
+
+    /**
+     * 登录失败时执行下面的方法
+     * @param request
+     * @param response
+     * @param failed
+     * @throws IOException
+     * @throws ServletException
+     */
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        SecurityContextHolder.clearContext();
+        response.setContentType("application/json;charset=utf-8");
+        RespBean respBean = RespBean.error(500, "Logon Failed!", failed.getMessage());
+        ObjectMapper om = new ObjectMapper();
+        PrintWriter out = response.getWriter();
         out.write(om.writeValueAsString(respBean));
         out.flush();
         out.close();
