@@ -8,19 +8,20 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 /**
- * 保护 API
+ * 也是授权服务器的一部分，用于保护 API
  * 在里面写要保护的资源
  * @author YBY
  */
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .antMatcher("/user/**").httpBasic()
+                .antMatcher("test/user/**").httpBasic()
                 .and()
                 .csrf().disable();
     }

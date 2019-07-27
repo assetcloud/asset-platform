@@ -5,7 +5,7 @@ import com.asset.dao.AppFormBindMapper;
 import com.asset.dao.ApplicationMapper;
 import com.asset.dao.FormModelMapper;
 import com.asset.entity.Application;
-import com.asset.entity.FormModel;
+import com.asset.entity.FormModelDO;
 import com.asset.javabean.UuidIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,12 +62,17 @@ public class ApplicationService {
      * 获取一个 App应用下 所有表单模型数据
      * @return
      */
-    public List<FormModel> getFormModels(String appID) {
+    public List<String> getFormModels(String appID) {
         //先从asset_app_form表中找到所有该App应用下 所有绑定的表单模型ID
-        List<String> formModelIDs = appFormBindMapper.getFormModelIDs(appID);
-
-        return formModelMapper.getFormModels(formModelIDs);
+//        List<String> formModelIDs = appFormBindMapper.getFormModelIDs(appID);
+        return appFormBindMapper.getFormModelIDs(appID);
+//        return formModelMapper.getFormModels(formModelIDs);
     }
+
+
+
+
+
 
     public List<Application> getPublishedApp() {
         return applicationMapper.getPublishedApp();

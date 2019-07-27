@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.ProcNodeMapper">
+    <resultMap id="BaseResultMap" type="com.asset.entity.ProcNodeDO">
+        <result column="proc_model_id" jdbcType="VARCHAR" property="procModelId"/>
+        <result column="node_id" jdbcType="VARCHAR" property="nodeId"/>
+        <result column="node_type" jdbcType="INTEGER" property="nodeType"/>
+        <result column="candidate_user" jdbcType="VARCHAR" property="candidateUser"/>
+        <result column="candidate_group" jdbcType="VARCHAR" property="candidateGroup"/>
+        <result column="limit_time" jdbcType="TIMESTAMP" property="limitTime"/>
+        <result column="overtime_strategy" jdbcType="INTEGER" property="overtimeStrategy"/>
+        <result column="sign_strategy" jdbcType="VARCHAR" property="signStrategy"/>
+        <result column="todo_strategy" jdbcType="VARCHAR" property="todoStrategy"/>
+        <result column="if_joint_sign" jdbcType="INTEGER" property="ifJointSign"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    proc_model_id, node_id, node_type, candidate_user, candidate_group, limit_time, overtime_strategy,
+    sign_strategy, todo_strategy, if_joint_sign
+  </sql>
+    <insert id="insert" parameterType="com.asset.entity.ProcNodeDO">
+    insert into as_proc_node (proc_model_id, node_id, node_type,
+      candidate_user, candidate_group, limit_time,
+      overtime_strategy, sign_strategy, todo_strategy,
+      if_joint_sign)
+    values (#{procModelId,jdbcType=VARCHAR}, #{nodeId,jdbcType=VARCHAR}, #{nodeType,jdbcType=INTEGER},
+      #{candidateUser,jdbcType=VARCHAR}, #{candidateGroup,jdbcType=VARCHAR}, #{limitTime,jdbcType=TIMESTAMP},
+      #{overtimeStrategy,jdbcType=INTEGER}, #{signStrategy,jdbcType=VARCHAR}, #{todoStrategy,jdbcType=VARCHAR},
+      #{ifJointSign,jdbcType=INTEGER})
+  </insert>
+    <insert id="insertSelective" parameterType="com.asset.entity.ProcNodeDO">
+        insert into as_proc_node
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="procModelId != null">
+                proc_model_id,
+            </if>
+            <if test="nodeId != null">
+                node_id,
+            </if>
+            <if test="nodeType != null">
+                node_type,
+            </if>
+            <if test="candidateUser != null">
+                candidate_user,
+            </if>
+            <if test="candidateGroup != null">
+                candidate_group,
+            </if>
+            <if test="limitTime != null">
+                limit_time,
+            </if>
+            <if test="overtimeStrategy != null">
+                overtime_strategy,
+            </if>
+            <if test="signStrategy != null">
+                sign_strategy,
+            </if>
+            <if test="todoStrategy != null">
+                todo_strategy,
+            </if>
+            <if test="ifJointSign != null">
+                if_joint_sign,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="procModelId != null">
+                #{procModelId,jdbcType=VARCHAR},
+            </if>
+            <if test="nodeId != null">
+                #{nodeId,jdbcType=VARCHAR},
+            </if>
+            <if test="nodeType != null">
+                #{nodeType,jdbcType=INTEGER},
+            </if>
+            <if test="candidateUser != null">
+                #{candidateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="candidateGroup != null">
+                #{candidateGroup,jdbcType=VARCHAR},
+            </if>
+            <if test="limitTime != null">
+                #{limitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="overtimeStrategy != null">
+                #{overtimeStrategy,jdbcType=INTEGER},
+            </if>
+            <if test="signStrategy != null">
+                #{signStrategy,jdbcType=VARCHAR},
+            </if>
+            <if test="todoStrategy != null">
+                #{todoStrategy,jdbcType=VARCHAR},
+            </if>
+            <if test="ifJointSign != null">
+                #{ifJointSign,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="getNodeType" resultType="java.lang.Integer">
+    SELECT node_type
+    FROM as_proc_node
+    WHERE
+    proc_model_id = #{param1,jdbcType=VARCHAR} AND
+    node_id = #{param2,jdbcType=VARCHAR}
+  </select>
+    <select id="getCandidateUsers" resultType="java.lang.String">
+    SELECT candidate_user
+    FROM as_proc_node
+    WHERE
+    proc_model_id = #{param1,jdbcType=VARCHAR} AND
+    node_id = #{param2,jdbcType=VARCHAR}
+  </select>
+    <select id="getCandidateGroups" resultType="java.lang.String">
+    SELECT candidate_group
+    FROM as_proc_node
+    WHERE
+    proc_model_id = #{param1,jdbcType=VARCHAR} AND
+    node_id = #{param2,jdbcType=VARCHAR}
+  </select>
+
+    <select id="getIfJointSign" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT if_joint_sign
+    FROM as_proc_node
+    WHERE
+    proc_model_id = #{procModelId,jdbcType=VARCHAR}
+  </select>
+
+    <select id="listNodes" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+     proc_model_id,
+     node_id,
+     node_type,
+     candidate_user,
+      candidate_group,
+      limit_time,
+      overtime_strategy,
+      sign_strategy,
+      todo_strategy,
+      if_joint_sign
+      FROM
+      as_proc_node
+      WHERE
+      proc_model_id = #{procModelId,jdbcType=VARCHAR}
+  </select>
+</mapper>

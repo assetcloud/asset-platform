@@ -9,6 +9,8 @@ import com.asset.dto.GroupRec;
 import com.asset.service.AppGroupService;
 import com.asset.utils.Constants;
 import io.swagger.annotations.Api;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +25,10 @@ import java.util.ArrayList;
  */
 @RestController
 @Api(value = "App分组管理接口")
-@RequestMapping(value = "/api")
 public class GroupController {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(GroupController.class);
+
 
     @Autowired
     AppGroupService groupService;
@@ -36,7 +40,7 @@ public class GroupController {
      * @param rec
      * @return
      */
-    @RequestMapping(value = "/group/create" ,method = RequestMethod.POST)
+    @RequestMapping(value = "/group/save" ,method = RequestMethod.POST)
     public RespBean createOAppGroup(@RequestBody GroupRec rec)
     {
         Group group = new GroupCreate(
@@ -51,11 +55,11 @@ public class GroupController {
     }
 
     /**
-     * 修改分组
+     * 修改分组信息
      * @param rec
      * @return
      */
-    @RequestMapping(value = "/group/edit" ,method = RequestMethod.PUT)
+    @RequestMapping(value = "/group/save" ,method = RequestMethod.PATCH)
     public RespBean updateGroup(@RequestBody GroupRec rec)
     {
         Group info = new GroupEdit(rec.getGroup_id(),
@@ -72,7 +76,7 @@ public class GroupController {
      * @param rec
      * @return
      */
-    @RequestMapping(value = "/group/delete" ,method = RequestMethod.DELETE)
+    @RequestMapping(value = "/group/save" ,method = RequestMethod.DELETE)
     public RespBean deleteGroup(@RequestBody GroupRec rec)
     {
         Group info = new GroupDelete(rec.getGroup_id(),
@@ -104,6 +108,5 @@ public class GroupController {
             return RespBean.ok("分组为空！");
         return RespBean.ok("", groups);
     }
-
 
 }

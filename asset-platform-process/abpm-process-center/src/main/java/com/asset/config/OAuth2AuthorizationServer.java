@@ -6,7 +6,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 
 /**
- * 授权中心，发放access_token
+ * 授权服务器，发放access_token
  * @author YBY
  */
 @Configuration

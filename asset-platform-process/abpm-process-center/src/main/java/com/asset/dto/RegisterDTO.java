@@ -1,11 +1,17 @@
 package com.asset.dto;
 
-import com.asset.form.FormJsonEntity;
+import com.asset.form.FormSheet;
 import lombok.Data;
 
+/**
+ * @author YBY
+ */
 @Data
 public class RegisterDTO {
-    FormJsonEntity model_json;
+    FormSheet form_inst_sheet;
     String editor;  //注册的时候提交的撰写人
-    String resiter_value;
+    String form_inst_value;
+    //以下两个参数用于与组织架构模块交互
+    String userId;
+    String sceneId;
 }

@@ -2,10 +2,11 @@ package com.asset.controller;
 
 import com.asset.base.BaseController;
 import com.asset.entity.User;
-import com.asset.exception.ProcExeception;
+import com.asset.exception.ProcException;
 import com.asset.javabean.RespBean;
 import com.asset.dto.RegisterDTO;
 import com.asset.service.FormInstService;
+import com.asset.service.ProcInstService;
 import com.asset.service.UserService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
@@ -25,13 +26,14 @@ public class UserController extends BaseController {
     private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
+    ProcInstService procInstService;
+    @Autowired
     UserService userService;
     @Autowired
     FormInstService formInstService;
 
     /**
      * 用户管理页面
-     *
      * @return
      */
     @RequestMapping("/userList")
@@ -41,7 +43,6 @@ public class UserController extends BaseController {
 
     /**
      * 查询用户数据
-     *
      * @param pageNum
      * @param pageSize
      * @return PageGrids
@@ -97,17 +98,19 @@ public class UserController extends BaseController {
      * @param dto
      * @return
      */
-    @RequestMapping(value = "/user/register", method = RequestMethod.GET)
+    @RequestMapping(value = "/form_inst/register/save", method = RequestMethod.POST)
     public RespBean register(@RequestBody RegisterDTO dto) {
+        String[] urls = null;
         try {
-            userService.createRegisterProc(dto);
-        } catch (ProcExeception procExeception) {
-            LOGGER.error(procExeception.getMessage());
+            urls = procInstService.createRegisterProcByXml(dto);
+        } catch (ProcException procException) {
+            LOGGER.error(procException.getMessage());
             return RespBean.error("创建注册流程出错！");
         }
 
-        return RespBean.ok("");
+        return RespBean.ok("",urls);
     }
+
 
 
 }

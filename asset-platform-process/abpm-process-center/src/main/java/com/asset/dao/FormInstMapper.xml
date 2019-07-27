@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.FormInstMapper">
+  <resultMap id="BaseResultMap" type="com.asset.entity.FormInstDO">
+    <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="form_inst_value" jdbcType="LONGVARCHAR" property="formInstValue" />
+    <result column="form_model_id" jdbcType="VARCHAR" property="formModelId" />
+    <result column="proc_inst_id" jdbcType="VARCHAR" property="procInstId" />
+    <result column="execution_id" jdbcType="VARCHAR" property="executionId" />
+    <result column="task_id" jdbcType="VARCHAR" property="taskId" />
+    <result column="execute_time" jdbcType="TIMESTAMP" property="executeTime" />
+    <result column="executor" jdbcType="VARCHAR" property="executor" />
+    <result column="node_type" jdbcType="INTEGER" property="nodeType" />
+    <result column="approve_result" jdbcType="INTEGER" property="approveResult" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.asset.entity.FormInstDO">
+    <result column="form_inst_sheet" jdbcType="LONGVARCHAR" property="formInstSheetStr" />
+  </resultMap>
+  <sql id="Blob_Column_List">
+    form_inst_sheet
+  </sql>
+  <insert id="insert" parameterType="com.asset.entity.FormInstDO">
+    insert into as_form_inst (
+    id,
+    form_model_id,
+    proc_inst_id,
+      execution_id,
+      task_id,
+      execute_time,
+      executor,
+      form_inst_sheet,
+      form_inst_value,
+      node_type,
+      approve_result)
+    values (#{id,jdbcType=VARCHAR},
+    #{formModelId,jdbcType=VARCHAR},
+    #{procInstId,jdbcType=VARCHAR},
+      #{executionId,jdbcType=VARCHAR},
+      #{taskId,jdbcType=VARCHAR},
+      now(),
+      #{executor,jdbcType=VARCHAR},
+      #{formInstSheetStr,jdbcType=LONGVARCHAR},
+      #{formInstValue,jdbcType=LONGVARCHAR},
+      #{nodeType,jdbcType=INTEGER},
+      #{approveResult,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.entity.FormInstDO">
+    insert into as_form_inst
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="formInstValue != null">
+        form_inst_value,
+      </if>
+      <if test="formModelId != null">
+        form_model_id,
+      </if>
+      <if test="procInstId != null">
+        proc_inst_id,
+      </if>
+      <if test="executionId != null">
+        execution_id,
+      </if>
+      <if test="taskId != null">
+        task_id,
+      </if>
+      <if test="executor != null">
+        execute_time,
+      </if>
+      <if test="executor != null">
+        executor,
+      </if>
+      <if test="formInstSheetStr != null">
+        form_inst_sheet,
+      </if>
+      <if test="nodeType != null">
+        node_type,
+      </if>
+      <if test="approveResult != null">
+        approve_result
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="formInstValue != null">
+        #{formInstValue,jdbcType=VARCHAR},
+      </if>
+      <if test="formModelId != null">
+        #{formModelId,jdbcType=VARCHAR},
+      </if>
+      <if test="procInstId != null">
+        #{procInstId,jdbcType=VARCHAR},
+      </if>
+      <if test="executionId != null">
+        #{executionId,jdbcType=VARCHAR},
+      </if>
+      <if test="taskId != null">
+        #{taskId,jdbcType=VARCHAR},
+      </if>
+      <!--<if test="executeTime != null">-->
+        now(),
+      <!--</if>-->
+      <if test="executor != null">
+        #{executor,jdbcType=VARCHAR},
+      </if>
+      <if test="formInstSheetStr != null">
+        #{formInstSheetStr,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="nodeType != null">
+        #{nodeType,jdbcType=INTEGER},
+      </if>
+      <if test="approveResult != null">
+        #{approveResult,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </insert>
+
+  <!--根据表单实例ID获取对应的流程实例ID
+     * @param String form_inst_id-->
+  <select id="getProcInstID" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT
+      proc_inst_id
+    FROM
+      as_form_inst
+    WHERE
+      id = #{formInstId,jdbcType=VARCHAR}
+  </select>
+
+
+  <!--* 从as_form_inst根据流程实例ID，返回对应的表单实例信息
+     * @param String[] procInstIDs-->
+  <select id="getFormInstsByTaskIds" resultMap="ResultMapWithBLOBs">
+    SELECT
+    id,
+    form_model_id,
+    proc_inst_id,
+    execution_id,
+    task_id,
+    execute_time,
+    executor,
+    form_inst_sheet,
+    form_inst_value
+    FROM
+    as_form_inst
+    WHERE
+    task_id in
+    <foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+    #{item}
+    </foreach>
+  </select>
+
+
+  <!-- 注意这里的表单项填写数据应该从as_proc_inst 表中去拿
+        formSheet内容应该从-->
+  <select id="getFormInstsByTasks" resultMap="ResultMapWithBLOBs">
+    SELECT
+    F.id,
+    F.form_model_id,
+    F.proc_inst_id,
+    F.execution_id,
+    F.task_id,
+    F.execute_time,
+    F.executor,
+    F.form_inst_sheet,
+    P.form_inst_all_value,
+    F.node_type
+    FROM
+    as_form_inst AS F,
+    as_proc_inst AS P
+    WHERE
+    F.task_id in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item.taskId,jdbcType=VARCHAR}
+    </foreach>
+    AND P.proc_inst_id in
+    <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+      #{item.procInstId,jdbcType=VARCHAR}
+    </foreach>
+  </select>
+
+
+  <!--* 从as_form_inst根据流程实例ID，返回对应的表单实例信息
+   * @param String[] procInstIDs-->
+  <select id="getFormInst" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    SELECT
+    id,
+    form_model_id,
+    proc_inst_id,
+    execution_id,
+    task_id,
+    execute_time,
+    executor,
+    form_inst_sheet,
+    form_inst_value,
+    status,
+    node_type,
+    approve_result
+    FROM
+    as_form_inst
+    WHERE
+    task_id = #{procTaskId,jdbcType =VARCHAR}
+  </select>
+
+  <select id="getFormModelId" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT
+    form_model_id
+    FROM
+    as_form_inst
+    WHERE
+    form_inst_id = #{formInstId,jdbcType=VARCHAR}
+  </select>
+
+  <update id="approveFormInst" parameterType="com.asset.entity.FormInstDO">
+    UPDATE
+    as_form_inst
+    SET
+        executor = #{executor,jdbcType=VARCHAR},
+        execute_time = now(),
+        approve_result = #{approveResult,jdbcType=INTEGER}
+    WHERE
+    id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="handleFormInst" parameterType="com.asset.entity.FormInstDO">
+    UPDATE
+    as_form_inst
+    SET
+    form_inst_sheet = #{formInstSheetStr,jdbcType=VARCHAR},
+    executor = #{executor,jdbcType=VARCHAR},
+    execute_time = now(),
+    form_inst_value = #{formInstValue,jdbcType=VARCHAR}
+    WHERE
+    id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <update id="readFormInst" parameterType="com.asset.entity.FormInstDO">
+    UPDATE
+    as_form_inst
+    SET
+    executor = #{executor,jdbcType=VARCHAR},
+    execute_time = now()
+    WHERE
+    id = #{id,jdbcType=VARCHAR}
+  </update>
+
+  <!--<update id="approveFormInst" parameterType="com.asset.entity.FormInstDO">-->
+    <!--UPDATE-->
+    <!--as_form_inst-->
+    <!--SET-->
+        <!--executor = #{executor,jdbcType=VARCHAR},-->
+        <!--execute_time = now(),-->
+        <!--approve_result = #{approveResult,jdbcType=INTEGER}-->
+    <!--WHERE-->
+    <!--id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+
+  <!--<update id="handleFormInst" parameterType="com.asset.entity.FormInstDO">-->
+    <!--UPDATE-->
+    <!--as_form_inst-->
+    <!--SET-->
+    <!--form_inst_sheet = #{formInstSheetStr,jdbcType=VARCHAR},-->
+    <!--executor = #{executor,jdbcType=VARCHAR},-->
+    <!--execute_time = now(),-->
+    <!--form_inst_value = #{formInstValue,jdbcType=VARCHAR}-->
+    <!--WHERE-->
+    <!--id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+
+  <!--<update id="readFormInst" parameterType="com.asset.entity.FormInstDO">-->
+    <!--UPDATE-->
+    <!--as_form_inst-->
+    <!--SET-->
+    <!--executor = #{executor,jdbcType=VARCHAR},-->
+    <!--execute_time = now()-->
+    <!--WHERE-->
+    <!--id = #{id,jdbcType=VARCHAR}-->
+  <!--</update>-->
+
+
+
+
+  <select id="getTaskId" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT task_id
+    FROM as_form_inst
+    WHERE task_id=#{taskId,jdbcType=VARCHAR}
+  </select>
+
+  <insert id="saveUnCompleteFormInst" parameterType="com.asset.entity.FormInstDO">
+    insert into as_form_inst
+    (id,
+    form_model_id,
+    proc_inst_id,
+      task_id,
+      execution_id,
+      form_inst_sheet,
+      form_inst_value,
+      node_type)
+    values
+     (#{id,jdbcType=VARCHAR},
+    #{formModelId,jdbcType=VARCHAR},
+     #{procInstId,jdbcType=VARCHAR},
+       #{taskId,jdbcType=VARCHAR},
+      #{executionId,jdbcType=VARCHAR},
+       #{formInstSheetStr,jdbcType=LONGVARCHAR},
+       #{formInstValue,jdbcType=LONGVARCHAR},
+       #{nodeType,jdbcType=INTEGER}
+      )
+  </insert>
+
+  <select id="getProcInstId" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT proc_inst_id
+    FROM as_form_inst
+    WHERE task_id = #{taskId,jdbcType = VARCHAR}
+  </select>
+
+</mapper>

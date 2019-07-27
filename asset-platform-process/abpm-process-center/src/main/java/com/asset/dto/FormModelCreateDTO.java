@@ -1,0 +1,18 @@
+package com.asset.dto;
+
+import com.asset.form.FormSheet;
+import lombok.Data;
+
+/**
+ * @author YBY
+ * @time 190604 1911
+ * @version 1.0_190604 1911
+ */
+@Data
+public class FormModelCreateDTO {
+    String form_name;
+    String created_by;
+    String icon_cls;
+    String app_id;
+    FormSheet form_sheet;
+}

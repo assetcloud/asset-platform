@@ -25,8 +25,10 @@ public interface Constants {
   public static final int FORM_MODEL_DELETED = 2;  //表单流程已被删除
 
   //表单实例的状态
-  public static final int FORM_INST_ENABLED = 0;   //默认就是0
-  public static final int FORM_INST_DISABLED = 1;  //表单实例因为被回滚或者其他原因不可用
+  public static final int FORM_INST_ENABLED = 0;   //表示被创建，等待被执行
+  public static final int FORM_INST_EXECUTED = 1;   //被执行了
+  public static final int FORM_INST_DELETED = 99;  //表单实例被丢弃（即没被执行了，可能是直接被回滚了）
+  public static final int FORM_INST_ROLLED = 999;  //表单实例原来被正确执行了的，但是现在被回滚了
 
   //返回给前台的标示后台数据读写是否成功
   public static final int CODE_SUCCESS = 1;  //返回给前台的消息 成功
@@ -50,6 +52,13 @@ public interface Constants {
   public static final int AS_NODE_PARALLEL_start = 4;   //并行节点开始
   public static final int AS_NODE_PARALLEL_end = 5;     //并行节点结束
 
+
+  public static final int AS_NODE_JOINT_DISABLE = 0;     //该节点不包含会签功能
+  public static final int AS_NODE_JOINT_SERIAL = 1;     //该节点包含 串行会签功能
+  public static final int AS_NODE_JOINT_PARRAL = 2;    //该节点包含 并行会签功能
+
+
+
   public static final int DATABASE_SUCCESS = 1;      //表示对数据库插入数据或者修改数据成功
   public static final int DATABASE_FAILED = 0;      //失败
 
@@ -61,6 +70,9 @@ public interface Constants {
   public static final int AUTHORITY_ENABLE = 3;      //可见+可编辑
   public static final int AUTHORITY_REQUIRED = 4;      //必填
 
+  public static final String REQUEST_URL_PREFIX = "localhost:9000";
+
   //代表int的初始值
   int EMPTY = -1;
+  public static final String REGISTER_PROC = "REGISTER";
 }

@@ -1,6 +1,6 @@
 package com.asset.dto;
 
-import com.asset.form.FormJson;
+import com.asset.form.FormSheet;
 import lombok.Data;
 
 /**
@@ -8,5 +8,6 @@ import lombok.Data;
  */
 @Data
 public class FormInstRecCreate extends FormInstRecBase {
-    FormJson form_inst_json;
+    FormSheet form_inst_sheet;
+    String form_inst_value; //填写的表单数据信息
 }

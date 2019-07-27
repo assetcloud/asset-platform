@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asset.dao.AppFormBindMapper">
-  <resultMap id="BaseResultMap" type="com.asset.entity.AppFormBind">
+  <resultMap id="BaseResultMap" type="com.asset.entity.AppFormBindDO">
     <id column="app_id" jdbcType="VARCHAR" property="appId" />
     <result column="form_model_id" jdbcType="VARCHAR" property="formModelId" />
   </resultMap>
@@ -18,11 +18,11 @@
     delete from as_app_form
     where app_id = #{appId,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.asset.entity.AppFormBind">
+  <insert id="insert" parameterType="com.asset.entity.AppFormBindDO">
     insert into as_app_form (app_id, form_model_id)
     values (#{appId,jdbcType=VARCHAR}, #{formModelId,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.asset.entity.AppFormBind">
+  <insert id="insertSelective" parameterType="com.asset.entity.AppFormBindDO">
     insert into as_app_form
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="appId != null">
@@ -41,7 +41,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.asset.entity.AppFormBind">
+  <update id="updateByPrimaryKeySelective" parameterType="com.asset.entity.AppFormBindDO">
     update as_app_form
     <set>
       <if test="formModelId != null">
@@ -50,7 +50,7 @@
     </set>
     where app_id = #{appId,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.asset.entity.AppFormBind">
+  <update id="updateByPrimaryKey" parameterType="com.asset.entity.AppFormBindDO">
     update as_app_form
     set form_model_id = #{formModelId,jdbcType=VARCHAR}
     where app_id = #{appId,jdbcType=VARCHAR}

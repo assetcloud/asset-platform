@@ -1,7 +1,7 @@
 package com.asset.dao;
 
 
-import com.asset.entity.AppFormBind;
+import com.asset.entity.AppFormBindDO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -11,18 +11,19 @@ import java.util.List;
  */
 @Repository
 public interface AppFormBindMapper {
-    int deleteByPrimaryKey(String oappId);
+    int deleteByPrimaryKey(String appId);
 
-    int insert(AppFormBind record);
+    int insert(AppFormBindDO record);
 
-    int insertSelective(AppFormBind record);
+    int insertSelective(AppFormBindDO record);
 
-    AppFormBind selectByPrimaryKey(String oappId);
+    AppFormBindDO selectByPrimaryKey(String appId);
 
-    int updateByPrimaryKeySelective(AppFormBind record);
+    int updateByPrimaryKeySelective(AppFormBindDO record);
 
-    int updateByPrimaryKey(AppFormBind record);
+    int updateByPrimaryKey(AppFormBindDO record);
 
-    List<String> getFormModelIDs(String oappID);
+    List<String> getFormModelIDs(String appID);
+
 
 }
