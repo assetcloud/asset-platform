@@ -2,7 +2,7 @@ package com.asset.service;
 
 
 import com.asset.bean.Role;
-import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>

@@ -4,7 +4,7 @@ import com.asset.bean.Resource;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.ResourceMapper;
 import com.asset.service.IResourceService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

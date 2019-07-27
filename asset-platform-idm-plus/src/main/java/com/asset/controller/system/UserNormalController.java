@@ -2,11 +2,13 @@ package com.asset.controller.system;
 
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
+import com.asset.common.model.UserPageParam;
 import com.asset.service.*;
 import com.asset.utils.Func;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -96,7 +98,7 @@ public class UserNormalController {
             jsonMap.put("sceneId", scene.getId());
             //新增角色组
             RoleGroup roleGroup = new RoleGroup(SystemConstant.DEFAULT_GROUP_NAME, 0, new Date(), scene.getId());
-            roleGroupService.insert(roleGroup);
+            roleGroupService.save(roleGroup);
             //在场景中新增两个默认角色
             SceneRole roleAdmin = new SceneRole(scene.getId(), SystemConstant.SCENE_ADMIN_CH, SystemConstant.SCENE_ADMIN);
             SceneRole roleDefault = new SceneRole(scene.getId(), SystemConstant.SCENE_DEFAULT_CH, SystemConstant.SCENE_DEFAULT);
@@ -185,7 +187,7 @@ public class UserNormalController {
     @PostMapping(value = "user/active")
     @Transactional
     public RespBean userActivate(@RequestParam String sceneId, @RequestParam String userId, @RequestParam Integer auditType) {
-        if (userService.selectById(userId).getAdmin() == 1){
+        if (userService.getById(userId).getAdmin() == 1){
             //TODO:
             return RespBean.error("注册为平台管理员的接口还没做");
         }
@@ -200,7 +202,7 @@ public class UserNormalController {
         userRole.setUid(userId);
         userRole.setStatus(1);
         userRole.setRoleId(SystemConstant.SYSTEM_DEFAULT_USER);
-        userRoleService.insert(userRole);
+        userRoleService.save(userRole);
         sceneService.enableScene(userId, sceneId);
         return RespBean.ok("用户审核通过");
     }
@@ -222,9 +224,9 @@ public class UserNormalController {
         return null;
     }
 
-    @ApiOperation(value = "获取不在某一场景下的用户", notes = "/", tags = "用户", httpMethod = "GET")
+    @ApiOperation(value = "获取不在某一场景下的用户", notes = "已完成", tags = "用户", httpMethod = "GET")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long")
+            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
     @GetMapping("users/noScene")
     public RespBean getUsersWithoutScene(@RequestParam String accountName, @RequestParam String realName
@@ -232,12 +234,60 @@ public class UserNormalController {
         if (Func.hasEmpty(sceneId)){
             return RespBean.paramError();
         }
-
-        LoggerFactory.getLogger(this.getClass()).info(accountName + realName + email);
         accountName = accountName == null ? "" : accountName;
         realName = realName == null ? "" : realName;
         email = email == null ? "" : email;
-        LoggerFactory.getLogger(this.getClass()).info(accountName + realName + email);
         return RespBean.data(userService.getUsersWithoutScene(accountName, realName, email, sceneId));
+    }
+
+    @ApiOperation(value = "获取所有用户（兼模糊搜索）", notes = "已完成", tags = "用户", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true, dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "size", value = "每页数据量", defaultValue = "10", required = true, dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "userPageParam", value = "UserPageParam", required = true, dataTypeClass = UserPageParam.class)
+    })
+    @GetMapping("user/list")
+    public RespBean userList(@RequestParam Integer page, @RequestParam Integer size, @RequestBody UserPageParam userPageParam){
+        PageHelper.startPage(page, size);
+        return RespBean.data(new PageInfo<>(userService.allUsers(userPageParam)));
+    }
+
+    @ApiOperation(value = "管理控制台，添加用户"
+            , notes = "（已完成）必填项：accountName用户名;realName真实姓名;pwd密码;phoneNumber手机号;userEmail用户邮箱"
+            , tags = "用户", httpMethod = "POST")
+    @PostMapping("user/add")
+    public RespBean addUser(@RequestBody User user){
+        if (Func.hasEmpty(user.getAccountName(), user.getRealName(), user.getPwd(), user.getPhoneNumber()
+                , user.getUserEmail(), user.getStatus(), user.getAdmin())){
+            return RespBean.paramError();
+        }
+        return RespBean.status(userService.saveUser(user));
+    }
+
+    @ApiOperation(value = "控制台中删除用户", notes = "（已完成，不对外开放）", tags = "用户", httpMethod = "DELETE")
+    @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
+    @DeleteMapping("user/delete")
+    public RespBean removeUser(@RequestParam String userId){
+        if (Func.hasEmpty(userId)){
+            return RespBean.paramError();
+        }
+        return RespBean.status(userService.removeUser(userId));
+    }
+
+    @ApiOperation(value = "控制台中，获取单个用户信息", notes = "（已完成，不对外开放）", tags = "用户", httpMethod = "GET")
+    @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
+    @GetMapping("user/detail")
+    public RespBean getUser(@RequestParam String userId){
+        return RespBean.data(userService.getById(userId));
+    }
+
+    @ApiOperation(value = "控制台编辑用户信息", notes = "（已完成，不对外开放）accountName", tags = "用户", httpMethod = "PUT")
+    @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
+    @PutMapping("user/edit")
+    public RespBean editUser(@RequestBody User user){
+        if (Func.hasEmpty(user.getId())){
+            return RespBean.paramError();
+        }
+        return RespBean.status(userService.updateById(user));
     }
 }

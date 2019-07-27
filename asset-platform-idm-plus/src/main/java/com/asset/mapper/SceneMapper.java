@@ -2,7 +2,7 @@ package com.asset.mapper;
 
 import com.asset.bean.OrganScene;
 import com.asset.bean.Scene;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -11,7 +11,7 @@ public interface SceneMapper extends BaseMapper<Scene> {
 
     int deleteByPrimaryKey(String id);
 
-    Integer insert(Scene record);
+    int insert(Scene record);
 
     int insertSelective(Scene record);
 

@@ -1,14 +1,13 @@
 package com.asset.service.impl;
 
-import com.asset.bean.*;
+import com.asset.bean.RoleGroup;
+import com.asset.bean.SceneRole;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.SceneRoleMapper;
 import com.asset.service.IRoleGroupService;
 import com.asset.service.ISceneRoleService;
-import com.baomidou.mybatisplus.mapper.Wrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,7 +59,7 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     public boolean addRoles4Scene(String sceneId) {
         //新场景中新增2个默认角色
         RoleGroup roleGroup = new RoleGroup(SystemConstant.DEFAULT_GROUP_NAME, 0, new Date(), sceneId);
-        roleGroupService.insert(roleGroup);
+        roleGroupService.save(roleGroup);
         //在场景中新增两个默认角色
         SceneRole roleAdmin = new SceneRole(sceneId, SystemConstant.SCENE_ADMIN_CH, SystemConstant.SCENE_ADMIN);
         SceneRole roleDefault = new SceneRole(sceneId, SystemConstant.SCENE_DEFAULT_CH, SystemConstant.SCENE_DEFAULT);
@@ -79,7 +78,7 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
         for (SceneRole sceneRole : list) {
             sceneRole.setSceneCode(sceneId);
         }
-        return this.insertBatch(list);
+        return this.saveBatch(list);
     }
 
     @Override
@@ -87,7 +86,7 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
         for (SceneRole sceneRole : list) {
             sceneRole.setSceneCode(sceneId);
         }
-        return this.insertBatch(list);
+        return this.saveBatch(list);
     }
 
     @Override

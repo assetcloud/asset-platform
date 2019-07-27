@@ -54,12 +54,12 @@ server:
 #    cache-enabled: true
 #    call-setters-on-nulls: true
 mybatis-plus:
-  mapper-locations: classpath:mapper/*.xml
+  mapper-locations: classpath*:/mapper/*Mapper.xml
   type-aliases-package: com.asset.**
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: true
-    call-setters-on-nulls: false
+    call-setters-on-nulls: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:

@@ -73,6 +73,27 @@
     and stage = 2 and status = 1 and account_name != 'admin'
     AND id NOT IN (SELECT us.user_id from as_user_scene us where status = 1 and scene_id = #{param4})
   </select>
+  <select id="users" resultMap="BaseMap" parameterType="com.asset.common.model.UserPageParam">
+    SELECT u.id, u.account_name, u.real_name, u.user_email, u.phone_number, u.STATUS FROM as_user u WHERE 1 = 1
+    <if test='accountName!=null and accountName!=""'>
+      AND account_name like CONCAT('%',#{accountName},'%')
+    </if>
+    <if test='realName!=null and realName!=""'>
+      AND real_name like CONCAT('%',#{realName},'%')
+    </if>
+    <if test='userEmail!=null and userEmail!=""'>
+      AND user_email like CONCAT('%',#{userEmail},'%')
+    </if>
+    <if test='phoneNumber!=null and phoneNumber!=""'>
+      AND phone_number=#{phoneNumber}
+    </if>
+    <if test='status!=null and status!=""'>
+      AND STATUS = #{status}
+    </if>
+    <if test='status == null'>
+      AND STATUS = 1
+    </if>
+  </select>
   <select id="getRolesByUserId" resultType="com.asset.bean.Role">
       SELECT
         r.id as id,
@@ -95,7 +116,7 @@
     ,
     <include refid="Blob_Column_List" />
     from as_user
-    where id = #{id,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR} AND status = 1
   </select>
   <select id="getAllUser" resultMap="BaseResultMap">
     select * from as_user
@@ -136,7 +157,7 @@
       account_name, nickname, gender,
       user_birthday, user_email, phone_number,
       certificate_type, certificate_number, pwd,
-      authentication_method, account_picture, admin, stage
+      authentication_method, account_picture, admin, stage,
       user_address, user_photo, status,
       user_type, disable_time, enable_time,
       updated_time, remove_time, created_time,

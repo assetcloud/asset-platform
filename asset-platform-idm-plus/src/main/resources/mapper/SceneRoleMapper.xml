@@ -42,7 +42,6 @@
         <result column="scene_code" jdbcType="INTEGER" property="sceneCode" />
     </resultMap>
 
-    <!-- 开启二级缓存 -->
     <select id="roles" resultType="com.asset.bean.SceneRole">
         SELECT
             *

@@ -1,15 +1,12 @@
 package com.asset.service.impl;
 
 import com.asset.bean.Menu;
-import com.asset.bean.User;
 import com.asset.bean.UserRole;
-import com.asset.bean.UserScene;
-import com.asset.common.UserUtils;
 import com.asset.mapper.MenuMapper;
 import com.asset.mapper.RoleMapper;
 import com.asset.service.IMenuService;
 import com.asset.utils.MenuNodeMerger;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
