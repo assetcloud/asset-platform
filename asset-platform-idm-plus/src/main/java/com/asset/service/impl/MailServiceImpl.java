@@ -1,13 +1,10 @@
 package com.asset.service.impl;
 
 import com.asset.bean.Mail;
-import com.asset.bean.Menu;
-import com.asset.common.SystemConstant;
 import com.asset.mapper.MailMapper;
-import com.asset.mapper.MenuMapper;
 import com.asset.service.IMailService;
 import com.asset.utils.Email;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import org.slf4j.Logger;
@@ -20,12 +17,10 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import org.springframework.util.ResourceUtils;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import javax.mail.internet.MimeMessage;
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 

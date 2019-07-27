@@ -7,8 +7,7 @@ import com.asset.service.ISceneService;
 import com.asset.service.IUserSceneService;
 import com.asset.utils.CommonUtils;
 import com.asset.utils.Func;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -101,7 +100,7 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
             obj.setSceneId(record.getId());
             nodes.add(obj);
         }
-        organSceneService.insertBatch(nodes);
+        organSceneService.saveBatch(nodes);
         return sceneMapper.insertSelective(record);
     }
 
@@ -186,7 +185,7 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
         OrganScene rootNode = organSceneMapper.getRootNode(sceneId);
         List<UserScene> records = new ArrayList<>();
         userIds.forEach(map -> records.add(new UserScene(sceneId, map, roleId, rootNode.getNodeId(), 0, 1)));
-        return userSceneService.insertBatch(records);
+        return userSceneService.saveBatch(records);
     }
 
     @Override

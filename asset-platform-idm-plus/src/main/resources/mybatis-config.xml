@@ -3,7 +3,17 @@
 <configuration>
     <settings>
         <setting name="logImpl" value="STDOUT_LOGGING" />
-        <setting name="cacheEnabled" value="true"/>
-            <setting name="callSettersOnNulls" value="true"/>
+
     </settings>
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageHelper">
+            <property name="dialect" value="mysql"/>
+            <property name="offsetAsPageNum" value="false"/>
+            <property name="rowBoundsWithCount" value="false"/>
+            <property name="pageSizeZero" value="true"/>
+            <property name="reasonable" value="false"/>
+            <property name="supportMethodsArguments" value="false"/>
+            <property name="returnPageInfo" value="none"/>
+        </plugin>
+    </plugins>
 </configuration>

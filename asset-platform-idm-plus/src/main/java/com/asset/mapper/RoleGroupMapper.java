@@ -1,7 +1,7 @@
 package com.asset.mapper;
 
 import com.asset.bean.RoleGroup;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
  * <p>

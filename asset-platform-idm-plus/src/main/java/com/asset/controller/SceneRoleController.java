@@ -64,7 +64,7 @@ public class SceneRoleController {
         //TODO:是否需要管理英文角色名
         sceneRole.setRoleName("ROLE_NORMAL");
         sceneRole.setStatus(true);
-        return RespBean.status(sceneRoleService.insert(sceneRole));
+        return RespBean.status(sceneRoleService.save(sceneRole));
     }
 
     @ApiOperation(value = "添加角色组", notes = "传RoleGroup实体;roleGroupName角色组名称;sceneCode场景编号;（以上变量必填）",tags = "业务角色", httpMethod = "POST")
@@ -82,7 +82,7 @@ public class SceneRoleController {
         }
         roleGroup.setAddTime(new Date());
         roleGroup.setIsDeleted(0);
-        return RespBean.status(roleGroupService.insert(roleGroup));
+        return RespBean.status(roleGroupService.save(roleGroup));
     }
 
     @ApiOperation(value = "删除角色组", notes = "传入RoleGroup实体类数组;id:角色组id;必填",tags = "角色", httpMethod = "DELETE")
@@ -97,7 +97,7 @@ public class SceneRoleController {
             }
             if (sceneRoleService.rolesInGroup(roleGroup.getId())){
                 return RespBean.error(String.format("角色组:%s 下还有角色存在，请转移后重试"
-                        , roleGroupService.selectById(roleGroup.getId()).getRoleGroupName()));
+                        , roleGroupService.getById(roleGroup.getId()).getRoleGroupName()));
             }
             roleGroup.setIsDeleted(1);
         }

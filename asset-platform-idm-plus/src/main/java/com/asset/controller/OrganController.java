@@ -58,7 +58,7 @@ public class OrganController {
         organTree.setStatus(1);
         organTree.setIsDeleted(0);
         organTree.setEnableTime(new Date());
-        return RespBean.data(organService.insert(organTree));
+        return RespBean.data(organService.save(organTree));
     }
 
     @ApiOperation(value = "批量添加组织节点", notes = "已完成",tags = "组织", httpMethod = "POST")
@@ -126,7 +126,7 @@ public class OrganController {
         if (Func.isNull(id)){
             return RespBean.paramError();
         }
-        return RespBean.data(organService.selectById(id));
+        return RespBean.data(organService.getById(id));
     }
 
     @ApiOperation(value = "检索组织节点", notes = "已完成",tags = "组织", httpMethod = "GET")
@@ -178,7 +178,7 @@ public class OrganController {
     @ApiOperation(value = "获取单个场景的基本信息", notes = "已完成",tags = "组织", httpMethod = "GET")
     @RequestMapping(value = "/scene", method = RequestMethod.GET)
     public RespBean getOneScene(@RequestParam("sceneId") String sceneId){
-        return RespBean.data(sceneService.selectById(sceneId));
+        return RespBean.data(sceneService.getById(sceneId));
     }
 
     @ApiOperation(value = "新增场景", notes = "（已完成）添加场景信息;传入Scene实体;sceneName必填",tags = "组织", httpMethod = "POST")
@@ -220,7 +220,7 @@ public class OrganController {
             return RespBean.paramError();
         }
         //根据场景名称的变化，判断是否需要对名称进行限制（防止重复）
-        if (!scene.getSceneName().trim().equals(sceneService.selectById(scene.getId()).getSceneName())){
+        if (!scene.getSceneName().trim().equals(sceneService.getById(scene.getId()).getSceneName())){
             if (sceneService.getSceneByName(scene.getSceneName()).size() > 0){
                 //记录已存在
                 return RespBean.error("场景名称已被使用，请更换后重试");

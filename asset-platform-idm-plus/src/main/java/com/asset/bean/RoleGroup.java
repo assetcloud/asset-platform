@@ -1,10 +1,6 @@
 package com.asset.bean;
 
-import com.baomidou.mybatisplus.annotations.TableField;
-import com.baomidou.mybatisplus.annotations.TableId;
-import com.baomidou.mybatisplus.annotations.TableLogic;
-import com.baomidou.mybatisplus.annotations.TableName;
-import com.baomidou.mybatisplus.enums.IdType;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.util.Date;
@@ -15,7 +11,7 @@ import java.util.List;
 public class RoleGroup {
 
     @TableField("id")
-    @TableId(type=IdType.AUTO)
+    @TableId(type= IdType.AUTO)
     private Long id;
 
     @TableField("role_group_name")

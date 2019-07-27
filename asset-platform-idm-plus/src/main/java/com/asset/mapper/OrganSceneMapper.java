@@ -1,7 +1,7 @@
 package com.asset.mapper;
 
 import com.asset.bean.OrganScene;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;
 

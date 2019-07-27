@@ -2,14 +2,15 @@ package com.asset.mapper;
 
 import com.asset.bean.SceneRole;
 import com.asset.bean.User;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.asset.common.model.UserPageParam;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public interface UserMapper extends BaseMapper<User>{
+public interface UserMapper extends BaseMapper<User> {
 
     User loadUserByUsername(String username);
 
@@ -22,8 +23,6 @@ public interface UserMapper extends BaseMapper<User>{
     int deleteByPrimaryKey(String id);
 
     int userReg(@Param("accountName") String accountName, @Param("pwd") String pwd);
-
-    Integer insert(User record);
 
     int insertSelective(User record);
 
@@ -42,4 +41,6 @@ public interface UserMapper extends BaseMapper<User>{
     List<User> userExists(String accountName);
 
     List<User> usersWithoutScene(String accountName, String realName, String email, String sceneId);
+
+    List<User> users(UserPageParam userPageParam);
 }

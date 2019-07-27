@@ -2,7 +2,7 @@ package com.asset.mapper;
 
 import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +13,7 @@ public interface OrganTreeMapper extends BaseMapper<OrganTree> {
 
     int deleteByPrimaryKey(String id);
 
-    Integer insert(OrganTree record);
+    int insert(OrganTree record);
 
     int insertSelective(OrganTree record);
 

@@ -2,7 +2,7 @@ package com.asset.mapper;
 
 import com.asset.bean.RoleGroup;
 import com.asset.bean.SceneRole;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package com.asset.service.impl;
 import com.asset.bean.RoleGroup;
 import com.asset.mapper.RoleGroupMapper;
 import com.asset.service.IRoleGroupService;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
 /**

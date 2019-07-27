@@ -2,7 +2,7 @@ package com.asset.mapper;
 
 import com.asset.bean.Role;
 import com.asset.bean.UserRole;
-import com.baomidou.mybatisplus.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 

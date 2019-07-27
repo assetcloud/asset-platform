@@ -127,14 +127,14 @@ public class SceneController {
     })
     @RequestMapping(value = "/node/add", method = RequestMethod.POST)
     public RespBean changeOrganTree(@RequestParam String treeIds, @RequestParam("sceneId") String sceneId){
-        List<OrganTree> treeList = organService.selectBatchIds(Func.toStrList(",", treeIds));
+        List<OrganTree> treeList = (List<OrganTree>) organService.listByIds(Func.toStrList(",", treeIds));
         ArrayList<OrganScene> organScenes = new ArrayList<>();
         for (OrganTree treeNode : treeList) {
             OrganScene node = CommonUtils.NodeTransformer(treeNode);
             node.setSceneId(sceneId);
             organScenes.add(node);
         }
-        return RespBean.data(organSceneService.insertBatch(organScenes));
+        return RespBean.data(organSceneService.saveBatch(organScenes));
     }
 
     @ApiOperation(value = "批量删除场景中的组织部门", notes = "（完成对叶子节点的删除）",tags = "场景", httpMethod = "DELETE")

@@ -1,7 +1,8 @@
 package com.asset.service;
 
 import com.asset.bean.User;
-import com.baomidou.mybatisplus.service.IService;
+import com.asset.common.model.UserPageParam;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
 
@@ -28,4 +29,22 @@ public interface IUserService extends IService<User> {
      * @return
      */
     List<User> getUsersWithoutScene(String accountName, String realName, String email, String sceneId);
+
+    /**
+     * 获取所有用户
+     * @return
+     */
+    List<User> allUsers(UserPageParam userPageParam);
+    /**
+     * 控制台端添加用户
+     * @param user
+     * @return
+     */
+    boolean saveUser(User user);
+    /**
+     * 控制台删除用户
+     * @param userId
+     * @return
+     */
+    boolean removeUser(String userId);
 }

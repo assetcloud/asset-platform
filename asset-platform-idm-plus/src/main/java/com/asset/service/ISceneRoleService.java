@@ -3,7 +3,7 @@ package com.asset.service;
 
 import com.asset.bean.RoleGroup;
 import com.asset.bean.SceneRole;
-import com.baomidou.mybatisplus.service.IService;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -103,7 +103,7 @@ public class ApiController {
         resource.setGroupName(formModelInfo.getGroupName());
         //为表单设置场景
         resource.setSceneId(sceneId);
-        resourceService.insert(resource);
+        resourceService.save(resource);
         resourceService.addResource4Admin(resource);
         resourceService.addFuncResource(resource);
         return RespBean.ok(SystemConstant.ADD_SUCCESS);

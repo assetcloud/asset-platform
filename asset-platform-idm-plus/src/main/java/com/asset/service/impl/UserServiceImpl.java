@@ -2,13 +2,12 @@ package com.asset.service.impl;
 
 import com.asset.bean.User;
 import com.asset.common.SystemConstant;
+import com.asset.common.model.UserPageParam;
 import com.asset.mapper.UserMapper;
 import com.asset.mapper.UuidIdGenerator;
 import com.asset.service.IUserService;
 import com.asset.utils.Func;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -91,5 +90,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      */
     public List<User> getUsersWithoutScene(String accountName, String realName, String email, String sceneId){
         return userMapper.usersWithoutScene(accountName, realName, email, sceneId);
+    }
+
+    @Override
+    public List<User> allUsers(UserPageParam userPageParam) {
+        return userMapper.users(userPageParam);
+    }
+
+    @Override
+    public boolean saveUser(User record) {
+        if (null == record.getId()){
+            record.setId(idGenerator.generateId());
+        }
+        record.setCreatedTime(new Date());
+        record.setStage(2);
+        record.setEnableTime(new Date());
+        record.setPwd(new BCryptPasswordEncoder().encode(record.getPwd()));
+        return userMapper.insert(record) > 0;
+    }
+
+    @Override
+    public boolean removeUser(String userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        user.setStatus(false);
+        user.setDisableTime(new Date());
+        return userMapper.updateById(user) > 0;
     }
 }
