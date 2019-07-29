@@ -2,7 +2,9 @@ package com.asset.mapper;
 
 import com.asset.bean.RoleGroup;
 import com.asset.bean.SceneRole;
+import com.asset.bean.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -41,4 +43,18 @@ public interface SceneRoleMapper extends BaseMapper<SceneRole> {
     List<SceneRole> getRolesByScene(String sceneId);
 
     List<SceneRole> getAllByScene(String sceneId);
+
+    int addRoleGroup(RoleGroup record);
+
+    List<RoleGroup> getGroupByName(@Param("groupName") String groupName);
+
+    int deleteGroup(Long id);
+
+    int modifyGroup(Long id, @Param("groupName") String groupName);
+    /**
+     * 通过角色获取所属用户
+     * @param roleId
+     * @return
+     */
+    List<User> getUsersByRole(@Param("roleId") Long roleId);
 }

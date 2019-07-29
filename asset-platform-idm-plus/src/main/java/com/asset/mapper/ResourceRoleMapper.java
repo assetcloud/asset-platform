@@ -1,5 +1,7 @@
 package com.asset.mapper;
 
+import com.asset.bean.ResourceRole;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +10,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public interface ResourceRoleMapper {
+public interface ResourceRoleMapper extends BaseMapper<ResourceRole> {
 
     int deleteResourceByRid(@Param("rid") Integer rid);
 

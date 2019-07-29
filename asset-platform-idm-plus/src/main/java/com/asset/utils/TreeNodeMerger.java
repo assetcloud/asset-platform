@@ -1,7 +1,6 @@
 package com.asset.utils;
 
 import com.asset.bean.OrganTree;
-import com.asset.bean.PlatMenu;
 
 import java.util.List;
 

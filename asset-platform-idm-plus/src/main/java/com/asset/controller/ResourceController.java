@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 import java.util.List;
 
@@ -26,8 +27,6 @@ import java.util.List;
 @RestController
 @RequestMapping("resource")
 public class ResourceController {
-
-    private final static Logger LOGGER = LoggerFactory.getLogger(ResourceController.class);
 
     @Autowired
     private IResourceService resourceService;
@@ -131,6 +130,11 @@ public class ResourceController {
         return RespBean.data(resourceService.updateFuncInfo(formModelId, sceneId));
     }
 
+    @GetMapping("list")
+    public RespBean getAll(@NotEmpty @RequestParam String sceneId){
+        return RespBean.data(resourceService.getResourceList(sceneId));
+    }
+
     @ApiOperation(value = "获取资源", notes = "（已完成）通过当前用户获取所有资源（终端用户操作时使用）",tags = "资源", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "formModelId", value = "表单id(param)", required = true, dataType = "String"),
@@ -177,7 +181,7 @@ public class ResourceController {
         return RespBean.data(resourceService.getFormResourcesByApp(userId, appResourceId, sceneId));
     }
 
-    @ApiOperation(value = "获取表单资源", notes = "通过点击应用，展现可访问的表单资源",tags = "资源", httpMethod = "GET")
+    @ApiOperation(value = "获取操作型资源", notes = "通过点击应用，展现可访问的操作型资源",tags = "资源", httpMethod = "GET")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "formResourceId", value = "表单资源id", required = true, dataType = "String"),

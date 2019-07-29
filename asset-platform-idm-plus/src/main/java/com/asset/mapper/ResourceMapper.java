@@ -1,6 +1,7 @@
 package com.asset.mapper;
 
 import com.asset.bean.Resource;
+import com.asset.bean.SceneRelation;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,17 +29,22 @@ public interface ResourceMapper extends BaseMapper<Resource> {
 
     List<Resource> findFormResourceByName(@Param("appName") String appName, @Param("sceneId") String sceneId);
 
-    List<Resource> getResourcesByUserAndScene(@Param("userId")String userId, @Param("sceneId")String sceneId);
+    List<Resource> getAppResourceByUser(List<SceneRelation> relations);
 
-    List<Resource> getResourcesByUser(String userId, String sceneId);
+    /**
+     * 通过角色获取所有资源
+     * @param relations
+     * @return
+     */
+    List<Resource> getResourcesByUser(List<SceneRelation> relations);
 
     List<Resource> getResourcesByRole(Long roleId, String sceneId);
 
     List<Resource> getAppResourcesByUser(String userId, String sceneId);
 
-    List<Resource> getFormResourcesByApp(String userId, Long appResourceId, String sceneId);
+    List<Resource> getFormResourcesByApp(List<SceneRelation> relations, Long appResourceId);
 
-    List<Resource> getFuncResourceByForm(String userId, Long formResourceId, String sceneId);
+    List<Resource> getFuncResourceByForm(List<SceneRelation> relations, Long formResourceId);
 
     int updateFormInfo(String formModelId, String sceneId);
 

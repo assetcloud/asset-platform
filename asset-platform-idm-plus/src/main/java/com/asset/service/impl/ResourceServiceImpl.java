@@ -1,9 +1,18 @@
 package com.asset.service.impl;
 
+import com.asset.bean.OrganScene;
 import com.asset.bean.Resource;
+import com.asset.bean.SceneRelation;
+import com.asset.bean.SceneRole;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.ResourceMapper;
 import com.asset.service.IResourceService;
+import com.asset.service.ISceneRelationService;
+import com.asset.service.ISceneRoleService;
+import com.asset.utils.ResourceNodeManager;
+import com.asset.utils.ResourceNodeMerger;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +38,12 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
 
     @Autowired
     private ResourceMapper resourceMapper;
+
+    @Autowired
+    private ISceneRoleService sceneRoleService;
+
+    @Autowired
+    private ISceneRelationService sceneRelationService;
 
     @Override
     public boolean appExists(String applicationName, String sceneId){
@@ -68,11 +83,15 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     }
 
     /**
-     * 为当前角色查询菜单
+     * 根据用户加载资源
      * @return
      */
     public List<Resource> getResourcesByCurrentUser(String userId, String sceneId){
-        return resourceMapper.getResourcesByUser(userId, sceneId);
+        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda().eq(SceneRole::getStatus, 1).eq(SceneRole::getSceneCode, sceneId));
+        List<Long> rids = new ArrayList<>();
+        sceneRoles.forEach(map-> rids.add(map.getId()));
+        List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda().in(SceneRelation::getRid, rids).eq(SceneRelation::getUid, userId));
+        return resourceMapper.getResourcesByUser(sceneRelations);
     }
 
     /**
@@ -80,33 +99,41 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
      * @return
      */
     public List<Resource> getResourcesByUserId(String userId, String sceneId){
-        return resourceMapper.getResourcesByUser(userId, sceneId);
+        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda().eq(SceneRole::getStatus, 1).eq(SceneRole::getSceneCode, sceneId));
+        List<Long> rids = new ArrayList<>();
+        sceneRoles.forEach(map-> rids.add(map.getId()));
+        List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda().in(SceneRelation::getRid, rids).eq(SceneRelation::getUid, userId));
+        return resourceMapper.getResourcesByUser(sceneRelations);
     }
 
     public List<Resource> getResourcesByRole(Long roleId, String sceneId){
         return resourceMapper.getResourcesByRole(roleId, sceneId);
     }
 
-    /**
-     * 通过用户id获取应用资源
-     * @return List<Resource>
-     */
     public List<Resource> getAppResourcesByUser(String userId, String sceneId){
-        return resourceMapper.getResourcesByUserAndScene(userId, sceneId);
+        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda().eq(SceneRole::getStatus, 1).eq(SceneRole::getSceneCode, sceneId));
+        List<Long> rids = new ArrayList<>();
+        sceneRoles.forEach(map-> rids.add(map.getId()));
+        List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda().in(SceneRelation::getRid, rids).eq(SceneRelation::getUid, userId));
+        return resourceMapper.getAppResourceByUser(sceneRelations);
     }
 
-    /**
-     * 通过用户id和应用id获取表单资源
-     * @return List<Resource>
-     */
     @Override
     public List<Resource> getFormResourcesByApp(String userId, Long appResourceId, String sceneId){
-        return resourceMapper.getFormResourcesByApp(userId, appResourceId, sceneId);
+        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda().eq(SceneRole::getStatus, 1).eq(SceneRole::getSceneCode, sceneId));
+        List<Long> rids = new ArrayList<>();
+        sceneRoles.forEach(map-> rids.add(map.getId()));
+        List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda().in(SceneRelation::getRid, rids).eq(SceneRelation::getUid, userId));
+        return resourceMapper.getFormResourcesByApp(sceneRelations, appResourceId);
     }
 
     @Override
     public List<Resource> getFuncResourcesByForm(String userId, Long formResourceId, String sceneId) {
-        return resourceMapper.getFuncResourceByForm(userId, formResourceId, sceneId);
+        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda().eq(SceneRole::getStatus, 1).eq(SceneRole::getSceneCode, sceneId));
+        List<Long> rids = new ArrayList<>();
+        sceneRoles.forEach(map-> rids.add(map.getId()));
+        List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda().in(SceneRelation::getRid, rids).eq(SceneRelation::getUid, userId));
+        return resourceMapper.getFuncResourceByForm(sceneRelations, formResourceId);
     }
 
     /**
@@ -142,6 +169,14 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     @Override
     public int updateFuncInfo(String formModelId, String sceneId) {
         return resourceMapper.updateFuncInfo(formModelId, sceneId);
+    }
+
+    @Override
+    public Resource getResourceList(String sceneId) {
+        List<Resource> resources = resourceMapper.selectList(Wrappers.<Resource>query().lambda()
+                .eq(Resource::getSceneId, sceneId)
+                .eq(Resource::getIsDeleted, 0));
+        return ResourceNodeMerger.merge(resources);
     }
 
     public boolean formExists(String formName, String sceneId, Long parentId){

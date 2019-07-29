@@ -48,21 +48,20 @@ public interface ISceneService extends IService<Scene> {
      * 用户注册时，设置该用户在该场景中的角色和所属部门（默认为根部门）
      * @param sceneId
      * @param userId
-     * @param roleId
      * @return boolean
      */
-    boolean userSceneBind(String sceneId, String userId, Long roleId);
+    boolean userSceneBind(String sceneId, String userId);
     /**
      * 向场景中批量增加成员
      * @param userIds
      * @param sceneId
      * @return boolean
      */
-    boolean addSceneMembers(List<String> userIds, String sceneId, Long roleId);
+    boolean addSceneMembers(List<String> userIds, String sceneId);
     /**
      * 判断场景是否有效
      * @param sceneId
-     * @return
+     * @return boolean
      */
     boolean sceneAvailable(String sceneId);
 
@@ -70,7 +69,7 @@ public interface ISceneService extends IService<Scene> {
      * 用户审核，更新user_scene表
      * @param sceneId
      * @param userId
-     * @return
+     * @return boolean
      */
     boolean enableScene(String userId, String sceneId);
 

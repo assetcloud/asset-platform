@@ -1,16 +1,17 @@
 package com.asset.service.impl;
 
-import com.asset.bean.RoleGroup;
-import com.asset.bean.SceneRole;
+import com.asset.bean.*;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.SceneRoleMapper;
-import com.asset.service.IRoleGroupService;
-import com.asset.service.ISceneRoleService;
+import com.asset.service.*;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +27,16 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     private SceneRoleMapper sceneRoleMapper;
 
     @Autowired
+    private IUserSceneService userSceneService;
+
+    @Autowired
     private IRoleGroupService roleGroupService;
+
+    @Autowired
+    private ISceneRelationService sceneRelationService;
+
+    @Autowired
+    private IResourceRoleService resourceRoleService;
 
 //    @PreAuthorize(value = "administrator")
     public List<SceneRole> getAllRoles() {
@@ -99,74 +109,60 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
         return true;
     }
 
-//
+    public int addRoleGroup(RoleGroup record){
+        if(sceneRoleMapper.getGroupByName(record.getRoleGroupName()).size() > 0){
+            return -2;
+        }
+        record.setAddTime(new Date());
+        return sceneRoleMapper.addRoleGroup(record);
+    }
 
-//
-//    public int addRoleGroup(RoleGroup record){
-//        if(roleMapper.getGroupByName(record.getRoleGroupName()).size() > 0){
-//            return -2;
-//        }
-//        record.setAddTime(new Date());
-//        return roleMapper.addRoleGroup(record);
-//    }
-//
-//    public int deleteGroup(Long id){
-//        return roleMapper.deleteGroup(id);
-//    }
-//
-//    public int modifyGroup(RoleGroup newRecord){
-//        return roleMapper.modifyGroup(newRecord.getId(), newRecord.getRoleGroupName());
-//    }
-//
-//    public int addRole2Group(Long rid, Long groupId){
-//        return roleMapper.addRoleToGroup(rid, groupId);
-//    }
-//
-//    public int addUsers2Role(Long rid, String[] users){
-//        List<UserRole> userList = new ArrayList<>();
-//        UserRole userRole = new UserRole();
-//        for (String user : users) {
-//            userRole.setUid(user);
-//            userRole.setCreatedTime(new Date());
-//            userRole.setRoleId(rid);
-//            userRole.setStatus(1);
-//            userList.add(userRole);
-//        }
-//        return roleMapper.addUsersToRole(userList);
-//    }
-//
-//    /**
-//     * 添加角色成员
-//     * @param userList
-//     * @return int
-//     */
-//    public int addUsers2Role(List<UserRole> userList){
-//        //TODO:改成批量增（若存在则不插入）
-//        for (UserRole userRole : userList) {
-//            userRole.setCreatedTime(new Date());
-//        }
-//        return roleMapper.addUsersToRole(userList);
-//    }
-//
-//    /**
-//     * 角色模糊搜索
-//     * @param roleNameZh
-//     * @return Role
-//     */
-//    public Role getRoleByName(String roleNameZh){
-//        return roleMapper.roleSearchByName(roleNameZh);
-//    }
-//
-//    /**
-//     * 角色批量删除
-//     * @param userList
-//     * @return int
-//     */
-//    public int batchDelete(List<UserRole> userList){
-//        return roleMapper.batchDeleteRoleMember(userList);
-//    }
-//
-//    public List<User> getUsersByRole(Long roleId){
-//        return roleMapper.getUsersByRole(roleId);
-//    }
+    public int deleteGroup(Long id){
+        return sceneRoleMapper.deleteGroup(id);
+    }
+
+    public int modifyGroup(RoleGroup newRecord){
+        return sceneRoleMapper.modifyGroup(newRecord.getId(), newRecord.getRoleGroupName());
+    }
+
+    @Override
+    public boolean updateGroupInfo(SceneRole record){
+        return sceneRoleMapper.updateById(record) > 0;
+    }
+
+    @Override
+    public boolean addUsers2Role(@NotEmpty Long roleId, @NotEmpty List<String> userIds) {
+        return sceneRelationService.saveBatch(roleId, userIds);
+    }
+
+    /**
+     * 角色模糊搜索
+     * @param role
+     * @return Role
+     */
+    public List<SceneRole> getRoleByName(SceneRole role){
+        return sceneRoleMapper.selectList(Wrappers.<SceneRole>query().lambda()
+                .like(SceneRole::getRoleNameZh, role.getRoleNameZh())
+                .eq(SceneRole::getSceneCode, role.getSceneCode())
+                .eq(SceneRole::getStatus, 1));
+    }
+
+    public List<User> getUsersByRole(Long roleId){
+        return sceneRoleMapper.getUsersByRole(roleId);
+    }
+
+    @Override
+    public boolean grant(@NotEmpty Long roleId, @NotEmpty List<Long> resourceIds) {
+        resourceRoleService.remove(Wrappers.<ResourceRole>update().lambda()
+                .in(ResourceRole::getMenuId, resourceIds)
+                .eq(ResourceRole::getRoleId, roleId));
+        List<ResourceRole> resourceRoles = new ArrayList<>();
+        resourceIds.forEach(resourceId -> {
+            ResourceRole resourceRole = new ResourceRole();
+            resourceRole.setMenuId(resourceId);
+            resourceRole.setRoleId(roleId);
+            resourceRoles.add(resourceRole);
+        });
+        return resourceRoleService.saveBatch(resourceRoles);
+    }
 }
