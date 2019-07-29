@@ -19,16 +19,48 @@ public interface IResourceService extends IService<Resource> {
 
     int addResourceAll(Resource resource);
 
+    /**
+     * 通过用户获取资源
+     * @param userId
+     * @param sceneId
+     * @return
+     */
     List<Resource> getResourcesByCurrentUser(String userId, String sceneId);
 
     List<Resource> getResourcesByUserId(String userId, String sceneId);
 
+    /**
+     * 通过角色获取所有资源
+     * @param roleId
+     * @param sceneId
+     * @return
+     */
     List<Resource> getResourcesByRole(Long roleId, String sceneId);
 
+    /**
+     * 通过用户获取应用资源
+     * @param userId
+     * @param sceneId
+     * @return
+     */
     List<Resource> getAppResourcesByUser(String userId, String sceneId);
 
-    List<Resource> getFormResourcesByApp(String userId, Long appReourceId, String sceneId);
+    /**
+     * 获取表单资源
+     * @param userId
+     * @param appResourceId
+     * @param sceneId
+     * @return
+     */
+    List<Resource> getFormResourcesByApp(String userId, Long appResourceId, String sceneId);
 
+    /**
+     * 获取操作型资源
+     * @param userId
+     * @param formResourceId
+     * @param sceneId
+     * @return
+     */
     List<Resource> getFuncResourcesByForm(String userId, Long formResourceId, String sceneId);
 
     void addResource4Admin(Resource resource);
@@ -84,4 +116,11 @@ public interface IResourceService extends IService<Resource> {
      * @return
      */
     int updateFuncInfo(String formModelId, String sceneId);
+
+    /**
+     * 获取场景下的所有资源
+     * @param sceneId
+     * @return
+     */
+    Resource getResourceList(String sceneId);
 }

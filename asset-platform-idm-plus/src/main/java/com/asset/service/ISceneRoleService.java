@@ -1,11 +1,11 @@
 package com.asset.service;
 
 
-import com.asset.bean.RoleGroup;
-import com.asset.bean.SceneRole;
+import com.asset.bean.*;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 /**
@@ -73,4 +73,62 @@ public interface ISceneRoleService extends IService<SceneRole> {
      * @return
      */
     boolean addDefaultRole4Reg(String sceneId, List<SceneRole> list);
+
+    /**
+     * 更新角色的角色组
+     * @param record
+     * @return
+     */
+    boolean updateGroupInfo(SceneRole record);
+
+    /**
+     * 为角色添加成员
+     * @param roleId
+     * @param userIds
+     * @return
+     */
+    boolean addUsers2Role(Long roleId, List<String> userIds);
+
+    /**
+     * 角色信息模糊搜索
+     * @param role
+     * @return
+     */
+    List<SceneRole> getRoleByName(SceneRole role);
+
+    /**
+     * 新增角色组
+     * @param record
+     * @return
+     */
+    int addRoleGroup(RoleGroup record);
+
+    /**
+     * 删除角色组
+     * @param id
+     * @return
+     */
+    int deleteGroup(Long id);
+
+    /**
+     * 修改角色组名称
+     * @param newRecord
+     * @return
+     */
+    int modifyGroup(RoleGroup newRecord);
+
+    /**
+     * 根据角色获取用户
+     * @param roleId
+     * @return
+     */
+    List<User> getUsersByRole(Long roleId);
+
+    /**
+     * 编辑角色权限
+     * @param roleId
+     * @param resourceIds
+     * @return
+     */
+    boolean grant(@NotEmpty Long roleId, @NotEmpty List<Long> resourceIds);
 }

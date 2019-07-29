@@ -174,17 +174,17 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
         return null != userScene;
     }
 
-    public boolean userSceneBind(String sceneId, String userId, Long roleId){
+    public boolean userSceneBind(String sceneId, String userId){
         OrganScene rootNode = organSceneMapper.getRootNode(sceneId);
-        UserScene userScene = new UserScene(sceneId, userId, roleId, rootNode.getNodeId(), 0);
+        UserScene userScene = new UserScene(sceneId, userId, rootNode.getNodeId(), 0);
         return userSceneMapper.insert(userScene) > 0;
     }
 
     @Override
-    public boolean addSceneMembers(List<String> userIds, String sceneId, Long roleId) {
+    public boolean addSceneMembers(List<String> userIds, String sceneId) {
         OrganScene rootNode = organSceneMapper.getRootNode(sceneId);
         List<UserScene> records = new ArrayList<>();
-        userIds.forEach(map -> records.add(new UserScene(sceneId, map, roleId, rootNode.getNodeId(), 0, 1)));
+        userIds.forEach(map -> records.add(new UserScene(sceneId, map, rootNode.getNodeId(), 0, 1)));
         return userSceneService.saveBatch(records);
     }
 

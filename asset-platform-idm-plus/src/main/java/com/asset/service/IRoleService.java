@@ -4,6 +4,9 @@ package com.asset.service;
 import com.asset.bean.Role;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
+
 /**
  * <p>
  *  平台级角色服务类
@@ -14,4 +17,31 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IRoleService extends IService<Role> {
 
+    /**
+     * 获取所有平台级角色
+     * @return
+     */
+    List<Role> getAll();
+
+    /**
+     * 编辑平台角色权限
+     * @param roleId
+     * @param menuIds
+     * @return
+     */
+    boolean grant(Long roleId, List<Long> menuIds);
+
+    /**
+     * 批量删除角色
+     * @param roleIds
+     * @return boolean
+     */
+    boolean batchDelete(List<Long> roleIds);
+
+    /**
+     * 判断角色是否存在
+     * @param role
+     * @return
+     */
+    boolean roleExists(Role role);
 }

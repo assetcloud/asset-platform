@@ -43,6 +43,9 @@ public class SceneController {
     @Autowired
     private IMailService mailService;
 
+    @Autowired
+    private ISceneRelationService sceneRelationService;
+
     @ApiOperation(value = "获取所有场景信息", notes = "场景",tags = "组织", httpMethod = "GET")
     @RequestMapping(value = "/sceneList", method = RequestMethod.GET)
     public RespBean getAllScenes(){
@@ -72,10 +75,11 @@ public class SceneController {
         if (Func.isNull(sceneId)){
             return RespBean.paramError();
         }
+        List<String> ids = Func.toStrList(",", userIds);
         //获取该场景下的默认角色
         SceneRole defaultRole = sceneRoleService.getDefaultRole(sceneId);
-        return RespBean.status(sceneService.addSceneMembers(Func.toStrList(",", userIds)
-                , sceneId, defaultRole.getId()));
+        sceneRelationService.saveBatch(defaultRole.getId(), ids);
+        return RespBean.status(sceneService.addSceneMembers(ids, sceneId));
     }
 
     @ApiOperation(value = "场景中批量删除用户", notes = "/",tags = "场景", httpMethod = "DELETE")

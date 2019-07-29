@@ -22,8 +22,8 @@ public class UserScene {
     /**
      * 不同场景下的角色（可有多个）
      */
-    @TableField("role_id")
-    private Long roleId;
+//    @TableField("role_id")
+//    private Long roleId;
     @TableField("node_id")
     private String nodeId;
     @TableField("node_principal")
@@ -32,24 +32,21 @@ public class UserScene {
     public UserScene() {
     }
 
-    public UserScene(String sceneId, String userId, Long roleId) {
+    public UserScene(String sceneId, String userId) {
         this.sceneId = sceneId;
         this.userId = userId;
-        this.roleId = roleId;
     }
 
-    public UserScene(String sceneId, String userId, Long roleId, String nodeId, Integer nodePrincipal) {
+    public UserScene(String sceneId, String userId, String nodeId, Integer nodePrincipal) {
         this.sceneId = sceneId;
         this.userId = userId;
-        this.roleId = roleId;
         this.nodeId = nodeId;
         this.nodePrincipal = nodePrincipal;
     }
 
-    public UserScene(String sceneId, String userId, Long roleId, String nodeId, Integer nodePrincipal, Integer status) {
+    public UserScene(String sceneId, String userId, String nodeId, Integer nodePrincipal, Integer status) {
         this.sceneId = sceneId;
         this.userId = userId;
-        this.roleId = roleId;
         this.nodeId = nodeId;
         this.nodePrincipal = nodePrincipal;
         this.status = status;

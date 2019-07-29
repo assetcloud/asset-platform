@@ -1,12 +1,8 @@
 package com.asset.controller;
 
-import com.asset.bean.FormModelInfo;
-import com.asset.bean.Resource;
-import com.asset.bean.RespBean;
-import com.asset.bean.Scene;
+import com.asset.bean.*;
 import com.asset.common.SystemConstant;
-import com.asset.service.IResourceService;
-import com.asset.service.ISceneService;
+import com.asset.service.*;
 import com.asset.utils.Func;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -30,6 +26,18 @@ public class ApiController {
 
     @Autowired
     private IResourceService resourceService;
+
+    @Autowired
+    private IOrganService organService;
+
+    @Autowired
+    IUserService userService;
+
+    @Autowired
+    private ISceneRoleService sceneRoleService;
+
+    @Autowired
+    private IUserRoleService userRoleService;
 
     /*@ApiOperation(value = "获取所有场景信息", notes = "获取所有场景信息",tags = "组织", httpMethod = "GET")
     @RequestMapping(value = "rest/scenes", method = RequestMethod.GET)
@@ -60,6 +68,16 @@ public class ApiController {
         }
         PageInfo<Scene> scenePageInfo = new PageInfo<>(scenes);
         return RespBean.ok(SystemConstant.GET_SUCCESS, scenePageInfo);
+    }
+
+    /**
+     * 获取主组织树（需为管理员角色）
+     * @return RespBean
+     */
+    @ApiOperation(value = "获取主组织树", notes = "已完成",tags = "开放api", httpMethod = "GET")
+    @RequestMapping(value = "/mainTree", method = RequestMethod.GET)
+    public RespBean getOrganMainTree(){
+        return RespBean.data(organService.getMainTree());
     }
 
     @ApiOperation(value = "添加菜单（表单类型）", notes = "传FormModelInfo实体与sceneId(param);",tags = "菜单", httpMethod = "POST")
@@ -107,5 +125,34 @@ public class ApiController {
         resourceService.addResource4Admin(resource);
         resourceService.addFuncResource(resource);
         return RespBean.ok(SystemConstant.ADD_SUCCESS);
+    }
+
+    @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;组织管理员审核时sceneId置null或\"\"",tags = "用户", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "sceneId", required = true, name = "场景id", dataTypeClass = String.class),
+            @ApiImplicitParam(value = "userId", required = true, name = "用户id", dataTypeClass = String.class),
+            @ApiImplicitParam(value = "auditType", required = true, name = "审核类型:1-组织审核；2-平台审核", dataTypeClass = Integer.class)
+    })
+    @PostMapping(value = "active")
+    @Transactional
+    public RespBean userActivate(@RequestParam String sceneId, @RequestParam String userId, @RequestParam Integer auditType) {
+        if (userService.getById(userId).getAdmin() == 1){
+            //TODO:
+            return RespBean.error("注册为平台管理员的接口还没做");
+        }
+        if (auditType == 2){
+            //场景的默认角色有效化
+            sceneRoleService.roleAvailable(sceneId);
+        }
+        userService.enableUser(userId);
+        //设置平台级权限
+        UserRole userRole = new UserRole();
+        userRole.setCreatedTime(new Date());
+        userRole.setUid(userId);
+        userRole.setStatus(1);
+        userRole.setRoleId(SystemConstant.SYSTEM_DEFAULT_USER);
+        userRoleService.save(userRole);
+        sceneService.enableScene(userId, sceneId);
+        return RespBean.ok("用户审核通过");
     }
 }

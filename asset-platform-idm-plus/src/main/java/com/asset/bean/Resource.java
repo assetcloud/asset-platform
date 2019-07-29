@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -68,7 +69,7 @@ public class Resource extends Model<Resource> implements Cloneable{
     @TableField(exist = false)
     private List<FormGroup> group;
     @TableField(exist = false)
-    private List<Resource> children;
+    private List<Resource> children = new ArrayList<>();
 
     public Resource(String code, String name, String iconCls, String path, Integer level, Integer sort, Integer category) {
         this.code = code;

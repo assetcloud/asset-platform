@@ -32,6 +32,9 @@ public class UserNormalController {
     @Autowired
     private IRoleGroupService roleGroupService;
 
+    @Autowired
+    private ISceneRelationService sceneRelationService;
+
     /**
      * 用户登录
      * @return RespBean
@@ -107,7 +110,9 @@ public class UserNormalController {
             list.add(roleDefault);
             sceneRoleService.addDefaultRole4Reg(scene.getId(), list);
             //将该用户设置为组织管理员
-            sceneService.userSceneBind(scene.getId(), user.getId(), roleAdmin.getId());
+            //TODO:修改userScene的逻辑，不再维护role_id这一字段
+            sceneService.userSceneBind(scene.getId(), user.getId());
+            sceneRelationService.save(new SceneRelation(user.getId(), roleAdmin.getId()));
         } else {
             jsonMap.put("sceneId", sceneId);
             if (!sceneService.sceneAvailable(sceneId)){
@@ -126,7 +131,8 @@ public class UserNormalController {
             //获取该场景下的默认角色
             SceneRole sceneRole = sceneRoleService.getDefaultRole(sceneId);
             //绑定场景与用户
-            sceneService.userSceneBind(sceneId, user.getId(), sceneRole.getId());
+            sceneService.userSceneBind(sceneId, user.getId());
+            sceneRelationService.save(new SceneRelation(user.getId(), sceneRole.getId()));
         }
 
         return RespBean.data(jsonMap);

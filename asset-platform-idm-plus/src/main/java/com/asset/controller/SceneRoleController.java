@@ -2,15 +2,21 @@ package com.asset.controller;
 
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
+import com.asset.service.IResourceRoleService;
 import com.asset.service.IRoleGroupService;
+import com.asset.service.ISceneRelationService;
 import com.asset.service.ISceneRoleService;
 import com.asset.utils.Func;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +29,12 @@ public class SceneRoleController {
 
     @Autowired
     private IRoleGroupService roleGroupService;
+
+    @Autowired
+    private ISceneRelationService sceneRelationService;
+
+    @Autowired
+    private IResourceRoleService resourceRoleService;
 
     @ApiOperation(value = "获取所有业务角色信息", notes = "获取所有业务角色信息")
     @GetMapping("list")
@@ -117,88 +129,67 @@ public class SceneRoleController {
         return RespBean.status(roleGroupService.updateById(roleGroup));
     }
 
-//
-//    @ApiOperation(value = "角色转移",notes = "修改角色的角色组", tags = "角色", httpMethod = "PUT")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Integer"),
-//            @ApiImplicitParam(name = "groupId", value = "新角色组id", required = true, dataType = "Integer")
-//    })
-//    @ApiResponses({
-//            @ApiResponse(code = 200,message = "角色转移成功",response = RespBean.class),
-//            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
-//    })
-//    @RequestMapping(value = "role2Group",method = RequestMethod.PUT)
-//    public RespBean role2Group(@RequestBody Role role){
-//        int flag = roleService.addRole2Group(role.getId(), role.getGroupId());
-//        if(flag < 0){
-//            RespBean.error("系统错误");
-//        }
-//        return RespBean.ok("角色转移成功");
-//    }
-//
-//    @ApiOperation(value = "添加角色成员",notes = "为特定角色添加成员", tags = "角色", httpMethod = "POST")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "userRoleList", value = "用户id与角色id的json数组", required = true, example = "123")
-//    })
-//    @RequestMapping(value = "/userToRole",method = RequestMethod.POST)
-//    public RespBean users2Role(@RequestBody List<UserRole> userRoleList){
-//        int flag = roleService.addUsers2Role(userRoleList);
-//        if (flag < 0){
-//            return RespBean.error("添加失败");
-//        }
-//        return RespBean.ok("添加成功");
-//    }
-//
-//    @ApiOperation(value = "角色检索",notes = "通过角色名称获取（模糊搜索）", tags = "角色", httpMethod = "GET")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "roleNameZh", value = "角色名称", required = true, dataType = "String")
-//    })
-//    @ApiResponses({
-//            @ApiResponse(code = 200,message = "检索成功",response = RespBean.class),
-//            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
-//    })
-//    @RequestMapping(value = "/roleSearch",method = RequestMethod.GET)
-//    public RespBean roleSearch(@RequestBody Role role){
-//        Role target = roleService.getRoleByName(role.getRoleNameZh());
-//        LOGGER.info(role.getRoleNameZh());
-//        if (target == null){
-//            return RespBean.error(SystemConstant.ROLE_NOT_FOUND);
-//        }
-//        return RespBean.ok(SystemConstant.GET_SUCCESS, target);
-//    }
-//
-//    @ApiOperation(value = "删除角色成员",notes = "为特定角色批量删除成员", tags = "角色", httpMethod = "DELETE")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "userRoleList", value = "用户角色列表", required = true, dataType = "List<UserRole>")
-//    })
-//    @RequestMapping(value = "/remove",method = RequestMethod.DELETE)
-//    public RespBean removeRoleMember(@RequestBody List<UserRole> userRoleList){
-//        int flag = roleService.batchDelete(userRoleList);
-//        if (flag < 0){
-//            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
-//        }
-//        return RespBean.ok(SystemConstant.DELETE_SUCCESS);
-//    }
-//
-//    @RequestMapping(value = "/rights", method = RequestMethod.POST)
-//    public RespBean saveRight(){
-//        return RespBean.ok(SystemConstant.ADD_SUCCESS);
-//    }
-//
-//    @ApiOperation(value = "获取角色成员",notes = "通过角色获取角色成员", tags = "角色", httpMethod = "GET")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long")
-//    })
-//    @ApiResponses({
-//            @ApiResponse(code = 200,message = "获取成功",response = RespBean.class),
-//            @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
-//    })
-//    @RequestMapping(value = "/users/{roleId}",method = RequestMethod.GET)
-//    public RespBean getUsersByRole(@PathVariable Long roleId){
-//        List<User> users = roleService.getUsersByRole(roleId);
-//        if (users.size() == 0){
-//            return RespBean.ok(SystemConstant.USERS_NOT_FOUND);
-//        }
-//        return RespBean.ok(SystemConstant.GET_SUCCESS, users);
-//    }
+    @ApiOperation(value = "角色转移",notes = "已完成,修改角色的角色组", tags = "角色", httpMethod = "PUT")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "角色id", required = true, dataTypeClass = Long.class),
+            @ApiImplicitParam(name = "groupId", value = "新角色组id", required = true, dataTypeClass = Long.class),
+            @ApiImplicitParam(name = "sceneCode", value = "场景id", required = true, dataTypeClass = String.class)
+    })
+    @RequestMapping(value = "role2Group",method = RequestMethod.PUT)
+    public RespBean updateRoleInfo(@RequestBody SceneRole role){
+        if (Func.hasEmpty(role.getId(), role.getGroupId(), role.getSceneCode())){
+            return RespBean.paramError();
+        }
+        return RespBean.status(sceneRoleService.updateGroupInfo(role));
+    }
+
+    @ApiOperation(value = "添加角色成员",notes = "为特定角色添加成员", tags = "角色", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true),
+            @ApiImplicitParam(name = "userIds", value = "用户id数组，逗号隔开", required = true)
+    })
+    @RequestMapping(value = "member/add",method = RequestMethod.POST)
+    public RespBean users2Role(@RequestParam Long roleId, @RequestParam String userIds){
+        return RespBean.data(sceneRoleService.addUsers2Role(roleId, Func.toStrList(",", userIds)));
+    }
+
+    @ApiOperation(value = "角色检索",notes = "已完成，通过角色名称获取（模糊搜索）", tags = "角色", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleNameZh", value = "角色名称", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "sceneCode", value = "场景id", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/roleSearch",method = RequestMethod.GET)
+    public RespBean roleSearch(@RequestBody SceneRole role){
+        return RespBean.data(sceneRoleService.getRoleByName(role));
+    }
+
+    @ApiOperation(value = "删除角色成员",notes = "为特定角色批量删除成员", tags = "角色", httpMethod = "DELETE")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userIds", value = "用户id数组", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataTypeClass = Long.class)
+    })
+    @RequestMapping(value = "member/remove",method = RequestMethod.DELETE)
+    public RespBean removeRoleMember(@NotEmpty @RequestParam String userIds, @NotEmpty @RequestParam Long roleId){
+        return RespBean.status(sceneRelationService.removeBatch(roleId, Func.toStrList(",", userIds)));
+    }
+
+    @ApiOperation(value = "通过角色获取角色成员",notes = "（已完成）", tags = "角色", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long")
+    })
+    @RequestMapping(value = "/users/{roleId}",method = RequestMethod.GET)
+    public RespBean getUsersByRole(@PathVariable Long roleId){
+        return RespBean.data(sceneRoleService.getUsersByRole(roleId));
+    }
+
+    @ApiOperation(value = "编辑业务角色权限",notes = "已完成", tags = "角色", httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long"),
+            @ApiImplicitParam(name = "resourceIds", value = "资源id的数组", required = true, dataType = "String")
+    })
+    @RequestMapping(value = "/grant", method = RequestMethod.POST)
+    @Transactional
+    public RespBean saveRight(@RequestParam String resourceIds, @RequestParam Long roleId){
+        return RespBean.status(sceneRoleService.grant(roleId, Func.toLongList(",", resourceIds)));
+    }
 }

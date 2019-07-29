@@ -195,19 +195,28 @@
       as_resource m2,
       as_resource m3
       WHERE
-      m1.id IN ( SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN (SELECT ur.role_id FROM as_user_scene ur WHERE ur.user_id = #{param1} and ur.scene_id = #{param2} AND ur.`status` = 1) )
+      m1.id IN (
+        SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item.rid}
+        </foreach>
+       )
       AND m1.`id` = m2.`parent_id`
       AND m2.`id` = m3.`parent_id`
       AND m3.`is_deleted` = 0
   </select>
-    <select id="getResourcesByUserAndScene" resultMap="ResultMapWithGroup" parameterType="java.lang.String">
+    <select id="getAppResourceByUser" resultMap="ResultMapWithGroup">
     SELECT
       m1.*
       FROM
       as_resource m1
       WHERE
-      m1.id IN ( SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN (SELECT ur.role_id FROM as_user_scene ur WHERE ur.user_id = #{userId} AND ur.`status` = 1 and ur.scene_id = #{sceneId}))
-      AND m1.scene_id = #{sceneId}
+      m1.id IN (
+        SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item.rid}
+        </foreach>
+      )
       AND m1.`is_deleted` = 0
       AND m1.`code` = 'app'
   </select>
@@ -284,11 +293,16 @@
         as_resource m2,
         as_resource m3
         WHERE
-        m1.id IN (SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN (SELECT ur.role_id FROM as_user_scene ur WHERE ur.user_id = #{param1} and ur.`scene_id` = #{param3} AND ur.`status` = 1))
+        m1.id IN (
+            SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN
+            <foreach collection="param1" item="item" separator="," open="(" close=")">
+                #{item.rid}
+            </foreach>
+        )
         AND m1.`id` = m2.`parent_id`
         AND m2.`id` = m3.`parent_id`
         AND m3.`is_deleted` = 0
-        AND m2.parent_id = #{param2} AND m2.scene_id = #{param3}
+        AND m2.parent_id = #{param2}
   </select>
     <select id="getAppResourcesByUser" resultMap="AppMenuMap" parameterType="java.lang.String">
     SELECT
@@ -336,10 +350,12 @@
             FROM
                 as_resource_role mr
             WHERE
-                mr.role_id IN ( SELECT ur.role_id FROM as_user_scene ur WHERE ur.user_id = #{param1} AND ur.`scene_id` = #{param3} AND ur.`status` = 1 )
+                mr.role_id IN
+                <foreach collection="param1" item="item" separator="," open="(" close=")">
+                    #{item.rid}
+                </foreach>
             )
             AND m1.`is_deleted` = 0
-            AND m1.scene_id = #{param3}
             AND m1.parent_id = #{param2}
   </select>
 </mapper>
