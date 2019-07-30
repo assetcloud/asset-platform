@@ -13,13 +13,13 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("scene")
@@ -46,7 +46,7 @@ public class SceneController {
     @Autowired
     private ISceneRelationService sceneRelationService;
 
-    @ApiOperation(value = "获取所有场景信息", notes = "场景",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "获取所有场景信息", notes = "场景",tags = "场景", httpMethod = "GET")
     @RequestMapping(value = "/sceneList", method = RequestMethod.GET)
     public RespBean getAllScenes(){
         List<Scene> allScene = sceneService.getAllScene();
@@ -54,6 +54,21 @@ public class SceneController {
             return RespBean.error(SystemConstant.SYSTEM_FAILURE);
         }
         return RespBean.ok(SystemConstant.GET_SUCCESS, allScene);
+    }
+
+    @ApiOperation(value = "获取用户尚未拥有的场景", notes = "场景",tags = "场景", httpMethod = "GET")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "page", name = "起始页", required = true, defaultValue = "1", dataTypeClass = Integer.class),
+            @ApiImplicitParam(value = "size", name = "每页数据量", required = true, defaultValue = "10", dataTypeClass = Integer.class),
+            @ApiImplicitParam(value = "userId", name = "用户id", required = true,  dataTypeClass = String.class),
+            @ApiImplicitParam(value = "sceneName", name = "场景名称", required = true, dataTypeClass = String.class)
+    })
+    @GetMapping("list/invert")
+    public RespBean getUserScenesInvert(@RequestParam Integer page, @RequestParam Integer size
+            , @RequestParam String userId, @RequestParam String sceneName){
+        PageHelper.startPage(page, size);
+        List<Scene> sceneInvert = sceneService.getSceneInvert(userId, sceneName);
+        return RespBean.data(new PageInfo<>(sceneInvert));
     }
 
     @ApiOperation(value = "通过场景获取所有所属用户", notes = "已完成",tags = "场景", httpMethod = "GET")
@@ -184,12 +199,18 @@ public class SceneController {
 
     @ApiOperation(value = "场景中通过组织部门获取所属用户", notes = "已完成",tags = "组织", httpMethod = "GET")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true, dataTypeClass = Integer.class),
+            @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10", required = true, dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataTypeClass = String.class),
-            @ApiImplicitParam(name = "nodeId", value = "部门id", required = true, dataTypeClass = String.class)
+            @ApiImplicitParam(name = "nodeId", value = "部门id", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "memberName", value = "用户姓名", required = true, dataTypeClass = String.class)
     })
-    @GetMapping("node/users")
-    public RespBean getUsersByNode(@RequestParam("sceneId") String sceneId, @RequestParam("nodeId") String nodeId){
-        return RespBean.data(userSceneService.getNodeUsers(sceneId, nodeId));
+    @GetMapping("node/members")
+    public RespBean getUsersByNode(@RequestParam("page") Integer page, @RequestParam("size") Integer size
+            , @RequestParam("sceneId") String sceneId, @RequestParam("nodeId") String nodeId
+            , @RequestParam("memberName") String memberName){
+        PageHelper.startPage(page, size);
+        return RespBean.data(userSceneService.getNodeUsers(sceneId, nodeId, memberName));
     }
 
     @ApiOperation(value = "检索场景中的组织部门", notes = "已完成",tags = "场景", httpMethod = "GET")
@@ -237,20 +258,23 @@ public class SceneController {
         return RespBean.data(userSceneService.rolesChecked(userId, sceneId));
     }
 
-    //TODO：用户登录后请求创建新场景
-    @ApiOperation(value = "用户请求创建新场景", notes = "")
-    @PostMapping("create")
-    public RespBean createScene(@RequestBody Scene scene){
-
-        return null;
-    }
-
-    //TODO：用户登录后请求绑定其它场景
-    @ApiOperation(value = "用户请求绑定其它场景", notes = "")
+    @ApiOperation(value = "用户请求绑定其它场景", notes = "已完成")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sceneIds", value = "场景id数组", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = String.class)
+    })
     @PostMapping("bind/another")
-    public RespBean bindScene(@RequestParam(value = "sceneId") String sceneId
+    @Transactional
+    public RespBean bindScene(@RequestParam(value = "sceneId") String sceneIds
             , @RequestParam(value = "userId") String userId){
-
-        return null;
+        Map<String, String> jsonMap = new HashMap<>();
+        if (Func.hasEmpty(sceneIds)) {
+            return RespBean.paramError();
+        }
+        //绑定场景与用户
+        sceneService.userSceneBind(Func.toStrList(",", sceneIds), userId);
+        jsonMap.put("userId", userId);
+        jsonMap.put("sceneIds", sceneIds);
+        return RespBean.data(jsonMap);
     }
 }

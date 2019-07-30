@@ -23,6 +23,7 @@
         where as_user.id IN (
             SELECT user_id from as_user_scene WHERE scene_id = #{param1} AND node_id = #{param2} AND status = 1
         )
+        AND real_name LIKE CONCAT('%',#{param3},'%')
     </select>
     <select id="getRoles" resultType="com.asset.bean.SceneRole">
         SELECT * FROM as_scene_role WHERE scene_code = #{param2} AND status = 1 AND id IN (

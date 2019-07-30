@@ -127,23 +127,22 @@ public class ApiController {
         return RespBean.ok(SystemConstant.ADD_SUCCESS);
     }
 
-    @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;组织管理员审核时sceneId置null或\"\"",tags = "用户", httpMethod = "POST")
+    @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;",tags = "用户", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "sceneId", required = true, name = "场景id", dataTypeClass = String.class),
-            @ApiImplicitParam(value = "userId", required = true, name = "用户id", dataTypeClass = String.class),
-            @ApiImplicitParam(value = "auditType", required = true, name = "审核类型:1-组织审核；2-平台审核", dataTypeClass = Integer.class)
+            @ApiImplicitParam(value = "userId", required = true, name = "用户id", dataTypeClass = String.class)
     })
     @PostMapping(value = "active")
     @Transactional
-    public RespBean userActivate(@RequestParam String sceneId, @RequestParam String userId, @RequestParam Integer auditType) {
+    public RespBean userActivate(@RequestParam String sceneId, @RequestParam String userId) {
         if (userService.getById(userId).getAdmin() == 1){
             //TODO:
             return RespBean.error("注册为平台管理员的接口还没做");
         }
-        if (auditType == 2){
-            //场景的默认角色有效化
-            sceneRoleService.roleAvailable(sceneId);
-        }
+//        if (auditType == 2){
+//            //场景的默认角色有效化
+//            sceneRoleService.roleAvailable(sceneId);
+//        }
         userService.enableUser(userId);
         //设置平台级权限
         UserRole userRole = new UserRole();

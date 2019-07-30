@@ -40,6 +40,7 @@ public class ResourceController {
             @ApiImplicitParam(name = "iconCls", value = "应用图标", required = true, dataType = "String"),
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
+    @Transactional
     public RespBean addResource(@RequestBody Application application, @RequestParam("sceneId")String sceneId){
         if (Func.hasEmpty(application.getId(), application.getApplicationName(), application.getIconCls())){
             return RespBean.error("参数错误");

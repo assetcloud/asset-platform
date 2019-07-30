@@ -121,7 +121,8 @@ public interface SystemConstant {
     String SCENE_ADMIN = "scene_admin";
     String SCENE_ADMIN_CH = "组织管理员";
     String SCENE_DEFAULT = "scene_default";
-    String SCENE_DEFAULT_CH = "终端普通用户";
+    String SCENE_DEFAULT_CH = "终端默认角色";
+    String SCENE_NORMAL = "scene_normal";
 
     String DEFAULT_GROUP_NAME = "默认分组";
 

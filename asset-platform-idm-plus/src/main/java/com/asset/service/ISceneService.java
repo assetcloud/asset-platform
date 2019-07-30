@@ -11,6 +11,14 @@ public interface ISceneService extends IService<Scene> {
 
     List<Scene> getAllScene();
 
+    /**
+     * 获取用户尚未加入的场景
+     * @param userId
+     * @param sceneName
+     * @return
+     */
+    List<Scene> getSceneInvert(String userId, String sceneName);
+
     int addSceneNormal(Scene record);
     /**
      * 用户注册时新增场景
@@ -51,6 +59,14 @@ public interface ISceneService extends IService<Scene> {
      * @return boolean
      */
     boolean userSceneBind(String sceneId, String userId);
+
+    /**
+     * 用户注册时，设置该用户在该场景中的角色和所属部门（默认为根部门）
+     * @param sceneIds
+     * @param userId
+     * @return boolean
+     */
+    boolean userSceneBind(List<String> sceneIds, String userId);
     /**
      * 向场景中批量增加成员
      * @param userIds
@@ -74,4 +90,6 @@ public interface ISceneService extends IService<Scene> {
     boolean enableScene(String userId, String sceneId);
 
     List<OrganScene> getNodesByNameAlike(String keyword, String sceneId);
+
+    boolean generateRoleInfo(Scene scene, String userId);
 }

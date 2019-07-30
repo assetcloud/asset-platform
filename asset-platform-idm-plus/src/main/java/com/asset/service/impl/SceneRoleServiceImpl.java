@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -27,9 +26,6 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     private SceneRoleMapper sceneRoleMapper;
 
     @Autowired
-    private IUserSceneService userSceneService;
-
-    @Autowired
     private IRoleGroupService roleGroupService;
 
     @Autowired
@@ -38,13 +34,12 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     @Autowired
     private IResourceRoleService resourceRoleService;
 
-//    @PreAuthorize(value = "administrator")
-    public List<SceneRole> getAllRoles() {
-        return sceneRoleMapper.roles();
+    public List<RoleGroup> rolesWithGroup(String sceneId) {
+        return sceneRoleMapper.groupRoles(sceneId);
     }
 
-    public List<RoleGroup> rolesWithGroup() {
-        return sceneRoleMapper.groupRoles();
+    public List<SceneRole> listAll(SceneRole sceneRole) {
+        return sceneRoleMapper.listAll(sceneRole);
     }
 
     public boolean roleExist(SceneRole record){
@@ -152,6 +147,7 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     }
 
     @Override
+    @Transactional
     public boolean grant(@NotEmpty Long roleId, @NotEmpty List<Long> resourceIds) {
         resourceRoleService.remove(Wrappers.<ResourceRole>update().lambda()
                 .in(ResourceRole::getMenuId, resourceIds)
@@ -164,5 +160,33 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
             resourceRoles.add(resourceRole);
         });
         return resourceRoleService.saveBatch(resourceRoles);
+    }
+
+    @Override
+    @Transactional
+    public boolean setAuthority(@NotEmpty String userId, @NotEmpty List<Long> roleIds) {
+        sceneRelationService.remove(Wrappers.<SceneRelation>update().lambda()
+                .in(SceneRelation::getRid, roleIds)
+                .eq(SceneRelation::getUid, userId));
+        List<SceneRelation> relations = new ArrayList<>();
+        roleIds.forEach(roleId -> {
+            SceneRelation relation = new SceneRelation();
+            relation.setRid(roleId);
+            relation.setUid(userId);
+            relations.add(relation);
+        });
+        return sceneRelationService.saveBatch(relations);
+    }
+
+    @Override
+    public List<SceneRole> getRolesByScene(String sceneId) {
+        return baseMapper.selectList(Wrappers.<SceneRole>query().lambda()
+                .eq(SceneRole::getSceneCode, sceneId)
+                .eq(SceneRole::getStatus, 1));
+    }
+
+    @Override
+    public List<SceneRole> getRolesOwned(String userId, String sceneId) {
+        return sceneRoleMapper.getRolesOwned(userId, sceneId);
     }
 }

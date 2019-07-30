@@ -26,11 +26,16 @@ public interface SceneRoleMapper extends BaseMapper<SceneRole> {
     List<SceneRole> roles();
 
     /**
-     * 按照角色组获取角色
-     * 场景管理员常用
+     * 场景中，根据角色组获取角色
      * @return
      */
-    List<RoleGroup> groupRoles();
+    List<RoleGroup> groupRoles(String sceneId);
+
+    /**
+     * 获取所有业务级角色
+     * @return
+     */
+    List<SceneRole> listAll(SceneRole sceneRole);
 
     SceneRole roleExist(String roleNameZh, String sceneCode);
 
@@ -57,4 +62,12 @@ public interface SceneRoleMapper extends BaseMapper<SceneRole> {
      * @return
      */
     List<User> getUsersByRole(@Param("roleId") Long roleId);
+
+    /**
+     * 获取用户已经拥有的角色
+     * @param userId
+     * @param sceneId
+     * @return
+     */
+    List<SceneRole> getRolesOwned(String userId, String sceneId);
 }

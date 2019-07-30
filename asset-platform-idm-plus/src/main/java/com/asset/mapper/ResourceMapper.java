@@ -38,6 +38,12 @@ public interface ResourceMapper extends BaseMapper<Resource> {
      */
     List<Resource> getResourcesByUser(List<SceneRelation> relations);
 
+    /**
+     * 通过角色获取所属权限
+     * @param roleId
+     * @param sceneId
+     * @return
+     */
     List<Resource> getResourcesByRole(Long roleId, String sceneId);
 
     List<Resource> getAppResourcesByUser(String userId, String sceneId);

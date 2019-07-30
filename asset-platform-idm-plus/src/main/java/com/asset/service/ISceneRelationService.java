@@ -29,4 +29,5 @@ public interface ISceneRelationService extends IService<SceneRelation> {
      * @return
      */
     boolean removeBatch(Long rid, List<String> userIds);
+
 }
