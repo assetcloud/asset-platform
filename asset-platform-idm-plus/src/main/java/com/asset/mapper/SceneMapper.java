@@ -42,4 +42,12 @@ public interface SceneMapper extends BaseMapper<Scene> {
     List<Scene> getAvailableScene(String sceneId);
 
     List<OrganScene> getNameAlike(String keyword, String sceneId);
+
+    /**
+     * 获取用户尚未加入的场景
+     * @param userId
+     * @param sceneName
+     * @return
+     */
+    List<Scene> getSceneInvert(String userId, String sceneName);
 }

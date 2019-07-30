@@ -55,7 +55,7 @@
   <select id="loadUserByUsername" resultMap="lazyLoadRoles">
     select account_name, pwd, id, real_name, account_name, nickname, gender, user_birthday, user_email,
     phone_number, certificate_type, certificate_number, authentication_method, account_picture,
-    user_address, user_photo, status, user_type from as_user WHERE account_name = #{accountName} and status = 1 and stage = 2;
+    user_address, user_photo, status, user_type, admin from as_user WHERE account_name = #{accountName} and status = 1 and stage = 2;
   </select>
   <select id="findUserByUsername" resultMap="BaseResultMap">
     select status, stage from as_user where account_name = #{username};

@@ -69,6 +69,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         map.put("accountName", ((User) auth.getPrincipal()).getAccountName());
         map.put("roles", ((User) auth.getPrincipal()).getRoles());
         map.put("userId", ((User) auth.getPrincipal()).getId());
+        map.put("admin", ((User) auth.getPrincipal()).getAdmin());
         String token = Jwts.builder()
                 .setSubject(((User) auth.getPrincipal()).getAccountName())
 //                .setSubject(((org.springframework.security.core.userdetails.User) auth.getPrincipal()).getUsername())

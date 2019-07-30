@@ -1,16 +1,15 @@
 
 package com.asset.controller.system;
 
-import com.asset.bean.Menu;
 import com.asset.bean.RespBean;
 import com.asset.bean.Role;
 import com.asset.service.IRoleService;
 import com.asset.utils.Func;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import io.swagger.annotations.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,7 +51,7 @@ public class RoleController {
         return RespBean.status(roleService.updateById(role));
     }
 
-    @PostMapping("/remove")
+    @PostMapping("remove")
     @ApiOperation(value = "删除", notes = "（已完成）传入ids")
     public RespBean remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
         return RespBean.status(roleService.batchDelete(Func.toLongList(",", ids)));

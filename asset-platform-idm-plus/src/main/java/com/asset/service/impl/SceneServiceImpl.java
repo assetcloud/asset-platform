@@ -1,10 +1,9 @@
 package com.asset.service.impl;
 
 import com.asset.bean.*;
+import com.asset.common.SystemConstant;
 import com.asset.mapper.*;
-import com.asset.service.IOrganSceneService;
-import com.asset.service.ISceneService;
-import com.asset.service.IUserSceneService;
+import com.asset.service.*;
 import com.asset.utils.CommonUtils;
 import com.asset.utils.Func;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -52,12 +51,29 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     @Autowired
     private OrganSceneMapper organSceneMapper;
 
+    @Autowired
+    private ISceneRoleService sceneRoleService;
+
+    @Autowired
+    private ISceneService sceneService;
+
+    @Autowired
+    private IRoleGroupService roleGroupService;
+
+    @Autowired
+    private ISceneRelationService sceneRelationService;
+
     /**
      * 获取所有场景
      * @return List<Scene>
      */
     public List<Scene> getAllScene(){
         return sceneMapper.selectAll();
+    }
+
+    @Override
+    public List<Scene> getSceneInvert(String userId, String sceneName) {
+        return sceneMapper.getSceneInvert(userId, sceneName);
     }
 
     /**
@@ -181,6 +197,21 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     }
 
     @Override
+    @Transactional
+    public boolean userSceneBind(List<String> sceneIds, String userId) {
+        for (String sceneId : sceneIds){
+            // 为新用户设置默认部门
+            OrganScene rootNode = organSceneMapper.getRootNode(sceneId);
+            UserScene userScene = new UserScene(sceneId, userId, rootNode.getNodeId(), 0);
+            userSceneMapper.insert(userScene);
+            // 为新用户设置默认角色
+            SceneRole sceneRole = sceneRoleService.getDefaultRole(sceneId);
+            sceneRelationService.save(new SceneRelation(userId, sceneRole.getId()));
+        }
+        return true;
+    }
+
+    @Override
     public boolean addSceneMembers(List<String> userIds, String sceneId) {
         OrganScene rootNode = organSceneMapper.getRootNode(sceneId);
         List<UserScene> records = new ArrayList<>();
@@ -205,5 +236,28 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
     @Override
     public List<OrganScene> getNodesByNameAlike(String keyword, String sceneId) {
         return sceneMapper.getNameAlike(keyword, sceneId);
+    }
+
+    @Override
+    public boolean generateRoleInfo(Scene scene, String userId) {
+        RoleGroup roleGroup = new RoleGroup(SystemConstant.DEFAULT_GROUP_NAME, 0, new Date(), scene.getId());
+        roleGroupService.save(roleGroup);
+        SceneRole roleAdmin = new SceneRole(scene.getId(), SystemConstant.SCENE_ADMIN_CH, SystemConstant.SCENE_ADMIN);
+        SceneRole roleDefault = new SceneRole(scene.getId(), SystemConstant.SCENE_DEFAULT_CH, SystemConstant.SCENE_DEFAULT);
+        List<SceneRole> list = new ArrayList<>();
+        roleAdmin.setGroupId(roleGroup.getId());
+        roleAdmin.setStatus(false);
+        roleAdmin.setCreatedTime(new Date());
+        roleAdmin.setEnableTime(new Date());
+        roleDefault.setGroupId(roleGroup.getId());
+        roleDefault.setStatus(false);
+        roleDefault.setRoleDefault(1);
+        roleDefault.setCreatedTime(new Date());
+        roleDefault.setEnableTime(new Date());
+        list.add(roleAdmin);
+        list.add(roleDefault);
+        sceneRoleService.addDefaultRole4Reg(scene.getId(), list);
+        //将该用户设置为组织管理员
+        return sceneRelationService.save(new SceneRelation(userId, roleAdmin.getId()));
     }
 }

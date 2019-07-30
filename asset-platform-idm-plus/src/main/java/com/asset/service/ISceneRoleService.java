@@ -20,16 +20,18 @@ import java.util.List;
 public interface ISceneRoleService extends IService<SceneRole> {
 
     /**
+     * 根据角色组获取角色信息（与场景绑定）
+     * @return List<RoleGroup>
+     */
+    List<RoleGroup> rolesWithGroup(String sceneId);
+
+    /**
      * 获取所有角色信息
      * 仅平台管理员调用
      * @return List<SceneRole>
      */
-    List<SceneRole> getAllRoles();
-    /**
-     * 根据角色组获取角色信息（与场景绑定）
-     * @return List<RoleGroup>
-     */
-    List<RoleGroup> rolesWithGroup();
+    List<SceneRole> listAll(SceneRole sceneRole);
+
     /**
      * 该场景下，判断角色名称已被占用
      * @param record
@@ -131,4 +133,26 @@ public interface ISceneRoleService extends IService<SceneRole> {
      * @return
      */
     boolean grant(@NotEmpty Long roleId, @NotEmpty List<Long> resourceIds);
+
+    /**
+     * 场景中为用户设置角色
+     * @param userId
+     * @param roleIds
+     * @return
+     */
+    boolean setAuthority(@NotEmpty String userId, @NotEmpty List<Long> roleIds);
+
+    /**
+     * 获取场景中所有有效的角色
+     * @param sceneId
+     * @return
+     */
+    List<SceneRole> getRolesByScene(String sceneId);
+
+    /**
+     * 获取用户已经拥有的角色
+     * @param userId
+     * @return
+     */
+    List<SceneRole> getRolesOwned(String userId, String sceneId);
 }
