@@ -51,7 +51,7 @@
     FROM
         as_scene s
     WHERE
-        s.id IN ( SELECT us.scene_id FROM as_user_scene us WHERE us.user_id = #{userId})
+        s.id IN ( SELECT us.scene_id FROM as_user_scene us WHERE us.user_id = #{userId} and us.status = 1 )
         AND s.`status` = 1
         AND s.is_deleted = 0
   </select>
@@ -59,11 +59,11 @@
     select * from as_scene where id = #{sceneId} and status = 1
   </select>
   <select id="getSceneInvert" resultType="com.asset.bean.Scene">
-    SELECT * FROM AS_SCENE WHERE is_deleted = 0
+    SELECT * FROM as_scene WHERE is_deleted = 0
     AND status = 1
-    AND id NOT IN (SELECT scene_id FROM AS_USER_SCENE WHERE user_id = #{param1} AND STATUS = 1)
+    AND id NOT IN (SELECT scene_id FROM as_user_scene WHERE user_id = #{param1} AND STATUS = 1)
     <if test="param2 != null">
-      AND AS_SCENE.scene_name LIKE CONCAT('%', #{param2}, '%')
+      AND as_scene.scene_name LIKE CONCAT('%', #{param2}, '%')
     </if>
   </select>
   <select id="getNameAlike" resultMap="OrganSceneMap">

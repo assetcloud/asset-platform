@@ -14,4 +14,5 @@ public class AssetPlatformIdmApplication {
     public static void main(String[] args) {
         SpringApplication.run(AssetPlatformIdmApplication.class, args);
     }
+
 }

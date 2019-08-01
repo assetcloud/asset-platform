@@ -52,13 +52,13 @@ public class SystemUserController {
         return RespBean.data(userService.getUsersWithoutScene(accountName, realName, email, sceneId));
     }
 
-    @ApiOperation(value = "获取所有用户（兼模糊搜索）", notes = "已完成", tags = "用户", httpMethod = "GET")
+    @ApiOperation(value = "获取所有用户（兼模糊搜索）", notes = "已完成", tags = "用户", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true, dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", value = "每页数据量", defaultValue = "10", required = true, dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "userPageParam", value = "UserPageParam", required = true, dataTypeClass = UserPageParam.class)
     })
-    @GetMapping("list")
+    @PostMapping("list")
     public RespBean userList(@RequestParam Integer page, @RequestParam Integer size, @RequestBody UserPageParam userPageParam){
         PageHelper.startPage(page, size);
         return RespBean.data(new PageInfo<>(userService.allUsers(userPageParam)));
