@@ -110,7 +110,7 @@ public class SceneController {
         return RespBean.data(organSceneService.batchRemoveMembers(Func.toStrList(",", userIds), sceneId));
     }
 
-    @ApiOperation(value = "场景中设置用户主部门", notes = "已完成",tags = "场景", httpMethod = "DELETE")
+    @ApiOperation(value = "场景中设置用户主部门", notes = "已完成",tags = "场景", httpMethod = "POST")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataTypeClass = String.class),
@@ -171,8 +171,8 @@ public class SceneController {
 
     @ApiOperation(value = "获取用户场景", notes = "根据用户获取场景;page起始页;size每页数据量", tags = "组织", httpMethod = "GET")
     @RequestMapping(value = "/list/byUser", method = RequestMethod.GET)
-    public RespBean getUserScenes(@ApiParam(value = "page", defaultValue = "1", required = true) @RequestParam(defaultValue = "1") Integer page
-            , @ApiParam(value = "size", defaultValue = "10", required = true) @RequestParam(defaultValue = "10") Integer size
+    public RespBean getUserScenes(@ApiParam(value = "page", defaultValue = "1", required = true) @RequestParam Integer page
+            , @ApiParam(value = "size", defaultValue = "10", required = true) @RequestParam Integer size
             , @ApiParam(value = "userId", required = true) @RequestParam String userId){
         PageHelper.startPage(page, size);
         List<Scene> scenes = sceneService.getScenesByUser(userId);
@@ -258,7 +258,7 @@ public class SceneController {
         return RespBean.data(userSceneService.rolesChecked(userId, sceneId));
     }
 
-    @ApiOperation(value = "用户请求绑定其它场景", notes = "已完成")
+    @ApiOperation(value = "用户请求绑定其它场景", notes = "已完成", tags = "场景")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sceneIds", value = "场景id数组", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = String.class)

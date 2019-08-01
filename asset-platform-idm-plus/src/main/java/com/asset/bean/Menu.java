@@ -1,102 +1,122 @@
 package com.asset.bean;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
+import org.springblade.core.tool.utils.Func;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
- * <p>
- *  菜单实体类
- * </p>
+ * 实体类
  *
  * @author hjhu
- * @since 2019-07-19
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
 @TableName("as_menu")
-public class Menu extends Model<Menu> {
+@ApiModel(value = "Menu对象", description = "Menu对象")
+public class Menu implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    @TableField("id")
-    @TableId(type = IdType.AUTO)
-    private Long id;
-    /**
-     * 父级菜单
-     */
-    @TableField("parent_id")
-    private Long parentId;
-    /**
-     * 菜单编号
-     */
-    private String code;
-    /**
-     * 菜单名称
-     */
-    private String name;
-    /**
-     * 菜单别名
-     */
-    private String alias;
-    /**
-     * 请求地址
-     */
-    private String path;
-    /**
-     * 菜单资源
-     */
-    private String source;
-    /**
-     * 排序
-     */
-    private Integer sort;
-    /**
-     * 菜单类型
-     */
-    private Integer category;
-    /**
-     * 操作按钮类型
-     */
-    private Integer action;
-    /**
-     * 是否打开新页面
-     */
-    @TableField("is_open")
-    private Integer isOpen;
-    /**
-     * 备注
-     */
-    private String remark;
-    /**
-     * 是否已删除
-     */
-    @TableField("is_deleted")
-    private Integer isDeleted;
-    /**
-     * 添加时间
-     */
-    @TableField("add_time")
-    private Date addTime;
+	/**
+	 * 主键
+	 */
+	@ApiModelProperty(value = "主键")
+	@TableId(value = "id", type = IdType.AUTO)
+	private Integer id;
 
-    @TableField(exist = false)
-    private List<Menu> children = new ArrayList<>();
+	/**
+	 * 菜单父主键
+	 */
+	@ApiModelProperty(value = "菜单父主键")
+	private Integer parentId;
+
+	/**
+	 * 菜单编号
+	 */
+	@ApiModelProperty(value = "菜单编号")
+	private String code;
+
+	/**
+	 * 菜单名称
+	 */
+	@ApiModelProperty(value = "菜单名称")
+	private String name;
+
+	/**
+	 * 菜单别名
+	 */
+	@ApiModelProperty(value = "菜单别名")
+	private String alias;
+
+	/**
+	 * 请求地址
+	 */
+	@ApiModelProperty(value = "请求地址")
+	private String path;
+
+	/**
+	 * 菜单资源
+	 */
+	@ApiModelProperty(value = "菜单资源")
+	private String source;
+
+	/**
+	 * 排序
+	 */
+	@ApiModelProperty(value = "排序")
+	private Integer sort;
+
+	/**
+	 * 菜单类型
+	 */
+	@ApiModelProperty(value = "菜单类型")
+	private Integer category;
+
+	/**
+	 * 操作按钮类型
+	 */
+	@ApiModelProperty(value = "操作按钮类型")
+	private Integer action;
+
+	/**
+	 * 是否打开新页面
+	 */
+	@ApiModelProperty(value = "是否打开新页面")
+	private Integer isOpen;
+
+	/**
+	 * 备注
+	 */
+	@ApiModelProperty(value = "备注")
+	private String remark;
+
+	/**
+	 * 是否已删除
+	 */
+	@TableLogic
+	@ApiModelProperty(value = "是否已删除")
+	private Integer isDeleted;
 
 
-    @Override
-    protected Serializable pkVal() {
-        return null;
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		Menu other = (Menu) obj;
+		if (Func.equals(this.getId(), other.getId())) {
+			return true;
+		}
+		return false;
+	}
 
 }

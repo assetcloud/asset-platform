@@ -43,7 +43,7 @@ public class MenuNodeManager {
      *            节点ID
      * @return 对应的节点对象
      */
-    public Menu getTreeNodeAT(Long id) {
+    public Menu getTreeNodeAT(Integer id) {
         for (Menu treeNode : list) {
             if (treeNode.getId().equals(id))
                 return treeNode;

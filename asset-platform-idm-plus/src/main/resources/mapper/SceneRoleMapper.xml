@@ -171,7 +171,7 @@
 	AND ur.rid = #{roleId}
   </select>
     <select id="getRolesOwned" resultType="com.asset.bean.SceneRole">
-        SELECT * FROM AS_SCENE_ROLE WHERE id IN (SELECT rid FROM AS_SCENE_RELATION WHERE uid = #{param1})
+        SELECT * FROM as_scene WHERE id IN (SELECT rid FROM as_scene_relation WHERE uid = #{param1})
         AND scene_code = #{param2} AND STATUS = 1
     </select>
 </mapper>

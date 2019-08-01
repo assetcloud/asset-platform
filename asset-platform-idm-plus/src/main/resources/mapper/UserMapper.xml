@@ -74,7 +74,7 @@
     AND id NOT IN (SELECT us.user_id from as_user_scene us where status = 1 and scene_id = #{param4})
   </select>
   <select id="users" resultMap="BaseMap" parameterType="com.asset.common.model.UserPageParam">
-    SELECT u.id, u.account_name, u.real_name, u.user_email, u.phone_number, u.STATUS FROM as_user u WHERE 1 = 1
+    SELECT * FROM as_user u WHERE 1 = 1
     <if test='accountName!=null and accountName!=""'>
       AND account_name like CONCAT('%',#{accountName},'%')
     </if>
@@ -89,9 +89,6 @@
     </if>
     <if test='status!=null and status!=""'>
       AND STATUS = #{status}
-    </if>
-    <if test='status == null'>
-      AND STATUS = 1
     </if>
   </select>
   <select id="getRolesByUserId" resultType="com.asset.bean.Role">
