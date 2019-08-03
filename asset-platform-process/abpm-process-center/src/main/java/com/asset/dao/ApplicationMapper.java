@@ -1,6 +1,6 @@
 package com.asset.dao;
 
-import com.asset.entity.Application;
+import com.asset.entity.ApplicationDO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
@@ -11,21 +11,21 @@ import java.util.List;
 @Repository
 public interface ApplicationMapper {
 
-    List<Application> getAppList();
+    List<ApplicationDO> getAppList();
 
     int deleteByPrimaryKey(String id);
 
-    int insert(Application record);
+    int insert(ApplicationDO record);
 
-    int insertSelective(Application record);
+    int insertSelective(ApplicationDO record);
 
-    Application selectByPrimaryKey(String id);
+    ApplicationDO selectByPrimaryKey(String id);
 
-    int updateByPrimaryKeySelective(Application record);
+    int updateByPrimaryKeySelective(ApplicationDO record);
 
-    int updateByPrimaryKey(Application record);
+    int updateByPrimaryKey(ApplicationDO record);
 
-    Application findAppByName(@Param("applicationName") String applicationName);
+    ApplicationDO findAppByName(@Param("applicationName") String applicationName);
 
-    List<Application> getPublishedApp();
+    List<ApplicationDO> getPublishedApp();
 }

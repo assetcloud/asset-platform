@@ -5,14 +5,17 @@ import com.asset.dao.ProcInstMapper;
 import com.asset.dao.FormInstMapper;
 import com.asset.dao.ProcNodeMapper;
 import com.asset.dto.RegisterDTO;
+import com.asset.dto.SceneSelectDTO;
 import com.asset.entity.FormInstDO;
 import com.asset.entity.ProcInstDO;
 import com.asset.entity.ProcNodeDO;
 import com.asset.exception.ProcException;
 import com.asset.form.FormSheet;
 import com.asset.utils.Constants;
-import com.asset.utils.FlowableProcUtils;
+import com.asset.utils.ProcUtils;
 import com.asset.utils.JsonUtils;
+import com.github.pagehelper.Page;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.dom4j.*;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
@@ -25,16 +28,18 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ExecutionQuery;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.task.api.Task;
 import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.*;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class ProcInstService {
     @Autowired
     AuthorityService authorityService;
@@ -74,7 +79,7 @@ public class ProcInstService {
                                    String formModelId) {
         FormSheet originalFormSheet = formModelService.getModelSheet(formModelId);
         //获取当前执行到的任务节点
-        String[] taskIDs = FlowableProcUtils.getTaskIDs(procInstId);
+        String[] taskIDs = ProcUtils.getTaskIDs(procInstId);
         //如果下面还有任务节点要处理，就在as_proc_inst中新建这个表单实例字段（每一个TaskId对应一个新的表单实例）
         for (int i = 0; i < taskIDs.length; i++) {
             boolean isNotContain = formInstMapper.getTaskId(taskIDs[i]) == null ? true : false;
@@ -104,8 +109,6 @@ public class ProcInstService {
         return procInstMapper.getProcModelId(procInstId);
     }
 
-
-
     public String getExecutionId(String procInstID) {
         ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
         RuntimeService runtimeService = engine.getRuntimeService();
@@ -132,7 +135,7 @@ public class ProcInstService {
      */
     public void rollback(String procInstID, String rollbackActID) {
         String executionId = getExecutionId(procInstID);
-        FlowableProcUtils.rollback(executionId, rollbackActID, procInstID);
+        ProcUtils.rollback(executionId, rollbackActID, procInstID);
     }
 
     /**
@@ -278,41 +281,50 @@ public class ProcInstService {
      * @throws ProcException
      */
     public String[] createRegisterProcByXml(RegisterDTO dto) throws ProcException {
-
-        ProcessInstance procInst = FlowableProcUtils.createProcInstByXml("register");
-
+        ProcessInstance procInst = ProcUtils.createProcInstByXml(Constants.REGISTER_BPMN_NAME);
         if (procInst == null) {
             throw new ProcException("无法创建流程实例，请查看本地BPMN资源文件");
         }
-        String[] taskIDs = FlowableProcUtils.getTaskIDs(procInst.getProcessInstanceId());
-
-        //注册页面绑定的表单模型ID，数据库表创建时需要包含这个表单模型数据
-        //此处我们手动创建这个表单模型，ID号是07d2c47a-98d5-11e9-993a-0215444863d4
-        String registerFormModelID = "07d2c47a-98d5-11e9-993a-0215444863d4";
-
-        formInstService.createFormInst(dto.getForm_inst_sheet(),
-                dto.getForm_inst_value(),
-                procInst.getProcessInstanceId(),
-                dto.getEditor(),
-                registerFormModelID,
-                taskIDs[0]);
-
+        String[] taskIDs = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
         //3、持久化流程实例
         ProcInstDO asProcInstDO = new ProcInstDO(
                 procInst.getProcessInstanceId(),
-                Constants.REGISTER_PROC,
+                Constants.REGISTER_PROC_ID,
                 "",
                 "",
                 dto.getEditor(),
                 dto.getForm_inst_value());
         insertProcInst(asProcInstDO);
-
-        FlowableProcUtils.completeTask(taskIDs[0]);
+        ProcUtils.completeTask(taskIDs[0]);
         saveUnCompleteTask(
                 procInst.getProcessInstanceId(),
-                registerFormModelID
+                Constants.REGISTER_FORM_ID
         );
+        //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
+        String[] urls = formInstService.generateUrls(procInst);
+        return urls;
+    }
 
+    public String[] createSceneSelectProcByXml(SceneSelectDTO dto) {
+        ProcessInstance procInst = ProcUtils.createProcInstByXml(Constants.SCENE_SELECT_BPMN_NAME);
+        if (procInst == null) {
+            throw new ProcException("无法创建流程实例，请查看本地BPMN资源文件");
+        }
+        String[] taskIDs = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
+        //3、持久化流程实例
+        ProcInstDO asProcInstDO = new ProcInstDO(
+                procInst.getProcessInstanceId(),
+                Constants.SCENE_SELECT_PROC_ID,
+                "",
+                "",
+                dto.getEditor(),
+                dto.getForm_inst_value());
+        insertProcInst(asProcInstDO);
+        ProcUtils.completeTask(taskIDs[0]);
+        saveUnCompleteTask(
+                procInst.getProcessInstanceId(),
+                Constants.SCENE_SELECT_PROC_ID
+        );
         //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
         String[] urls = formInstService.generateUrls(procInst);
         return urls;
@@ -340,51 +352,27 @@ public class ProcInstService {
         procInstMapper.updateFormValueForAll(procInstId, newOriginalValue);
     }
 
+    /**
+     * 返回一个任务节点所处的流程实例是谁发起的
+     * @param taskId
+     * @return
+     */
+    public String getCommitter(String taskId) {
+        String procInstId = formInstService.getProcInstId(taskId);
+        return procInstMapper.getCommitter(procInstId);
+    }
 
     public String getDefId(String curTaskId) {
         return procInstMapper.getDefId(curTaskId);
     }
+
+    public void deleteProcInstDO(String procInstId) {
+        procInstMapper.deleteByPrimaryKey(procInstId);
+    }
+
+    public List<ProcInstDO> listProcInsts() {
+        return procInstMapper.listProcInsts();
+    }
+
+
 }
-
-
-//    /**
-//     * 这里是从数据库中读取流程模型数据，创建流程实例
-//     * 发起一个注册流程，注册流程表单、绑定的流程模型、绑定的权限数据、流程模型中节点类型都需要事先创建好！！
-//     * @param dto
-//     * @throws ProcException
-//     */
-//    public void createRegisterProcByDatabase(RegisterDTO dto) throws ProcException {
-//        String registerProcModelID = "37b2621e-a917-11e9-9643-2e15a8856301";
-//        ProcessInstance procInst = FlowableProcUtils.createProcInstByModelId(registerProcModelID);
-//        if (procInst==null)
-//        {
-//            throw new ProcException("无法创建流程实例，流程模型ID："+registerProcModelID);
-//        }
-//        String[] taskIDs = getTaskIDs(procInst.getProcessInstanceId());
-//
-//        //注册页面绑定的表单模型ID，需要在系统创建之后自动生成
-//        String registerFormModelID = "07d2c47a-98d5-11e9-993a-0215444863d4";
-//
-//        formInstService.createFormInst(
-//                dto.getForm_inst_sheet(),
-//                dto.getForm_inst_value(),
-//                procInst.getProcessInstanceId(),
-//                dto.getEditor(),
-//                registerFormModelID,
-//                taskIDs[0]);
-//
-//        //3、持久化流程实例
-//        ProcInstDO asProcInstDO = new ProcInstDO(
-//                procInst.getProcessInstanceId(),
-//                registerProcModelID,
-//                "",
-//                "",
-//                dto.getEditor());
-//        insertProcInst(asProcInstDO);
-//
-//
-//        FlowableProcUtils.completeTask(taskIDs[0]);
-//        saveUnCompleteTask(
-//                procInst.getProcessInstanceId(),
-//                registerFormModelID);
-//    }

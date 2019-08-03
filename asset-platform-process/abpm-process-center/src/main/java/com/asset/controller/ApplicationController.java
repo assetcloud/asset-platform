@@ -1,19 +1,16 @@
 package com.asset.controller;
 
 
-import com.asset.entity.Application;
-import com.asset.entity.FormModelDO;
+import com.asset.entity.ApplicationDO;
 import com.asset.javabean.RespBean;
 import com.asset.service.ApplicationService;
 import com.asset.utils.Constants;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -44,7 +41,7 @@ public class ApplicationController {
             @ApiResponse(code = 200,message = "新建成功",response = RespBean.class),
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
-    public RespBean addApp(@RequestBody Application application){
+    public RespBean addApp(@RequestBody ApplicationDO application){
         int flag = applicationService.addApplication(application);
         if (flag < 0){
             LOGGER.info("应用新建失败");
@@ -59,9 +56,9 @@ public class ApplicationController {
             @ApiResponse(code = 200,message = "修改成功",response = RespBean.class),
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
-    public RespBean updateApp(@RequestBody Application application){
+    public RespBean updateApp(@RequestBody ApplicationDO application){
         LOGGER.info(application.toString());
-        Application oldApp = applicationService.getById(application.getId());
+        ApplicationDO oldApp = applicationService.getById(application.getId());
         if(null == oldApp){
             return RespBean.error("数据错误");
         }
@@ -85,8 +82,8 @@ public class ApplicationController {
             @ApiResponse(code = 200,message = "删除成功",response = RespBean.class),
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
-    public RespBean deleteApp(@RequestBody Application application){
-        Application oldApp = applicationService.getById(application.getId());
+    public RespBean deleteApp(@RequestBody ApplicationDO application){
+        ApplicationDO oldApp = applicationService.getById(application.getId());
         if(null == oldApp){
             return RespBean.error("数据错误");
         }
@@ -102,7 +99,7 @@ public class ApplicationController {
     @RequestMapping(value = "/appList", method = RequestMethod.GET)
     @ApiOperation(value = "获取应用列表", tags = "应用", httpMethod = "GET")
     @ApiResponse(code = 200, message = "", response = List.class)
-    public List<Application> getAppList(){
+    public List<ApplicationDO> getAppList(){
         return applicationService.getAppList();
     }
 
@@ -116,7 +113,7 @@ public class ApplicationController {
      * @return
      */
     @RequestMapping(value = "/publish",method = RequestMethod.POST)
-    public RespBean publishApp(@RequestBody Application rec)
+    public RespBean publishApp(@RequestBody ApplicationDO rec)
     {
         //这里本质就是在数据库中修改一下是否publish这一项
         rec.setIsPublished(Constants.APP_PUBLISHED);
@@ -133,7 +130,7 @@ public class ApplicationController {
      */
     @RequestMapping(value = "/model/show",method = RequestMethod.GET)
     public RespBean getPublishedApp(){
-        List<Application> list = applicationService.getPublishedApp();
+        List<ApplicationDO> list = applicationService.getPublishedApp();
         if(list == null)
         {
             return RespBean.ok("没有发布的应用模板！");

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.LinkFormProcMapper">
+    <select id="getBindFormModelId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+            proc_model_id
+        FROM
+            as_link_form_proc
+        WHERE
+            form_model_id = #{formModelId,jdbcType=VARCHAR}
+    </select>
+
+    <insert id="bindFormAndProc" >
+        INSERT INTO as_link_form_proc
+                (proc_model_id,
+                 form_model_id)
+        VALUES
+               (#{procModelId,jdbcType=VARCHAR},
+                #{formModelId,jdbcType=VARCHAR})
+    </insert>
+</mapper>

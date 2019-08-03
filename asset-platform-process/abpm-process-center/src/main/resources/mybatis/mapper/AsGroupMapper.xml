@@ -13,21 +13,21 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from as_app_group
+    from as_group
     where group_id = #{groupId,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from as_app_group
+    delete from as_group
     where group_id = #{groupId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.asset.entity.Group">
-    insert into as_app_group (group_id, app_id, group_name,
+    insert into as_group (group_id, app_id, group_name,
       status)
     values (#{groupId,jdbcType=INTEGER}, #{appId,jdbcType=VARCHAR}, #{groupName,jdbcType=VARCHAR},
       #{status,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.asset.entity.Group">
-    insert into as_app_group
+    insert into as_group
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="groupId != null">
         group_id,
@@ -58,7 +58,7 @@
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.asset.entity.Group">
-    update as_app_group
+    update as_group
     <set>
       <if test="appId != null">
         app_id = #{appId,jdbcType=VARCHAR},
@@ -73,7 +73,7 @@
     where group_id = #{groupId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.asset.entity.Group">
-    update as_app_group
+    update as_group
     set app_id = #{appId,jdbcType=VARCHAR},
       group_name = #{groupName,jdbcType=VARCHAR},
       status = #{status,jdbcType=INTEGER}
@@ -85,20 +85,20 @@
   <select id="selectAll" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
-    from as_app_group
+    from as_group
     where app_id = #{appID,jdbcType=VARCHAR}
   </select>
 
   <update id="deleteGroup" parameterType="com.asset.entity.Group">
     update
-    as_app_group
+    as_group
     set status = 0
     where id = #{groupId,jdbcType=VARCHAR}
   </update>
 
   <update id="updateGroup" parameterType="com.asset.entity.Group">
     update
-    as_app_group
+    as_group
     set group_name = #{groupName,jdbcType = VARCHAR}
     where id = #{groupId,jdbcType=VARCHAR}
   </update>

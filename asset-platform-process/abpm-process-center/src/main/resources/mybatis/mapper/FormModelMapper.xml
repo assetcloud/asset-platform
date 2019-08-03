@@ -3,6 +3,7 @@
 <mapper namespace="com.asset.dao.FormModelMapper">
   <resultMap id="BaseResultMap" type="com.asset.entity.FormModelDO">
     <result column="id" jdbcType="VARCHAR" property="id" />
+    <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
     <result column="form_name" jdbcType="VARCHAR" property="formName" />
     <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     <result column="created_by" jdbcType="VARCHAR" property="createdBy" />
@@ -17,16 +18,30 @@
   <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.asset.entity.FormModelDO">
     <result column="model_sheet" jdbcType="LONGVARCHAR" property="modelSheetStr" />
   </resultMap>
+
   <sql id="Blob_Column_List">
+    id,
+    form_name,
+    created_time,
+    created_by,
+    last_updated_time,
+    last_updated_by,
+    version,
     model_sheet
+    group_id,
+    icon_cls,
+    status,
+    proc_model_id,
+    scene_id
   </sql>
+
   <insert id="insert" parameterType="com.asset.entity.FormModelDO">
-    insert into as_form_model (id, form_name, created_time,
+    insert into as_form_model (id, scene_id,form_name, created_time,
       created_by, last_updated_time, last_updated_by,
       version, group_id, icon_cls,
       status, proc_model_id, model_sheet
       )
-    values (#{id,jdbcType=VARCHAR}, #{formName,jdbcType=VARCHAR}, now(),
+    values (#{id,jdbcType=VARCHAR},#{sceneId,jdbcType=VARCHAR} #{formName,jdbcType=VARCHAR}, now(),
       #{createdBy,jdbcType=VARCHAR}, #{lastUpdatedTime,jdbcType=TIMESTAMP}, #{lastUpdatedBy,jdbcType=VARCHAR},
       #{version,jdbcType=INTEGER}, #{groupId,jdbcType=INTEGER}, #{iconCls,jdbcType=VARCHAR},
       #{status,jdbcType=TINYINT}, #{procModelId,jdbcType=VARCHAR}, #{modelSheetStr,jdbcType=LONGVARCHAR}
@@ -37,6 +52,9 @@
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
+      </if>
+      <if test="sceneId != null">
+        scene_id,
       </if>
       <if test="formName != null">
         form_name,
@@ -71,6 +89,9 @@
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
         #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneId != null">
+        #{sceneId,jdbcType=VARCHAR},
       </if>
       <if test="formName != null">
         #{formName,jdbcType=VARCHAR},
@@ -109,6 +130,7 @@
   <select id="getFormModel" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
         SELECT
 	      id,
+	      scene_id,
           form_name,
           created_time,
           created_by,
@@ -161,6 +183,7 @@
   <select id="listAllFormModels" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
     SELECT
     id,
+    scene_id,
     form_name,
     created_time,
     created_by,
@@ -185,6 +208,7 @@
   <select id="listFormModels"  resultMap="ResultMapWithBLOBs">
     SELECT
     id,
+    scene_id,
     form_name,
     created_time,
     created_by,
@@ -241,5 +265,29 @@
           id = #{formModelID,jdbcType = VARCHAR};
     </select>
 
+  <select id="checkFormContain" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT id
+    FROM as_form_model
+    WHERE id = #{formModelId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getSceneId" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT scene_id
+    FROM as_form_model
+    WHERE id = #{formModelId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getFormModelName" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT form_name
+    FROM as_form_model
+    WHERE id = #{formModelId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectAll" resultMap="ResultMapWithBLOBs">
+    SELECT
+    <include refid="Blob_Column_List"/>
+    FROM
+    as_form_model
+  </select>
 
 </mapper>

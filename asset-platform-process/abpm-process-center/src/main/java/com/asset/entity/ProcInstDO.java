@@ -20,6 +20,8 @@ public class ProcInstDO {
 
     private String formInstAllValue;
 
+    private Integer status;
+
     public ProcInstDO() {
     }
 

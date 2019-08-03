@@ -18,8 +18,10 @@ public interface Constants {
   //应用中分组状态
   public static final int GROUP_ENABLED = 0;
   public static final int GROUP_DISABLED = 1;
+  public static final int GROUP_ALL = -1;
 
   //表单模型创建之后的状态
+  public static final int FORM_MODEL_ALL = -1;   //还没和流程模型绑定
   public static final int FORM_MODEL_UNBIND = 0;   //还没和流程模型绑定
   public static final int FORM_MODEL_BINDED = 1;  //已绑定，表单流程已经可以被发起
   public static final int FORM_MODEL_DELETED = 2;  //表单流程已被删除
@@ -74,5 +76,21 @@ public interface Constants {
 
   //代表int的初始值
   int EMPTY = -1;
-  public static final String REGISTER_PROC = "REGISTER";
+  String REGISTER_PROC_ID = "register";
+  String REGISTER_FORM_ID = "register";
+  String REGISTER_BPMN_NAME = "register";
+  String REGISTER_FORM_SHEET =
+          "{\"config\":{\"labelPosition\":\"right\",\"labelWidth\":100,\"size\":\"small\"},\"list\":[{\"icon\":\"icon-input\",\"key\":\"1562899646000_93408\",\"model\":\"input_1562899646000_93408\",\"name\":\"单行文本\",\"options\":{\"dataType\":\"string\",\"defaultValue\":\"\",\"disabled\":true,\"pattern\":\"\",\"placeholder\":\"\",\"remoteFunc\":\"func_1562899646000_93408\",\"required\":true,\"width\":\"100%\"},\"rules\":[{\"type\":\"string\",\"message\":\"单行文本格式不正确\"},{\"message\":\"单行文本必须填写\",\"required\":true}],\"type\":\"input\"},{\"icon\":\"icon-radio-active\",\"key\":\"1562899657000_17535\",\"model\":\"radio_1562899657000_17535\",\"name\":\"单选框组\",\"options\":{\"defaultValue\":\"\",\"disabled\":true,\"inline\":false,\"options\":[{\"value\":\"选项1\",\"label\":\"选项1\"},{\"value\":\"选项2\",\"label\":\"选项2\"},{\"value\":\"选项3\",\"label\":\"选项3\"}],\"props\":{\"value\":\"value\",\"label\":\"label\"},\"remote\":false,\"remoteFunc\":\"func_1562899657000_17535\",\"remoteOptions\":[],\"required\":true,\"showLabel\":false,\"width\":\"\"},\"rules\":[{\"message\":\"单选框组必须填写\",\"required\":true}],\"type\":\"radio\"},{\"icon\":\"icon-check-box\",\"key\":\"1562899664000_17346\",\"model\":\"checkbox_1562899664000_17346\",\"name\":\"多选框组\",\"options\":{\"defaultValue\":[],\"disabled\":true,\"inline\":false,\"options\":[{\"value\":\"选项1\"},{\"value\":\"选项2\"},{\"value\":\"选项3\"}],\"props\":{\"value\":\"value\",\"label\":\"label\"},\"remote\":false,\"remoteFunc\":\"func_1562899664000_17346\",\"remoteOptions\":[],\"required\":true,\"showLabel\":false,\"width\":\"\"},\"rules\":[{\"message\":\"多选框组必须填写\",\"required\":true}],\"type\":\"checkbox\"}]}";
+
+  String SCENE_SELECT_PROC_ID = "sceneSelect";
+  String SCENE_SELECT_FORM_ID = "sceneSelect";
+  String SCENE_SELECT_BPMN_NAME = "sceneSelect";
+  String SCENE_SELECT_FORM_SHEET =
+          "{\"config\":{\"labelPosition\":\"right\",\"labelWidth\":100,\"size\":\"small\"},\"list\":[{\"icon\":\"icon-input\",\"key\":\"1562899646000_93408\",\"model\":\"input_1562899646000_93408\",\"name\":\"单行文本\",\"options\":{\"dataType\":\"string\",\"defaultValue\":\"\",\"disabled\":true,\"pattern\":\"\",\"placeholder\":\"\",\"remoteFunc\":\"func_1562899646000_93408\",\"required\":true,\"width\":\"100%\"},\"rules\":[{\"type\":\"string\",\"message\":\"单行文本格式不正确\"},{\"message\":\"单行文本必须填写\",\"required\":true}],\"type\":\"input\"},{\"icon\":\"icon-radio-active\",\"key\":\"1562899657000_17535\",\"model\":\"radio_1562899657000_17535\",\"name\":\"单选框组\",\"options\":{\"defaultValue\":\"\",\"disabled\":true,\"inline\":false,\"options\":[{\"value\":\"选项1\",\"label\":\"选项1\"},{\"value\":\"选项2\",\"label\":\"选项2\"},{\"value\":\"选项3\",\"label\":\"选项3\"}],\"props\":{\"value\":\"value\",\"label\":\"label\"},\"remote\":false,\"remoteFunc\":\"func_1562899657000_17535\",\"remoteOptions\":[],\"required\":true,\"showLabel\":false,\"width\":\"\"},\"rules\":[{\"message\":\"单选框组必须填写\",\"required\":true}],\"type\":\"radio\"},{\"icon\":\"icon-check-box\",\"key\":\"1562899664000_17346\",\"model\":\"checkbox_1562899664000_17346\",\"name\":\"多选框组\",\"options\":{\"defaultValue\":[],\"disabled\":true,\"inline\":false,\"options\":[{\"value\":\"选项1\"},{\"value\":\"选项2\"},{\"value\":\"选项3\"}],\"props\":{\"value\":\"value\",\"label\":\"label\"},\"remote\":false,\"remoteFunc\":\"func_1562899664000_17346\",\"remoteOptions\":[],\"required\":true,\"showLabel\":false,\"width\":\"\"},\"rules\":[{\"message\":\"多选框组必须填写\",\"required\":true}],\"type\":\"checkbox\"}]}";
+
+
+
+
+  String USER_ADMIN = "admin";
+  Integer PROC_INST_FINISHED = 3;
 }

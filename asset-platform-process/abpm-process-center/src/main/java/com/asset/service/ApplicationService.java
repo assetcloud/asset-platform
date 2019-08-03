@@ -4,13 +4,13 @@ package com.asset.service;
 import com.asset.dao.AppFormBindMapper;
 import com.asset.dao.ApplicationMapper;
 import com.asset.dao.FormModelMapper;
-import com.asset.entity.Application;
-import com.asset.entity.FormModelDO;
+import com.asset.entity.ApplicationDO;
 import com.asset.javabean.UuidIdGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED)
 public class ApplicationService {
 
     final static Logger LOGGER = LoggerFactory.getLogger(ApplicationService.class);
@@ -35,7 +35,7 @@ public class ApplicationService {
 
     UuidIdGenerator idGenerator = new UuidIdGenerator();
 
-    public int addApplication(Application record){
+    public int addApplication(ApplicationDO record){
         if (record.getId() == null){
             record.setId(idGenerator.generateId());
         }
@@ -45,16 +45,16 @@ public class ApplicationService {
         return applicationMapper.insert(record);
     }
 
-    public List<Application> getAppList(){
+    public List<ApplicationDO> getAppList(){
         return applicationMapper.getAppList();
     }
 
-    public int updateApplication(Application record){
+    public int updateApplication(ApplicationDO record){
         return applicationMapper.updateByPrimaryKey(record);
     }
 
-    public Application getById(String id){
-        Application application = applicationMapper.selectByPrimaryKey(id);
+    public ApplicationDO getById(String id){
+        ApplicationDO application = applicationMapper.selectByPrimaryKey(id);
         return application;
     }
 
@@ -74,7 +74,7 @@ public class ApplicationService {
 
 
 
-    public List<Application> getPublishedApp() {
+    public List<ApplicationDO> getPublishedApp() {
         return applicationMapper.getPublishedApp();
     }
 }

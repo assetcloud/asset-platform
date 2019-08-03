@@ -141,4 +141,23 @@
       WHERE
       proc_model_id = #{procModelId,jdbcType=VARCHAR}
   </select>
+
+    <select id="getNodeDO" resultMap="BaseResultMap">
+        SELECT
+     proc_model_id,
+     node_id,
+     node_type,
+     candidate_user,
+      candidate_group,
+      limit_time,
+      overtime_strategy,
+      sign_strategy,
+      todo_strategy,
+      if_joint_sign
+      FROM
+      as_proc_node
+      WHERE
+      proc_model_id = #{procModelId,jdbcType=VARCHAR} and
+      node_id = #{nodeId,jdbcType=VARCHAR}
+    </select>
 </mapper>

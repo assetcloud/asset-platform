@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -70,5 +71,10 @@ public interface FormInstMapper {
     void saveUnCompleteFormInst(FormInstDO formInst);
 
     String getProcInstId(String taskId);
+
+    String getAlreadyCompleteTask(@Param("curUserId") String curUserId,
+                                  @Param("procInstId") String procInstId);
+
+    List<FormInstDO> listFormInsts();
 
 }

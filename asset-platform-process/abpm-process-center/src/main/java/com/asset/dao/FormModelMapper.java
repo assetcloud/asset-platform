@@ -1,6 +1,7 @@
 package com.asset.dao;
 
 import com.asset.entity.FormModelDO;
+import com.asset.javabean.FormModelBO;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -74,4 +75,11 @@ public interface FormModelMapper {
      */
     String getModelSheetStr(String formModelID);
 
+    String checkFormContain(String formModelId);
+
+    String getSceneId(String formModelId);
+
+    String getFormModelName(String formModelId);
+
+    List<FormModelDO> selectAll();
 }

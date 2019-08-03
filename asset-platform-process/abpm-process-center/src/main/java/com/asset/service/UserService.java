@@ -11,12 +11,15 @@ import com.github.pagehelper.PageInfo;
 import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static org.flowable.engine.impl.test.AbstractTestCase.assertEquals;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class UserService{
 
     @Autowired

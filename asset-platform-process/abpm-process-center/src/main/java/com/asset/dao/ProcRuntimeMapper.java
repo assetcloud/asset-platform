@@ -17,5 +17,6 @@ public interface ProcRuntimeMapper {
      * @param procDefId
      * @return List<ProcInstInfo>
      */
-    List<ProcInstInfo> selectProcInstPages(@Param("id_") String id_, @Param("procDefId") String procDefId);
+    List<ProcInstInfo> selectProcInstPages(@Param("id_") String id_,
+                                           @Param("procDefId") String procDefId);
 }

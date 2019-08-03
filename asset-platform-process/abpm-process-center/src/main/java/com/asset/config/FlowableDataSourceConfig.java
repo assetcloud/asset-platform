@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 ,encoding="UTF-8"
 ,ignoreResourceNotFound=false
 		)
-public class FlowableDataSourceConfig extends DataSourceConfig {
+public class FlowableDataSourceConfig extends DataSourceConfigForLC {
 
 	@Override
 	public String toString() {
