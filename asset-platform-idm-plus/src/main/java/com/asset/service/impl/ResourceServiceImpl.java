@@ -141,7 +141,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
      * @param resource
      */
     public void addResource4Admin(Resource resource){
-        resourceMapper.addResourceRole(resource.getId(), SystemConstant.ADMIN_ROLE_ID);
+        resourceMapper.addResourceRole(resource.getId(), SystemConstant.SCENE_ADMIN_ROLE);
     }
 
     /**
@@ -150,7 +150,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
      * @return
      */
     public int addResource4DefaultRole(Resource menu){
-        return resourceMapper.addResourceRole(menu.getId(),SystemConstant.DEFAULT_ROLE_ID);
+        return resourceMapper.addResourceRole(menu.getId(),SystemConstant.SCENE_DEFAULT_ROLE);
     }
 
     /**

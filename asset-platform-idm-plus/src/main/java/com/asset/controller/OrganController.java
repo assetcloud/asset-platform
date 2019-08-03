@@ -9,6 +9,7 @@ import com.asset.utils.Func;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +22,18 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(value = "organ")
+@Api(value = "组织结构管理", tags = "组织结构管理")
 public class OrganController {
 
-    @Autowired
-    private IOrganService organService;
+    IOrganService organService;
 
-    @Autowired
-    private ISceneService sceneService;
+    ISceneService sceneService;
 
-    @Autowired
-    private ISceneRoleService sceneRoleService;
+    ISceneRoleService sceneRoleService;
 
-    @ApiOperation(value = "添加组织节点", notes = "已完成",tags = "组织", httpMethod = "POST")
+    @ApiOperation(value = "添加组织节点", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "unitName", value = "单位名称", required = true, dataType = "String"),
             @ApiImplicitParam(name = "parentId", value = "父节点id，若无则为\"\"", required = true, dataType = "String"),
@@ -53,7 +53,7 @@ public class OrganController {
         return RespBean.data(organService.addNode(organTree));
     }
 
-    @ApiOperation(value = "批量添加组织节点", notes = "已完成",tags = "组织", httpMethod = "POST")
+    @ApiOperation(value = "批量添加组织节点", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "unitName", value = "单位名称", required = true, dataType = "String"),
             @ApiImplicitParam(name = "parentId", value = "父节点id，若无则为\"\"", required = true, dataType = "String"),
@@ -79,7 +79,7 @@ public class OrganController {
         return RespBean.data(organService.batchAddNodes(organTrees));
     }
 
-    @ApiOperation(value = "删除组织节点", notes = "删除组织节点",tags = "组织", httpMethod = "DELETE")
+    @ApiOperation(value = "删除组织节点", notes = "删除组织节点")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "节点id", required = true, dataType = "String")
     })
@@ -92,7 +92,7 @@ public class OrganController {
         return RespBean.ok(SystemConstant.DELETE_SUCCESS);
     }
 
-    @ApiOperation(value = "批量删除组织节点", notes = "已完成",tags = "组织", httpMethod = "DELETE")
+    @ApiOperation(value = "批量删除组织节点", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "节点id的List", required = true, dataTypeClass = java.util.List.class)
     })
@@ -106,7 +106,7 @@ public class OrganController {
         return RespBean.data(organService.batchDeleteNode(organTrees));
     }
 
-    @ApiOperation(value = "获取单个组织节点", notes = "已完成",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "获取单个组织节点", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "节点id", required = true, dataType = "String")
     })
@@ -118,7 +118,7 @@ public class OrganController {
         return RespBean.data(organService.getById(id));
     }
 
-    @ApiOperation(value = "检索组织节点", notes = "已完成",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "检索组织节点", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "unitName", value = "组织名称", required = true, dataTypeClass = java.lang.String.class)
     })
@@ -131,7 +131,7 @@ public class OrganController {
         return RespBean.ok(SystemConstant.GET_SUCCESS, organTrees);
     }
 
-    @ApiOperation(value = "编辑组织节点信息", notes = "已完成",tags = "组织", httpMethod = "PUT")
+    @ApiOperation(value = "编辑组织节点信息", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "节点id", required = true, dataType = "String")
     })
@@ -147,7 +147,7 @@ public class OrganController {
      * 获取主组织树（需为管理员角色）
      * @return RespBean
      */
-    @ApiOperation(value = "获取主组织树（用于场景的组织树编辑）", notes = "已完成",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "获取主组织树（用于场景的组织树编辑）", notes = "已完成")
     @ApiImplicitParam(value = "sceneId", name = "场景id", required = true)
     @RequestMapping(value = "/mainTree/checked", method = RequestMethod.GET)
     public RespBean getTreeChecked(@RequestParam("sceneId") String sceneId){
@@ -158,19 +158,19 @@ public class OrganController {
      * 获取主组织树（需为管理员角色）
      * @return RespBean
      */
-    @ApiOperation(value = "获取主组织树", notes = "已完成",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "获取主组织树", notes = "已完成")
     @RequestMapping(value = "/mainTree", method = RequestMethod.GET)
     public RespBean getOrganMainTree(){
         return RespBean.data(organService.getMainTree());
     }
 
-    @ApiOperation(value = "获取单个场景的基本信息", notes = "已完成",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "获取单个场景的基本信息", notes = "已完成")
     @RequestMapping(value = "/scene", method = RequestMethod.GET)
     public RespBean getOneScene(@RequestParam("sceneId") String sceneId){
         return RespBean.data(sceneService.getById(sceneId));
     }
 
-    @ApiOperation(value = "新增场景", notes = "（已完成）添加场景信息;传入Scene实体;sceneName必填",tags = "组织", httpMethod = "POST")
+    @ApiOperation(value = "新增场景", notes = "（已完成）添加场景信息;传入Scene实体;sceneName必填")
     @RequestMapping(value = "/scene", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(value = "sceneName", required = true, name = "场景名称")
@@ -185,7 +185,7 @@ public class OrganController {
         return RespBean.data(sceneRoleService.addRoles4Scene(scene.getId()));
     }
 
-    @ApiOperation(value = "删除场景", notes = "（未完成）删除场景信息",tags = "组织", httpMethod = "DELETE")
+    @ApiOperation(value = "删除场景", notes = "（未完成）删除场景信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "场景id", required = true, dataType = "String")
     })
@@ -198,7 +198,7 @@ public class OrganController {
         return RespBean.ok(SystemConstant.DELETE_SUCCESS);
     }
 
-    @ApiOperation(value = "修改场景信息", notes = "已完成",tags = "组织", httpMethod = "PUT")
+    @ApiOperation(value = "修改场景信息", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "场景id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "sceneName", value = "新场景名称", required = true, dataType = "String"),
@@ -219,11 +219,11 @@ public class OrganController {
         return RespBean.data(sceneService.updateById(scene));
     }
 
-    @ApiOperation(value = "获取所有场景信息（兼模糊查询）", notes = "（已完成）场景信息的模糊检索;page当前页数;size当前页数据量;sceneName在非模糊查询时置空即可",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "获取所有场景信息（兼模糊查询）", notes = "（已完成）场景信息的模糊检索;page当前页数;size当前页数据量;sceneName在非模糊查询时置空即可")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page",defaultValue = "1", value = "起始页", required = true, dataTypeClass = java.lang.Integer.class),
-            @ApiImplicitParam(name = "size",defaultValue = "20", value = "每页数据量", required = true, dataTypeClass = java.lang.Integer.class),
-            @ApiImplicitParam(name = "sceneName",defaultValue = "", value = "场景名称", dataTypeClass = java.lang.String.class)
+            @ApiImplicitParam(name = "page", defaultValue = "1", value = "起始页", required = true, dataTypeClass = java.lang.Integer.class),
+            @ApiImplicitParam(name = "size", defaultValue = "20", value = "每页数据量", required = true, dataTypeClass = java.lang.Integer.class),
+            @ApiImplicitParam(name = "sceneName", value = "场景名称", dataTypeClass = java.lang.String.class)
     })
     @RequestMapping(value = "/scenes", method = RequestMethod.GET)
     public RespBean findScene(@RequestParam(value = "sceneName") String sceneName
@@ -241,7 +241,7 @@ public class OrganController {
         return RespBean.data(scenePageInfo);
     }
 
-    @ApiOperation(value = "通过场景获取组织", notes = "已完成",tags = "组织", httpMethod = "GET")
+    @ApiOperation(value = "通过场景获取组织", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "场景id", required = true, dataType = "String")
     })

@@ -6,10 +6,12 @@ import com.asset.bean.UserScene;
 import com.asset.mapper.SceneRoleMapper;
 import com.asset.mapper.UserSceneMapper;
 import com.asset.service.IUserSceneService;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -55,5 +57,14 @@ public class UserSceneServiceImpl extends ServiceImpl<UserSceneMapper, UserScene
                 .filter(map -> rolesOwned.stream().anyMatch(map1 -> map.getId().equals(map1.getId())))
                 .forEach(map -> map.setChecked(1));
         return roleList;
+    }
+
+    @Override
+    public List<String> getNodeUsers(String sceneId, List<String> nodeIds) {
+            List<UserScene> list = baseMapper.selectList(Wrappers.<UserScene>query().lambda()
+                .eq(UserScene::getSceneId, sceneId).in(UserScene::getNodeId, nodeIds));
+        ArrayList<String> userIds = new ArrayList<>();
+        list.forEach(user -> userIds.add(user.getUserId()));
+        return userIds;
     }
 }

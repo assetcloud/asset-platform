@@ -75,7 +75,9 @@ public class MenuController {
     @ApiOperation(value = "列表", notes = "传入menu")
     public R<List<MenuVO>> list(@ApiIgnore @RequestParam Map<String, Object> menu) {
         @SuppressWarnings("unchecked")
-        List<Menu> list = menuService.list(Condition.getQueryWrapper(menu, Menu.class).lambda().orderByAsc(Menu::getSort));
+        List<Menu> list = menuService.list(Condition.getQueryWrapper(menu, Menu.class).lambda()
+                .eq(Menu::getIsDeleted, 0)
+                .orderByAsc(Menu::getSort));
         MenuWrapper menuWrapper = new MenuWrapper(menuService, dictService);
         return R.data(menuWrapper.listNodeVO(list));
     }

@@ -1,5 +1,6 @@
 package com.asset.service;
 
+import com.asset.bean.Role;
 import com.asset.bean.User;
 import com.asset.common.model.UserPageParam;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -14,7 +15,7 @@ public interface IUserService extends IService<User> {
      */
     int insertUser(User user) ;
 
-    List<User> getUsersByRole(Long roleId);
+    List<User> getUsersByRole(Integer roleId);
 
     boolean userExists(String accountName);
 

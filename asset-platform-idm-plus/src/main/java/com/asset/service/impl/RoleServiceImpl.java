@@ -6,13 +6,16 @@ import com.asset.bean.Role;
 import com.asset.mapper.RoleMapper;
 import com.asset.service.IMenuRoleService;
 import com.asset.service.IRoleService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -24,9 +27,9 @@ import java.util.List;
  * @since 2019-07-17
  */
 @Service
+@AllArgsConstructor
 public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
 
-    @Autowired
     IMenuRoleService menuRoleService;
 
     @Override
@@ -37,7 +40,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public boolean grant(@NotEmpty Long roleId, @NotEmpty List<Long> menuIds) {
+    public boolean grant(@NotEmpty Integer roleId, @NotEmpty List<Long> menuIds) {
         menuRoleService.remove(Wrappers.<MenuRole>update().lambda()
                 .in(MenuRole::getMenuId, menuIds)
                 .eq(MenuRole::getRoleId, roleId));
@@ -52,7 +55,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     }
 
     @Override
-    public boolean batchDelete(@NotEmpty List<Long> roleIds) {
+    public boolean batchDelete(@NotEmpty List<Integer> roleIds) {
         List<Role> roles = new ArrayList<>();
         roleIds.forEach(roleId->{
             Role role = new Role();
@@ -68,5 +71,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
         return this.count(Wrappers.<Role>query().lambda()
                 .eq(Role::getRoleNameZh, role.getRoleNameZh())
                 .eq(Role::getIsDeleted, 0)) > 0;
+    }
+
+    @Override
+    public Role getRoleName(Integer roleId) {
+        return baseMapper.selectById(roleId);
     }
 }

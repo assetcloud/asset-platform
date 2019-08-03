@@ -6,6 +6,7 @@ import com.asset.common.SystemConstant;
 import com.asset.service.IResourceService;
 import com.asset.utils.Func;
 import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,15 +26,15 @@ import java.util.List;
  * @since 2019-07-18
  */
 @RestController
+@AllArgsConstructor
 @RequestMapping("resource")
+@Api(value = "业务资源管理", tags = "业务资源管理")
 public class ResourceController {
 
-    @Autowired
-    private IResourceService resourceService;
+    IResourceService resourceService;
 
     @RequestMapping(value = "/app/add", method = RequestMethod.POST)
-    @ApiOperation(value = "添加资源", notes = "（已完成）传Application实体与sceneId(param);"
-            ,tags = "资源", httpMethod = "POST")
+    @ApiOperation(value = "添加资源", notes = "（已完成）传Application实体与sceneId(param);")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "应用id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "applicationName", value = "应用名称", required = true, dataType = "String"),
@@ -67,7 +68,7 @@ public class ResourceController {
         return RespBean.ok("添加成功");
     }
 
-    @ApiOperation(value = "添加资源（表单类型）", notes = "（已完成）传FormModelInfo实体与sceneId(param);",tags = "资源", httpMethod = "POST")
+    @ApiOperation(value = "添加资源（表单类型）", notes = "（已完成）传FormModelInfo实体与sceneId(param);")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "应用id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "formModelId", value = "表单id", required = true, dataType = "String"),
@@ -113,7 +114,7 @@ public class ResourceController {
         return RespBean.ok(SystemConstant.ADD_SUCCESS);
     }
 
-    @ApiOperation(value = "绑定场景与表单", notes = "（已完成）保存流程时将表单与场景相互绑定",tags = "资源", httpMethod = "PUT")
+    @ApiOperation(value = "绑定场景与表单", notes = "（已完成）保存流程时将表单与场景相互绑定")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "formModelId", value = "表单id(param)", required = true, dataType = "String"),
             @ApiImplicitParam(name = "sceneId", value = "场景id(param)", required = true, dataType = "String"),
@@ -136,7 +137,7 @@ public class ResourceController {
         return RespBean.data(resourceService.getResourceList(sceneId));
     }
 
-    @ApiOperation(value = "获取资源", notes = "（已完成）通过当前用户获取所有资源（终端用户操作时使用）",tags = "资源", httpMethod = "GET")
+    @ApiOperation(value = "获取资源", notes = "（已完成）通过当前用户获取所有资源（终端用户操作时使用）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "formModelId", value = "表单id(param)", required = true, dataType = "String"),
             @ApiImplicitParam(name = "sceneId", value = "场景id(param)", required = true, dataType = "String"),
@@ -149,7 +150,7 @@ public class ResourceController {
         return RespBean.data(resourceService.getResourcesByCurrentUser(userId, sceneId));
     }
 
-    @ApiOperation(value = "获取资源", notes = "（已完成）通过角色获取资源(用于终端管理员的权限管理界面)",tags = "资源", httpMethod = "GET")
+    @ApiOperation(value = "获取资源", notes = "（已完成）通过角色获取资源(用于终端管理员的权限管理界面)")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "角色id", required = true, dataType = "Long"),
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
@@ -159,7 +160,7 @@ public class ResourceController {
         return RespBean.data(resourceService.getResourcesByRole(roleId, sceneId));
     }
 
-    @ApiOperation(value = "获取应用资源", notes = "（已完成）通过当前用户角色获取应用资源，主要用于首页内容展现",tags = "资源", httpMethod = "GET")
+    @ApiOperation(value = "获取应用资源", notes = "（已完成）通过当前用户角色获取应用资源，主要用于首页内容展现")
     @RequestMapping(value = "/app/byUser", method = RequestMethod.GET)
     public RespBean getAppMenusByUser(@RequestParam("userId") String userId, @RequestParam("sceneId") String sceneId){
         if (Func.hasEmpty(userId, sceneId)){
@@ -168,7 +169,7 @@ public class ResourceController {
         return RespBean.data(resourceService.getAppResourcesByUser(userId, sceneId));
     }
 
-    @ApiOperation(value = "获取表单资源", notes = "通过点击应用，展现可访问的表单资源",tags = "资源", httpMethod = "GET")
+    @ApiOperation(value = "获取表单资源", notes = "通过点击应用，展现可访问的表单资源")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "appResourceId", value = "应用id", required = true, dataType = "Long"),
@@ -182,13 +183,13 @@ public class ResourceController {
         return RespBean.data(resourceService.getFormResourcesByApp(userId, appResourceId, sceneId));
     }
 
-    @ApiOperation(value = "获取操作型资源", notes = "通过点击应用，展现可访问的操作型资源",tags = "资源", httpMethod = "GET")
+    @GetMapping("func/byForm")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "formResourceId", value = "表单资源id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
-    @GetMapping("func/byForm")
+    @ApiOperation(value = "获取操作型资源", notes = "（已完成）通过点击应用，展现可访问的操作型资源")
     public RespBean getFuncByForm(@RequestParam("userId")String userId, @RequestParam("formModelId") Long formResourceId, @RequestParam("sceneId") String sceneId){
         if (Func.hasEmpty(userId, formResourceId, sceneId)){
             return RespBean.error("参数错误");

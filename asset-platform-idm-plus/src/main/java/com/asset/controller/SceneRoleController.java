@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -22,19 +23,18 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping(value = "scene/role")
+@Api(value = "业务角色管理", tags = "业务角色")
 public class SceneRoleController {
 
-    @Autowired
-    private ISceneRoleService sceneRoleService;
+    ISceneRoleService sceneRoleService;
 
-    @Autowired
-    private IRoleGroupService roleGroupService;
+    IRoleGroupService roleGroupService;
 
-    @Autowired
-    private ISceneRelationService sceneRelationService;
+    ISceneRelationService sceneRelationService;
 
-    @ApiOperation(value = "获取所有业务角色", notes = "已完成",tags = "角色", httpMethod = "GET")
+    @ApiOperation(value = "获取所有业务角色", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "page", defaultValue = "1", required = true, dataTypeClass = Integer.class),
             @ApiImplicitParam(value = "size", defaultValue = "20", required = true, dataTypeClass = Integer.class),
@@ -47,7 +47,7 @@ public class SceneRoleController {
         return RespBean.data(new PageInfo<>(roleGroups));
     }
 
-    @ApiOperation(value = "获取一个场景下的所有角色", notes = "已完成，根据角色组获取角色（树型结构）",tags = "角色", httpMethod = "GET")
+    @ApiOperation(value = "获取一个场景下的所有角色", notes = "已完成，根据角色组获取角色（树型结构）")
     @RequestMapping(value = "list",method = RequestMethod.GET)
     public RespBean rolesWithGroup(@ApiParam(value = "sceneId", required = true) @RequestParam String sceneId){
         return RespBean.data(sceneRoleService.rolesWithGroup(sceneId));
@@ -76,7 +76,7 @@ public class SceneRoleController {
         return RespBean.status(sceneRoleService.save(sceneRole));
     }
 
-    @ApiOperation(value = "添加角色组", notes = "（已完成）传RoleGroup实体;roleGroupName角色组名称;sceneCode场景编号;（以上变量必填）",tags = "业务角色", httpMethod = "POST")
+    @ApiOperation(value = "添加角色组", notes = "（已完成）传RoleGroup实体;roleGroupName角色组名称;sceneCode场景编号;（以上变量必填）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleGroupName", value = "角色组名称", required = true, dataType = "String"),
             @ApiImplicitParam(name = "sceneCode", value = "场景编号", required = true, dataType = "String")
@@ -94,7 +94,7 @@ public class SceneRoleController {
         return RespBean.status(roleGroupService.save(roleGroup));
     }
 
-    @ApiOperation(value = "删除角色组", notes = "（已完成）传入RoleGroup实体类数组;id:角色组id;必填",tags = "角色", httpMethod = "DELETE")
+    @ApiOperation(value = "删除角色组", notes = "（已完成）传入RoleGroup实体类数组;id:角色组id;必填")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleGroupList", value = "角色组的id数组", required = true)
     })
@@ -113,7 +113,7 @@ public class SceneRoleController {
         return RespBean.status(roleGroupService.updateBatchById(roleGroupList));
     }
 
-    @ApiOperation(value = "修改角色组", notes = "（已完成）主要是修改角色组名称;传RoleGroup实体;id:角色组id;roleGroupName:角色组名称;以上必填",tags = "角色", httpMethod = "PUT")
+    @ApiOperation(value = "修改角色组", notes = "（已完成）主要是修改角色组名称;传RoleGroup实体;id:角色组id;roleGroupName:角色组名称;以上必填")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "角色组id", required = true, dataType = "Integer"),
             @ApiImplicitParam(name = "roleGroupName", value = "新角色组名称", required = true, dataType = "String")
@@ -126,7 +126,7 @@ public class SceneRoleController {
         return RespBean.status(roleGroupService.updateById(roleGroup));
     }
 
-    @ApiOperation(value = "角色转移",notes = "已完成,修改角色的角色组", tags = "角色", httpMethod = "PUT")
+    @ApiOperation(value = "角色转移",notes = "已完成,修改角色的角色组")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "角色id", required = true, dataTypeClass = Long.class),
             @ApiImplicitParam(name = "groupId", value = "新角色组id", required = true, dataTypeClass = Long.class),
@@ -140,7 +140,7 @@ public class SceneRoleController {
         return RespBean.status(sceneRoleService.updateGroupInfo(role));
     }
 
-    @ApiOperation(value = "添加角色成员",notes = "为特定角色添加成员", tags = "角色", httpMethod = "POST")
+    @ApiOperation(value = "添加角色成员",notes = "为特定角色添加成员")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", value = "角色id", required = true),
             @ApiImplicitParam(name = "userIds", value = "用户id数组，逗号隔开", required = true)
@@ -150,7 +150,7 @@ public class SceneRoleController {
         return RespBean.data(sceneRoleService.addUsers2Role(roleId, Func.toStrList(",", userIds)));
     }
 
-    @ApiOperation(value = "角色检索",notes = "已完成，通过角色名称获取（模糊搜索）", tags = "角色", httpMethod = "GET")
+    @ApiOperation(value = "角色检索",notes = "已完成，通过角色名称获取（模糊搜索）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleNameZh", value = "角色名称", required = true, dataType = "String"),
             @ApiImplicitParam(name = "sceneCode", value = "场景id", required = true, dataType = "String")
@@ -160,7 +160,7 @@ public class SceneRoleController {
         return RespBean.data(sceneRoleService.getRoleByName(role));
     }
 
-    @ApiOperation(value = "删除角色成员",notes = "为特定角色批量删除成员", tags = "角色")
+    @ApiOperation(value = "删除角色成员",notes = "为特定角色批量删除成员")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userIds", value = "用户id数组", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataTypeClass = Long.class)
@@ -170,7 +170,7 @@ public class SceneRoleController {
         return RespBean.status(sceneRelationService.removeBatch(roleId, Func.toStrList(",", userIds)));
     }
 
-    @ApiOperation(value = "通过角色获取角色成员",notes = "（已完成）", tags = "角色")
+    @ApiOperation(value = "通过角色获取角色成员",notes = "（已完成）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long")
     })
@@ -179,7 +179,7 @@ public class SceneRoleController {
         return RespBean.data(sceneRoleService.getUsersByRole(roleId));
     }
 
-    @ApiOperation(value = "编辑业务角色权限",notes = "已完成", tags = "角色", httpMethod = "POST")
+    @ApiOperation(value = "编辑业务角色权限",notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long"),
             @ApiImplicitParam(name = "resourceIds", value = "资源id的数组", required = true, dataType = "String")
@@ -190,7 +190,7 @@ public class SceneRoleController {
         return RespBean.status(sceneRoleService.grant(roleId, Func.toLongList(",", resourceIds)));
     }
 
-    @ApiOperation(value = "获取场景中的角色（用于设置授权）", notes = "已完成",tags = "角色", httpMethod = "GET")
+    @ApiOperation(value = "获取场景中的角色（用于设置授权）", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "sceneId", value = "场景", required = true, dataTypeClass = String.class)
@@ -208,7 +208,7 @@ public class SceneRoleController {
     }
 
     @PostMapping("set/authority")
-    @ApiOperation(value = "场景中设置用户角色", notes = "已完成",tags = "角色")
+    @ApiOperation(value = "场景中设置用户角色")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "roleIds", value = "角色id的数组", required = true, dataTypeClass = String.class)

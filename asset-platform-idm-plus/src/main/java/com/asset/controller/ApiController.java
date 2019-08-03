@@ -6,10 +6,8 @@ import com.asset.service.*;
 import com.asset.utils.Func;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -18,26 +16,22 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("api")
+@Api(value = "开发API", tags = "开放API")
 public class ApiController {
 
-    @Autowired
-    private ISceneService sceneService;
+    ISceneService sceneService;
 
-    @Autowired
-    private IResourceService resourceService;
+    IResourceService resourceService;
 
-    @Autowired
-    private IOrganService organService;
+    IOrganService organService;
 
-    @Autowired
     IUserService userService;
 
-    @Autowired
-    private ISceneRoleService sceneRoleService;
+    ISceneRoleService sceneRoleService;
 
-    @Autowired
-    private IUserRoleService userRoleService;
+    IUserRoleService userRoleService;
 
     /*@ApiOperation(value = "获取所有场景信息", notes = "获取所有场景信息",tags = "组织", httpMethod = "GET")
     @RequestMapping(value = "rest/scenes", method = RequestMethod.GET)
@@ -56,11 +50,13 @@ public class ApiController {
      * @param size
      * @return RespBean
      */
-    @ApiOperation(value = "获取所有场景信息", notes = "获取所有场景信息;page为起始页;size为每页显示数量"
-            , tags = "开放api", httpMethod = "GET")
-    @RequestMapping(value = "rest/scenes", method = RequestMethod.GET)
-    public RespBean getAllSceneByPage(@ApiParam(value = "page", defaultValue = "1", required = true) @RequestParam(defaultValue = "1") Integer page
-            , @ApiParam(value = "size", defaultValue = "1", required = true) @RequestParam(defaultValue = "10") Integer size){
+    @GetMapping("rest/scenes")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", paramType = "query"),
+            @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10", paramType = "query")
+    })
+    @ApiOperation(value = "获取所有场景信息", notes = "获取所有场景信息;page为起始页;size为每页显示数量")
+    public RespBean getAllSceneByPage(Integer page, Integer size){
         PageHelper.startPage(page, size);
         List<Scene> scenes = sceneService.getAllScene();
         if (Func.isNull(scenes)){
@@ -74,13 +70,13 @@ public class ApiController {
      * 获取主组织树（需为管理员角色）
      * @return RespBean
      */
-    @ApiOperation(value = "获取主组织树", notes = "已完成",tags = "开放api", httpMethod = "GET")
+    @ApiOperation(value = "获取主组织树", notes = "已完成")
     @RequestMapping(value = "/mainTree", method = RequestMethod.GET)
     public RespBean getOrganMainTree(){
         return RespBean.data(organService.getMainTree());
     }
 
-    @ApiOperation(value = "添加菜单（表单类型）", notes = "传FormModelInfo实体与sceneId(param);",tags = "菜单", httpMethod = "POST")
+    @ApiOperation(value = "添加菜单（表单类型）", notes = "传FormModelInfo实体与sceneId(param);")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "applicationId", value = "应用id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "formModelId", value = "表单id", required = true, dataType = "String"),
@@ -127,7 +123,7 @@ public class ApiController {
         return RespBean.ok(SystemConstant.ADD_SUCCESS);
     }
 
-    @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;",tags = "用户", httpMethod = "POST")
+    @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "sceneId", required = true, name = "场景id", dataTypeClass = String.class),
             @ApiImplicitParam(value = "userId", required = true, name = "用户id", dataTypeClass = String.class)
@@ -139,17 +135,13 @@ public class ApiController {
             //TODO:
             return RespBean.error("注册为平台管理员的接口还没做");
         }
-//        if (auditType == 2){
-//            //场景的默认角色有效化
-//            sceneRoleService.roleAvailable(sceneId);
-//        }
         userService.enableUser(userId);
         //设置平台级权限
         UserRole userRole = new UserRole();
         userRole.setCreatedTime(new Date());
         userRole.setUid(userId);
         userRole.setStatus(1);
-        userRole.setRoleId(SystemConstant.SYSTEM_DEFAULT_USER);
+        userRole.setRoleId(SystemConstant.DEFAULT_ROLE_ID);
         userRoleService.save(userRole);
         sceneService.enableScene(userId, sceneId);
         return RespBean.ok("用户审核通过");

@@ -28,8 +28,8 @@ import java.util.List;
 /**
  * 视图实体类
  *
- * @author Chill
- * @since 2018-12-24
+ * @author hjhu
+ * @since 2019-08-01
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

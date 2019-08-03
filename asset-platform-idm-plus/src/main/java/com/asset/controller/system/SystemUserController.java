@@ -10,9 +10,11 @@ import com.asset.service.*;
 import com.asset.utils.Func;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -24,19 +26,18 @@ import java.util.Date;
  * 系统用户控制器
  */
 @RestController
+@AllArgsConstructor
 @RequestMapping("sys/user")
+@Api(value = "系统用户管理", tags = "系统用户管理")
 public class SystemUserController {
 
-    @Autowired
-    private ISceneService sceneService;
+    ISceneService sceneService;
 
-    @Autowired
-    private IUserRoleService userRoleService;
+    IUserRoleService userRoleService;
 
-    @Autowired
-    private IUserService userService;
+    IUserService userService;
 
-    @ApiOperation(value = "获取不在某一场景下的用户", notes = "已完成", tags = "用户", httpMethod = "GET")
+    @ApiOperation(value = "获取不在某一场景下的用户", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
@@ -52,7 +53,7 @@ public class SystemUserController {
         return RespBean.data(userService.getUsersWithoutScene(accountName, realName, email, sceneId));
     }
 
-    @ApiOperation(value = "获取所有用户（兼模糊搜索）", notes = "已完成", tags = "用户", httpMethod = "POST")
+    @ApiOperation(value = "获取所有用户（兼模糊搜索）", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true, dataTypeClass = Integer.class),
             @ApiImplicitParam(name = "size", value = "每页数据量", defaultValue = "10", required = true, dataTypeClass = Integer.class),
@@ -65,8 +66,7 @@ public class SystemUserController {
     }
 
     @ApiOperation(value = "管理控制台，添加用户"
-            , notes = "（已完成）必填项：accountName用户名;realName真实姓名;pwd密码;phoneNumber手机号;userEmail用户邮箱"
-            , tags = "用户", httpMethod = "POST")
+            , notes = "（已完成）必填项：accountName用户名;realName真实姓名;pwd密码;phoneNumber手机号;userEmail用户邮箱")
     @PostMapping("add")
     public RespBean addUser(@RequestBody User user){
         if (Func.hasEmpty(user.getAccountName(), user.getRealName(), user.getPwd(), user.getPhoneNumber()
@@ -76,9 +76,9 @@ public class SystemUserController {
         return RespBean.status(userService.saveUser(user));
     }
 
-    @ApiOperation(value = "控制台中删除用户", notes = "（已完成，不对外开放）", tags = "用户", httpMethod = "DELETE")
+    @ApiOperation(value = "控制台中删除用户", notes = "（已完成，不对外开放）")
     @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
-    @DeleteMapping("delete")
+    @PostMapping("delete")
     public RespBean removeUser(@RequestParam String userId){
         if (Func.hasEmpty(userId)){
             return RespBean.paramError();
@@ -86,14 +86,14 @@ public class SystemUserController {
         return RespBean.status(userService.removeUser(userId));
     }
 
-    @ApiOperation(value = "控制台中，获取单个用户信息", notes = "（已完成，不对外开放）", tags = "用户", httpMethod = "GET")
+    @ApiOperation(value = "控制台中，获取单个用户信息", notes = "（已完成，不对外开放）")
     @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
     @GetMapping("detail")
     public RespBean getUser(@RequestParam String userId){
         return RespBean.data(userService.getById(userId));
     }
 
-    @ApiOperation(value = "控制台编辑用户信息", notes = "（已完成，不对外开放）accountName", tags = "用户", httpMethod = "PUT")
+    @ApiOperation(value = "控制台编辑用户信息", notes = "（已完成，不对外开放）accountName")
     @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
     @PutMapping("edit")
     public RespBean editUser(@RequestBody User user){
@@ -103,7 +103,7 @@ public class SystemUserController {
         return RespBean.status(userService.updateById(user));
     }
 
-    @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;组织管理员审核时sceneId置null或\"\"",tags = "用户", httpMethod = "POST")
+    @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;组织管理员审核时sceneId置null或\"\"")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "sceneId", required = true, name = "场景id", dataTypeClass = String.class),
             @ApiImplicitParam(value = "userId", required = true, name = "用户id", dataTypeClass = String.class)
@@ -120,13 +120,13 @@ public class SystemUserController {
         userRole.setCreatedTime(new Date());
         userRole.setUid(userId);
         userRole.setStatus(1);
-        userRole.setRoleId(SystemConstant.SYSTEM_DEFAULT_USER);
+        userRole.setRoleId(SystemConstant.DEFAULT_ROLE_ID);
         userRoleService.save(userRole);
         sceneService.enableScene(userId, sceneId);
         return RespBean.ok("用户审核通过");
     }
 
-    @ApiOperation(value = "重置用户密码", notes = "已完成，不对外开放", tags = "用户", httpMethod = "PUT")
+    @ApiOperation(value = "重置用户密码", notes = "已完成，不对外开放")
     @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
     @PutMapping("pwd/reset")
     public RespBean passwordReset(String userId){

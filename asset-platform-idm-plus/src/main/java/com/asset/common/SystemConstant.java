@@ -62,8 +62,11 @@ public interface SystemConstant {
     String NAME_FORM_PRINT = "打印";
     String NAME_FORM_DELETE = "删除";
 
-    Long ADMIN_ROLE_ID = 1L;
-    Long DEFAULT_ROLE_ID = 2L;
+    Integer ADMIN_ROLE_ID = 1;
+    Integer DEFAULT_ROLE_ID = 2;
+
+    Long SCENE_ADMIN_ROLE = 1L;
+    Long SCENE_DEFAULT_ROLE = 2L;
 
     Resource RESOURCE_LIST_ADD = new Resource(CODE_FUNC, NAME_LIST_ADD, ICON_LIST_ADD, LIST_ADD ,1 , SORT_LIST_ADD, 3);
     Resource RESOURCE_LIST_IMPORT = new Resource(CODE_FUNC, NAME_LIST_IMPORT, ICON_LIST_IMPORT, LIST_IMPORT ,1 , SORT_LIST_IMPORT, 3);
@@ -125,8 +128,6 @@ public interface SystemConstant {
     String SCENE_NORMAL = "scene_normal";
 
     String DEFAULT_GROUP_NAME = "默认分组";
-
-    Long SYSTEM_DEFAULT_USER = (long) 2;
 
     String DEFAULT_PASSWORD = "123456";
 

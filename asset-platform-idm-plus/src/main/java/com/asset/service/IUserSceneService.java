@@ -49,4 +49,12 @@ public interface IUserSceneService extends IService<UserScene> {
      */
     List<SceneRole> rolesChecked(String userId, String sceneId);
 
+
+    /**
+     * （场景中）获取多个部门中的用户id
+     * @param sceneId
+     * @param nodeId
+     * @return
+     */
+    List<String> getNodeUsers(String sceneId, List<String> nodeId);
 }

@@ -39,7 +39,7 @@ public class MenuRole implements Serializable {
      * 角色编号
      */
     @TableField("role_id")
-    private Long roleId;
+    private Integer roleId;
 
 
 }

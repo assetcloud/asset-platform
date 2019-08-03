@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.models.auth.In;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -31,7 +32,7 @@ public class User implements UserDetails, Serializable {
     @TableId(value = "id", type = IdType.UUID)
     private String id;
     private String staffId;
-    private Long roleId;
+    private Integer roleId;
     @ApiModelProperty(value = "真实姓名")
     @NotNull(message = "不能为空")
     @NotBlank(message = "不能为空")
