@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * OApp应用与表单模型绑定的DAO层
+ * 应用与表单模型绑定的DAO层
  */
 @Repository
 public interface AppFormBindMapper {

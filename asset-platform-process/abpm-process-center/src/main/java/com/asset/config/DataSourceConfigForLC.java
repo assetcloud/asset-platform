@@ -3,7 +3,7 @@ package com.asset.config;
 /**
  * @author lichao
  */
-public class DataSourceConfig {
+public class DataSourceConfigForLC {
 
     private String url;
     private String username;

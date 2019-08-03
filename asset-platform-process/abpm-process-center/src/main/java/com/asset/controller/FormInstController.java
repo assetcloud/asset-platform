@@ -2,8 +2,8 @@ package com.asset.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.*;
-import com.asset.exception.InfoException;
 import com.asset.exception.ProcException;
+import com.asset.javabean.FormInstVO;
 import com.asset.javabean.RespBean;
 import com.asset.dto.*;
 import com.asset.service.*;
@@ -78,17 +78,14 @@ public class FormInstController {
     public RespBean listFormInst(@RequestParam(value = "user_id") String userID,
                               @RequestParam(value = "task_type") Integer taskType)
     {
-        List<FormInstDO> formInstDOs = null;
+        List<FormInstVO> formInstVOs = null;
         try {
-            formInstDOs = formInstService.listFormInst(userID, taskType);
-        } catch (InfoException e) {
-            e.printStackTrace();
-            return RespBean.error(e.getMessage());
-        } catch (ProcException e) {
+            formInstVOs = formInstService.listFormInst(userID, taskType);
+        } catch (Exception e) {
             e.printStackTrace();
             return RespBean.error(e.getMessage());
         }
-        return RespBean.ok("", formInstDOs);
+        return RespBean.ok("", formInstVOs);
     }
 
     /**
@@ -154,10 +151,11 @@ public class FormInstController {
      * @return
      */
     @RequestMapping(value = "/form_inst/share_link",method = RequestMethod.GET)
-    public RespBean getShareLinkTask(@RequestParam(value = "task_id") String taskId){
-        FormInstDO shareLinkTask = null;
+    public RespBean getShareLinkTask(@RequestParam(value = "task_id") String taskId,
+                                     @RequestParam(value = "user_id") String userId){
+        FormInstVO shareLinkTask = null;
         try {
-            shareLinkTask = formInstService.getShareLinkTask(taskId);
+            shareLinkTask = formInstService.getShareLinkTask(taskId,userId);
         } catch (Exception e) {
             e.printStackTrace();
             return RespBean.error("",e.getMessage());

@@ -8,21 +8,33 @@
     <result column="proc_deploy_id" jdbcType="VARCHAR" property="procDeployId" />
     <result column="commit_time" jdbcType="TIMESTAMP" property="commitTime" />
     <result column="committer" jdbcType="VARCHAR" property="committer" />
+    <result column="status" jdbcType="INTEGER" property="status" />
     <result column="form_inst_all_value" jdbcType="LONGVARCHAR" property="formInstAllValue" />
   </resultMap>
+
   <sql id="Base_Column_List">
-    proc_inst_id, proc_model_id, proc_def_id, proc_deploy_id, commit_time, committer ,form_inst_all_value
+    proc_inst_id,
+    proc_model_id,
+    proc_def_id,
+    proc_deploy_id,
+    commit_time,
+    committer,
+    form_inst_all_value,
+    status
   </sql>
+
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from as_proc_inst
     where proc_inst_id = #{procInstId,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
-    delete from as_proc_inst
+
+  <update id="deleteByPrimaryKey" parameterType="java.lang.String">
+    update as_proc_inst
+    SET status = 2
     where proc_inst_id = #{procInstId,jdbcType=VARCHAR}
-  </delete>
+  </update>
   <insert id="insert" parameterType="com.asset.entity.ProcInstDO">
     insert into as_proc_inst (
       proc_inst_id,
@@ -121,8 +133,9 @@
       proc_deploy_id = #{procDeployId,jdbcType=VARCHAR},
       commit_time = #{createdTime,jdbcType=TIMESTAMP},
       committer = #{committer,jdbcType=VARCHAR},
-      formInstAllValue = #{formInstAllValue,jdbcType=VARCHAR},
-    where proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+      formInstAllValue = #{formInstAllValue,jdbcType=VARCHAR}
+    where
+    proc_inst_id = #{procInstId,jdbcType=VARCHAR}
   </update>
 
   <select id="getProcModelId" parameterType="java.lang.String" resultType="java.lang.String">
@@ -146,5 +159,18 @@
     FROM as_proc_inst
     WHERE
     proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getCommitter" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT committer
+    FROM as_proc_inst
+    WHERE
+    proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+  </select>
+
+  <select id="listProcInsts" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"/>
+    FROM as_proc_inst
   </select>
 </mapper>

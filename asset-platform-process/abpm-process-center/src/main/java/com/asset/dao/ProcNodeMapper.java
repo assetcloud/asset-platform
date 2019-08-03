@@ -2,6 +2,7 @@ package com.asset.dao;
 
 import com.asset.entity.ProcNodeDO;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,4 +23,7 @@ public interface ProcNodeMapper {
     Integer[] getIfJointSign(String procModelId);
 
     List<ProcNodeDO> listNodes(String procModelId);
+
+    ProcNodeDO getNodeDO(@Param("procModelId") String procModelId,
+                                 @Param("nodeId")  String nodeId);
 }

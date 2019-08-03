@@ -2,7 +2,7 @@ package com.asset.controller;
 
 import com.asset.javabean.RespBean;
 import com.asset.service.ProcInstService;
-import com.asset.utils.FlowableProcUtils;
+import com.asset.utils.ProcUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -24,7 +24,7 @@ public class ProcInstController {
     @RequestMapping(value = "/proc_inst/insts/complete",method = RequestMethod.POST)
     public RespBean completeAll()
     {
-        FlowableProcUtils.completeAll();
+        ProcUtils.completeAll();
         return RespBean.ok("");
     }
 

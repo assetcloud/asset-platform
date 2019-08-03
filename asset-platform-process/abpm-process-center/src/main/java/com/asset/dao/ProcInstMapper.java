@@ -2,8 +2,11 @@ package com.asset.dao;
 
 
 import com.asset.entity.ProcInstDO;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface ProcInstMapper {
@@ -27,4 +30,9 @@ public interface ProcInstMapper {
                                @Param("newOriginalValue") String newOriginalValue);
 
     String getDefId(String procInstId);
+
+    String getCommitter(String procInstId);
+
+    List<ProcInstDO> listProcInsts();
+
 }

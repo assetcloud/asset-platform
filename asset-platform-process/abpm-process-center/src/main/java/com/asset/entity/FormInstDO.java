@@ -11,29 +11,18 @@ import java.util.Date;
  */
 @Data
 public class FormInstDO {
-    private String id;
-
-    private String formModelId;
-
-    private String procInstId;
-
-    private String executionId;
-
-    private String taskId;
-
-    private Date executeTime;
-
-    private String executor;
-
-    private String formInstSheetStr;
-
-    private int status;
-
-    private String formInstValue;
-
-    private Integer nodeType;
-
-    private Integer approveResult;
+    protected String id;
+    protected String formModelId;
+    protected String procInstId;
+    protected String executionId;
+    protected String taskId;
+    protected Date executeTime;
+    protected String executor;
+    protected String formInstSheetStr;
+    protected int status;
+    protected String formInstValue;
+    protected Integer nodeType;
+    protected Integer approveResult;
 
     public FormInstDO() {
     }

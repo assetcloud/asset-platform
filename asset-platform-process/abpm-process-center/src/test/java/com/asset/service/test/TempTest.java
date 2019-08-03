@@ -1,9 +1,13 @@
 package com.asset.service.test;
 
 import com.asset.FlowableApplication;
+import com.asset.entity.FormInstDO;
+import com.asset.javabean.FormInstVO;
+import com.asset.utils.ProcUtils;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.engine.*;
+import org.flowable.engine.runtime.ProcessInstance;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,6 +20,8 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = FlowableApplication.class)
 public class TempTest {
+
+
 
     @Test
     public void testInComing() {
@@ -44,4 +50,6 @@ public class TempTest {
         }
 
     }
+
+
 }

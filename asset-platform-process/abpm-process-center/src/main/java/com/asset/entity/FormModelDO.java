@@ -12,30 +12,31 @@ import java.util.Date;
 @Data
 public class FormModelDO implements Serializable {
     private String id;
-
+    private String sceneId;
     private String formName;
-
     private Date createdTime;
-
     private String createdBy;
-
     private Date lastUpdatedTime;
-
     private String lastUpdatedBy;
-
     private Integer version;
-
     private Integer groupId;
-
     private String iconCls;
-
     private Integer status;
-
     private String procModelId;
-
     private String modelSheetStr;
 
     public FormModelDO() {
+    }
+
+    public FormModelDO(String id, String formName,  String createdBy, Integer version, Integer groupId, Integer status, String procModelId, String modelSheetStr) {
+        this.id = id;
+        this.formName = formName;
+        this.createdBy = createdBy;
+        this.version = version;
+        this.groupId = groupId;
+        this.status = status;
+        this.procModelId = procModelId;
+        this.modelSheetStr = modelSheetStr;
     }
 
     public FormModelDO(String formName,

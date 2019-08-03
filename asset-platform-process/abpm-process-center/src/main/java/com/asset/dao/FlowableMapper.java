@@ -34,6 +34,8 @@ public interface FlowableMapper {
 
     String getNodeId(String taskId);
 
+    String getModelName(String modelId);
+
 //    /**
 //     * 找到在taskId之前 相同执行链（executionId）上按时间排序所有被执行的流程节点
 //     * @param executionId

@@ -5,12 +5,16 @@ import com.asset.converter.FormConverter;
 import com.asset.dao.FormAuthorityMapper;
 import com.asset.entity.FormInstDO;
 import com.asset.entity.OptionsBase;
+import com.asset.exception.DatabaseException;
+import com.asset.exception.FormException;
 import com.asset.form.FormItem;
 import com.asset.form.FormSheet;
 import com.asset.utils.Constants;
 import com.asset.utils.FormUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -19,6 +23,7 @@ import java.util.List;
  * @author YBY
  */
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class AuthorityService {
 
     @Autowired
@@ -92,19 +97,21 @@ public class AuthorityService {
         }
     }
 
-    public FormInstDO handleFormSheetAuthority(FormInstDO formInstDO) {
+    public FormInstDO handleFormSheetAuthority(FormInstDO formInstDO) throws FormException {
         String modelSheetStr = formInstDO.getFormInstSheetStr();
         FormSheet formSheet = FormConverter.jsonToEntity(modelSheetStr);
 
         String curNode = flowableService.getNodeId(formInstDO.getTaskId());
         String procModelId = procInstService.getProcModelId(formInstDO.getProcInstId());
 
-        if(procModelId.equals(Constants.REGISTER_PROC))
+        if(procModelId.equals(Constants.REGISTER_PROC_ID)||
+                procModelId.equals(Constants.SCENE_SELECT_PROC_ID))
         {
             //这边需要对是否为注册审批流程进行判断，如果是的话，需要对第二个节点————审批节点进行特殊设置
             formSheet = handleRegisterProc(procModelId,formSheet,curNode);
             modelSheetStr = FormConverter.entityToJson(formSheet);
             formInstDO.setFormInstSheetStr(modelSheetStr);
+            formInstDO.setNodeType(Constants.AS_NODE_APPROVE);
             return formInstDO;
         }
 
@@ -129,13 +136,15 @@ public class AuthorityService {
 
     public FormSheet handleRegisterProc(String procModelId,
                                         FormSheet formSheet,
-                                        String curNode){
-//        Boolean isRegister = procModelId.equals(Constants.REGISTER_PROC)?true:false;
+                                        String curNode) throws FormException {
+//        Boolean isRegister = procModelId.equals(Constants.REGISTER_PROC_ID)?true:false;
 //        if(!isRegister)
 //            return formSheet;
 
         //获取Sheet中一项项表单项，对每个表单项进行处理，看是否需要对其进行隐藏、加不可写或改为必填
         List<FormItem> items = formSheet.getList();
+        if(items==null)
+            throw new FormException("表单模型数据为空");
         for(int j=0;j<items.size();j++)
         {
             //当前流程模型是注册，表单项权限全部设为不可写

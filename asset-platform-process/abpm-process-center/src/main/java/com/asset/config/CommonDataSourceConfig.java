@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 @ConfigurationProperties(prefix = "spring.datasource")
 @PropertySource("classpath:config/jdbc-common.properties")
-public class CommonDataSourceConfig extends DataSourceConfig {
+public class CommonDataSourceConfig extends DataSourceConfigForLC {
 	private int initialSize;
 	private int minIdle;
 	private int maxActive;

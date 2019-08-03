@@ -5,24 +5,28 @@ import com.alibaba.fastjson.JSONObject;
 import com.asset.converter.FormConverter;
 import com.asset.dao.*;
 import com.asset.entity.*;
+import com.asset.exception.FormException;
 import com.asset.exception.InfoException;
 import com.asset.exception.ProcException;
 import com.asset.form.FormItem;
 import com.asset.form.FormSheet;
 import com.asset.dto.*;
+import com.asset.javabean.FormInstBO;
+import com.asset.javabean.FormInstVO;
 import com.asset.javabean.TaskBO;
-import com.asset.utils.Constants;
-import com.asset.utils.FlowableProcUtils;
+import com.asset.utils.*;
 import org.dom4j.DocumentException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -30,6 +34,7 @@ import java.util.List;
  * 以下对流程实例的执行均只考虑非并行分支的情况
  */
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class FormInstService {
     Logger logger = LoggerFactory.getLogger(FormInstService.class);
 
@@ -95,7 +100,7 @@ public class FormInstService {
         String defID = (String) map.get("defID");
         String deployID = (String) map.get("deployID");
 
-        String[] taskIDs = FlowableProcUtils.getTaskIDs(procInst.getProcessInstanceId());
+        String[] taskIDs = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
 
         //2、创建表单实例，表单实例信息（包含了流程实例的一些信息）存入as_form_inst表中
         for(int i=0;i<taskIDs.length;i++)
@@ -120,7 +125,7 @@ public class FormInstService {
         procInstService.insertProcInst(asProcInstDO);
 
         //至此，相当于把第一个任务节点要填的表单内容存进数据库了，而且绑定的流程实例也存进了数据库，当前流程应当流转到下个任务节点上了
-        FlowableProcUtils.completeTask(taskIDs[0]);
+        ProcUtils.completeTask(taskIDs[0]);
 
         //在as_form_inst表中创建下一个还没被执行的任务节点的TASK条目
         procInstService.saveUnCompleteTask(
@@ -137,7 +142,7 @@ public class FormInstService {
      * @param userID 对用户ID进行筛选，
      * @param taskType
      */
-    public List<FormInstDO> listFormInst(String userID, Integer taskType) throws InfoException, ProcException {
+    public List<FormInstVO> listFormInst(String userID, Integer taskType) throws InfoException, ProcException, FormException {
         //1、先获取流转到该用户对应的FlowableTaskDO
         List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
         if (tasks.size()==0)
@@ -152,15 +157,87 @@ public class FormInstService {
 
         //3、获取真正的表单实例表
         ArrayList<FormInstDO> formInstDOs = (ArrayList<FormInstDO>)formInstService.getFormInsts(taskBOs);
-
-        //4、对所有表单实例的表单Sheet进行表单项操作权限设置
-        for(int i = 0; i< formInstDOs.size(); i++)
-        {
-            FormInstDO inst = formInstDOs.get(i);
-            inst = authorityService.handleFormSheetAuthority(inst);
+        ArrayList<FormInstBO> formInstBOs = new ArrayList<>();
+        for(FormInstDO doo:formInstDOs){
+            formInstBOs.add(new FormInstBO(doo,userID,taskType));
         }
 
+        //4、对所有表单实例的表单Sheet进行表单项操作权限设置
+        for(int i = 0; i< formInstBOs.size(); i++) {
+            FormInstDO inst = formInstBOs.get(i);
+            authorityService.handleFormSheetAuthority(inst);
+        }
+
+        Filter filter = new UserIdFilter();
+        DuplicateFilter duplicateFilter = new DuplicateFilter();
+        //对不属于当前用户的表单任务进行筛选
+        ArrayList<FormInstBO> filtrate1 = filter.filtrate(formInstBOs);
+        //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
+        ArrayList<FormInstBO> filtrate2 = duplicateFilter.filtrate(filtrate1);
+
+        ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
+        for(int i = 0;i<filtrate2.size();i++){
+            FormInstVO voo = filtrate2.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
+            formInstVOs.add(voo);
+        }
+
+        return formInstVOs;
+    }
+
+    /**
+     * 获取所有表单实例，不作筛选
+     * @return
+     */
+    public List<FormInstDO> listFormInst(){
+        ArrayList<FormInstDO> formInstDOs = (ArrayList<FormInstDO>) formInstMapper.listFormInsts();
         return formInstDOs;
+    }
+
+    /**
+     * 对当前用户以及当前拿到的任务节点进行匹配，看是不是当前用户可以执行的任务
+     * @param inst
+     * @param userId
+     * @return
+     */
+    private Boolean userMatch(FormInstDO inst,String userId) {
+        String curNodeId = flowableService.getNodeId(inst.getTaskId());
+        ProcNodeDO nodeDO = procModelService.getNodeDO(procInstService.getProcModelId(inst.getProcInstId()),
+                curNodeId);
+        nodeDO.getCandidateUser();
+
+        //默认匹配
+        return true;
+    }
+
+    /**
+     * 一个是节点类型，一个是页面显示的任务类型，看两者是不是匹配
+     * @param curActType 节点类型：经办节点、审批节点、抄送节点
+     * @param taskType 任务类型：待办、待阅
+     * @return
+     */
+    public boolean nodeTypeMatch(int curActType, Integer taskType) {
+        if(taskType== Constants.TASK_TO_DO)
+        {
+            if(curActType == Constants.AS_NODE_APPLY
+                    || curActType== Constants.AS_NODE_APPROVE)
+                return true;
+            else
+                return false;
+        }
+        if(taskType== Constants.TASK_TOBE_READ && curActType== Constants.AS_NODE_CC)
+            return true;
+
+        return false;
+    }
+
+
+    private ArrayList<FormInstVO> transToVO(ArrayList<FormInstDO> formInstDOs) {
+        ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
+        for (int i = 0; i < formInstDOs.size(); i++) {
+            formInstVOs.add(new FormInstVO(formInstDOs.get(i),
+                    procInstService.getCommitter(formInstDOs.get(i).getTaskId())));
+        }
+        return formInstVOs;
     }
 
     /**
@@ -176,7 +253,7 @@ public class FormInstService {
         {
             //同意审批，as_form_inst表中输入approve_result,sheet和value、executor、execute_time值
             formInstService.updateFormInst(dto);
-            FlowableProcUtils.completeTask(dto.getTask_id());
+            ProcUtils.completeTask(dto.getTask_id());
             procInstService.saveUnCompleteTask(
                     procInstID,
                     dto.getForm_model_id());
@@ -213,7 +290,7 @@ public class FormInstService {
     private void updateFormInstAfterRollback(String curTaskId, String lastApplyNodeId) {
         String procInstId = getProcInstId(curTaskId);
         String defId = procInstService.getDefId(procInstId);
-        if(FlowableProcUtils.containParral(defId,lastApplyNodeId))
+        if(ProcUtils.containParral(defId,lastApplyNodeId))
         {
 
         }
@@ -238,7 +315,7 @@ public class FormInstService {
         //当前填写表单数据 对数据库进行更新
         formInstService.updateFormInst(rec);
         //完成当前经办节点
-        FlowableProcUtils.completeTask(rec.getTask_id());
+        ProcUtils.completeTask(rec.getTask_id());
         procInstService.saveUnCompleteTask(
                 rec.getProc_inst_id(),
                 rec.getForm_model_id());
@@ -254,7 +331,7 @@ public class FormInstService {
         formInstService.updateFormInst(rec);
         //完成当前抄送任务
         //抄送任务结束之后，默认后面是没有任务节点了！！所以这里不需要再保存未完成任务节点
-        FlowableProcUtils.completeTask(rec.getTask_id());
+        ProcUtils.completeTask(rec.getTask_id());
     }
 
     /**
@@ -277,7 +354,8 @@ public class FormInstService {
      * 点击外链之后,显示当前待执行节点的表单sheet
      * @param taskId
      */
-    public FormInstDO getShareLinkTask(String taskId) throws ProcException {
+    public FormInstVO getShareLinkTask(String taskId,
+                                       String userId) throws ProcException, FormException {
         FormInstDO formInstDO = getFormInst(taskId);
 
 //        这边就是，生成的这个外链复制给别人，然后别人点击，通过用户验证之后就可以去执行了
@@ -287,7 +365,8 @@ public class FormInstService {
         formInstDO = authorityService.handleFormSheetAuthority(formInstDO);
 
         String procModelId = formModelService.getProcModelID(formInstDO.getFormModelId());
-        if(procModelId.equals(Constants.REGISTER_PROC))
+        if(procModelId.equals(Constants.REGISTER_PROC_ID)||
+                procModelId.equals(Constants.SCENE_SELECT_PROC_ID))
         {
             formInstDO.setNodeType(Constants.AS_NODE_APPROVE);
         }
@@ -300,8 +379,33 @@ public class FormInstService {
                 throw new ProcException("流程中间层生成的流程模型出错！");
             }
         }
+        FormInstBO boo = new FormInstBO();
+        BeanUtils.copyProperties(formInstDO,boo);
 
-        return formInstDO;
+        boo.setCurUserId(userId);
+        boo.setCurTaskType(Constants.TASK_ALL);
+        boo.setProcModelId(procInstService.getProcModelId(formInstDO.getProcInstId()));
+        boo.setNodeId(flowableService.getNodeId(taskId));
+
+        ProcNodeDO nodeDO = procModelService.getNodeDO(procModelId, boo.getNodeId());
+        boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
+        boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
+        boo.setIfJointSign(nodeDO.getIfJointSign());
+
+        boo.setSceneId(formModelService.getSceneId(formInstDO.getFormModelId()));
+//        FormInstBO formInstBO = new FormInstBO(formInstDO,userId,Constants.TASK_ALL);
+
+        Filter userFilter = new UserIdFilter();
+        Filter duplicateFilter = new DuplicateFilter();
+
+        //对不属于当前用户的表单任务进行筛选
+        FormInstBO formInstBO1 = userFilter.filtrate(boo);
+        //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
+        FormInstBO formInstBO2 = duplicateFilter.filtrate(formInstBO1);
+
+        FormInstVO voo = formInstBO2.transToVO(procInstService.getCommitter(formInstBO2.getTaskId()));
+
+        return voo;
     }
 
     public TaskCount getCount(String userID, int taskType) throws InfoException, ProcException {
@@ -396,7 +500,8 @@ public class FormInstService {
 
             Integer nodeType = null;
 
-            if(procModelId.equals(Constants.REGISTER_PROC)) {
+            if(procModelId.equals(Constants.REGISTER_PROC_ID)||
+                    procModelId.equals(Constants.SCENE_SELECT_PROC_ID)) {
                 nodeType = Constants.AS_NODE_APPROVE;
             }else{
                 nodeType = procModelService.getNodeType(procModelId,cur.getActId());
@@ -425,7 +530,7 @@ public class FormInstService {
         {
             TaskBO curTaskBO = tasks.get(i);
             //判断是不是符合当前页面要找的节点类型
-            if(!formInstService.match(curTaskBO.getNodeType(),taskType))
+            if(!formInstService.nodeTypeMatch(curTaskBO.getNodeType(),taskType))
             {
                 tasks.remove(i);
                 i--;
@@ -464,31 +569,19 @@ public class FormInstService {
                 formInstJson
         );
         String procModelID = formModelService.getProcModelID(formModelId);
-        String firstNodeId = procModelService.getFirstNodeId(procModelID);
-        inst.setNodeType(procModelService.getNodeType(procModelID,firstNodeId));
+
+        if(procModelID.equals(Constants.REGISTER_PROC_ID)||
+                procModelID.equals(Constants.SCENE_SELECT_PROC_ID))
+            inst.setNodeType(Constants.AS_NODE_APPLY);
+        else {
+            String firstNodeId = procModelService.getFirstNodeId(procModelID);
+            inst.setNodeType(procModelService.getNodeType(procModelID,firstNodeId));
+        }
+
         return inst;
     }
 
-    /**
-     * 一个是节点类型，一个是页面显示的任务类型，看两者是不是匹配
-     * @param curActType 节点类型：经办节点、审批节点、抄送节点
-     * @param taskType 任务类型：待办、待阅
-     * @return
-     */
-    public boolean match(int curActType, Integer taskType) {
-        if(taskType== Constants.TASK_TO_DO)
-        {
-            if(curActType == Constants.AS_NODE_APPLY
-                    || curActType== Constants.AS_NODE_APPROVE)
-                return true;
-            else
-                return false;
-        }
-        if(taskType== Constants.TASK_TOBE_READ && curActType== Constants.AS_NODE_CC)
-            return true;
 
-        return false;
-    }
 
 
     /**
@@ -500,7 +593,7 @@ public class FormInstService {
      * @return
      */
     public String getLastApplyNode(String procInstId) {
-        List<HistoricActivityInstance> historicActs = FlowableProcUtils.getHistoricActs(procInstId);
+        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActs(procInstId);
         String procModelId = procInstService.getProcModelId(procInstId);
         for(HistoricActivityInstance instance:historicActs){
             String actId = instance.getActivityId();
@@ -513,7 +606,7 @@ public class FormInstService {
 
 
     public String[] generateUrls(ProcessInstance procInst) {
-        String[] curTaskIds = FlowableProcUtils.getTaskIDs(procInst.getProcessInstanceId());
+        String[] curTaskIds = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
         String[] urls = new String[curTaskIds.length];
 
         for(int i = 0;i<curTaskIds.length;i++)
@@ -537,5 +630,10 @@ public class FormInstService {
 
     public void saveUnCompleteFormInst(FormInstDO formInst) {
         formInstMapper.saveUnCompleteFormInst(formInst);
+    }
+
+
+    public String getAlreadyCompleteTask(String curUserId, String procInstId) {
+        return formInstMapper.getAlreadyCompleteTask(curUserId,procInstId);
     }
 }

@@ -50,7 +50,6 @@
     FROM ACT_HI_ACTINST
     WHERE
       ( ASSIGNEE_ = #{userID,jdbcType = VARCHAR} or
-      ASSIGNEE_ = '$INITIATOR' or
       ASSIGNEE_ is NULL )
       and
       ACT_TYPE_ = "userTask" and
@@ -66,6 +65,15 @@
         TASK_ID_ = #{taskId,jdbcType=VARCHAR}
     </select>
 
+
+    <select id="getModelName" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT
+            name
+        FROM
+            act_de_model
+        WHERE
+            id = #{modelId,jdbcType=VARCHAR}
+    </select>
     <!--<select id="getAllExecutedNodeIds" parameterType="java.lang.String" resultType="java.lang.String">-->
         <!--SELECT-->
         <!--ACT_ID_-->

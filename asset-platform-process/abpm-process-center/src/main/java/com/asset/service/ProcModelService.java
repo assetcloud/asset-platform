@@ -3,25 +3,34 @@ package com.asset.service;
 import com.asset.dao.ProcNodeMapper;
 import com.asset.dto.ProcModelDTO;
 import com.asset.dto.ProcNodeDTO;
+import com.asset.entity.FormModelDO;
 import com.asset.entity.ProcNodeDO;
 import com.asset.exception.DatabaseException;
+import com.asset.javabean.UnBindFormModelVO;
 import com.asset.utils.Constants;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.engine.*;
 import org.flowable.ui.modeler.serviceapi.ModelService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class ProcModelService {
     @Autowired
     ProcNodeMapper procNodeMapper;
     @Autowired
     ModelService modelService;
+    @Autowired
+    FormModelService formModelService;
 
     public int saveProcNode(ProcNodeDO procNodeDO) {
         return procNodeMapper.insert(procNodeDO);
@@ -42,7 +51,6 @@ public class ProcModelService {
      * @param procModelId
      */
     public String getFirstNodeId(String procModelId) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
 
         org.flowable.ui.modeler.domain.Model modelData = modelService.getModel(procModelId);
         BpmnModel bpmnModel = modelService.getBpmnModel(modelData);
@@ -79,12 +87,28 @@ public class ProcModelService {
         return procNodeMapper.getNodeType(procModelId,nodeId);
     }
 
-
     public Integer[] checkIsContainJointSign(String procModelId) {
         return procNodeMapper.getIfJointSign(procModelId);
     }
 
     public List<ProcNodeDO> getNodeDOList(String procModelId) {
         return procNodeMapper.listNodes(procModelId);
+    }
+
+    public ProcNodeDO getNodeDO(String procModelId,String curNodeId) {
+        return procNodeMapper.getNodeDO(procModelId,curNodeId);
+    }
+
+    public  List<UnBindFormModelVO> getUnbindFormModels() {
+        List<FormModelDO> formModels = formModelService.getFormModels();
+        List<UnBindFormModelVO> unBindFormModelVOs = new ArrayList<>();
+
+        for(int i = 0;i<formModels.size();i++){
+            UnBindFormModelVO vo = new UnBindFormModelVO();
+            BeanUtils.copyProperties(formModels.get(i),vo);
+
+            unBindFormModelVOs.add(vo);
+        }
+        return unBindFormModelVOs;
     }
 }

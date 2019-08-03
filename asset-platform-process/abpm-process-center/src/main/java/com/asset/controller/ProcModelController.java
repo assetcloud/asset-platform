@@ -7,13 +7,13 @@ import com.asset.javabean.RespBean;
 import com.asset.dto.AuthorityItemDTO;
 import com.asset.dto.AuthorityDTO;
 import com.asset.dto.ProcModelDTO;
+import com.asset.javabean.UnBindFormModelVO;
 import com.asset.service.ProcModelService;
 import com.asset.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author YBY
@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0_190720
  */
 @RestController
+@RequestMapping("/proc_model")
 public class ProcModelController {
 
     @Autowired
@@ -33,7 +34,7 @@ public class ProcModelController {
      * @param dto
      * @return
      */
-    @RequestMapping(value = "/proc_model/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
     public RespBean editAsProcModel(@RequestBody ProcModelDTO dto) {
         try {
             procModelService.saveProcModelInfo(dto);
@@ -47,7 +48,7 @@ public class ProcModelController {
     /**
      * 对流程模型中每个节点对应的所有表单项权限信息进行存储
      */
-    @RequestMapping(value = "/proc_model/authority/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/authority/save", method = RequestMethod.POST)
     public RespBean saveAuthority(@RequestBody AuthorityDTO authorityDTO) {
         if (authorityDTO.getProc_model_id().isEmpty())
             return RespBean.error("流程模型数据缺失！");
@@ -71,6 +72,18 @@ public class ProcModelController {
 
         return RespBean.ok("");
     }
+
+    /**
+     * 流程模型与表单模型绑定分离，可以在流程模型设计阶段选择未绑定流程模型的表单模型
+     * 这里是获取未绑定流程模型的表单模型
+     */
+    @GetMapping(value = "/unbind_form_model")
+    public RespBean getUnbindFormModels(){
+        List<UnBindFormModelVO> unbindFormModels = procModelService.getUnbindFormModels();
+
+        return RespBean.ok("",unbindFormModels);
+    }
+
 
 
 }

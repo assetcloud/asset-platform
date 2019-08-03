@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-public class Application {
+public class ApplicationDO {
 
     private String id;
 
@@ -23,6 +23,6 @@ public class Application {
 
     private Date removeTime;
 
-    public Application() {
+    public ApplicationDO() {
     }
 }

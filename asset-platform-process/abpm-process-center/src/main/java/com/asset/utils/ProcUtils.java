@@ -5,6 +5,7 @@ import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
+import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.DeploymentBuilder;
 import org.flowable.engine.repository.ProcessDefinition;
@@ -15,14 +16,16 @@ import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 与具体业务无关，用来处理Flowable流程
  *
  * @author YBY
  */
-public class FlowableProcUtils {
+public class ProcUtils {
 
     @Autowired
     static ModelService modelService;
@@ -86,8 +89,8 @@ public class FlowableProcUtils {
     public static ProcessInstance createProcInstByXml(String fileName) {
         //部署
         DeploymentBuilder deployment = repositoryService.createDeployment();
-        deployment.addClasspathResource(fileName + ".bpmn");
-        deployment.addClasspathResource(fileName + ".png");
+        deployment.addClasspathResource("diagram/" + fileName + ".bpmn");
+        deployment.addClasspathResource("diagram/" + fileName + ".png");
         deployment.name("fileName");
         deployment.deploy();
 
@@ -122,6 +125,49 @@ public class FlowableProcUtils {
         return runtimeService.startProcessInstanceById(def.getId());
     }
 
+    /**
+     * 挂起一个流程实例
+     *
+     * @param procInstId
+     */
+    public static void suspendProcInst(String procInstId) {
+        //根据一个流程实例的id挂起该流程实例
+        runtimeService.suspendProcessInstanceById(procInstId);
+    }
+
+    /**
+     * 激活一个流程实例
+     *
+     * @param procInstId
+     */
+    public static void activateProcInst(String procInstId) {
+        runtimeService.activateProcessInstanceById(procInstId);
+    }
+
+    /**
+     * 获取流程定义Id
+     *
+     * @param taskId
+     * @return
+     */
+    public static String getProcDefIdByTaskId(String taskId) {
+        ProcessDefinition procDef = getProcessDefinitionByTaskId(taskId);
+        return procDef.getId();
+    }
+
+    /**
+     * 由任务节点Id获取当前流程定义
+     *
+     * @param taskId
+     * @return
+     */
+    public static ProcessDefinition getProcessDefinitionByTaskId(String taskId) {
+        // 1. 得到task
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        // 2. 通过task对象的pdid获取流程定义对象
+        ProcessDefinition pd = repositoryService.getProcessDefinition(task.getProcessDefinitionId());
+        return pd;
+    }
 
     /**
      * @param procInstanceID
@@ -138,14 +184,21 @@ public class FlowableProcUtils {
         return historicActivityInstanceList;
     }
 
-    public static boolean containParral(String defId, String lastApplyNodeId) {
+    /**
+     * 判断nodeId这个节点之后是不是一个分支结构
+     *
+     * @param defId
+     * @param nodeId
+     * @return
+     */
+    public static boolean containParral(String defId, String nodeId) {
         BpmnModel bpmnModel = repositoryService.getBpmnModel(defId);
         Process process = bpmnModel.getProcesses().get(0);
         Collection<FlowElement> flowElements = process.getFlowElements();
         for (FlowElement flowElement : flowElements) {
             if (flowElement instanceof UserTask) {
                 UserTask u = (UserTask) flowElement;
-                if (u.getId().equals(lastApplyNodeId)) {
+                if (u.getId().equals(nodeId)) {
                     List<SequenceFlow> outgoingFlows = u.getOutgoingFlows();
                     if (outgoingFlows.size() > 1)
                         return true;
@@ -155,5 +208,30 @@ public class FlowableProcUtils {
         return false;
     }
 
+    /**
+     * 判断一个流程实例是不是已经被执行完了
+     * 可用于完成流程图显示，如果流程完后使用历史服务查询，流程未结束使用运行时服务查询
+     *
+     * @param processInstanceId
+     * @return
+     */
+    public static boolean isFinished(String processInstanceId) {
+        return historyService.createHistoricProcessInstanceQuery().finished()
+                .processInstanceId(processInstanceId).count() > 0;
+    }
 
+
+    public static void deleteProcInst(String procInstId) {
+        ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
+                .processInstanceId(procInstId) // 使用流程实例ID查询
+                .singleResult();
+        if (pi == null) {
+            //该流程实例已经完成了
+            historyService.deleteHistoricProcessInstance(procInstId);
+        } else {
+            //该流程实例未结束的
+            runtimeService.deleteProcessInstance(procInstId, "");
+            historyService.deleteHistoricProcessInstance(procInstId);//(顺序不能换)
+        }
+    }
 }
