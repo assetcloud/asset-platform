@@ -1,4 +1,4 @@
-package com.asset.controller;
+package com.asset.controller.user;
 
 import com.asset.service.ProcTaskService;
 import com.asset.utils.Constants;
