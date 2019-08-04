@@ -1,4 +1,4 @@
-package com.asset.controller;
+package com.asset.controller.user;
 
 import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.*;

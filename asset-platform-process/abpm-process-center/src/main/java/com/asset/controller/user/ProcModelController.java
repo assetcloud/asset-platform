@@ -1,4 +1,4 @@
-package com.asset.controller;
+package com.asset.controller.user;
 
 import com.asset.dao.FormAuthorityMapper;
 import com.asset.entity.ActAuthority;

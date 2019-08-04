@@ -1,4 +1,4 @@
-package com.asset.controller;
+package com.asset.controller.user;
 
 import com.asset.base.BaseController;
 import com.asset.dto.SceneSelectDTO;

@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "org.flowable.rest"
 })
 @MapperScan(basePackages= {"com.asset.dao"})
-@EnableTransactionManagement
+@EnableTransactionManagement(proxyTargetClass = true)
 public class FlowableApplication {
     public static void main(String[] args) {
         SpringApplication springApplication = new SpringApplication(FlowableApplication.class);

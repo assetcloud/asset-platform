@@ -19,6 +19,8 @@ server:
   context-path: /
   port: 9000
 spring:
+#  main:
+#    allow-bean-definition-overriding: true
   datasource:
     initialSize: 5
     maxActive: 20
