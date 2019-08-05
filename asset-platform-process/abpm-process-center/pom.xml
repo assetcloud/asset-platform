@@ -113,11 +113,11 @@
             <version>5.1.6.RELEASE</version>
         </dependency>
 
-        <!--添加feign依赖-->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-feign</artifactId>
-        </dependency>
+        <!--&lt;!&ndash;添加feign依赖&ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.cloud</groupId>-->
+            <!--<artifactId>spring-cloud-starter-feign</artifactId>-->
+        <!--</dependency>-->
 
         <!--lombok start-->
         <dependency>

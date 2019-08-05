@@ -30,18 +30,20 @@ public class FormInstBO extends FormInstDO {
     public FormInstBO() {
     }
 
-    @Autowired
-    ProcInstService procInstService;
-    @Autowired
-    ProcModelService procModelService;
-    @Autowired
-    FlowableService flowableService;
-    @Autowired
-    FormModelService formModelService;
+//    @Autowired
+//    ProcInstService procInstService;
+//    @Autowired
+//    ProcModelService procModelService;
+//    @Autowired
+//    FlowableService flowableService;
+//    @Autowired
+//    FormModelService formModelService;
 
     public FormInstBO (FormInstDO doo,
                        String curUserId,
-                       Integer curTaskType){
+                       Integer curTaskType,
+                       ProcNodeDO nodeDO,
+                       String sceneId){
         this.formInstValue = doo.getFormInstValue();
         this.formModelId = doo.getFormModelId();
         this.procInstId = doo.getProcInstId();
@@ -54,17 +56,17 @@ public class FormInstBO extends FormInstDO {
         this.nodeType = doo.getNodeType();
         this.status = doo.getStatus();
 
-        this.procModelId = procInstService.getProcModelId(procInstId);
+//        this.procModelId = procInstService.getProcModelId(procInstId);
+//        this.nodeId = flowableService.getNodeId(taskId);
+//        ProcNodeDO nodeDO = procModelService.getNodeDO(procModelId, nodeId);
         this.curTaskType = curTaskType;
         this.curUserId = curUserId;
-        this.nodeId = flowableService.getNodeId(taskId);
 
-        ProcNodeDO nodeDO = procModelService.getNodeDO(procModelId, nodeId);
         this.candidateUser = nodeDO.getCandidateUser().split("\\|");
         this.candidateGroup = nodeDO.getCandidateGroup().split("\\|");
         this.ifJointSign = nodeDO.getIfJointSign();
 
-        this.sceneId = formModelService.getSceneId(formModelId);
+        this.sceneId = sceneId;
     }
 
     public FormInstVO transToVO(String committer) {

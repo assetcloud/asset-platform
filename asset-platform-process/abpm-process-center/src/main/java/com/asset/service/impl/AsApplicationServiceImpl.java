@@ -46,7 +46,8 @@ public class AsApplicationServiceImpl extends ServiceImpl<AsApplicationMapper, A
             AdminAppInfoVO vo = new AdminAppInfoVO();
             BeanUtils.copyProperties(applicationDOs.get(i),vo);
 
-            List<AdminFormModelVO> formModels = adminFormModelService.getFormModels(applicationDOs.get(i).getId());
+            //获取
+            List<AdminFormModelVO> formModels = adminFormModelService.getApplicationFormModels(applicationDOs.get(i).getId());
             vo.setAdminFormModelVOs(formModels);
 
             VOs.add(vo);
@@ -54,6 +55,7 @@ public class AsApplicationServiceImpl extends ServiceImpl<AsApplicationMapper, A
 
         return VOs;
     }
+
 
 
 }

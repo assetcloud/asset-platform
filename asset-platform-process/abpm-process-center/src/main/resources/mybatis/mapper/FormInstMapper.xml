@@ -277,8 +277,8 @@
     <select id="getAlreadyCompleteTask" resultType="java.lang.String">
         SELECT task_id
         FROM as_form_inst
-        WHERE executor = #{curUserId，jdbcType=VARCHAR}
-          AND proc_inst_id = #{procInstId, jdbcType=VARCHAR}
+        WHERE executor = #{curUserId,jdbcType=VARCHAR}
+          AND proc_inst_id = #{procInstId,jdbcType=VARCHAR}
     </select>
 
     <select id="listFormInsts" resultMap="ResultMapWithBLOBs">

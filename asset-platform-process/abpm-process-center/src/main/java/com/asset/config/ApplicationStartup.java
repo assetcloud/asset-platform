@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 /**
- * 系统初始化的时候加载注册审批流程
+ * 系统初始化的时候加载注册审批流程,注意是不需要事先在数据库中创建流程模型的！已经存在本地了！！
  */
 public class ApplicationStartup implements ApplicationListener<ContextRefreshedEvent> {
     @Override

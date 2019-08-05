@@ -10,10 +10,12 @@ import com.asset.entity.AppFormBindDO;
 import com.asset.entity.FormModelDO;
 import com.asset.dto.FormModelCreateDTO;
 import com.asset.exception.DatabaseException;
+import com.asset.exception.InfoException;
 import com.asset.form.FormSheet;
 import com.asset.javabean.FormModelBO;
 import com.asset.utils.Constants;
 import com.sun.org.apache.regexp.internal.RE;
+import org.flowable.dmn.model.DecisionTableOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
@@ -80,6 +82,7 @@ public class FormModelService {
                 Constants.FORM_MODEL_UNBIND,
                 formSheetStr
         );
+        formModelDO.setSceneId(dto.getScene_id());
         formModelDO.setGroupId(-1);
         formModelDO.setProcModelId("null");
         int status =  formModelMapper.insertSelective(formModelDO);
@@ -121,6 +124,8 @@ public class FormModelService {
      */
     public List<FormModelBO> getFormModels(String appId, int groupId, int formStatus) {
         List<String> formModelIds = applicationService.getFormModels(appId);
+        if(formModelIds==null||formModelIds.size()==0)
+            throw new InfoException("应用ID不存在，请检查");
         ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
 
         List<FormModelBO> boList = new ArrayList<>();
@@ -136,6 +141,7 @@ public class FormModelService {
         ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
         return formModelDOs;
     }
+
 
     public List<FormModelDO> getFormModels(){
         return formModelMapper.selectAll();
@@ -186,7 +192,7 @@ public class FormModelService {
      */
     public void initSceneSelectFormModel(String sceneSelectFormId) throws DatabaseException {
         FormModelDO formModelDO = new FormModelDO(sceneSelectFormId,
-                "注册表单",
+                "工作场景选择表单",
                 Constants.USER_ADMIN,
                 1,
                 -1,
@@ -210,5 +216,15 @@ public class FormModelService {
 
     public String getFormName(String formModelId) {
         return formModelMapper.getFormModelName(formModelId);
+    }
+
+    public List<FormModelDO> getAdminApplicationFormModel(String appId) {
+        List<String> formModelIds = applicationService.getFormModels(appId);
+        if(formModelIds==null||formModelIds.size()==0)
+            throw new InfoException("应用ID不存在，请检查");
+
+        ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModelsByModelId(formModelIds);
+
+        return formModelDOs;
     }
 }
