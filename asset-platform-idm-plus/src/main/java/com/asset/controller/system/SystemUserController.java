@@ -1,12 +1,10 @@
 package com.asset.controller.system;
 
-import com.asset.bean.RespBean;
-import com.asset.bean.Scene;
-import com.asset.bean.User;
-import com.asset.bean.UserRole;
+import com.asset.bean.*;
 import com.asset.common.SystemConstant;
 import com.asset.common.model.UserPageParam;
 import com.asset.service.*;
+import com.asset.utils.Condition;
 import com.asset.utils.Func;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -15,11 +13,14 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  *
@@ -36,6 +37,8 @@ public class SystemUserController {
     IUserRoleService userRoleService;
 
     IUserService userService;
+
+    IUserSceneService userSceneService;
 
     @ApiOperation(value = "获取不在某一场景下的用户", notes = "已完成")
     @ApiImplicitParams({
@@ -131,5 +134,18 @@ public class SystemUserController {
     @PutMapping("pwd/reset")
     public RespBean passwordReset(String userId){
         return RespBean.status(userService.resetPassword(userId));
+    }
+
+    @GetMapping("signify")
+    @ApiOperation(value = "判断用户所属部门", notes = "已完成")
+    @ApiImplicitParams({
+            @ApiImplicitParam(value = "userId", name = "用户id", required = true),
+            @ApiImplicitParam(value = "sceneId", name = "场景id", required = true)
+    })
+    public R userSignify(@ApiIgnore @RequestParam Map<String, Object> userScene){
+        UserScene record = userSceneService.getOne(Condition.getQueryWrapper(userScene, UserScene.class)
+                .lambda()
+                .eq(UserScene::getStatus, 1));
+        return R.data(record.getNodeId());
     }
 }

@@ -23,6 +23,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @AllArgsConstructor
@@ -104,6 +105,20 @@ public class SceneRoleController {
     @RequestMapping(value = "list",method = RequestMethod.GET)
     public RespBean rolesWithGroup(@ApiParam(value = "sceneId", required = true) @RequestParam String sceneId){
         return RespBean.data(sceneRoleService.rolesWithGroup(sceneId));
+    }
+
+    @GetMapping("admin/get")
+    @ApiOperation(value = "获取场景中的管理员用户", notes = "已完成")
+    public R getSceneAdmin(@ApiParam(value = "sceneCode", name = "场景id", required = true) @RequestParam String sceneCode){
+        SceneRole one = sceneRoleService.getOne(Wrappers.<SceneRole>query().lambda()
+                .eq(SceneRole::getSceneCode, sceneCode)
+                .eq(SceneRole::getStatus, 1)
+                .eq(SceneRole::getRoleName, SystemConstant.SCENE_ADMIN));
+        List<SceneRelation> list = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda()
+                .eq(SceneRelation::getRid, one.getId())
+                .eq(SceneRelation::getIsDeleted, 0));
+        List<String> collect = list.stream().map(SceneRelation::getUid).collect(Collectors.toList());
+        return R.data(collect);
     }
 
 //    @ApiOperation(value = "新增业务级角色", notes = "（已完成）传SceneRole实体类;roleNameZh角色中文名称;groupId所属角色组;sceneCode所属场景编号（以上变量必填）")
