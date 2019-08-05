@@ -44,6 +44,20 @@ public class AdminFormModelService {
         return VOList;
     }
 
+    /**
+     * 控制台端口获取应用下所有表单模型内容
+     * @param appId
+     * @return
+     */
+    public List<AdminFormModelVO> getApplicationFormModels(String appId) {
+        List<FormModelDO> DOList = formModelService.getAdminApplicationFormModel(appId);
+        List<AdminFormModelVO> VOList = new ArrayList<>();
+
+        VOList = transDOtoVO(DOList,VOList);
+
+        return VOList;
+    }
+
     private List<AdminFormModelVO> transDOtoVO(List<FormModelDO> DOList, List<AdminFormModelVO> VOList) {
         for(int i=0;i<DOList.size();i++)
         {

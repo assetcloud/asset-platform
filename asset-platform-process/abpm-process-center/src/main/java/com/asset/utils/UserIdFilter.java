@@ -51,6 +51,9 @@ public class UserIdFilter implements Filter{
 
         //对组织进行筛选
         String[] candidateGroup = formInstBO.getCandidateGroup();
+        if(candidateGroup == null)
+            throw new FormException("当前用户权限不够，无法获取当前任务节点信息！");
+
         String curGroup = getCurGroup(formInstBO.getCurUserId(),formInstBO.getSceneId());
         for(int i = 0;i<candidateUser.length;i++) {
             if(candidateGroup[i].equals(curGroup))

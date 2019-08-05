@@ -97,7 +97,13 @@ public class FormModelController {
                                 @RequestParam(value = "group_id")int groupId,
                                 @RequestParam(value = "form_status")int formStatus
                                 ){
-        List<FormModelBO> formModelDOS = formModelService.getFormModels(appId,groupId,formStatus);
+        List<FormModelBO> formModelDOS = null;
+        try {
+            formModelDOS = formModelService.getFormModels(appId,groupId,formStatus);
+        }catch (Exception e)
+        {
+            return RespBean.error(e.getMessage());
+        }
         return RespBean.ok("", formModelDOS);
     }
 

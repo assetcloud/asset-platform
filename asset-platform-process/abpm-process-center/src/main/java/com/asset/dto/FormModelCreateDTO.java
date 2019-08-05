@@ -15,6 +15,10 @@ public class FormModelCreateDTO {
     String icon_cls;
     String app_id;
     FormSheet form_sheet;
+    String scene_id;
+
+    public FormModelCreateDTO() {
+    }
 
     public FormModelCreateDTO(String form_name,
                               String created_by,

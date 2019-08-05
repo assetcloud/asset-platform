@@ -82,4 +82,6 @@ public interface FormModelMapper {
     String getFormModelName(String formModelId);
 
     List<FormModelDO> selectAll();
+
+    List<FormModelDO> listFormModelsByModelId(@Param("formModelIDs")List<String> formModelIds);
 }

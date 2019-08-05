@@ -133,7 +133,7 @@ public class FormInstController {
      * @param userID
      * @return
      */
-    @RequestMapping(value = "/form_inst/all/count")
+    @GetMapping(value = "/form_inst/all/count")
     public RespBean formInstsCount(@RequestParam(value = "user_id")String userID){
         List<TaskCount> taskCounts = null;
         try {

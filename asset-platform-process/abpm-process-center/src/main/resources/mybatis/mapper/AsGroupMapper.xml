@@ -93,13 +93,13 @@
     update
     as_group
     set status = 0
-    where id = #{groupId,jdbcType=VARCHAR}
+    where group_id = #{groupId,jdbcType=VARCHAR}
   </update>
 
   <update id="updateGroup" parameterType="com.asset.entity.Group">
     update
     as_group
     set group_name = #{groupName,jdbcType = VARCHAR}
-    where id = #{groupId,jdbcType=VARCHAR}
+    where group_id = #{groupId,jdbcType=VARCHAR}
   </update>
 </mapper>
