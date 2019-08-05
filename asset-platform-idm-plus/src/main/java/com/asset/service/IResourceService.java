@@ -1,6 +1,7 @@
 package com.asset.service;
 
 import com.asset.bean.Resource;
+import com.asset.vo.ResourceVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -123,4 +124,11 @@ public interface IResourceService extends IService<Resource> {
      * @return
      */
     Resource getResourceList(String sceneId);
+
+    /**
+     * 树形结构
+     *
+     * @return
+     */
+    List<ResourceVO> tree(String sceneId);
 }

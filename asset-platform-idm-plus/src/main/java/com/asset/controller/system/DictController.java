@@ -100,11 +100,9 @@ public class DictController{
 	 * @return
 	 */
 	@GetMapping("/dictionary")
-	@ApiOperation(value = "获取字典", notes = "获取字典", position = 8)
+	@ApiOperation(value = "获取字典", notes = "获取字典")
 	public R<List<Dict>> dictionary(String code) {
 		List<Dict> tree = dictService.getList(code);
 		return R.data(tree);
 	}
-
-
 }

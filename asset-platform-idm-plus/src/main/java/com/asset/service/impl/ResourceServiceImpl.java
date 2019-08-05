@@ -11,6 +11,8 @@ import com.asset.service.ISceneRelationService;
 import com.asset.service.ISceneRoleService;
 import com.asset.utils.ResourceNodeManager;
 import com.asset.utils.ResourceNodeMerger;
+import com.asset.utils.ResourceVONodeMerger;
+import com.asset.vo.ResourceVO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -87,10 +89,14 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
      * @return
      */
     public List<Resource> getResourcesByCurrentUser(String userId, String sceneId){
-        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda().eq(SceneRole::getStatus, 1).eq(SceneRole::getSceneCode, sceneId));
+        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda()
+                .eq(SceneRole::getStatus, 1)
+                .eq(SceneRole::getSceneCode, sceneId));
         List<Long> rids = new ArrayList<>();
         sceneRoles.forEach(map-> rids.add(map.getId()));
-        List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda().in(SceneRelation::getRid, rids).eq(SceneRelation::getUid, userId));
+        List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda()
+                .in(SceneRelation::getRid, rids)
+                .eq(SceneRelation::getUid, userId));
         return resourceMapper.getResourcesByUser(sceneRelations);
     }
 
@@ -177,6 +183,11 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
                 .eq(Resource::getSceneId, sceneId)
                 .eq(Resource::getIsDeleted, 0));
         return ResourceNodeMerger.merge(resources);
+    }
+
+    @Override
+    public List<ResourceVO> tree(String sceneId) {
+        return ResourceVONodeMerger.merge(baseMapper.tree(sceneId));
     }
 
     public boolean formExists(String formName, String sceneId, Long parentId){

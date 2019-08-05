@@ -9,6 +9,8 @@ import com.asset.utils.Condition;
 import com.asset.utils.Func;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
@@ -37,9 +39,10 @@ public class RoleController {
     })
     @ApiOperation(value = "平台角色列表", notes = "（已完成）传入role实体")
     public R roleList(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
+        PageHelper.startPage(query.getPage(), query.getSize());
         QueryWrapper<Role> queryWrapper = Condition.getQueryWrapper(role, Role.class);
-        IPage<Role> roles = roleService.page(Condition.getPage(query), queryWrapper);
-        return R.data(roles);
+        queryWrapper.lambda().eq(Role::getIsDeleted, 0);
+        return R.data(new PageInfo<>(roleService.list(queryWrapper)));
     }
 
     @GetMapping("detail")

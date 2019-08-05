@@ -136,7 +136,7 @@ public class MenuController {
      * 获取权限分配树形结构
      */
     @GetMapping("/grant-tree")
-    @ApiOperation(value = "权限分配树形结构", notes = "unfinished", position = 6)
+    @ApiOperation(value = "权限分配树形结构", notes = "unfinished")
     public R<List<MenuVO>> grantTree(User user) {
         return R.data(menuService.grantTree(user));
     }

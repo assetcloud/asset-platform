@@ -29,7 +29,7 @@ public class RespBean {
     }
 
     public static RespBean paramError() {
-        return new RespBean(500, "Wrong Parameters", null);
+        return new RespBean(412, "Wrong Parameters", null);
     }
 
     private RespBean(Integer status, String msg, Object obj) {

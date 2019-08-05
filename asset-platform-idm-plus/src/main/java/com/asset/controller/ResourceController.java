@@ -3,19 +3,33 @@ package com.asset.controller;
 
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
+import com.asset.common.model.Query;
+import com.asset.service.IDictService;
 import com.asset.service.IResourceService;
+import com.asset.service.ISceneService;
+import com.asset.utils.Condition;
 import com.asset.utils.Func;
+import com.asset.vo.ResourceVO;
+import com.asset.wrapper.ResourceWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,6 +46,10 @@ import java.util.List;
 public class ResourceController {
 
     IResourceService resourceService;
+
+    IDictService dictService;
+
+    ISceneService sceneService;
 
     @RequestMapping(value = "/app/add", method = RequestMethod.POST)
     @ApiOperation(value = "添加资源", notes = "（已完成）传Application实体与sceneId(param);")
@@ -195,5 +213,60 @@ public class ResourceController {
             return RespBean.error("参数错误");
         }
         return RespBean.data(resourceService.getFuncResourcesByForm(userId, formResourceId, sceneId));
+    }
+
+    @ApiOperation(value = "获取所有应用资源", notes = "已完成")
+    @GetMapping("sys/list")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "页数", defaultValue = "1", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "size", value = "单页数据量", defaultValue = "10", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "category", value = "资源类型", paramType = "query", dataType = "int"),
+            @ApiImplicitParam(name = "name", value = "资源名称", paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "sceneId", value = "场景id", paramType = "query", dataType = "string")
+    })
+    public R list(Query query, @ApiIgnore @RequestParam Map<String, Object> resource){
+        PageHelper.startPage(query.getPage(), query.getSize());
+        List<Resource> list = resourceService.list(Condition.getQueryWrapper(resource, Resource.class).lambda()
+                .eq(Resource::getIsDeleted, 0)
+                .orderByAsc(Resource::getSort));
+        ResourceWrapper resourceWrapper = new ResourceWrapper(resourceService, dictService, sceneService);
+        return R.data(new PageInfo<>(resourceWrapper.listNodeVO(list)));
+    }
+
+    @GetMapping("detail")
+    @ApiOperation(value = "资源详情", notes = "已完成")
+    @ApiImplicitParam(name = "id", value = "资源id", defaultValue = "1", required = true, dataType = "int")
+    public R<ResourceVO> detail(Resource resource){
+        Resource record = resourceService.getOne(Condition.getQueryWrapper(resource));
+        ResourceWrapper resourceWrapper = new ResourceWrapper(resourceService, dictService, sceneService);
+        return R.data(resourceWrapper.entityVO(record));
+    }
+
+    @PostMapping("submit")
+    @ApiOperation(value = "新增或修改", notes = "（未完成）传入resource实体")
+    public R submit(@Valid @RequestBody Resource resource){
+        return R.status(resourceService.saveOrUpdate(resource));
+    }
+
+    @PostMapping("remove")
+    @ApiOperation(value = "删除", notes = "（未完成）")
+    public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
+        Collection<Resource> resources = resourceService.listByIds(Func.toIntList(ids));
+        resources.forEach(resource ->{
+            resource.setIsDeleted(1);
+            resource.setRemoveTime(new Date());
+        });
+        return R.status(resourceService.updateBatchById(resources));
+    }
+
+    @GetMapping("tree")
+    @ApiOperation(value = "树形结构", notes = "（已完成）树形结构")
+    @ApiImplicitParam(name = "sceneId", value = "场景id", defaultValue = "1", required = true, dataType = "string")
+    public R<List<ResourceVO>> tree(String sceneId) {
+        if (Func.hasEmpty(sceneId)){
+            sceneId = "";
+        }
+        List<ResourceVO> tree = resourceService.tree(sceneId);
+        return R.data(tree);
     }
 }

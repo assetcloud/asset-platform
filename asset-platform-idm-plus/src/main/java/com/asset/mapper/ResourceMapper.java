@@ -2,6 +2,7 @@ package com.asset.mapper;
 
 import com.asset.bean.Resource;
 import com.asset.bean.SceneRelation;
+import com.asset.vo.ResourceVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -59,4 +60,6 @@ public interface ResourceMapper extends BaseMapper<Resource> {
     List<Resource> getFormByName(String formName, String sceneId, Long parentId);
 
     List<Resource> getFormByPath(String formModelId);
+
+    List<ResourceVO> tree(@Param("sceneId") String sceneId);
 }

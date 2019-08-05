@@ -67,19 +67,19 @@
       </foreach>
   </insert>
     <select id="selectMenuPage" resultMap="menuResultMap">
-        select * from blade_menu where is_deleted = 0
+        select * from as_menu where is_deleted = 0
     </select>
 
     <select id="tree" resultMap="treeNodeResultMap">
-        select id, parent_id, name as title, id as 'value', id as 'key' from blade_menu where is_deleted = 0 and category = 1
+        select id, parent_id, name as title, id as 'value', id as 'key' from as_menu where is_deleted = 0 and category = 1
     </select>
 
     <select id="allMenu" resultMap="menuResultMap">
-        select * from blade_menu where is_deleted = 0 and category = 1
+        select * from as_menu where is_deleted = 0 and category = 1
     </select>
 
     <select id="roleMenu" resultMap="menuResultMap">
-        select * from blade_menu where is_deleted = 0 and id IN ( SELECT menu_id FROM blade_role_menu WHERE role_id IN
+        select * from as_menu where is_deleted = 0 and id IN ( SELECT menu_id FROM blade_role_menu WHERE role_id IN
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach> )
@@ -89,7 +89,7 @@
         SELECT
         *
         FROM
-        blade_menu
+        as_menu
         WHERE
         is_deleted = 0 and category = 1
         and id IN ( SELECT menu_id FROM blade_role_menu WHERE role_id IN
@@ -110,10 +110,10 @@
         action,
         sort
         FROM
-        blade_menu
+        as_menu
         WHERE
         is_deleted = 0 and id IN (
-        SELECT parent_id FROM blade_menu
+        SELECT parent_id FROM as_menu
         WHERE ( category = 2 AND id IN ( SELECT menu_id FROM blade_role_menu WHERE role_id IN
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
             #{item}
@@ -133,7 +133,7 @@
         action,
         sort
         FROM
-        blade_menu
+        as_menu
         WHERE
         is_deleted = 0 and  category = 2 AND id IN ( SELECT menu_id FROM blade_role_menu WHERE role_id IN
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
@@ -142,17 +142,17 @@
     </select>
 
     <select id="grantTree" resultMap="treeNodeResultMap">
-        select id, parent_id, name as title, id as 'value', id as 'key' from blade_menu where is_deleted = 0
+        select id, parent_id, name as title, id as 'value', id as 'key' from as_menu where is_deleted = 0
     </select>
 
     <select id="grantTreeByRole" resultMap="treeNodeResultMap">
-        select id, parent_id, name as title, id as 'value', id as 'key' from blade_menu where is_deleted = 0
+        select id, parent_id, name as title, id as 'value', id as 'key' from as_menu where is_deleted = 0
         and id in ( select menu_id from blade_role_menu where role_id in
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach> )
         or id in (
-        select parent_id from blade_menu where is_deleted = 0
+        select parent_id from as_menu where is_deleted = 0
         and id in ( select menu_id from blade_role_menu where role_id in
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
             #{item}
@@ -166,7 +166,7 @@
         m.path
         FROM
         blade_role_menu rm
-        LEFT JOIN blade_menu m ON rm.menu_id = m.id
+        LEFT JOIN as_menu m ON rm.menu_id = m.id
         LEFT JOIN blade_role r ON rm.role_id = r.id
         WHERE
         rm.role_id IN

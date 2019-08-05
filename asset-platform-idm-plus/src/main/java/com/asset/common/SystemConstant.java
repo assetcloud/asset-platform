@@ -143,6 +143,8 @@ public interface SystemConstant {
      */
     Integer TOP_PARENT_ID = 0;
 
+    Long RESOURCE_TOP_PARENT_ID = 0L;
+
     /**
      * 顶级父节点名称
      */

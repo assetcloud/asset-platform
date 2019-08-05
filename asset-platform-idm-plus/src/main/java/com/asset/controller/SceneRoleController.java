@@ -2,25 +2,27 @@ package com.asset.controller;
 
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
-import com.asset.service.IResourceRoleService;
-import com.asset.service.IRoleGroupService;
-import com.asset.service.ISceneRelationService;
-import com.asset.service.ISceneRoleService;
+import com.asset.common.model.Query;
+import com.asset.service.*;
+import com.asset.utils.Condition;
 import com.asset.utils.Func;
+import com.asset.wrapper.SceneRoleWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springblade.core.tool.api.IResultCode;
+import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @AllArgsConstructor
@@ -34,17 +36,68 @@ public class SceneRoleController {
 
     ISceneRelationService sceneRelationService;
 
+    ISceneService sceneService;
+
+    IDictService dictService;
+
+    @RequestMapping(value = "list/all",method = RequestMethod.GET)
     @ApiOperation(value = "获取所有业务角色", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "page", defaultValue = "1", required = true, dataTypeClass = Integer.class),
             @ApiImplicitParam(value = "size", defaultValue = "20", required = true, dataTypeClass = Integer.class),
-            @ApiImplicitParam(value = "sceneRole", required = true, dataTypeClass = SceneRole.class)
+            @ApiImplicitParam(value = "roleNameZh", dataTypeClass = String.class),
+            @ApiImplicitParam(value = "sceneCode", dataTypeClass = String.class)
     })
-    @RequestMapping(value = "list/all",method = RequestMethod.GET)
-    public RespBean listAll(@RequestParam Integer page, @RequestParam Integer size, @RequestBody SceneRole sceneRole){
-        PageHelper.startPage(page, size);
-        List<SceneRole> roleGroups = sceneRoleService.listAll(sceneRole);
-        return RespBean.data(new PageInfo<>(roleGroups));
+    public R listAll(Query query, @ApiIgnore @RequestParam Map<String, Object> sceneRole){
+        PageHelper.startPage(query.getPage(), query.getSize());
+        List<SceneRole> roles = sceneRoleService.list(Condition.getQueryWrapper(sceneRole, SceneRole.class)
+                .lambda().eq(SceneRole::getStatus, 1)
+                .orderByDesc(SceneRole::getCreatedTime));
+        SceneRoleWrapper sceneRoleWrapper = new SceneRoleWrapper(sceneRoleService, roleGroupService, sceneService, dictService);
+        return R.data(new PageInfo<>(sceneRoleWrapper.listNodeVO(roles)));
+    }
+
+    @GetMapping("detail")
+    @ApiOperation(value = "获取业务角色详情", notes = "已完成")
+    @ApiImplicitParam(name = "id", value = "资源id", defaultValue = "1", required = true, dataType = "int")
+    public R detail(SceneRole sceneRole){
+        SceneRole record = sceneRoleService.getOne(Condition.getQueryWrapper(sceneRole));
+        SceneRoleWrapper sceneRoleWrapper = new SceneRoleWrapper(sceneRoleService, roleGroupService, sceneService, dictService);
+        return R.data(sceneRoleWrapper.entityVO(record));
+    }
+
+    @PostMapping("remove")
+    @ApiOperation(value = "删除业务角色", notes = "已完成")
+    public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
+        Collection<SceneRole> sceneRoles = sceneRoleService.listByIds(Func.toLongList(",", ids));
+        sceneRoles.forEach(record ->{
+            record.setStatus(false);
+            record.setDisableTime(new Date());
+        });
+        return R.status(sceneRoleService.updateBatchById(sceneRoles));
+    }
+
+    @PostMapping("submit")
+    @ApiOperation(value = "新增或修改", notes = "（未完成）传入sceneRole实体")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "roleNameZh", value = "角色名称", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "sceneCode", value = "场景id", paramType = "body", dataType = "string"),
+            @ApiImplicitParam(name = "groupId", value = "分组id", paramType = "body", dataType = "string")
+    })
+    public R submit(@Valid @RequestBody SceneRole sceneRole){
+        if (Func.hasEmpty(sceneRole.getRoleNameZh(), sceneRole.getGroupId(), sceneRole.getSceneCode())){
+            return R.fail(412, "参数错误");
+        }
+        if (Func.isNull(sceneRole.getId())){
+            sceneRole.setCreatedTime(new Date());
+            sceneRole.setEnableTime(new Date());
+            sceneRole.setRoleDefault(0);
+            sceneRole.setRoleName(SystemConstant.SCENE_NORMAL);
+            sceneRole.setStatus(true);
+        } else {
+            sceneRole.setUpdatedTime(new Date());
+        }
+        return R.status(sceneRoleService.saveOrUpdate(sceneRole));
     }
 
     @ApiOperation(value = "获取一个场景下的所有角色", notes = "已完成，根据角色组获取角色（树型结构）")
@@ -53,28 +106,22 @@ public class SceneRoleController {
         return RespBean.data(sceneRoleService.rolesWithGroup(sceneId));
     }
 
-    /**
-     **
-     * 新增角色
-     * @param sceneRole
-     * @return RespBean
-     */
-    @ApiOperation(value = "新增业务级角色", notes = "（已完成）传SceneRole实体类;roleNameZh角色中文名称;groupId所属角色组;sceneCode所属场景编号（以上变量必填）")
-    @PostMapping(value = "add")
-    public RespBean addRole(@RequestBody SceneRole sceneRole) {
-        if (Func.hasEmpty(sceneRole.getRoleNameZh(), sceneRole.getGroupId(), sceneRole.getSceneCode())){
-            return RespBean.error("传入参数错误");
-        }
-        if (sceneRoleService.roleExist(sceneRole)){
-            return RespBean.error("角色名称已被使用，请更换后重试");
-        }
-        sceneRole.setCreatedTime(new Date());
-        sceneRole.setEnableTime(new Date());
-        sceneRole.setRoleDefault(0);
-        sceneRole.setRoleName(SystemConstant.SCENE_NORMAL);
-        sceneRole.setStatus(true);
-        return RespBean.status(sceneRoleService.save(sceneRole));
-    }
+//    @ApiOperation(value = "新增业务级角色", notes = "（已完成）传SceneRole实体类;roleNameZh角色中文名称;groupId所属角色组;sceneCode所属场景编号（以上变量必填）")
+//    @PostMapping(value = "add")
+//    public RespBean addRole(@RequestBody SceneRole sceneRole) {
+//        if (Func.hasEmpty(sceneRole.getRoleNameZh(), sceneRole.getGroupId(), sceneRole.getSceneCode())){
+//            return RespBean.paramError();
+//        }
+//        if (sceneRoleService.roleExist(sceneRole)){
+//            return RespBean.error("角色名称已被使用，请更换后重试");
+//        }
+//        sceneRole.setCreatedTime(new Date());
+//        sceneRole.setEnableTime(new Date());
+//        sceneRole.setRoleDefault(0);
+//        sceneRole.setRoleName(SystemConstant.SCENE_NORMAL);
+//        sceneRole.setStatus(true);
+//        return RespBean.status(sceneRoleService.save(sceneRole));
+//    }
 
     @ApiOperation(value = "添加角色组", notes = "（已完成）传RoleGroup实体;roleGroupName角色组名称;sceneCode场景编号;（以上变量必填）")
     @ApiImplicitParams({
