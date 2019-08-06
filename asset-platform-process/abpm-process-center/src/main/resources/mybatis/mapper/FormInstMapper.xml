@@ -185,9 +185,10 @@
             #{item.taskId,jdbcType=VARCHAR}
         </foreach>
         AND P.proc_inst_id in
-        <foreach item="item" index="index" collection="list" open="(" separator="getFormInst" close=")">
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
             #{item.procInstId,jdbcType=VARCHAR}
         </foreach>
+        AND  P.proc_inst_id = F.proc_inst_id
     </select>
 
 

@@ -15,6 +15,7 @@ import com.asset.javabean.FormInstBO;
 import com.asset.javabean.FormInstVO;
 import com.asset.javabean.TaskBO;
 import com.asset.utils.*;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -431,9 +432,9 @@ public class FormInstService {
         boo.setNodeId(flowableService.getNodeId(taskId));
 
         ProcNodeDO nodeDO = procModelService.getNodeDO(procModelId, boo.getNodeId());
-        if(!nodeDO.getCandidateUser().isEmpty())
+        if(!StringUtils.isEmpty(nodeDO.getCandidateUser()))
             boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
-        if(!nodeDO.getCandidateGroup().isEmpty())
+        if(!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
             boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
 
         boo.setIfJointSign(nodeDO.getIfJointSign());
@@ -539,7 +540,7 @@ public class FormInstService {
             FlowableTaskDO cur = tasks.get(i);
             String procModelId = procInstService.getProcModelId(cur.getProcInstId());
             //这里说明我们在as_proc_inst表中找不到这个在ac_hi_actinst表中存在的流程实例，说明数据库中存在脏的流程实例数据
-            if (procModelId==null || procModelId.isEmpty()){
+            if (StringUtils.isEmpty(procModelId)){
                 logger.error("在as_proc_inst表中找不到这个在act_hi_actinst表中存在的流程实例!没有如下ProcInstID:{}", cur.getProcInstId());
                 throw new ProcException("有运行中流程实例没有与流程中间层绑定，请调用/completeAll，完成所有流程实例后，再重新尝试执行！");
             }
@@ -604,16 +605,15 @@ public class FormInstService {
                                      String taskId){
         String executionID = procInstService.getExecutionId(procInstId);
         String formInstJson = JSONObject.toJSONString(formSheet);
+        FormInstDO inst = new FormInstDO.Builder()
+                .formModelId(formModelId)
+                .procInstId(procInstId)
+                .executionId(executionID)
+                .taskId(taskId)
+                .executor(editor)
+                .formInstValue(formInstValue)
+                .formInstSheetStr(formInstJson).build();
 
-        FormInstDO inst = new FormInstDO(
-                formModelId,
-                procInstId,
-                executionID,
-                taskId,
-                editor,
-                formInstValue,
-                formInstJson
-        );
         String procModelID = formModelService.getProcModelID(formModelId);
 
         if(procModelID.equals(Constants.REGISTER_PROC_ID)||

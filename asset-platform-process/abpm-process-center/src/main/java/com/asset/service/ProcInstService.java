@@ -4,17 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.asset.dao.ProcInstMapper;
 import com.asset.dao.FormInstMapper;
 import com.asset.dao.ProcNodeMapper;
-import com.asset.dto.RegisterDTO;
-import com.asset.dto.SceneSelectDTO;
-import com.asset.entity.FormInstDO;
-import com.asset.entity.ProcInstDO;
-import com.asset.entity.ProcNodeDO;
+import com.asset.dto.*;
+import com.asset.entity.*;
 import com.asset.exception.ProcException;
 import com.asset.form.FormSheet;
 import com.asset.utils.Constants;
 import com.asset.utils.ProcUtils;
 import com.asset.utils.JsonUtils;
-import com.github.pagehelper.Page;
 import org.dom4j.*;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
@@ -58,6 +54,8 @@ public class ProcInstService {
     FormModelService formModelService;
     @Autowired
     ProcModelService procModelService;
+    @Autowired
+    ApplicationService applicationService;
 
 
     public ProcessInstance getProcInst(String procInstId) {
@@ -279,50 +277,137 @@ public class ProcInstService {
      * @param dto
      * @throws ProcException
      */
-    public String[] createRegisterProcByXml(RegisterDTO dto) throws ProcException {
+    public String[] createRegisterProcByXml(RegisterDTO dto) throws Exception {
+        String formModelId = getFormId(Constants.REGISTER_FORM_NAME,Constants.REGISTER_PROC_ID);
+        if(formModelId==null){
+            //1、先创建应用
+            ApplicationDO application = new ApplicationDO.Builder()
+                    .createdTime(new Date())
+                    .applicationName(Constants.APP_ADMIN)
+                    .iconCls(Constants.DEFAULT_ICON_CLS)
+                    .status(Constants.APP_STATUS_ENABLE)
+                    .isPublished(1).build();
+            String appId = applicationService.addApplication(application);
+            //2、借着创建注册审批的表单模型
+            FormModelCreateDTO formModelDTO = new FormModelCreateDTO.Builder()
+                    .app_id(appId)
+                    .created_by(Constants.USER_ADMIN)
+                    .form_name(Constants.REGISTER_FORM_NAME)
+                    .form_sheet(dto.getForm_inst_sheet())
+                    .icon_cls(Constants.DEFAULT_ICON_CLS)
+                    .scene_id(dto.getScene_id())
+                    .build();
+            formModelId = formModelService.createFormModel(formModelDTO).getId();
+            //3、绑定流程模型（绑定一个虚无的值，这个值是用来在后面执行阶段用来标示这个注册审批流程的）
+            formModelService.bindFormAndProcModel(formModelId,Constants.REGISTER_PROC_ID);
+            //4、创建节点信息
+            List<ProcNodeDTO> list = new ArrayList<>();
+            ProcNodeDTO node1 = new ProcNodeDTO.Builder()
+                    .act_id(Constants.REGISTER_PROC_NODE_1)
+                    .act_type(Constants.AS_NODE_APPLY)
+                    .if_joint_sign(Constants.AS_NODE_JOINT_DISABLE).build();
+            ProcNodeDTO node2 = new ProcNodeDTO.Builder()
+                    .act_id(Constants.REGISTER_PROC_NODE_2)
+                    .act_type(Constants.AS_NODE_APPROVE)
+                    .if_joint_sign(Constants.AS_NODE_JOINT_DISABLE)
+                    .candidate_user(dto.getCandidate_user_id()).build();
+            list.add(node1);
+            list.add(node2);
+            ProcModelDTO procModelDTO = new ProcModelDTO.Builder()
+                    .proc_model_id(Constants.REGISTER_PROC_ID)
+                    .proc_node_data(list).build();
+            procModelService.saveProcModelInfo(procModelDTO);
+        }
+        //4、创建流程实例、表单实例
         ProcessInstance procInst = ProcUtils.createProcInstByXml(Constants.REGISTER_BPMN_NAME);
         if (procInst == null) {
             throw new ProcException("无法创建流程实例，请查看本地BPMN资源文件");
         }
         String[] taskIDs = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
-        //3、持久化流程实例
+        //5、持久化ProcInst
         ProcInstDO asProcInstDO = new ProcInstDO(
                 procInst.getProcessInstanceId(),
                 Constants.REGISTER_PROC_ID,
                 "",
                 "",
-                dto.getEditor(),
+                dto.getUser_id(),
                 dto.getForm_inst_value());
         insertProcInst(asProcInstDO);
         ProcUtils.completeTask(taskIDs[0]);
         saveUnCompleteTask(
                 procInst.getProcessInstanceId(),
-                Constants.REGISTER_FORM_ID
+                formModelId
         );
         //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
         String[] urls = formInstService.generateUrls(procInst);
         return urls;
     }
 
-    public String[] createSceneSelectProcByXml(SceneSelectDTO dto) {
+    private String getFormId(String formName, String procModelId) {
+        return formModelService.getRegisterFormId(formName,procModelId);
+    }
+
+
+    public String[] createSceneSelectProcByXml(SceneSelectDTO dto) throws Exception {
+        String formModelId = getFormId(Constants.SCENE_SELECT_FORM_NAME,Constants.SCENE_SELECT_PROC_ID);
+        if(formModelId==null){
+            //1、先创建应用
+            ApplicationDO application = new ApplicationDO.Builder()
+                    .createdTime(new Date())
+                    .applicationName(Constants.APP_ADMIN)
+                    .iconCls(Constants.DEFAULT_ICON_CLS)
+                    .status(Constants.APP_STATUS_ENABLE)
+                    .isPublished(1).build();
+            String appId = applicationService.addApplication(application);
+            //2、借着创建注册审批的表单模型
+            FormModelCreateDTO formModelDTO = new FormModelCreateDTO.Builder()
+                    .app_id(appId)
+                    .created_by(Constants.USER_ADMIN)
+                    .form_name(Constants.SCENE_SELECT_FORM_NAME)
+                    .form_sheet(dto.getForm_inst_sheet())
+                    .icon_cls(Constants.DEFAULT_ICON_CLS)
+                    .scene_id(dto.getScene_id())
+                    .build();
+            formModelId = formModelService.createFormModel(formModelDTO).getId();
+            //3、绑定流程模型（绑定一个虚无的值，这个值是用来在后面执行阶段用来标示这个注册审批流程的）
+            formModelService.bindFormAndProcModel(formModelId,Constants.SCENE_SELECT_PROC_ID);
+            //4、创建节点信息
+            List<ProcNodeDTO> list = new ArrayList<>();
+            ProcNodeDTO node1 = new ProcNodeDTO.Builder()
+                    .act_id(Constants.SCENE_SELECT_PROC_NODE_1)
+                    .act_type(Constants.AS_NODE_APPLY)
+                    .if_joint_sign(Constants.AS_NODE_JOINT_DISABLE).build();
+            ProcNodeDTO node2 = new ProcNodeDTO.Builder()
+                    .act_id(Constants.SCENE_SELECT_PROC_NODE_2)
+                    .act_type(Constants.AS_NODE_APPROVE)
+                    .if_joint_sign(Constants.AS_NODE_JOINT_DISABLE)
+                    .candidate_user(dto.getCandidate_user_id()).build();
+            list.add(node1);
+            list.add(node2);
+            ProcModelDTO procModelDTO = new ProcModelDTO.Builder()
+                    .proc_model_id(Constants.SCENE_SELECT_PROC_ID)
+                    .proc_node_data(list).build();
+            procModelService.saveProcModelInfo(procModelDTO);
+        }
+        //4、创建流程实例、表单实例
         ProcessInstance procInst = ProcUtils.createProcInstByXml(Constants.SCENE_SELECT_BPMN_NAME);
         if (procInst == null) {
             throw new ProcException("无法创建流程实例，请查看本地BPMN资源文件");
         }
         String[] taskIDs = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
-        //3、持久化流程实例
+        //5、持久化ProcInst
         ProcInstDO asProcInstDO = new ProcInstDO(
                 procInst.getProcessInstanceId(),
                 Constants.SCENE_SELECT_PROC_ID,
                 "",
                 "",
-                dto.getEditor(),
+                dto.getUser_id(),
                 dto.getForm_inst_value());
         insertProcInst(asProcInstDO);
         ProcUtils.completeTask(taskIDs[0]);
         saveUnCompleteTask(
                 procInst.getProcessInstanceId(),
-                Constants.SCENE_SELECT_PROC_ID
+                formModelId
         );
         //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
         String[] urls = formInstService.generateUrls(procInst);

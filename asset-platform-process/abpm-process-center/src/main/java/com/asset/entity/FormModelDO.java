@@ -73,5 +73,108 @@ public class FormModelDO implements Serializable {
         this.groupId = groupId;
     }
 
+    private FormModelDO(Builder builder) {
+        setId(builder.id);
+        setSceneId(builder.sceneId);
+        setFormName(builder.formName);
+        setCreatedTime(builder.createdTime);
+        setCreatedBy(builder.createdBy);
+        setLastUpdatedTime(builder.lastUpdatedTime);
+        setLastUpdatedBy(builder.lastUpdatedBy);
+        setVersion(builder.version);
+        setGroupId(builder.groupId);
+        setIconCls(builder.iconCls);
+        setStatus(builder.status);
+        setProcModelId(builder.procModelId);
+        setModelSheetStr(builder.modelSheetStr);
+    }
 
+
+    public static final class Builder {
+        private String id;
+        private String sceneId;
+        private String formName;
+        private Date createdTime;
+        private String createdBy;
+        private Date lastUpdatedTime;
+        private String lastUpdatedBy;
+        private Integer version;
+        private Integer groupId;
+        private String iconCls;
+        private Integer status;
+        private String procModelId;
+        private String modelSheetStr;
+
+        public Builder() {
+        }
+
+        public Builder id(String val) {
+            id = val;
+            return this;
+        }
+
+        public Builder sceneId(String val) {
+            sceneId = val;
+            return this;
+        }
+
+        public Builder formName(String val) {
+            formName = val;
+            return this;
+        }
+
+        public Builder createdTime(Date val) {
+            createdTime = val;
+            return this;
+        }
+
+        public Builder createdBy(String val) {
+            createdBy = val;
+            return this;
+        }
+
+        public Builder lastUpdatedTime(Date val) {
+            lastUpdatedTime = val;
+            return this;
+        }
+
+        public Builder lastUpdatedBy(String val) {
+            lastUpdatedBy = val;
+            return this;
+        }
+
+        public Builder version(Integer val) {
+            version = val;
+            return this;
+        }
+
+        public Builder groupId(Integer val) {
+            groupId = val;
+            return this;
+        }
+
+        public Builder iconCls(String val) {
+            iconCls = val;
+            return this;
+        }
+
+        public Builder status(Integer val) {
+            status = val;
+            return this;
+        }
+
+        public Builder procModelId(String val) {
+            procModelId = val;
+            return this;
+        }
+
+        public Builder modelSheetStr(String val) {
+            modelSheetStr = val;
+            return this;
+        }
+
+        public FormModelDO build() {
+            return new FormModelDO(this);
+        }
+    }
 }

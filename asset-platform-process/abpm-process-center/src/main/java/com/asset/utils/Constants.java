@@ -74,23 +74,27 @@ public interface Constants {
 
   public static final String REQUEST_URL_PREFIX = "localhost:9000";
 
-  //代表int的初始值
-  int EMPTY = -1;
-  String REGISTER_PROC_ID = "register";
-  String REGISTER_FORM_ID = "register";
+  Integer APP_STATUS_ENABLE = 1;
+
+  String REGISTER_PROC_ID = "register";  //指的是流程模型ID
+String REGISTER_FORM_NAME = "注册审批流程";
   String REGISTER_BPMN_NAME = "register";
-  String REGISTER_FORM_SHEET =
-          "{\"config\":{\"labelPosition\":\"right\",\"labelWidth\":100,\"size\":\"small\"},\"list\":[{\"icon\":\"icon-input\",\"key\":\"1562899646000_93408\",\"model\":\"input_1562899646000_93408\",\"name\":\"单行文本\",\"options\":{\"dataType\":\"string\",\"defaultValue\":\"\",\"disabled\":true,\"pattern\":\"\",\"placeholder\":\"\",\"remoteFunc\":\"func_1562899646000_93408\",\"required\":true,\"width\":\"100%\"},\"rules\":[{\"type\":\"string\",\"message\":\"单行文本格式不正确\"},{\"message\":\"单行文本必须填写\",\"required\":true}],\"type\":\"input\"},{\"icon\":\"icon-radio-active\",\"key\":\"1562899657000_17535\",\"model\":\"radio_1562899657000_17535\",\"name\":\"单选框组\",\"options\":{\"defaultValue\":\"\",\"disabled\":true,\"inline\":false,\"options\":[{\"value\":\"选项1\",\"label\":\"选项1\"},{\"value\":\"选项2\",\"label\":\"选项2\"},{\"value\":\"选项3\",\"label\":\"选项3\"}],\"props\":{\"value\":\"value\",\"label\":\"label\"},\"remote\":false,\"remoteFunc\":\"func_1562899657000_17535\",\"remoteOptions\":[],\"required\":true,\"showLabel\":false,\"width\":\"\"},\"rules\":[{\"message\":\"单选框组必须填写\",\"required\":true}],\"type\":\"radio\"},{\"icon\":\"icon-check-box\",\"key\":\"1562899664000_17346\",\"model\":\"checkbox_1562899664000_17346\",\"name\":\"多选框组\",\"options\":{\"defaultValue\":[],\"disabled\":true,\"inline\":false,\"options\":[{\"value\":\"选项1\"},{\"value\":\"选项2\"},{\"value\":\"选项3\"}],\"props\":{\"value\":\"value\",\"label\":\"label\"},\"remote\":false,\"remoteFunc\":\"func_1562899664000_17346\",\"remoteOptions\":[],\"required\":true,\"showLabel\":false,\"width\":\"\"},\"rules\":[{\"message\":\"多选框组必须填写\",\"required\":true}],\"type\":\"checkbox\"}]}";
+  String REGISTER_PROC_NODE_1 = "task1";
+  String REGISTER_PROC_NODE_2 = "task2";
 
   String SCENE_SELECT_PROC_ID = "sceneSelect";
-  String SCENE_SELECT_FORM_ID = "sceneSelect";
+String SCENE_SELECT_FORM_NAME = "工作场景选择流程";
   String SCENE_SELECT_BPMN_NAME = "sceneSelect";
-  String SCENE_SELECT_FORM_SHEET =
-          "{\"config\":{\"labelPosition\":\"right\",\"labelWidth\":100,\"size\":\"small\"},\"list\":[{\"icon\":\"icon-input\",\"key\":\"1562899646000_93408\",\"model\":\"input_1562899646000_93408\",\"name\":\"单行文本\",\"options\":{\"dataType\":\"string\",\"defaultValue\":\"\",\"disabled\":true,\"pattern\":\"\",\"placeholder\":\"\",\"remoteFunc\":\"func_1562899646000_93408\",\"required\":true,\"width\":\"100%\"},\"rules\":[{\"type\":\"string\",\"message\":\"单行文本格式不正确\"},{\"message\":\"单行文本必须填写\",\"required\":true}],\"type\":\"input\"},{\"icon\":\"icon-radio-active\",\"key\":\"1562899657000_17535\",\"model\":\"radio_1562899657000_17535\",\"name\":\"单选框组\",\"options\":{\"defaultValue\":\"\",\"disabled\":true,\"inline\":false,\"options\":[{\"value\":\"选项1\",\"label\":\"选项1\"},{\"value\":\"选项2\",\"label\":\"选项2\"},{\"value\":\"选项3\",\"label\":\"选项3\"}],\"props\":{\"value\":\"value\",\"label\":\"label\"},\"remote\":false,\"remoteFunc\":\"func_1562899657000_17535\",\"remoteOptions\":[],\"required\":true,\"showLabel\":false,\"width\":\"\"},\"rules\":[{\"message\":\"单选框组必须填写\",\"required\":true}],\"type\":\"radio\"},{\"icon\":\"icon-check-box\",\"key\":\"1562899664000_17346\",\"model\":\"checkbox_1562899664000_17346\",\"name\":\"多选框组\",\"options\":{\"defaultValue\":[],\"disabled\":true,\"inline\":false,\"options\":[{\"value\":\"选项1\"},{\"value\":\"选项2\"},{\"value\":\"选项3\"}],\"props\":{\"value\":\"value\",\"label\":\"label\"},\"remote\":false,\"remoteFunc\":\"func_1562899664000_17346\",\"remoteOptions\":[],\"required\":true,\"showLabel\":false,\"width\":\"\"},\"rules\":[{\"message\":\"多选框组必须填写\",\"required\":true}],\"type\":\"checkbox\"}]}";
-
-
+  String SCENE_SELECT_PROC_NODE_1 = "task1";
+  String SCENE_SELECT_PROC_NODE_2 = "task2";
 
 
   String USER_ADMIN = "admin";
   Integer PROC_INST_FINISHED = 3;
+  String APP_ADMIN = "系统自带应用";
+
+  String DEFAULT_ICON_CLS = "默认图标";
+  //代表int的初始值
+  int EMPTY = -1;
+
 }

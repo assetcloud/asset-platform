@@ -42,8 +42,10 @@ public class ApplicationController {
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
     public RespBean addApp(@RequestBody ApplicationDO application){
-        int flag = applicationService.addApplication(application);
-        if (flag < 0){
+        try {
+            applicationService.addApplication(application);
+        } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.info("应用新建失败");
             return RespBean.error("新建失败");
         }

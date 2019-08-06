@@ -2,7 +2,6 @@ package com.asset.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.asset.FlowableApplication;
 import com.asset.dao.AppFormBindMapper;
 import com.asset.dao.FormModelMapper;
 import com.asset.dto.FormModelEditDTO;
@@ -14,10 +13,7 @@ import com.asset.exception.InfoException;
 import com.asset.form.FormSheet;
 import com.asset.javabean.FormModelBO;
 import com.asset.utils.Constants;
-import com.sun.org.apache.regexp.internal.RE;
-import org.flowable.dmn.model.DecisionTableOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -168,41 +164,41 @@ public class FormModelService {
         return formModelMapper.checkFormContain(formModelId) == null?false:true;
     }
 
-    /**
-     * 在系统初始化前插入注册审批的表单数据
-     * @param registerFormId
-     */
-    public void initRegisterFormModel(String registerFormId) throws DatabaseException {
-        FormModelDO formModelDO = new FormModelDO(registerFormId,
-                "注册表单",
-                Constants.USER_ADMIN,
-                1,
-                -1,
-                Constants.FORM_MODEL_BINDED,
-                Constants.REGISTER_PROC_ID,
-                Constants.REGISTER_FORM_SHEET);
-        int status =  formModelMapper.insertSelective(formModelDO);
-        if(status == Constants.DATABASE_FAILED)
-            throw new DatabaseException("插入数据失败！");
-    }
+//    /**
+//     * 在系统初始化前插入注册审批的表单数据
+//     * @param registerFormId
+//     */
+//    public void initRegisterFormModel(String registerFormId) throws DatabaseException {
+//        FormModelDO formModelDO = new FormModelDO(registerFormId,
+//                "注册表单",
+//                Constants.USER_ADMIN,
+//                1,
+//                -1,
+//                Constants.FORM_MODEL_BINDED,
+//                Constants.REGISTER_PROC_ID,
+//                Constants.REGISTER_FORM_SHEET);
+//        int status =  formModelMapper.insertSelective(formModelDO);
+//        if(status == Constants.DATABASE_FAILED)
+//            throw new DatabaseException("插入数据失败！");
+//    }
 
-    /**
-     * 在系统初始化前插入注册审批的表单数据
-     * @param sceneSelectFormId
-     */
-    public void initSceneSelectFormModel(String sceneSelectFormId) throws DatabaseException {
-        FormModelDO formModelDO = new FormModelDO(sceneSelectFormId,
-                "工作场景选择表单",
-                Constants.USER_ADMIN,
-                1,
-                -1,
-                Constants.FORM_MODEL_BINDED,
-                Constants.SCENE_SELECT_PROC_ID,
-                Constants.SCENE_SELECT_FORM_SHEET);
-        int status =  formModelMapper.insertSelective(formModelDO);
-        if(status == Constants.DATABASE_FAILED)
-            throw new DatabaseException("插入数据失败！");
-    }
+//    /**
+//     * 在系统初始化前插入注册审批的表单数据
+//     * @param sceneSelectFormId
+//     */
+//    public void initSceneSelectFormModel(String sceneSelectFormId) throws DatabaseException {
+//        FormModelDO formModelDO = new FormModelDO(sceneSelectFormId,
+//                "工作场景选择表单",
+//                Constants.USER_ADMIN,
+//                1,
+//                -1,
+//                Constants.FORM_MODEL_BINDED,
+//                Constants.SCENE_SELECT_PROC_ID,
+//                Constants.SCENE_SELECT_FORM_SHEET);
+//        int status =  formModelMapper.insertSelective(formModelDO);
+//        if(status == Constants.DATABASE_FAILED)
+//            throw new DatabaseException("插入数据失败！");
+//    }
 
     /**
      * 获取当前表单流程的工作场景ID
@@ -226,5 +222,9 @@ public class FormModelService {
         ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModelsByModelId(formModelIds);
 
         return formModelDOs;
+    }
+
+    public String getRegisterFormId(String formName,String procModelId) {
+        return formModelMapper.getFormId(formName,procModelId);
     }
 }
