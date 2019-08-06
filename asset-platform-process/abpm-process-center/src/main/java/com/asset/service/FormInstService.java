@@ -15,6 +15,7 @@ import com.asset.javabean.FormInstBO;
 import com.asset.javabean.FormInstVO;
 import com.asset.javabean.TaskBO;
 import com.asset.utils.*;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -431,9 +432,9 @@ public class FormInstService {
         boo.setNodeId(flowableService.getNodeId(taskId));
 
         ProcNodeDO nodeDO = procModelService.getNodeDO(procModelId, boo.getNodeId());
-        if(!nodeDO.getCandidateUser().isEmpty())
+        if(!StringUtils.isEmpty(nodeDO.getCandidateUser()))
             boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
-        if(!nodeDO.getCandidateGroup().isEmpty())
+        if(!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
             boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
 
         boo.setIfJointSign(nodeDO.getIfJointSign());
@@ -604,16 +605,15 @@ public class FormInstService {
                                      String taskId){
         String executionID = procInstService.getExecutionId(procInstId);
         String formInstJson = JSONObject.toJSONString(formSheet);
+        FormInstDO inst = new FormInstDO.Builder()
+                .formModelId(formModelId)
+                .procInstId(procInstId)
+                .executionId(executionID)
+                .taskId(taskId)
+                .executor(editor)
+                .formInstValue(formInstValue)
+                .formInstSheetStr(formInstJson).build();
 
-        FormInstDO inst = new FormInstDO(
-                formModelId,
-                procInstId,
-                executionID,
-                taskId,
-                editor,
-                formInstValue,
-                formInstJson
-        );
         String procModelID = formModelService.getProcModelID(formModelId);
 
         if(procModelID.equals(Constants.REGISTER_PROC_ID)||

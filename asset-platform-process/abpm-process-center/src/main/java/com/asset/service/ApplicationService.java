@@ -5,7 +5,9 @@ import com.asset.dao.AppFormBindMapper;
 import com.asset.dao.ApplicationMapper;
 import com.asset.dao.FormModelMapper;
 import com.asset.entity.ApplicationDO;
+import com.asset.exception.DatabaseException;
 import com.asset.javabean.UuidIdGenerator;
+import com.asset.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,14 +37,17 @@ public class ApplicationService {
 
     UuidIdGenerator idGenerator = new UuidIdGenerator();
 
-    public int addApplication(ApplicationDO record){
+    public String addApplication(ApplicationDO record) throws Exception{
         if (record.getId() == null){
             record.setId(idGenerator.generateId());
         }
         record.setCreatedTime(new Date());
         record.setStatus(1);
         record.setIsPublished(0);
-        return applicationMapper.insert(record);
+        int flag = applicationMapper.insert(record);
+        if(flag== Constants.DATABASE_FAILED)
+            throw new DatabaseException("插入数据失败！");
+        return record.getId();
     }
 
     public List<ApplicationDO> getAppList(){

@@ -168,41 +168,41 @@ public class FormModelService {
         return formModelMapper.checkFormContain(formModelId) == null?false:true;
     }
 
-    /**
-     * 在系统初始化前插入注册审批的表单数据
-     * @param registerFormId
-     */
-    public void initRegisterFormModel(String registerFormId) throws DatabaseException {
-        FormModelDO formModelDO = new FormModelDO(registerFormId,
-                "注册表单",
-                Constants.USER_ADMIN,
-                1,
-                -1,
-                Constants.FORM_MODEL_BINDED,
-                Constants.REGISTER_PROC_ID,
-                Constants.REGISTER_FORM_SHEET);
-        int status =  formModelMapper.insertSelective(formModelDO);
-        if(status == Constants.DATABASE_FAILED)
-            throw new DatabaseException("插入数据失败！");
-    }
+//    /**
+//     * 在系统初始化前插入注册审批的表单数据
+//     * @param registerFormId
+//     */
+//    public void initRegisterFormModel(String registerFormId) throws DatabaseException {
+//        FormModelDO formModelDO = new FormModelDO(registerFormId,
+//                "注册表单",
+//                Constants.USER_ADMIN,
+//                1,
+//                -1,
+//                Constants.FORM_MODEL_BINDED,
+//                Constants.REGISTER_PROC_ID,
+//                Constants.REGISTER_FORM_SHEET);
+//        int status =  formModelMapper.insertSelective(formModelDO);
+//        if(status == Constants.DATABASE_FAILED)
+//            throw new DatabaseException("插入数据失败！");
+//    }
 
-    /**
-     * 在系统初始化前插入注册审批的表单数据
-     * @param sceneSelectFormId
-     */
-    public void initSceneSelectFormModel(String sceneSelectFormId) throws DatabaseException {
-        FormModelDO formModelDO = new FormModelDO(sceneSelectFormId,
-                "工作场景选择表单",
-                Constants.USER_ADMIN,
-                1,
-                -1,
-                Constants.FORM_MODEL_BINDED,
-                Constants.SCENE_SELECT_PROC_ID,
-                Constants.SCENE_SELECT_FORM_SHEET);
-        int status =  formModelMapper.insertSelective(formModelDO);
-        if(status == Constants.DATABASE_FAILED)
-            throw new DatabaseException("插入数据失败！");
-    }
+//    /**
+//     * 在系统初始化前插入注册审批的表单数据
+//     * @param sceneSelectFormId
+//     */
+//    public void initSceneSelectFormModel(String sceneSelectFormId) throws DatabaseException {
+//        FormModelDO formModelDO = new FormModelDO(sceneSelectFormId,
+//                "工作场景选择表单",
+//                Constants.USER_ADMIN,
+//                1,
+//                -1,
+//                Constants.FORM_MODEL_BINDED,
+//                Constants.SCENE_SELECT_PROC_ID,
+//                Constants.SCENE_SELECT_FORM_SHEET);
+//        int status =  formModelMapper.insertSelective(formModelDO);
+//        if(status == Constants.DATABASE_FAILED)
+//            throw new DatabaseException("插入数据失败！");
+//    }
 
     /**
      * 获取当前表单流程的工作场景ID
@@ -226,5 +226,9 @@ public class FormModelService {
         ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModelsByModelId(formModelIds);
 
         return formModelDOs;
+    }
+
+    public String getRegisterFormId() {
+        return formModelMapper.getRegisterFormId(Constants.REGISTER_FORM_NAME,Constants.REGISTER_PROC_ID);
     }
 }

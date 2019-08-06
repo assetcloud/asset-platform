@@ -106,7 +106,7 @@ public class UserController extends BaseController {
         String[] urls = null;
         try {
             urls = procInstService.createRegisterProcByXml(dto);
-        } catch (ProcException procException) {
+        } catch (Exception procException) {
             LOGGER.error(procException.getMessage());
             return RespBean.error("创建注册流程出错！");
         }

@@ -312,4 +312,12 @@
     </foreach>
   </select>
 
+  <select id="getRegisterFormId" resultType="java.lang.String">
+    SELECT id
+    FROM as_form_model
+    WHERE
+        form_name = #{registerFormName,jdbcType=VARCHAR} AND
+        proc_model_id = #{registerProcId,jdbcType=VARCHAR}
+  </select>
+
 </mapper>

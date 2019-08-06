@@ -14,22 +14,22 @@ import org.springframework.context.event.ContextRefreshedEvent;
 public class ApplicationStartup implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        ApplicationContext context = contextRefreshedEvent.getApplicationContext();
-        FormModelService formModelService = context.getBean(FormModelService.class);
-        if(!formModelService.checkRegisterFormContain(Constants.REGISTER_FORM_ID,context)){
-            try {
-                formModelService.initRegisterFormModel(Constants.REGISTER_FORM_ID);
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-            }
-        }
-        if(!formModelService.checkRegisterFormContain(Constants.SCENE_SELECT_FORM_ID,context)){
-            try {
-                formModelService.initSceneSelectFormModel(Constants.SCENE_SELECT_FORM_ID);
-            } catch (DatabaseException e) {
-                e.printStackTrace();
-            }
-        }
+//        ApplicationContext context = contextRefreshedEvent.getApplicationContext();
+//        FormModelService formModelService = context.getBean(FormModelService.class);
+//        if(!formModelService.checkRegisterFormContain(Constants.REGISTER_FORM_ID,context)){
+//            try {
+//                formModelService.initRegisterFormModel(Constants.REGISTER_FORM_ID);
+//            } catch (DatabaseException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//        if(!formModelService.checkRegisterFormContain(Constants.SCENE_SELECT_FORM_ID,context)){
+//            try {
+//                formModelService.initSceneSelectFormModel(Constants.SCENE_SELECT_FORM_ID);
+//            } catch (DatabaseException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
     }
 }
