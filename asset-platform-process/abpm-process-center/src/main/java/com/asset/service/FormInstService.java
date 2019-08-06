@@ -540,7 +540,7 @@ public class FormInstService {
             FlowableTaskDO cur = tasks.get(i);
             String procModelId = procInstService.getProcModelId(cur.getProcInstId());
             //这里说明我们在as_proc_inst表中找不到这个在ac_hi_actinst表中存在的流程实例，说明数据库中存在脏的流程实例数据
-            if (procModelId==null || procModelId.isEmpty()){
+            if (StringUtils.isEmpty(procModelId)){
                 logger.error("在as_proc_inst表中找不到这个在act_hi_actinst表中存在的流程实例!没有如下ProcInstID:{}", cur.getProcInstId());
                 throw new ProcException("有运行中流程实例没有与流程中间层绑定，请调用/completeAll，完成所有流程实例后，再重新尝试执行！");
             }
