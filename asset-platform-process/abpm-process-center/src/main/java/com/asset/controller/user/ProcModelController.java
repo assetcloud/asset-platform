@@ -10,6 +10,7 @@ import com.asset.dto.ProcModelDTO;
 import com.asset.javabean.UnBindFormModelVO;
 import com.asset.service.ProcModelService;
 import com.asset.utils.Constants;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -50,14 +51,14 @@ public class ProcModelController {
      */
     @RequestMapping(value = "/authority/save", method = RequestMethod.POST)
     public RespBean saveAuthority(@RequestBody AuthorityDTO authorityDTO) {
-        if (authorityDTO.getProc_model_id().isEmpty())
+        if (StringUtils.isEmpty(authorityDTO.getProc_model_id()))
             return RespBean.error("流程模型数据缺失！");
 
         for (int i = 0; i < authorityDTO.getData().size(); i++) {
             AuthorityItemDTO cur = authorityDTO.getData().get(i);
 
-            if (cur.getAct_id().isEmpty() ||
-                    cur.getForm_item_key().isEmpty() ||
+            if (StringUtils.isEmpty(cur.getAct_id()) ||
+                    StringUtils.isEmpty(cur.getForm_item_key()) ||
                     cur.getAuthority() == null)
                 return RespBean.error("权限数据缺失！");
 
