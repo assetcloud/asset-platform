@@ -10,6 +10,9 @@ public class ProcModelDTO {
     String proc_model_id;
     List<ProcNodeDTO> proc_node_data = new ArrayList<>();
 
+    public ProcModelDTO() {
+    }
+
     private ProcModelDTO(Builder builder) {
         setProc_model_id(builder.proc_model_id);
         setProc_node_data(builder.proc_node_data);

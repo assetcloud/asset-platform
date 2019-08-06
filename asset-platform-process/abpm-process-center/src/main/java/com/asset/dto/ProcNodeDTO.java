@@ -16,6 +16,9 @@ public class ProcNodeDTO {
     String todo_strategy;
     Integer if_joint_sign;
 
+    public ProcNodeDTO() {
+    }
+
     private ProcNodeDTO(Builder builder) {
         setAct_id(builder.act_id);
         setAct_type(builder.act_type);

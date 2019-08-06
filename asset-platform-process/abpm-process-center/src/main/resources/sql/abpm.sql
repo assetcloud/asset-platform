@@ -11,7 +11,7 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 190806:1606
+ Date: 27/06/2019 13:05:31
 */
 
 SET NAMES utf8mb4;
@@ -1772,16 +1772,6 @@ CREATE TABLE `ACT_RU_VARIABLE`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for as_app_form
--- ----------------------------
-DROP TABLE IF EXISTS `as_app_form`;
-CREATE TABLE `as_app_form`  (
-  `id` int(11) NULL DEFAULT NULL,
-  `app_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `form_model_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
 -- Table structure for as_application
 -- ----------------------------
 DROP TABLE IF EXISTS `as_application`;
@@ -1852,15 +1842,6 @@ CREATE TABLE `as_group`  (
   `app_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`group_id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for as_link_form_proc
--- ----------------------------
-DROP TABLE IF EXISTS `as_link_form_proc`;
-CREATE TABLE `as_link_form_proc`  (
-  `proc_model_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `form_model_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for as_node_formitem_authority

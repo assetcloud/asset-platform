@@ -39,8 +39,8 @@ public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcI
     static Logger logger = LoggerFactory.getLogger(AsProcInstServiceImpl.class);
     ProcInstService procInstService;
     FlowableService flowableService;
-    FormProcService formProcService;
     AsProcInstMapper asProcInstMapper;
+    FormModelService formModelService;
 
 
     public List<AdminProcInstVO> listAdminProcInstInfo(QueryWrapper<AsProcInst> queryWrapper){
@@ -61,7 +61,7 @@ public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcI
             else{
                 vo.setStatus(DOs.get(i).getStatus());
             }
-            vo.setBindFormModelId(formProcService.getBindFormModelId(procModelId));
+            vo.setBindFormModelId(formModelService.getFormModelId(procModelId));
 
             VOs.add(vo);
         }
