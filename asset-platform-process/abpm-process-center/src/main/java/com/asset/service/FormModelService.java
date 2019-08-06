@@ -2,7 +2,6 @@ package com.asset.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.asset.FlowableApplication;
 import com.asset.dao.AppFormBindMapper;
 import com.asset.dao.FormModelMapper;
 import com.asset.dto.FormModelEditDTO;
@@ -14,10 +13,7 @@ import com.asset.exception.InfoException;
 import com.asset.form.FormSheet;
 import com.asset.javabean.FormModelBO;
 import com.asset.utils.Constants;
-import com.sun.org.apache.regexp.internal.RE;
-import org.flowable.dmn.model.DecisionTableOrientation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -228,7 +224,7 @@ public class FormModelService {
         return formModelDOs;
     }
 
-    public String getRegisterFormId() {
-        return formModelMapper.getRegisterFormId(Constants.REGISTER_FORM_NAME,Constants.REGISTER_PROC_ID);
+    public String getRegisterFormId(String formName,String procModelId) {
+        return formModelMapper.getFormId(formName,procModelId);
     }
 }
