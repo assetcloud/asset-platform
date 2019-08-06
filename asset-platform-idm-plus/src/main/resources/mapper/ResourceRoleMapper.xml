@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.mapper.ResourceRoleMapper">
+    <delete id="deleteResourceByRid" parameterType="Integer">
+        DELETE FROM as_resource_role WHERE rid=#{rid}
+    </delete>
+    <insert id="addResource">
+        INSERT INTO as_resource_role(mid,rid) VALUES
+        <foreach collection="mids" item="mid" separator=",">
+            (#{mid},#{rid})
+        </foreach>
+    </insert>
+</mapper>

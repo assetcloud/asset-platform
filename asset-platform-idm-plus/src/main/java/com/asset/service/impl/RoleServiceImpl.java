@@ -1,0 +1,72 @@
+package com.asset.service.impl;
+
+
+import com.asset.bean.MenuRole;
+import com.asset.bean.Role;
+import com.asset.mapper.RoleMapper;
+import com.asset.service.IMenuRoleService;
+import com.asset.service.IRoleService;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * <p>
+ *  服务实现类
+ * </p>
+ *
+ * @author hjhu
+ * @since 2019-07-17
+ */
+@Service
+public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
+
+    @Autowired
+    IMenuRoleService menuRoleService;
+
+    @Override
+    public List<Role> getAll() {
+        return baseMapper.selectList(Wrappers.<Role>query().lambda()
+                .eq(Role::getIsDeleted, 0)
+                .orderByAsc(Role::getSort));
+    }
+
+    @Override
+    public boolean grant(@NotEmpty Long roleId, @NotEmpty List<Long> menuIds) {
+        menuRoleService.remove(Wrappers.<MenuRole>update().lambda()
+                .in(MenuRole::getMenuId, menuIds)
+                .eq(MenuRole::getRoleId, roleId));
+        List<MenuRole> menuRoles = new ArrayList<>();
+        menuIds.forEach(menuId -> {
+            MenuRole menuRole = new MenuRole();
+            menuRole.setMenuId(menuId);
+            menuRole.setRoleId(roleId);
+            menuRoles.add(menuRole);
+        });
+        return menuRoleService.saveBatch(menuRoles);
+    }
+
+    @Override
+    public boolean batchDelete(@NotEmpty List<Long> roleIds) {
+        List<Role> roles = new ArrayList<>();
+        roleIds.forEach(roleId->{
+            Role role = new Role();
+            role.setId(roleId);
+            role.setIsDeleted(1);
+            roles.add(role);
+        });
+        return this.updateBatchById(roles);
+    }
+
+    @Override
+    public boolean roleExists(Role role) {
+        return this.count(Wrappers.<Role>query().lambda()
+                .eq(Role::getRoleNameZh, role.getRoleNameZh())
+                .eq(Role::getIsDeleted, 0)) > 0;
+    }
+}

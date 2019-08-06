@@ -5,12 +5,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String id;
     private String staffId;
@@ -39,6 +42,14 @@ public class User implements UserDetails {
     private Date createdTime;
     private String userRemark;
     private List<Role> roles;
+
+    public User (String accountName, String userEmail){
+        this.accountName = accountName;
+        this.userEmail = userEmail;
+    }
+
+    public User() {
+    }
 
     public List<Role> getRoles() {
         return roles;

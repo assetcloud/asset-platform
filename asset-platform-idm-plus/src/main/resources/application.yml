@@ -1,0 +1,68 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://127.0.0.1:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    url: jdbc:mysql://120.77.179.239:3306/asset-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    url: jdbc:mysql://10.1.18.178:3306/asset-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: root
+#    password: Hdu123456
+    password: root
+  redis:
+    database: 0
+    host: 10.1.18.178
+    port: 6379
+    password: 123456
+    lettuce:
+      pool:
+        max-active: 200
+        min-idle: 0
+        max-idle: 8
+        max-wait: -1ms
+    timeout: 3000
+  mail:
+    default-encoding: UTF-8
+    #授权码
+#    host: smtp.qq.com
+#    username: huhaijie1995@foxmail.com
+#    password: eebupkgykzagbfgi
+    password: asset0726
+    host: smtp.yeah.net
+    username: haijiehu@yeah.net
+  freemarker:
+    template-loader-path: classpath:/static/template/
+    suffix: .flt
+    enabled: true
+    cache: false
+    charset: UTF-8
+    content-type: text/html
+    allow-request-override: false
+    check-template-location: true
+    expose-request-attributes: false
+    expose-session-attributes: false
+    expose-spring-macro-helpers: false
+#server:
+#  port: 12345
+server:
+  port: 8083
+  path: http://localhost:8083/
+#mybatis:
+#  mapper-locations: classpath:mapper/*.xml
+##  mapper-locations: classpath:resources/mapper/*Mapper.xml
+#  type-aliases-package: com.asset.**
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    cache-enabled: true
+#    call-setters-on-nulls: true
+mybatis-plus:
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-aliases-package: com.asset.**
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+    call-setters-on-nulls: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      table-prefix: as_

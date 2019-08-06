@@ -5,6 +5,7 @@ import com.asset.common.SystemConstant;
 import com.asset.mapper.OrganTreeMapper;
 import com.asset.mapper.UuidIdGenerator;
 import com.asset.utils.TreeNodeMerger;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.List;
 
 @Service
 @Transactional
-public class OrganService {
+public class OrganService extends ServiceImpl<OrganTreeMapper, OrganTree> {
 
     final static Logger LOGGER = LoggerFactory.getLogger(OrganService.class);
 
@@ -51,6 +52,20 @@ public class OrganService {
         record.setIsDeleted(0);
         return organTreeMapper.insert(record);
     }
+
+    /**
+     * 批量新增节点
+     * @param nodes
+     * @return int
+     */
+    /*public int batchAdd(List<OrganScene> nodes){
+        List<OrganScene> newTree = new ArrayList<>();
+        for (OrganScene node : nodes) {
+            node = organTreeMapper.selectByPrimaryKey(node.getId());
+            newTree.add(node);
+        }
+        return organTreeMapper.batchInsert(newTree);
+    }*/
 
     /**
      * 删除部门或单位节点
@@ -92,9 +107,14 @@ public class OrganService {
      * @param record
      * @return int
      */
-    public int updateNode(OrganTree record){
+    /*public int updateNode(OrganTree record){
         return organTreeMapper.updateByPrimaryKeySelective(record);
+    }*/
+    public int updateNode(OrganTree record){
+        return organTreeMapper.updateById(record);
     }
+
+
 
     /**
      * 获取组织树全部信息

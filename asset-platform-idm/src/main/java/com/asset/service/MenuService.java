@@ -11,7 +11,9 @@ import com.asset.mapper.UuidIdGenerator;
 import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.adapter.GlobalAdvisorAdapterRegistry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,12 +32,15 @@ public class MenuService {
     @Autowired
     MenuMapper menuMapper;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
+
     /**
      * 将应用添加到菜单表中，并赋予给系统管理员和默认角色
      * @param application
      * @return int
      */
-    public int addAppMenu(Application application){
+    public int addAppMenu(Application application) throws Exception {
         Menu menu = new Menu();
         menu.setCode(SystemConstant.CODE_APP);
         menu.setName(application.getApplicationName());
@@ -53,51 +58,29 @@ public class MenuService {
         menu.setCategory(1);
         menu.setGroupId("");
         menu.setGroupName("");
-        if(menuMapper.insert(menu) < 0){
-            return -1;
+        //从redis获取当前场景
+        String currentScene = (String) redisTemplate.opsForValue().get(UserUtils.getCurrentUser().getId());
+        menu.setSceneId(currentScene);
+//        if(menuMapper.findAppMenuByName(application.getApplicationName(), GlobalConstant.CURRENT_SCENE).size() > 0){
+        if(menuMapper.findAppMenuByName(application.getApplicationName(), currentScene).size() > 0){
+            throw new Exception("应用名称已被使用，请更换后再试");
         }
-        if(addMenu4Admin(menu) < 0){
-            return -1;
-        }
+        menuMapper.insert(menu);
+        addMenu4Admin(menu);
         return 1;
     }
-
-    /**
-     * 添加表单类型的菜单，并赋予给系统管理员和默认角色
-     * @param parentMenu
-     * @param formModelInfo
-     * @return
-     *//*
-    public int addFormMenu(Menu parentMenu, FormModelInfo formModelInfo){
-        Menu menu = new Menu();
-        menu.setCategory(2);
-        menu.setParentId(parentMenu.getId());
-        menu.setAddTime(new Date());
-        menu.setIsDeleted(0);
-        menu.setSort(0);
-        menu.setLevel(0);
-        menu.setPath(formModelInfo.getFormModelId());
-        menu.setName(formModelInfo.getFormName());
-        menu.setIconCls(formModelInfo.getIconCls());
-        menu.setCode(SystemConstant.CODE_FORM);
-        if(menuMapper.insert(menu) < 0){
-            return -1;
-        }
-        if(addMenu4Admin(menu) < 0){
-            return -1;
-        }
-        if(addFuncMenu(menu) < 0){
-            return -1;
-        }
-        return 1;
-    }*/
     /**
      * 添加表单类型的菜单，并赋予给系统管理员和默认角色
      * @param parentMenu
      * @param formModelInfo
      * @return int
      */
-    public int addFormMenu(Menu parentMenu, FormModelInfo formModelInfo){
+    public int addFormMenu(Menu parentMenu, FormModelInfo formModelInfo) throws Exception {
+        String currentScene = (String) redisTemplate.opsForValue().get(UserUtils.getCurrentUser().getId());
+//        if(menuMapper.findFormMenuByName(formModelInfo.getFormName(), GlobalConstant.CURRENT_SCENE).size() > 0){
+        if(menuMapper.findFormMenuByName(formModelInfo.getFormName(), currentScene).size() > 0){
+            throw new Exception("表单名称已被使用，请更换后再试");
+        }
         Menu menu = new Menu();
         //1-应用；2-表单；3-表单操作
         menu.setCategory(2);
@@ -113,18 +96,11 @@ public class MenuService {
         // 为表单设置分组
         menu.setGroupId(formModelInfo.getGroupId());
         menu.setGroupName(formModelInfo.getGroupName());
-        //为表单设置默认场景
-        menu.setSceneId(GlobalConstant.CURRENT_SCENE);
-        if(menuMapper.insert(menu) < 0){
-            return -2;
-        }
-        if(addMenu4Admin(menu) < 0){
-            return -3;
-        }
-        if(addFuncMenu(menu) < 0){
-            return -4;
-        }
-        return 1;
+        //为表单设置当前场景，从redis获取
+        menu.setSceneId(currentScene);
+        menuMapper.insert(menu);
+        addMenu4Admin(menu);
+        return addFuncMenu(menu);
     }
 
     /**
@@ -132,14 +108,24 @@ public class MenuService {
      * @param formMenu
      * @return int
      */
-    public int addFuncMenu(Menu formMenu){
-        List<Menu> menuList = SystemConstant.MENU_LIST;
-        for (Menu menu : menuList) {
+    public int addFuncMenu(Menu formMenu) throws CloneNotSupportedException {
+        Menu [] array = SystemConstant.MENUS;
+        List<Menu> menuList = new ArrayList<>();
+        for (Menu value : array) {
+            //操作型菜单深拷贝
+            Menu var = (Menu) value.clone();
+            var.setParentId(formMenu.getId());
+            var.setPath(formMenu.getPath() + var.getPath());
+            var.setIsDeleted(0);
+            var.setAddTime(new Date());
+            menuList.add(var);
+        }
+        /*for (Menu menu : menuList) {
             menu.setParentId(formMenu.getId());
             menu.setPath(formMenu.getPath() + menu.getPath());
             menu.setIsDeleted(0);
             menu.setAddTime(new Date());
-        }
+        }*/
         int flag = menuMapper.batchInsert(menuList);
         if(flag < 0){
             return -1;

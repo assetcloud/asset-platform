@@ -117,4 +117,10 @@ public interface SystemConstant {
     String USERS_NOT_FOUND = "该角色下暂无成员";
 
     String ROLE_NOT_FOUND = "未搜索到相关角色";
+
+    String SCENE_ADMIN = "scene_admin";
+    String SCENE_ADMIN_CH = "组织管理员";
+    String SCENE_DEFAULT = "scene_default";
+    String SCENE_DEFAULT_CH = "终端普通用户";
+
 }
