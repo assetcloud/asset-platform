@@ -62,7 +62,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userMapper.insertSelective(user);
     }
 
-    public List<User> getUsersByRole(Long roleId){
+    public List<User> getUsersByRole(Integer roleId){
         return userMapper.getUsersByRole(roleId);
     }
 
@@ -76,7 +76,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setId(userId);
         user.setStatus(true);
         user.setStage(2);
-        user.setRoleId(SystemConstant.SYSTEM_DEFAULT_USER);
+        user.setRoleId(SystemConstant.DEFAULT_ROLE_ID);
         return userMapper.updateById(user) > 0;
     }
 

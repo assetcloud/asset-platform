@@ -15,7 +15,7 @@
  */
 package com.asset.vo;
 
-import com.asset.bean.Dict;
+import com.asset.bean.Role;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
@@ -29,13 +29,15 @@ import java.util.List;
  * 视图实体类
  *
  * @author hjhu
- * @since 2019-08-01
  */
+
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "DictVO对象", description = "DictVO对象")
-public class DictVO extends Dict implements INode {
+@ApiModel(value = "RoleVO对象", description = "RoleVO对象")
+public class RoleVO extends Role implements INode {
+
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 主键ID
 	 */
@@ -61,7 +63,7 @@ public class DictVO extends Dict implements INode {
 	}
 
 	/**
-	 * 上级字典
+	 * 上级角色
 	 */
 	private String parentName;
 }

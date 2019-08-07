@@ -6,6 +6,7 @@ import com.asset.common.model.UserPageParam;
 import com.asset.service.*;
 import com.asset.utils.Func;
 import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
@@ -18,22 +19,14 @@ import java.util.*;
  */
 
 @RestController
+@AllArgsConstructor
+@Api(value = "终端用户管理", tags = "终端用户")
 public class UserNormalController {
 
-    @Autowired
     private IUserService userService;
 
-    @Autowired
-    private ISceneRoleService sceneRoleService;
-
-    @Autowired
     private ISceneService sceneService;
 
-    @Autowired
-    private IRoleGroupService roleGroupService;
-
-    @Autowired
-    private ISceneRelationService sceneRelationService;
 
     /**
      * 用户登录
@@ -142,8 +135,7 @@ public class UserNormalController {
     @RequestMapping(value = "/userReg", method = RequestMethod.POST)
     @ApiOperation(value = "用户注册"
             , notes = "（已完成）用户注册操作（用户信息用json传输,场景信息用query形式）;accountName账号;pwd密码;realName真实姓名;admin是否为平台管理员;" +
-            "sceneIds场景id数组;"
-            , tags = "用户管理", httpMethod = "POST")
+            "sceneIds场景id数组;")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "accountName", value = "用户账号", required = true, dataType = "String"),
             @ApiImplicitParam(name = "pwd", value = "用户密码", required = true, dataType = "String"),
@@ -163,6 +155,7 @@ public class UserNormalController {
         //用户设置并新增
         user.setStage(1);
         user.setStatus(false);
+        user.setRoleId(SystemConstant.DEFAULT_ROLE_ID);
         user.setCreatedTime(new Date());
         userService.insertUser(user);
         //绑定场景与用户
@@ -172,40 +165,12 @@ public class UserNormalController {
         return RespBean.data(jsonMap);
     }
 
-//    @RequestMapping(value = "/userAudit/{userId}", method = RequestMethod.POST)
-//    @ApiOperation(value = "用户审核", notes = "对注册后的用户进行审核;userId用户id", httpMethod = "POST")
-//    @ApiImplicitParams({
-//            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String")
-//    })
-//    @Transactional
-//    public RespBean userAudit(@PathVariable("userId") String userId){
-//        Staff staff = new Staff();
-//        User user = userService.getUserById(userId);
-//        Map<String, Object> map = staffService.addStaff(staff, user);
-//        //成为员工
-//        int flag = Integer.parseInt(String.valueOf(map.get("flag")));
-//        if(flag < 0){
-//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
-//        }
-//        //更新用户信息
-//        user.setStage(2);
-//        user.setStatus(true);
-//        user.setStaffId(String.valueOf(map.get("staffId")));
-//        flag = userService.updateUser(user);
-//        if (flag < 0){
-//            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
-//        }
-//        return RespBean.ok("用户审核通过");
-//    }
-
-    @ApiOperation(value = "获取用户", notes = "根据角色获取用户", tags = "用户", httpMethod = "GET")
+    @ApiOperation(value = "获取用户", notes = "根据角色获取用户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "Long")
     })
     @RequestMapping(value = "/users/{roleId}", method = RequestMethod.GET)
-    public List<User> userAudit(@PathVariable("roleId") Long roleId){
+    public List<User> userAudit(@PathVariable("roleId") Integer roleId){
         return userService.getUsersByRole(roleId);
     }
 }

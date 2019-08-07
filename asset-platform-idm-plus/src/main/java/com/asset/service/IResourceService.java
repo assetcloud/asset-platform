@@ -1,6 +1,7 @@
 package com.asset.service;
 
 import com.asset.bean.Resource;
+import com.asset.vo.ResourceVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -32,10 +33,9 @@ public interface IResourceService extends IService<Resource> {
     /**
      * 通过角色获取所有资源
      * @param roleId
-     * @param sceneId
      * @return
      */
-    List<Resource> getResourcesByRole(Long roleId, String sceneId);
+    List<String> getResourcesByRole(Long roleId);
 
     /**
      * 通过用户获取应用资源
@@ -123,4 +123,11 @@ public interface IResourceService extends IService<Resource> {
      * @return
      */
     Resource getResourceList(String sceneId);
+
+    /**
+     * 树形结构
+     *
+     * @return
+     */
+    List<ResourceVO> tree(String sceneId);
 }

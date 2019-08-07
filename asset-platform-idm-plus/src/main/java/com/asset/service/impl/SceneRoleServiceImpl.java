@@ -147,6 +147,15 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     }
 
     @Override
+    public List<String> getUsersByRoles(List<Long> roleIds){
+        List<SceneRelation> list = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda()
+                .in(SceneRelation::getRid, roleIds));
+        ArrayList<String> userIds = new ArrayList<>();
+        list.forEach(relation -> userIds.add(relation.getUid()));
+        return userIds;
+    }
+
+    @Override
     @Transactional
     public boolean grant(@NotEmpty Long roleId, @NotEmpty List<Long> resourceIds) {
         resourceRoleService.remove(Wrappers.<ResourceRole>update().lambda()

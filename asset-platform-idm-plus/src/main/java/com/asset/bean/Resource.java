@@ -9,6 +9,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,25 +37,29 @@ public class Resource extends Model<Resource> implements Cloneable{
     private Long id;
     @TableField("parent_id")
     private Long parentId;
+    @NotNull
+    @NotBlank
     private String code;
+    @NotNull
+    @NotBlank
     private String name;
     @TableField("icon_cls")
     private String iconCls;
+    @NotNull
+    @NotBlank
     private String path;
     private Integer level;
     private Integer sort;
+    @NotNull
+    @NotBlank
     private Integer category;
     private String remark;
     /**
      * 表单分组id
      */
     @TableField("group_id")
-    private String groupId;
-    /**
-     * 表单分组名称
-     */
-    @TableField("group_name")
-    private String groupName;
+    private Long groupId;
+
     /**
      * 场景id
      */

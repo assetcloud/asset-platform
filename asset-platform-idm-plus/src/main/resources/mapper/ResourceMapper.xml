@@ -129,14 +129,19 @@
             <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
             <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
             <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
-            <result column="group_id" jdbcType="VARCHAR" property="groupId" />
-            <result column="group_name" jdbcType="VARCHAR" property="groupName" />
             <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
         </collection>
     </resultMap>
+    <resultMap id="treeNodeResultMap" type="com.asset.vo.ResourceVO">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="title" property="name"/>
+        <result column="value" property="id"/>
+        <result column="key" property="id"/>
+    </resultMap>
     <sql id="Base_Column_List">
     id, parent_id, code, name, icon_cls, path, level, sort, category, remark, is_deleted,
-    add_time, remove_time, group_id, group_name, scene_id
+    add_time, remove_time, group_id, scene_id
   </sql>
     <select id="findAppResourceByName" parameterType="java.lang.String" resultMap="BaseResultMap">
     select * from as_resource where name = #{appName} and code = 'app' and is_deleted = 0 and scene_id = #{sceneId}
@@ -181,7 +186,6 @@
       m2.`level` as level2,
       m2.sort as sort2,
       m2.group_id as group_id2,
-      m2.group_name as group_name2,
       m2.scene_id AS sceneId2,
       m3.`id` AS id3,
       m3.`name` AS name3 ,
@@ -264,7 +268,6 @@
       m2.`level` as level2,
       m2.sort as sort2,
       m2.group_id as group_id2,
-      m2.group_name as group_name2,
       m2.scene_id AS sceneId2,
       m3.`id` AS id3,
       m3.`name` AS name3 ,
@@ -287,23 +290,21 @@
 
     <select id="getFormResourcesByApp" resultMap="FormResultMap">
         SELECT
-        m2.*
+        m.*,
+        rg.`name` as group_name
         FROM
-        as_resource m1,
-        as_resource m2,
-        as_resource m3
+        as_resource m
+        LEFT JOIN as_resource_group rg ON m.group_id = rg.id
         WHERE
-        m1.id IN (
-            SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN
+        m.id IN ( SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN
             <foreach collection="param1" item="item" separator="," open="(" close=")">
                 #{item.rid}
             </foreach>
         )
-        AND m1.`id` = m2.`parent_id`
-        AND m2.`id` = m3.`parent_id`
-        AND m3.`is_deleted` = 0
-        AND m2.parent_id = #{param2}
-  </select>
+        AND
+        m.`is_deleted` = 0
+        AND m.parent_id = #{param2}
+    </select>
     <select id="getAppResourcesByUser" resultMap="AppMenuMap" parameterType="java.lang.String">
     SELECT
 	    m1.*
@@ -330,6 +331,12 @@
         select * from as_resource
         where path = #{formModelId}
         and is_deleted = 0
+    </select>
+    <select id="tree" resultMap="treeNodeResultMap" parameterType="java.lang.String">
+        select id, parent_id, name as title, id as 'value', id as 'key' from as_resource where is_deleted = 0 and (category = 1 or category = 2)
+        <if test='sceneId != null and sceneId != ""'>
+            AND scene_id = #{sceneId}
+        </if>
     </select>
     <update id="updateFuncInfo">
         UPDATE as_resource r1

@@ -29,14 +29,14 @@ public interface IRoleService extends IService<Role> {
      * @param menuIds
      * @return
      */
-    boolean grant(Long roleId, List<Long> menuIds);
+    boolean grant(Integer roleId, List<Long> menuIds);
 
     /**
      * 批量删除角色
      * @param roleIds
      * @return boolean
      */
-    boolean batchDelete(List<Long> roleIds);
+    boolean batchDelete(List<Integer> roleIds);
 
     /**
      * 判断角色是否存在
@@ -44,4 +44,11 @@ public interface IRoleService extends IService<Role> {
      * @return
      */
     boolean roleExists(Role role);
+
+    /**
+     * 获取角色名称
+     * @param roleId
+     * @return
+     */
+    Role getRoleName(Integer roleId);
 }

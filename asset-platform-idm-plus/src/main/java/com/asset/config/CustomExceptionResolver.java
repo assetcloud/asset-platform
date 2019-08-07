@@ -1,7 +1,8 @@
-package com.asset.exception;
+package com.asset.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -15,7 +16,7 @@ import java.util.Map;
 /**
  * Created by hjhu on 2019/5/27.
  */
-@Component
+@Configuration
 public class CustomExceptionResolver implements HandlerExceptionResolver {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(CustomExceptionResolver.class);
@@ -28,7 +29,7 @@ public class CustomExceptionResolver implements HandlerExceptionResolver {
         ModelAndView mv = new ModelAndView(new MappingJackson2JsonView());
         Map<String, Object> map = new HashMap<>();
         map.put("status", 500);
-        map.put("msg", "后台系统错误");
+        map.put("msg", "服务器错误");
         mv.addAllObjects(map);
         return mv;
     }

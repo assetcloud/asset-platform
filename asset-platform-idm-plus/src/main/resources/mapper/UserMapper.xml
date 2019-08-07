@@ -20,6 +20,7 @@
     <result column="user_photo" jdbcType="VARCHAR" property="userPhoto" />
     <result column="status" jdbcType="BIT" property="status" />
     <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="role_id" jdbcType="INTEGER" property="roleId" />
     <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
     <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
     <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
@@ -55,7 +56,7 @@
   <select id="loadUserByUsername" resultMap="lazyLoadRoles">
     select account_name, pwd, id, real_name, account_name, nickname, gender, user_birthday, user_email,
     phone_number, certificate_type, certificate_number, authentication_method, account_picture,
-    user_address, user_photo, status, user_type, admin from as_user WHERE account_name = #{accountName} and status = 1 and stage = 2;
+    user_address, user_photo, status, user_type, admin, role_id from as_user WHERE account_name = #{accountName} and status = 1 and stage = 2;
   </select>
   <select id="findUserByUsername" resultMap="BaseResultMap">
     select status, stage from as_user where account_name = #{username};

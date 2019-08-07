@@ -127,6 +127,13 @@ public interface ISceneRoleService extends IService<SceneRole> {
     List<User> getUsersByRole(Long roleId);
 
     /**
+     * 根据角色list获取用户
+     * @param roleIds
+     * @return
+     */
+    List<String> getUsersByRoles(List<Long> roleIds);
+
+    /**
      * 编辑角色权限
      * @param roleId
      * @param resourceIds

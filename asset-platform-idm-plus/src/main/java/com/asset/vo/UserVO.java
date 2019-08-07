@@ -15,53 +15,39 @@
  */
 package com.asset.vo;
 
-import com.asset.bean.Dict;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.asset.bean.User;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springblade.core.tool.node.INode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 视图实体类
  *
  * @author hjhu
- * @since 2019-08-01
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "DictVO对象", description = "DictVO对象")
-public class DictVO extends Dict implements INode {
+@ApiModel(value = "UserVO对象", description = "UserVO对象")
+public class UserVO extends User {
 	private static final long serialVersionUID = 1L;
+
 	/**
 	 * 主键ID
 	 */
-	private Integer id;
+	private String id;
 
 	/**
-	 * 父节点ID
+	 * 角色名
 	 */
-	private Integer parentId;
+	private String roleNameZh;
 
 	/**
-	 * 子孙节点
+	 * 真实姓名
 	 */
-	@JsonInclude(JsonInclude.Include.NON_EMPTY)
-	private List<INode> children;
-
-	@Override
-	public List<INode> getChildren() {
-		if (this.children == null) {
-			this.children = new ArrayList<>();
-		}
-		return this.children;
-	}
+	private String realName;
 
 	/**
-	 * 上级字典
+	 * 性别
 	 */
-	private String parentName;
+	private String sexName;
 }

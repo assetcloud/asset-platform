@@ -6,6 +6,7 @@ import java.util.List;
 
 @ApiModel(value = "表单分组类", description = "表单资源以分组形式展现时需要")
 public class FormGroup {
+
     private String groupId;
     private String groupName;
     private List<Resource> children;
