@@ -9,6 +9,7 @@ import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.*;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
+@Api(tags = "控制端流程实例管理")
 public class AdminProcInstController {
 
 //    @Autowired
@@ -33,8 +35,9 @@ public class AdminProcInstController {
      * @throws Exception
      */
     @GetMapping(value = "/proc_inst/diagram")
+    @ApiOperation(value = "获取流程实例对应的流转图")
     public void genProcessDiagram(HttpServletResponse httpServletResponse,
-                                  @Param("proc_inst_id") String procInstId) throws Exception {
+                                  @ApiParam(value = "流程实例Id",required = true) @Param("proc_inst_id") String procInstId) throws Exception {
         asProcInstService.getProcDiagram(httpServletResponse,procInstId);
     }
 
@@ -42,6 +45,7 @@ public class AdminProcInstController {
      * 修改流程实例状态——激活
      * @param procInstId
      */
+    @ApiOperation(value = "激活流程实例")
     @PostMapping(value = "/proc_inst/activate")
     public void activateProcInst(@Param("proc_inst_id")String procInstId){
         asProcInstService.activateProcInst(procInstId);
@@ -51,6 +55,7 @@ public class AdminProcInstController {
      * 修改流程实例状态——挂起
      * @param procInstId
      */
+    @ApiOperation(value = "挂起流程实例")
     @PostMapping(value = "/proc_inst/suspend")
     public void suspendProcInst(@Param("proc_inst_id")String procInstId){
         asProcInstService.suspendProcInst(procInstId);
@@ -60,6 +65,7 @@ public class AdminProcInstController {
      * 删除流程实例
      * @param procInstId
      */
+    @ApiOperation(value = "删除运行中的流程实例")
     @DeleteMapping(value = "/proc_inst/{proc_inst_id}")
     public void deleteProcInst(@PathVariable("proc_inst_id")String procInstId){
         asProcInstService.deleteProcInst(procInstId);
@@ -69,6 +75,11 @@ public class AdminProcInstController {
      * 展示流程实例信息
      * @return
      */
+    @ApiOperation(value = "获取流程实例列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true ,paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10",required = true , paramType = "query", dataType = "integer")
+    })
     @GetMapping(value = "/proc_inst/list")
     public RespBean show(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
         QueryWrapper<AsProcInst> queryWrapper = Condition.getQueryWrapper(role, AsProcInst.class);

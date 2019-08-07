@@ -114,13 +114,15 @@ public class FormInstService {
         }
 
         //3、数据库表新建流程实例条目,注意这里还需要存储一个叫form_inst_all_value的字段
-        ProcInstDO asProcInstDO = new ProcInstDO(
-                procInst.getProcessInstanceId(),
-                procModelID,
-                defID,
-                deployID,
-                dto.getEditor(),
-                dto.getForm_inst_value());
+        ProcInstDO asProcInstDO = new ProcInstDO.Builder()
+                .procInstId(procInst.getProcessInstanceId())
+                .procModelId(procModelID)
+                .procDefId(defID)
+                .procDeployId(deployID)
+                .committer(dto.getEditor())
+                .status(Constants.PROC_INST_ENABLE)
+                .formInstAllValue(dto.getForm_inst_value()).build();
+
         procInstService.insertProcInst(asProcInstDO);
 
         //至此，相当于把第一个任务节点要填的表单内容存进数据库了，而且绑定的流程实例也存进了数据库，当前流程应当流转到下个任务节点上了

@@ -30,7 +30,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/proc_model")
-@Api(value = "流程模型管理", tags = "流程模型管理")
+@Api(value = "流程模型与流程模型中节点管理", tags = "用户端")
 public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcModel> {
 
     @Autowired
@@ -101,6 +101,7 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
      * 这里是获取未绑定流程模型的表单模型
      */
     @PostMapping(value = "/proc_node_num")
+    @ApiOperation(value = "保存设计界面节点数",notes = "")
     public RespBean saveProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId,
                                     @ApiParam(value = "拖入设计页面的节点数目", required = true) @RequestParam("proc_node_num") Integer procNodeNum) {
         try {
@@ -114,7 +115,8 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
     }
 
     @GetMapping(value = "/proc_node_num")
-    public RespBean getProcNodeNum(@RequestParam("proc_model_id") String procModelId) {
+    @ApiOperation(value = "获取之前保存的设计界面节点数",notes = "")
+    public RespBean getProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId) {
         int num = procModelService.getProcNodeNum(procModelId);
         return RespBean.ok("成功！",num);
     }

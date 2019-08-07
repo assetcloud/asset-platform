@@ -10,6 +10,10 @@ import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/admin")
+@Api(tags = "控制端表单模型管理")
 public class AdminFormModelController {
 
     @Autowired
@@ -39,6 +44,12 @@ public class AdminFormModelController {
      * @return
      */
     @GetMapping("/form_model/list")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "formName", value = "表单名称", required = false , paramType = "query", dataType = "string"),
+            @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true ,paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10",required = true , paramType = "query", dataType = "integer")
+    })
+    @ApiOperation(value = "展示表单模型列表")
     public RespBean getFormModelListPlus(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
         QueryWrapper<AsFormModel> queryWrapper = Condition.getQueryWrapper(role, AsFormModel.class);
         PageHelper.startPage(query.getPage(),query.getSize());

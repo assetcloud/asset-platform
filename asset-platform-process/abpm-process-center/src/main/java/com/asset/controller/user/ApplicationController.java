@@ -20,7 +20,8 @@ import java.util.List;
  * @version 1.0_190720
  */
 @RestController
-    @RequestMapping("/application")
+@RequestMapping("/application")
+@Api(value = "应用管理",tags = "用户端")
 public class ApplicationController {
 
     final private static Logger LOGGER = LoggerFactory.getLogger(ApplicationController.class);

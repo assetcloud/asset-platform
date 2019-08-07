@@ -90,11 +90,17 @@ String SCENE_SELECT_FORM_NAME = "工作场景选择流程";
 
 
   String USER_ADMIN = "admin";
-  Integer PROC_INST_FINISHED = 3;
   String APP_ADMIN = "系统自带应用";
 
   String DEFAULT_ICON_CLS = "默认图标";
   //代表int的初始值
   int EMPTY = -1;
+
+
+  Integer PROC_INST_ENABLE = 0;  //激活状态
+  Integer PROC_INST_SUSPENDED = 1;  //被挂起
+  Integer PROC_INST_DELETED = 2;  //被删除
+  Integer PROC_INST_FINISHED = 3;   // 已完成
+
 
 }

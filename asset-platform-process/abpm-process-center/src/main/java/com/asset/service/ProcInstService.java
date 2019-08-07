@@ -325,13 +325,13 @@ public class ProcInstService {
         }
         String[] taskIDs = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
         //5、持久化ProcInst
-        ProcInstDO asProcInstDO = new ProcInstDO(
-                procInst.getProcessInstanceId(),
-                Constants.REGISTER_PROC_ID,
-                "",
-                "",
-                dto.getUser_id(),
-                dto.getForm_inst_value());
+        ProcInstDO asProcInstDO = new ProcInstDO.Builder()
+                .procInstId(procInst.getProcessInstanceId())
+                .procModelId(Constants.REGISTER_PROC_ID)
+                .committer(dto.getUser_id())
+                .status(Constants.PROC_INST_ENABLE)
+                .formInstAllValue(dto.getForm_inst_value()).build();
+
         insertProcInst(asProcInstDO);
         ProcUtils.completeTask(taskIDs[0]);
         saveUnCompleteTask(
@@ -396,13 +396,13 @@ public class ProcInstService {
         }
         String[] taskIDs = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
         //5、持久化ProcInst
-        ProcInstDO asProcInstDO = new ProcInstDO(
-                procInst.getProcessInstanceId(),
-                Constants.SCENE_SELECT_PROC_ID,
-                "",
-                "",
-                dto.getUser_id(),
-                dto.getForm_inst_value());
+        ProcInstDO asProcInstDO = new ProcInstDO.Builder()
+                .procInstId(procInst.getProcessInstanceId())
+                .procModelId(Constants.SCENE_SELECT_PROC_ID)
+                .committer(dto.getUser_id())
+                .status(Constants.PROC_INST_ENABLE)
+                .formInstAllValue(dto.getForm_inst_value()).build();
+
         insertProcInst(asProcInstDO);
         ProcUtils.completeTask(taskIDs[0]);
         saveUnCompleteTask(
@@ -415,7 +415,7 @@ public class ProcInstService {
     }
 
     public void insertProcInst(ProcInstDO procInstDO) {
-        procInstMapper.insert(procInstDO);
+        procInstMapper.insertSelective(procInstDO);
     }
 
     /**

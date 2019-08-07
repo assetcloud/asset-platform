@@ -26,7 +26,7 @@
         last_updated_time,
         last_updated_by,
         version,
-        model_sheet
+        model_sheet,
         group_id,
         icon_cls,
         status,
@@ -234,7 +234,7 @@
           AND proc_model_id = #{procId,jdbcType=VARCHAR}
     </select>
 
-    <select id="getFormModelIDs" parameterType="java.lang.String">
+    <select id="getFormModelIDs" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT id
         FROM as_form_model
         WHERE app_id = #{appId,jdbcType=VARCHAR}
