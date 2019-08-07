@@ -70,4 +70,6 @@ public class AsFormModel implements Serializable {
      * 当前表单流程模型所属的工作场景
      */
     private String sceneId;
+
+    private String appId;
 }

@@ -204,7 +204,7 @@ public class FormModelService {
     public List<FormModelDO> getAdminApplicationFormModel(String appId) {
         List<String> formModelIds = getFormModels(appId);
         if(formModelIds==null||formModelIds.size()==0)
-            throw new InfoException("应用ID不存在，请检查");
+            return null;
 
         ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModelsByModelId(formModelIds);
 

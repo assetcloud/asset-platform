@@ -28,8 +28,14 @@ public class AdminFormModelVO {
     private Integer status;
     private String procModelId;
     private String modelSheetStr;
+    private String appId;
+
     @ApiModelProperty(value = "表单模型创建时间：时间戳格式")
     private long createdTime;
+
+    private String appName;
+    private String groupName;
+
 
     public AdminFormModelVO() {
     }
