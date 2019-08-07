@@ -53,7 +53,7 @@ public class ProcInstService {
     @Autowired
     FormModelService formModelService;
     @Autowired
-    ProcModelService procModelService;
+    ProcNodeService procNodeService;
     @Autowired
     ApplicationService applicationService;
 
@@ -92,7 +92,7 @@ public class ProcInstService {
                 String procModelId = formModelService.getProcModelID(formModelId);
                 String nodeId = flowableService.getNodeId(taskIDs[i]);
                 //在存进去之前，就必须要求这个节点的节点类型是确定的
-                formInst.setNodeType(procModelService.getNodeType(procModelId, nodeId));
+                formInst.setNodeType(procNodeService.getNodeType(procModelId, nodeId));
                 formInstService.saveUnCompleteFormInst(formInst);
             }
         }
@@ -195,7 +195,7 @@ public class ProcInstService {
      */
     public Document handleJointXml(String procModelId, Document document) throws DocumentException {
         //1、先获取所有node节点
-        List<ProcNodeDO> nodeDOs = procModelService.getNodeDOList(procModelId);
+        List<ProcNodeDO> nodeDOs = procNodeService.getNodeDOList(procModelId);
         for (ProcNodeDO nodeDO : nodeDOs) {
             //当前节点需要增加会签标签
             if (nodeDO.getIfJointSign() != Constants.AS_NODE_JOINT_DISABLE) {
@@ -316,7 +316,7 @@ public class ProcInstService {
             ProcModelDTO procModelDTO = new ProcModelDTO.Builder()
                     .proc_model_id(Constants.REGISTER_PROC_ID)
                     .proc_node_data(list).build();
-            procModelService.saveProcModelInfo(procModelDTO);
+            procNodeService.saveProcModelInfo(procModelDTO);
         }
         //4、创建流程实例、表单实例
         ProcessInstance procInst = ProcUtils.createProcInstByXml(Constants.REGISTER_BPMN_NAME);
@@ -387,7 +387,7 @@ public class ProcInstService {
             ProcModelDTO procModelDTO = new ProcModelDTO.Builder()
                     .proc_model_id(Constants.SCENE_SELECT_PROC_ID)
                     .proc_node_data(list).build();
-            procModelService.saveProcModelInfo(procModelDTO);
+            procNodeService.saveProcModelInfo(procModelDTO);
         }
         //4、创建流程实例、表单实例
         ProcessInstance procInst = ProcUtils.createProcInstByXml(Constants.SCENE_SELECT_BPMN_NAME);
