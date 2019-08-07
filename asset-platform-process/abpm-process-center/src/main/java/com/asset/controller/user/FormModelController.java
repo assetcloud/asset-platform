@@ -24,7 +24,7 @@ import java.util.List;
  * @time 190522 1056
  */
 @RestController
-@Api(value = "表单模型接口")
+@Api(tags = "表单模型管理")
 public class FormModelController {
 
     final static Logger LOGGER = LoggerFactory.getLogger(FormModelController.class);

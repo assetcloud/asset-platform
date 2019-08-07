@@ -2,10 +2,8 @@ package com.asset.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.asset.dao.AppFormBindMapper;
 import com.asset.dao.FormModelMapper;
 import com.asset.dto.FormModelEditDTO;
-import com.asset.entity.AppFormBindDO;
 import com.asset.entity.FormModelDO;
 import com.asset.dto.FormModelCreateDTO;
 import com.asset.exception.DatabaseException;
@@ -13,6 +11,8 @@ import com.asset.exception.InfoException;
 import com.asset.form.FormSheet;
 import com.asset.javabean.FormModelBO;
 import com.asset.utils.Constants;
+import com.sun.org.apache.regexp.internal.RE;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -30,11 +31,8 @@ public class FormModelService {
     @Autowired
     FormModelMapper formModelMapper;
     @Autowired
-    AppFormBindMapper appFormBindMapper;
-    @Autowired
     ApplicationService applicationService;
-    @Autowired
-    FormProcService formProcService;
+
 
 
     /**
@@ -43,27 +41,14 @@ public class FormModelService {
      * @return
      */
     public FormModelBO createFormModel(FormModelCreateDTO dto) throws DatabaseException {
-        //插入数据
+        //插入数据+绑定AppId
         FormModelDO formModelDO = insertFormModelDO(dto);
-        //绑定AppId
-        bindAppAndForm(formModelDO.getId(),dto.getApp_id());
         //返回刚刚插入的这条数据
-        return new FormModelBO(formModelMapper.getFormModel(formModelDO.getId()));
+        FormModelBO bo = new FormModelBO();
+        BeanUtils.copyProperties(formModelDO,bo);
+        return bo;
     }
 
-    /**
-     * 绑定表单模型和APP
-     * @param formModelID
-     * @param appId
-     * @throws DatabaseException
-     */
-    private void bindAppAndForm(String formModelID,String appId) throws DatabaseException {
-        //表单模型与App作绑定
-        AppFormBindDO record = new AppFormBindDO(appId,formModelID);
-        int status =  appFormBindMapper.insert(record);
-        if(status == Constants.DATABASE_FAILED)
-            throw new DatabaseException("插入数据失败！");
-    }
 
     /**
      * 插入一条新的表单模型数据，初始表单的组ID为-1，未绑定流程模型ID，所以值为null
@@ -72,17 +57,19 @@ public class FormModelService {
      */
     public FormModelDO insertFormModelDO(FormModelCreateDTO dto) throws DatabaseException {
         String formSheetStr = JSONObject.toJSONString(dto.getForm_sheet());
-        FormModelDO formModelDO = new FormModelDO(dto.getForm_name(),
-                dto.getCreated_by(),
-                dto.getIcon_cls(),
-                Constants.FORM_MODEL_UNBIND,
-                formSheetStr
-        );
-        formModelDO.setSceneId(dto.getScene_id());
-        formModelDO.setGroupId(-1);
-        formModelDO.setProcModelId("null");
-        int status =  formModelMapper.insertSelective(formModelDO);
-        if(status == Constants.DATABASE_FAILED)
+        FormModelDO formModelDO = new FormModelDO.Builder()
+                .formName(dto.getForm_name())
+                .createdBy(dto.getCreated_by())
+                .iconCls(dto.getIcon_cls())
+                .status(Constants.FORM_MODEL_UNBIND)
+                .modelSheetStr(formSheetStr)
+                .appId(dto.getApp_id())
+                .sceneId(dto.getScene_id())
+                .groupId(-1)
+                .createdTime(new Date())
+                .version(1).build();
+        int flag =  formModelMapper.insertSelective(formModelDO);
+        if(flag == Constants.DATABASE_FAILED)
             throw new DatabaseException("插入数据失败！");
         return formModelDO;
     }
@@ -93,7 +80,6 @@ public class FormModelService {
     public void bindFormAndProcModel(String formModelId,String procModelId) throws DatabaseException {
         //在表单模型表中绑定流程模型ID
         int status = formModelMapper.bindFormAndProcModel(formModelId,procModelId);
-        formProcService.bindFormAndProc(formModelId,procModelId);
         if(status == Constants.DATABASE_FAILED)
             throw new DatabaseException("插入数据失败！");
     }
@@ -119,21 +105,22 @@ public class FormModelService {
      * @return
      */
     public List<FormModelBO> getFormModels(String appId, int groupId, int formStatus) {
-        List<String> formModelIds = applicationService.getFormModels(appId);
+        List<String> formModelIds = getFormModels(appId);
         if(formModelIds==null||formModelIds.size()==0)
             throw new InfoException("应用ID不存在，请检查");
         ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
 
         List<FormModelBO> boList = new ArrayList<>();
         for (int i = 0; i < formModelDOs.size(); i++) {
-            FormModelBO bo = new FormModelBO(formModelDOs.get(i));
+            FormModelBO bo = new FormModelBO();
+            BeanUtils.copyProperties(formModelDOs.get(i),bo);
             boList.add(bo);
         }
         return boList;
     }
 
     public List<FormModelDO> getFormModelDOs(String appId, int groupId, int formStatus){
-        List<String> formModelIds = applicationService.getFormModels(appId);
+        List<String> formModelIds = getFormModels(appId);
         ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
         return formModelDOs;
     }
@@ -215,7 +202,7 @@ public class FormModelService {
     }
 
     public List<FormModelDO> getAdminApplicationFormModel(String appId) {
-        List<String> formModelIds = applicationService.getFormModels(appId);
+        List<String> formModelIds = getFormModels(appId);
         if(formModelIds==null||formModelIds.size()==0)
             throw new InfoException("应用ID不存在，请检查");
 
@@ -226,5 +213,22 @@ public class FormModelService {
 
     public String getRegisterFormId(String formName,String procModelId) {
         return formModelMapper.getFormId(formName,procModelId);
+    }
+
+    /**
+     * 获取一个 App应用下 所有表单模型Id数组
+     * @return
+     */
+    public List<String> getFormModels(String appId) {
+        return formModelMapper.getFormModelIDs(appId);
+    }
+
+    /**
+     * 因为流程模型与表单模型是一对一的，所以可以由流程模型Id获取对应的表单模型Id
+     * @param procModelId
+     * @return
+     */
+    public String getFormModelId(String procModelId) {
+        return formModelMapper.getFormModelId(procModelId);
     }
 }

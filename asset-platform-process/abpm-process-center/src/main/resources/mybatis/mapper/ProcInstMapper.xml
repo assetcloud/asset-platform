@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asset.dao.ProcInstMapper">
   <resultMap id="BaseResultMap" type="com.asset.entity.ProcInstDO">
-    <id column="proc_inst_id" jdbcType="VARCHAR" property="procInstId" />
+    <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="proc_model_id" jdbcType="VARCHAR" property="procModelId" />
     <result column="proc_def_id" jdbcType="VARCHAR" property="procDefId" />
     <result column="proc_deploy_id" jdbcType="VARCHAR" property="procDeployId" />
@@ -13,7 +13,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    proc_inst_id,
+    id,
     proc_model_id,
     proc_def_id,
     proc_deploy_id,
@@ -27,23 +27,17 @@
     select
     <include refid="Base_Column_List" />
     from as_proc_inst
-    where proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+    where id = #{procInstId,jdbcType=VARCHAR}
   </select>
 
   <update id="deleteByPrimaryKey" parameterType="java.lang.String">
     update as_proc_inst
     SET status = 2
-    where proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+    where id = #{procInstId,jdbcType=VARCHAR}
   </update>
   <insert id="insert" parameterType="com.asset.entity.ProcInstDO">
     insert into as_proc_inst (
-      proc_inst_id,
-      proc_model_id,
-      proc_def_id,
-      proc_deploy_id,
-      commit_time,
-      committer,
-      form_inst_all_value
+      <include refid="Base_Column_List"></include>
       )
     values (
       #{procInstId,jdbcType=VARCHAR},
@@ -55,53 +49,31 @@
       #{formInstAllValue,jdbcType=LONGVARCHAR}
       )
   </insert>
+
   <insert id="insertSelective" parameterType="com.asset.entity.ProcInstDO">
     insert into as_proc_inst
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="procInstId != null">
-        proc_inst_id,
-      </if>
-      <if test="procModelId != null">
-        proc_model_id,
-      </if>
-      <if test="procDefId != null">
-        proc_def_id,
-      </if>
-      <if test="procDeployId != null">
-        proc_deploy_id,
-      </if>
-
-        commit_time,
-
-      <if test="committer != null">
-        committer,
-      </if>
-      <if test="committer != null">
-        form_inst_all_value,
-      </if>
+      <if test="procInstId != null"> id,</if>
+      <if test="procModelId != null">proc_model_id,</if>
+      <if test="procDefId != null">proc_def_id, </if>
+      <if test="procDeployId != null">proc_deploy_id,</if>
+      commit_time,
+      <if test="committer != null">committer,</if>
+      <if test="formInstAllValue != null">form_inst_all_value,</if>
+      <if test="status != null">status,</if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="procInstId != null">
-        #{procInstId,jdbcType=VARCHAR},
-      </if>
-      <if test="procModelId != null">
-        #{procModelId,jdbcType=VARCHAR},
-      </if>
-      <if test="procDefId != null">
-        #{procDefId,jdbcType=VARCHAR},
-      </if>
-      <if test="procDeployId != null">
-        #{procDeployId,jdbcType=VARCHAR},
-      </if>
+      <if test="procInstId != null">#{procInstId,jdbcType=VARCHAR},</if>
+      <if test="procModelId != null"> #{procModelId,jdbcType=VARCHAR},</if>
+      <if test="procDefId != null">#{procDefId,jdbcType=VARCHAR}, </if>
+      <if test="procDeployId != null">#{procDeployId,jdbcType=VARCHAR},</if>
       now(),
-      <if test="committer != null">
-        #{committer,jdbcType=VARCHAR},
-      </if>
-      <if test="formInstAllValue != null">
-        #{formInstAllValue,jdbcType=VARCHAR},
-      </if>
+      <if test="committer != null">#{committer,jdbcType=VARCHAR},</if>
+      <if test="formInstAllValue != null">#{formInstAllValue,jdbcType=VARCHAR},</if>
+      <if test="status != null">#{status,jdbcType=INTEGER},</if>
     </trim>
   </insert>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.asset.entity.ProcInstDO">
     update as_proc_inst
     <set>
@@ -124,7 +96,7 @@
         committer = #{formInstAllValue,jdbcType=VARCHAR},
       </if>
     </set>
-    where proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+    where id = #{procInstId,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.asset.entity.ProcInstDO">
     update as_proc_inst
@@ -135,37 +107,37 @@
       committer = #{committer,jdbcType=VARCHAR},
       formInstAllValue = #{formInstAllValue,jdbcType=VARCHAR}
     where
-    proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+    id = #{procInstId,jdbcType=VARCHAR}
   </update>
 
   <select id="getProcModelId" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT proc_model_id
     FROM as_proc_inst
-    WHERE proc_inst_id = #{procInstId,jdbcType = VARCHAR}
+    WHERE id = #{procInstId,jdbcType = VARCHAR}
   </select>
   <select id="getFormInstAllValue" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT form_inst_all_value
     FROM as_proc_inst
-    WHERE proc_inst_id = #{procInstId,jdbcType = VARCHAR}
+    WHERE id = #{procInstId,jdbcType = VARCHAR}
   </select>
   <update id="updateFormValueForAll" parameterType="java.lang.String">
     UPDATE as_proc_inst
     SET form_inst_all_value = #{newOriginalValue,jdbcType = VARCHAR}
-    WHERE proc_inst_id = #{procInstId,jdbcType = VARCHAR}
+    WHERE id = #{procInstId,jdbcType = VARCHAR}
   </update>
 
   <select id="getDefId" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT proc_def_id
     FROM as_proc_inst
     WHERE
-    proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+    id = #{procInstId,jdbcType=VARCHAR}
   </select>
 
   <select id="getCommitter" parameterType="java.lang.String" resultType="java.lang.String">
     SELECT committer
     FROM as_proc_inst
     WHERE
-    proc_inst_id = #{procInstId,jdbcType=VARCHAR}
+    id = #{procInstId,jdbcType=VARCHAR}
   </select>
 
   <select id="listProcInsts" resultMap="BaseResultMap">

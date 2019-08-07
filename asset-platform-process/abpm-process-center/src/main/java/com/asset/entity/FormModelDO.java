@@ -12,7 +12,6 @@ import java.util.Date;
 @Data
 public class FormModelDO implements Serializable {
     private String id;
-    private String sceneId;
     private String formName;
     private Date createdTime;
     private String createdBy;
@@ -24,7 +23,8 @@ public class FormModelDO implements Serializable {
     private Integer status;
     private String procModelId;
     private String modelSheetStr;
-
+    private String sceneId;
+    private String appId;
     public FormModelDO() {
     }
 
@@ -87,6 +87,7 @@ public class FormModelDO implements Serializable {
         setStatus(builder.status);
         setProcModelId(builder.procModelId);
         setModelSheetStr(builder.modelSheetStr);
+        setAppId(builder.appId);
     }
 
 
@@ -104,6 +105,7 @@ public class FormModelDO implements Serializable {
         private Integer status;
         private String procModelId;
         private String modelSheetStr;
+        private String appId;
 
         public Builder() {
         }
@@ -173,7 +175,14 @@ public class FormModelDO implements Serializable {
             return this;
         }
 
+        public Builder appId(String val){
+            appId = val;
+            return this;
+        }
+
         public FormModelDO build() {
+            IDGenerator generator = new UuidIdGenerator();
+            id = generator.generateID();
             return new FormModelDO(this);
         }
     }

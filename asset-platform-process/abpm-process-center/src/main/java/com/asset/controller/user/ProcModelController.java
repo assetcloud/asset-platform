@@ -1,15 +1,20 @@
 package com.asset.controller.user;
 
+import com.asset.dao.AsProcModelMapper;
 import com.asset.dao.FormAuthorityMapper;
 import com.asset.entity.ActAuthority;
+import com.asset.entity.AsProcModel;
 import com.asset.exception.DatabaseException;
 import com.asset.javabean.RespBean;
 import com.asset.dto.AuthorityItemDTO;
 import com.asset.dto.AuthorityDTO;
 import com.asset.dto.ProcModelDTO;
 import com.asset.javabean.UnBindFormModelVO;
-import com.asset.service.ProcModelService;
+import com.asset.service.ProcNodeService;
+import com.asset.service.impl.AsProcModelServiceImpl;
 import com.asset.utils.Constants;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,28 +22,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
+ * 负责处理流程模型所有内容的请求
+ *
  * @author YBY
- * @time 190720
  * @version 1.0_190720
+ * @time 190720
  */
 @RestController
 @RequestMapping("/proc_model")
-public class ProcModelController {
+@Api(value = "流程模型与流程模型中节点管理", tags = "用户端")
+public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcModel> {
 
     @Autowired
-    ProcModelService procModelService;
+    ProcNodeService procNodeService;
     @Autowired
     FormAuthorityMapper authorityMapper;
+    @Autowired
+    AsProcModelServiceImpl procModelService;
 
     /**
      * 保存功能性节点信息，这里不管是创建还是修改都用同一个接口
+     *
      * @param dto
      * @return
      */
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public RespBean editAsProcModel(@RequestBody ProcModelDTO dto) {
         try {
-            procModelService.saveProcModelInfo(dto);
+            procNodeService.saveProcModelInfo(dto);
         } catch (DatabaseException databaseException) {
             databaseException.printStackTrace();
             return RespBean.error("插入数据失败！");
@@ -79,12 +90,36 @@ public class ProcModelController {
      * 这里是获取未绑定流程模型的表单模型
      */
     @GetMapping(value = "/unbind_form_model")
-    public RespBean getUnbindFormModels(){
-        List<UnBindFormModelVO> unbindFormModels = procModelService.getUnbindFormModels();
+    public RespBean getUnbindFormModels() {
+        List<UnBindFormModelVO> unbindFormModels = procNodeService.getUnbindFormModels();
 
-        return RespBean.ok("",unbindFormModels);
+        return RespBean.ok("", unbindFormModels);
     }
 
+    /**
+     * 流程模型与表单模型绑定分离，可以在流程模型设计阶段选择未绑定流程模型的表单模型
+     * 这里是获取未绑定流程模型的表单模型
+     */
+    @PostMapping(value = "/proc_node_num")
+    @ApiOperation(value = "保存设计界面节点数",notes = "")
+    public RespBean saveProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId,
+                                    @ApiParam(value = "拖入设计页面的节点数目", required = true) @RequestParam("proc_node_num") Integer procNodeNum) {
+        try {
+            procModelService.saveProcNodeNum(procModelId, procNodeNum);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespBean.error(e.getMessage());
+
+        }
+        return RespBean.ok("插入成功！");
+    }
+
+    @GetMapping(value = "/proc_node_num")
+    @ApiOperation(value = "获取之前保存的设计界面节点数",notes = "")
+    public RespBean getProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId) {
+        int num = procModelService.getProcNodeNum(procModelId);
+        return RespBean.ok("成功！",num);
+    }
 
 
 }

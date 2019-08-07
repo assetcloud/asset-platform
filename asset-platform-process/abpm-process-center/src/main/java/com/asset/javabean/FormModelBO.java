@@ -19,19 +19,6 @@ public class FormModelBO {
     private Integer status;
     private String procModelId;
     private String modelSheetStr;
-
-    public FormModelBO(FormModelDO formModel) {
-        this.id = formModel.getId();
-        this.formName = formModel.getFormName();
-        this.createdTime = formModel.getCreatedTime();
-        this.createdBy = formModel.getCreatedBy();
-        this.lastUpdatedTime = formModel.getLastUpdatedTime();
-        this.lastUpdatedBy = formModel.getLastUpdatedBy();
-        this.version = formModel.getVersion();
-        this.groupId = formModel.getGroupId();
-        this.iconCls = formModel.getIconCls();
-        this.status = formModel.getStatus();
-        this.procModelId = formModel.getProcModelId();
-        this.modelSheetStr = formModel.getModelSheetStr();
-    }
+    private String sceneId;
+    private String appId;
 }

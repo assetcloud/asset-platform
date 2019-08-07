@@ -2,14 +2,9 @@ package com.asset.javabean;
 
 import com.asset.entity.FormInstDO;
 import com.asset.entity.ProcNodeDO;
-import com.asset.service.FlowableService;
-import com.asset.service.FormModelService;
-import com.asset.service.ProcInstService;
-import com.asset.service.ProcModelService;
 import com.asset.utils.Constants;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 

@@ -12,6 +12,9 @@ import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +36,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
+@Api(tags = "控制端流程模型管理")
 public class AdminProcModelController {
 
     ActDeModelServiceImpl actDeModelService;
@@ -43,6 +47,11 @@ public class AdminProcModelController {
      * @param query
      * @return
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true ,paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true ,paramType = "query", dataType = "integer"),
+            @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10",required = true , paramType = "query", dataType = "integer")
+    })
     @GetMapping("/proc_model/list")
     public RespBean listProcModel(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
         QueryWrapper<ActDeModel> queryWrapper = Condition.getQueryWrapper(role, ActDeModel.class);

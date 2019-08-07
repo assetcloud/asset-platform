@@ -9,6 +9,7 @@ import com.asset.utils.ProcDiagramGenerator;
 import com.asset.utils.ProcUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import lombok.AllArgsConstructor;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -39,8 +40,8 @@ public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcI
     static Logger logger = LoggerFactory.getLogger(AsProcInstServiceImpl.class);
     ProcInstService procInstService;
     FlowableService flowableService;
-    FormProcService formProcService;
     AsProcInstMapper asProcInstMapper;
+    FormModelService formModelService;
 
 
     public List<AdminProcInstVO> listAdminProcInstInfo(QueryWrapper<AsProcInst> queryWrapper){
@@ -61,17 +62,13 @@ public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcI
             else{
                 vo.setStatus(DOs.get(i).getStatus());
             }
-            vo.setBindFormModelId(formProcService.getBindFormModelId(procModelId));
+            vo.setBindFormModelId(formModelService.getFormModelId(procModelId));
 
             VOs.add(vo);
         }
 
         return VOs;
     }
-
-
-
-
 
     public void getProcDiagram(HttpServletResponse httpServletResponse, String procInstId) {
         InputStream in = ProcDiagramGenerator.genProcessDiagramInputStream(httpServletResponse, procInstId);
@@ -93,10 +90,18 @@ public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcI
 
     public void activateProcInst(String procInstId) {
         ProcUtils.activateProcInst(procInstId);
+        AsProcInst inst = new AsProcInst.Builder()
+                .id(procInstId)
+                .status(Constants.PROC_INST_ENABLE).build();
+        asProcInstMapper.updateById(inst);
     }
 
     public void suspendProcInst(String procInstId) {
         ProcUtils.suspendProcInst(procInstId);
+        AsProcInst inst = new AsProcInst.Builder()
+                .id(procInstId)
+                .status(Constants.PROC_INST_SUSPENDED).build();
+        asProcInstMapper.updateById(inst);
     }
 
     /**
@@ -105,7 +110,10 @@ public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcI
      */
     public void deleteProcInst(String procInstId) {
         ProcUtils.deleteProcInst(procInstId);
-        procInstService.deleteProcInstDO(procInstId);
+        AsProcInst inst = new AsProcInst.Builder()
+                .id(procInstId)
+                .status(Constants.PROC_INST_DELETED).build();
+        asProcInstMapper.updateById(inst);
     }
 
 //

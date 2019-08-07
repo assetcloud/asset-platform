@@ -44,7 +44,7 @@ public class FormInstService {
     @Autowired
     FormModelService formModelService;
     @Autowired
-    ProcModelService procModelService;
+    ProcNodeService procNodeService;
     @Autowired
     ProcInstService procInstService;
     @Autowired
@@ -61,7 +61,7 @@ public class FormInstService {
     public JSONObject showNewFormSheet(String formModelId) {
         //获取对应流程模型ID以及流程模型中第一个节点ID
         String procModelId = formModelService.getProcModelID(formModelId);
-        String firstNodeId = procModelService.getFirstNodeId(procModelId);
+        String firstNodeId = procNodeService.getFirstNodeId(procModelId);
 
         String formSheetStr = formModelService.getModelSheetStr(formModelId);
         FormSheet sheet = FormConverter.jsonToEntity(formSheetStr);
@@ -114,13 +114,15 @@ public class FormInstService {
         }
 
         //3、数据库表新建流程实例条目,注意这里还需要存储一个叫form_inst_all_value的字段
-        ProcInstDO asProcInstDO = new ProcInstDO(
-                procInst.getProcessInstanceId(),
-                procModelID,
-                defID,
-                deployID,
-                dto.getEditor(),
-                dto.getForm_inst_value());
+        ProcInstDO asProcInstDO = new ProcInstDO.Builder()
+                .procInstId(procInst.getProcessInstanceId())
+                .procModelId(procModelID)
+                .procDefId(defID)
+                .procDeployId(deployID)
+                .committer(dto.getEditor())
+                .status(Constants.PROC_INST_ENABLE)
+                .formInstAllValue(dto.getForm_inst_value()).build();
+
         procInstService.insertProcInst(asProcInstDO);
 
         //至此，相当于把第一个任务节点要填的表单内容存进数据库了，而且绑定的流程实例也存进了数据库，当前流程应当流转到下个任务节点上了
@@ -162,7 +164,7 @@ public class FormInstService {
         for(FormInstDO doo:formInstDOs){
             String procModelId = procInstService.getProcModelId(doo.getProcInstId());
             String nodeId = flowableService.getNodeId(doo.getTaskId());
-            ProcNodeDO nodeDO = procModelService.getNodeDO(procModelId, nodeId);
+            ProcNodeDO nodeDO = procNodeService.getNodeDO(procModelId, nodeId);
             String sceneId = formModelService.getSceneId(doo.getFormModelId());
             formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,sceneId));
         }
@@ -206,7 +208,7 @@ public class FormInstService {
      */
     private Boolean userMatch(FormInstDO inst,String userId) {
         String curNodeId = flowableService.getNodeId(inst.getTaskId());
-        ProcNodeDO nodeDO = procModelService.getNodeDO(procInstService.getProcModelId(inst.getProcInstId()),
+        ProcNodeDO nodeDO = procNodeService.getNodeDO(procInstService.getProcModelId(inst.getProcInstId()),
                 curNodeId);
         nodeDO.getCandidateUser();
 
@@ -431,7 +433,7 @@ public class FormInstService {
         boo.setProcModelId(procInstService.getProcModelId(formInstDO.getProcInstId()));
         boo.setNodeId(flowableService.getNodeId(taskId));
 
-        ProcNodeDO nodeDO = procModelService.getNodeDO(procModelId, boo.getNodeId());
+        ProcNodeDO nodeDO = procNodeService.getNodeDO(procModelId, boo.getNodeId());
         if(!StringUtils.isEmpty(nodeDO.getCandidateUser()))
             boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
         if(!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
@@ -551,7 +553,7 @@ public class FormInstService {
                     procModelId.equals(Constants.SCENE_SELECT_PROC_ID)) {
                 nodeType = Constants.AS_NODE_APPROVE;
             }else{
-                nodeType = procModelService.getNodeType(procModelId,cur.getActId());
+                nodeType = procNodeService.getNodeType(procModelId,cur.getActId());
                 if (nodeType == null)
                 {
                     logger.error("流程中间层生成的流程模型出错！procModelId为:{},没有如下NodeId:{}",procModelId, cur.getActId());
@@ -620,8 +622,8 @@ public class FormInstService {
                 procModelID.equals(Constants.SCENE_SELECT_PROC_ID))
             inst.setNodeType(Constants.AS_NODE_APPLY);
         else {
-            String firstNodeId = procModelService.getFirstNodeId(procModelID);
-            inst.setNodeType(procModelService.getNodeType(procModelID,firstNodeId));
+            String firstNodeId = procNodeService.getFirstNodeId(procModelID);
+            inst.setNodeType(procNodeService.getNodeType(procModelID,firstNodeId));
         }
 
         return inst;
@@ -643,7 +645,7 @@ public class FormInstService {
         String procModelId = procInstService.getProcModelId(procInstId);
         for(HistoricActivityInstance instance:historicActs){
             String actId = instance.getActivityId();
-            if(procModelService.getNodeType(procModelId,actId) == Constants.AS_NODE_APPLY);
+            if(procNodeService.getNodeType(procModelId,actId) == Constants.AS_NODE_APPLY);
                 return actId;
         }
         return "";

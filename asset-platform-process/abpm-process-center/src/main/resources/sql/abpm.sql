@@ -11,7 +11,8 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 190806:1606
+ Date: 190807 13:50
+
 */
 
 SET NAMES utf8mb4;
@@ -1772,16 +1773,6 @@ CREATE TABLE `ACT_RU_VARIABLE`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for as_app_form
--- ----------------------------
-DROP TABLE IF EXISTS `as_app_form`;
-CREATE TABLE `as_app_form`  (
-  `id` int(11) NULL DEFAULT NULL,
-  `app_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `form_model_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
 -- Table structure for as_application
 -- ----------------------------
 DROP TABLE IF EXISTS `as_application`;
@@ -1854,57 +1845,48 @@ CREATE TABLE `as_group`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for as_link_form_proc
--- ----------------------------
-DROP TABLE IF EXISTS `as_link_form_proc`;
-CREATE TABLE `as_link_form_proc`  (
-  `proc_model_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `form_model_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
 -- Table structure for as_node_formitem_authority
 -- ----------------------------
 DROP TABLE IF EXISTS `as_node_formitem_authority`;
 CREATE TABLE `as_node_formitem_authority`  (
-  `proc_model_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `act_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `form_item_key` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `proc_model_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `act_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `form_item_key` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `authority` int(32) NOT NULL COMMENT '1不可见，2可见+不可编辑，3可见+可编辑，4必填'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for as_proc_inst
 -- ----------------------------
 DROP TABLE IF EXISTS `as_proc_inst`;
 CREATE TABLE `as_proc_inst`  (
-  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `proc_inst_id` varchar(128) CHARACTER SET utf8 COLLATE utf8_bin NULL DEFAULT NULL,
-  `proc_model_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `proc_def_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `proc_deploy_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `commit_time` datetime(4) NULL DEFAULT NULL,
-  `committer` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `proc_model_id` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `proc_def_id` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `proc_deploy_id` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `commit_time` datetime(4) NOT NULL,
+  `committer` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `form_inst_all_value` longtext CHARACTER SET utf8 COLLATE utf8_bin NULL,
-  `status` int(64) NULL DEFAULT NULL COMMENT '流程实例状态 0：激活 1：被挂起 2：被删除 3：已完成'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+  `status` int(64) NOT NULL COMMENT '流程实例状态 0：激活 1：被挂起 2：被删除 3：已完成',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for as_proc_node
 -- ----------------------------
 DROP TABLE IF EXISTS `as_proc_node`;
 CREATE TABLE `as_proc_node`  (
-  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
-  `proc_model_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `node_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `proc_model_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `node_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `node_type` int(64) NOT NULL COMMENT '1经办，2审批，3抄送',
-  `candidate_user` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处理人',
-  `candidate_group` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '处理组，这里应该设置成json数据，可以包含复杂数据，比如排除掉某个组里的某些人或者某个组里的某些小组（这个暂时不做，先留个接口在这里）',
+  `candidate_user` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '处理人',
+  `candidate_group` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '处理组，这里应该设置成json数据，可以包含复杂数据，比如排除掉某个组里的某些人或者某个组里的某些小组（这个暂时不做，先留个接口在这里）',
   `limit_time` datetime(0) NULL DEFAULT NULL COMMENT '处理该节点事项的限时，目前暂时只做审批节点\r\n超过限时后，转交其他人处理或者直接流到下一节点\r\n\r\n',
   `overtime_strategy` int(64) NULL DEFAULT NULL COMMENT '节点如果超时之后的处理方式：\r\n0：交由系统管理员处理\r\n1：自动到下一节点\r\n',
-  `sign_strategy` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '这是设置节点多人审批的策略，用json格式存储实现复杂规则',
-  `todo_strategy` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '这是设置节点多人处理经办节点的策略，用json格式存储实现复杂规则',
+  `sign_strategy` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '这是设置节点多人审批的策略，用json格式存储实现复杂规则',
+  `todo_strategy` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '这是设置节点多人处理经办节点的策略，用json格式存储实现复杂规则',
   `if_joint_sign` int(64) NULL DEFAULT NULL COMMENT '判断是否是多人会签节点\r\n0：不是会签\r\n1：是会签，串行\r\n2：是会签，并行\r\n\r\n'
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

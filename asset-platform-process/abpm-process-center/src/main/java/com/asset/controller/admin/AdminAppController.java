@@ -13,6 +13,7 @@ import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,6 +31,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
+@Api(tags = "控制端应用管理")
 public class AdminAppController {
 
     AsApplicationServiceImpl asApplicationService;

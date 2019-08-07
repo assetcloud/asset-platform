@@ -24,7 +24,7 @@ import java.util.List;
  * @
  */
 @RestController
-@Api(value = "表单实例创建")
+@Api(tags = "实例创建、查询；任务查询")
 public class FormInstController {
 
     Logger logger = LoggerFactory.getLogger(FormInstController.class);

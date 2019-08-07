@@ -27,8 +27,7 @@ public class AdminProcInstService {
     ProcInstService procInstService;
     @Autowired
     FlowableService flowableService;
-    @Autowired
-    FormProcService formProcService;
+
     @Autowired
     FormModelService formModelService;
     @Autowired
@@ -57,7 +56,7 @@ public class AdminProcInstService {
             else{
                 vo.setStatus(instDOPage.get(i).getStatus());
             }
-            vo.setBindFormModelId(formProcService.getBindFormModelId(procModelId));
+            vo.setBindFormModelId(formModelService.getFormModelId(procModelId));
             VOs.add(vo);
         }
         return VOs;

@@ -22,9 +22,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * 存储关于一个流程模型中节点的信息，对接as_proc_node
+ * @author YBY
+ */
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
-public class ProcModelService {
+public class ProcNodeService {
     @Autowired
     ProcNodeMapper procNodeMapper;
     @Autowired
