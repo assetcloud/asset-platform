@@ -7,6 +7,7 @@ import com.asset.service.*;
 import com.asset.utils.CommonUtils;
 import com.asset.utils.Email;
 import com.asset.utils.Func;
+import com.asset.wrapper.SceneWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Wrapper;
 import java.util.*;
 
 @RestController
@@ -41,17 +43,15 @@ public class SceneController {
 
     ISceneRelationService sceneRelationService;
 
-    @ApiOperation(value = "获取所有场景信息", notes = "场景")
+    @ApiOperation(value = "获取所有场景信息", notes = "已完成")
     @RequestMapping(value = "/sceneList", method = RequestMethod.GET)
     public RespBean getAllScenes(){
         List<Scene> allScene = sceneService.getAllScene();
-        if (allScene == null){
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
-        }
-        return RespBean.ok(SystemConstant.GET_SUCCESS, allScene);
+        SceneWrapper sceneWrapper = new SceneWrapper(sceneService);
+        return RespBean.ok(SystemConstant.GET_SUCCESS, sceneWrapper.listNodeVO(allScene));
     }
 
-    @ApiOperation(value = "获取用户尚未拥有的场景", notes = "场景")
+    @ApiOperation(value = "获取用户尚未拥有的场景", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "page", name = "起始页", required = true, defaultValue = "1", dataTypeClass = Integer.class),
             @ApiImplicitParam(value = "size", name = "每页数据量", required = true, defaultValue = "10", dataTypeClass = Integer.class),

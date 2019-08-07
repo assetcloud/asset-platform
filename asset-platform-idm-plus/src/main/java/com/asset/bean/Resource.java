@@ -58,12 +58,8 @@ public class Resource extends Model<Resource> implements Cloneable{
      * 表单分组id
      */
     @TableField("group_id")
-    private String groupId;
-    /**
-     * 表单分组名称
-     */
-    @TableField("group_name")
-    private String groupName;
+    private Long groupId;
+
     /**
      * 场景id
      */

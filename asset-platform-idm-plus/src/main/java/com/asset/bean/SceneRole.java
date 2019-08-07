@@ -51,6 +51,9 @@ public class SceneRole {
     @TableField("role_default")
     private Integer roleDefault;
 
+    @TableField("role_type")
+    private Integer roleType;
+
     @TableField("scene_code")
     private String sceneCode;
 

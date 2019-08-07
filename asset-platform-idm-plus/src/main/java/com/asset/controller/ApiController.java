@@ -84,11 +84,13 @@ public class ApiController {
             @ApiImplicitParam(name = "iconCls", value = "表单图标", required = true, dataType = "String"),
             @ApiImplicitParam(name = "groupId", value = "表单分组id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "groupName", value = "表单分组名称", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
+            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "groupId", value = "场景id", required = true, dataType = "String")
     })
     @PostMapping(value = "form/add")
     @Transactional
-    public RespBean addResource(@RequestBody FormModelInfo formModelInfo, @RequestParam("sceneId") String sceneId) throws CloneNotSupportedException {
+    public RespBean addResource(@RequestBody FormModelInfo formModelInfo, @RequestParam("sceneId") String sceneId
+            , @RequestParam("groupId")Long groupId) throws CloneNotSupportedException {
         if (Func.hasEmpty(formModelInfo.getApplicationId(), formModelInfo.getFormModelId(), formModelInfo.getFormName()
                 , formModelInfo.getIconCls(), formModelInfo.getGroupId(), formModelInfo.getGroupName(), sceneId)){
             return RespBean.error("参数错误");
@@ -112,10 +114,7 @@ public class ApiController {
         resource.setName(formModelInfo.getFormName());
         resource.setIconCls(formModelInfo.getIconCls());
         resource.setCode(SystemConstant.CODE_FORM);
-        // 为表单设置分组
-        resource.setGroupId(formModelInfo.getGroupId());
-        resource.setGroupName(formModelInfo.getGroupName());
-        //为表单设置场景
+        resource.setGroupId(groupId);
         resource.setSceneId(sceneId);
         resourceService.save(resource);
         resourceService.addResource4Admin(resource);

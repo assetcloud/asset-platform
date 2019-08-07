@@ -1,11 +1,9 @@
 package com.asset.service.impl;
 
-import com.asset.bean.OrganScene;
-import com.asset.bean.Resource;
-import com.asset.bean.SceneRelation;
-import com.asset.bean.SceneRole;
+import com.asset.bean.*;
 import com.asset.common.SystemConstant;
 import com.asset.mapper.ResourceMapper;
+import com.asset.service.IResourceRoleService;
 import com.asset.service.IResourceService;
 import com.asset.service.ISceneRelationService;
 import com.asset.service.ISceneRoleService;
@@ -16,14 +14,17 @@ import com.asset.vo.ResourceVO;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springblade.core.tool.utils.Func;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -34,18 +35,16 @@ import java.util.List;
  * @since 2019-07-18
  */
 @Service
+@AllArgsConstructor
 public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> implements IResourceService {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(ResourceServiceImpl.class);
-
-    @Autowired
     private ResourceMapper resourceMapper;
 
-    @Autowired
     private ISceneRoleService sceneRoleService;
 
-    @Autowired
     private ISceneRelationService sceneRelationService;
+
+    IResourceRoleService resourceRoleService;
 
     @Override
     public boolean appExists(String applicationName, String sceneId){
@@ -112,8 +111,11 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
         return resourceMapper.getResourcesByUser(sceneRelations);
     }
 
-    public List<Resource> getResourcesByRole(Long roleId, String sceneId){
-        return resourceMapper.getResourcesByRole(roleId, sceneId);
+    @Override
+    public List<String> getResourcesByRole(Long roleId){
+        List<ResourceRole> resourceRoles = resourceRoleService.list(Wrappers.<ResourceRole>query().lambda()
+                .in(ResourceRole::getRoleId, roleId));
+        return resourceRoles.stream().map(resourceRole -> Func.toStr(resourceRole.getMenuId())).collect(Collectors.toList());
     }
 
     public List<Resource> getAppResourcesByUser(String userId, String sceneId){
@@ -126,10 +128,12 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
 
     @Override
     public List<Resource> getFormResourcesByApp(String userId, Long appResourceId, String sceneId){
-        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda().eq(SceneRole::getStatus, 1).eq(SceneRole::getSceneCode, sceneId));
+        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda()
+                .eq(SceneRole::getStatus, 1).eq(SceneRole::getSceneCode, sceneId));
         List<Long> rids = new ArrayList<>();
         sceneRoles.forEach(map-> rids.add(map.getId()));
-        List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda().in(SceneRelation::getRid, rids).eq(SceneRelation::getUid, userId));
+        List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda()
+                .in(SceneRelation::getRid, rids).eq(SceneRelation::getUid, userId));
         return resourceMapper.getFormResourcesByApp(sceneRelations, appResourceId);
     }
 

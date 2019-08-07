@@ -33,10 +33,9 @@ public interface IResourceService extends IService<Resource> {
     /**
      * 通过角色获取所有资源
      * @param roleId
-     * @param sceneId
      * @return
      */
-    List<Resource> getResourcesByRole(Long roleId, String sceneId);
+    List<String> getResourcesByRole(Long roleId);
 
     /**
      * 通过用户获取应用资源

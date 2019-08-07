@@ -34,9 +34,9 @@ public class SceneRoleVO {
     private String sceneName;
 
     /**
-     * 是否是默认角色
+     * 角色名称
      */
-    private String roleDefault;
+    private String roleType;
 
     /**
      * 角色描述

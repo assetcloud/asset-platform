@@ -1,17 +1,21 @@
 package com.asset.controller.system;
 
 import com.asset.bean.Menu;
+import com.asset.bean.MenuRole;
 import com.asset.bean.User;
 import com.asset.service.IDictService;
+import com.asset.service.IMenuRoleService;
 import com.asset.service.IMenuService;
 import com.asset.utils.Condition;
 import com.asset.vo.MenuVO;
 import com.asset.wrapper.MenuWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.Func;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -29,6 +33,8 @@ public class MenuController {
     IMenuService menuService;
 
     IDictService dictService;
+
+    IMenuRoleService menuRoleService;
 
 //    @ApiOperation(value = "应用工厂级资源", notes = "userId用户id", httpMethod = "GET")
 //    @ApiImplicitParams({
@@ -96,9 +102,12 @@ public class MenuController {
      */
     @PostMapping("/remove")
     @ApiOperation(value = "删除", notes = "传入ids")
+    @Transactional
     public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-        Collection<Menu> menus = menuService.listByIds(Func.toIntList(ids));
+        List<Integer> menuIds = Func.toIntList(ids);
+        Collection<Menu> menus = menuService.listByIds(menuIds);
         menus.forEach(menu -> menu.setIsDeleted(1));
+        menuRoleService.remove(Wrappers.<MenuRole>query().lambda().in(MenuRole::getMenuId, Func.toIntList(ids)));
         return R.status(menuService.updateBatchById(menus));
     }
 
@@ -145,7 +154,7 @@ public class MenuController {
      * 获取权限分配树形结构
      */
     @GetMapping("/role-tree-keys")
-    @ApiOperation(value = "角色所分配的树", notes = "unfinished", position = 7)
+    @ApiOperation(value = "角色所分配的树", notes = "已完成")
     public R<List<String>> roleTreeKeys(String roleIds) {
         return R.data(menuService.roleTreeKeys(roleIds));
     }

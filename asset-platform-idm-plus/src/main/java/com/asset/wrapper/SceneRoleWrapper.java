@@ -38,10 +38,10 @@ public class SceneRoleWrapper {
 	public SceneRoleVO entityVO(SceneRole sceneRole) {
 		SceneRoleVO sceneRoleVO = BeanUtil.copy(sceneRole, SceneRoleVO.class);
 		RoleGroup roleGroup = roleGroupService.getById(sceneRole.getGroupId());
-//		String d1 = dictService.getValue("role_default", sceneRole.getRoleDefault());
-//		if (Func.isNotEmpty(d1)){
-//			sceneRoleVO.setRoleDefault(d1);
-//		}
+		String d1 = dictService.getValue("scene_role_type", sceneRole.getRoleType());
+		if (Func.isNotEmpty(d1)){
+			sceneRoleVO.setRoleType(d1);
+		}
 		if (Func.isNotEmpty(roleGroup)) {
 			sceneRoleVO.setGroupName(roleGroup.getRoleGroupName());
 		}

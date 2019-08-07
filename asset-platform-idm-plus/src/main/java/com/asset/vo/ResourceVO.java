@@ -1,5 +1,6 @@
 package com.asset.vo;
 
+import com.asset.bean.Resource;
 import com.asset.utils.RNode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -35,6 +36,11 @@ public class ResourceVO implements RNode {
     private String iconCls;
 
     /**
+     * 场景id
+     */
+    private String sceneId;
+
+    /**
      * 所属工作空间
      */
     private String sceneName;
@@ -48,6 +54,11 @@ public class ResourceVO implements RNode {
      * 排序
      */
     private Integer sort;
+
+    /**
+     * 资源分组名称
+     */
+    private String groupName;
 
     /**
      * 子资源

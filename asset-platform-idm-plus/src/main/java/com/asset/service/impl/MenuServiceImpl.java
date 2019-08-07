@@ -1,11 +1,13 @@
 package com.asset.service.impl;
 
 import com.asset.bean.Menu;
+import com.asset.bean.MenuRole;
 import com.asset.bean.User;
 import com.asset.bean.UserRole;
 import com.asset.dto.MenuDTO;
 import com.asset.mapper.MenuMapper;
 import com.asset.mapper.RoleMapper;
+import com.asset.service.IMenuRoleService;
 import com.asset.service.IMenuService;
 import com.asset.utils.MenuNodeMerger;
 import com.asset.vo.MenuVO;
@@ -30,6 +32,8 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     MenuMapper menuMapper;
 
     RoleMapper roleMapper;
+
+    IMenuRoleService menuRoleService;
 
     RedisTemplate redisTemplate;
 
@@ -104,10 +108,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
     @Override
     public List<String> roleTreeKeys(String roleIds) {
-        return null;
-//        List<MenuRole> roleMenus = roleMenuService.list(Wrappers.<RoleMenu>query().lambda().in(RoleMenu::getRoleId, Func.toIntList(roleIds)));
-//        return roleMenus.stream().map(roleMenu -> Func.toStr(roleMenu.getMenuId())).collect(Collectors.toList());
-    }
+        List<MenuRole> menuRoles = menuRoleService.list(Wrappers.<MenuRole>query().lambda()
+                .in(MenuRole::getRoleId, Func.toIntList(roleIds)));
+        return menuRoles.stream().map(roleMenu -> Func.toStr(roleMenu.getMenuId())).collect(Collectors.toList());
+   }
 
     @Override
     public List<Kv> authRoutes(User user) {

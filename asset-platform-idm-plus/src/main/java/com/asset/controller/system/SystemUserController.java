@@ -14,13 +14,18 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.BeanUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -79,14 +84,25 @@ public class SystemUserController {
         return RespBean.status(userService.saveUser(user));
     }
 
-    @ApiOperation(value = "控制台中删除用户", notes = "（已完成，不对外开放）")
-    @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
+    @ApiOperation(value = "控制台中删除用户", notes = "（已完成，不对外开放）用户id集合")
+    @ApiImplicitParam(value = "ids", required = true, dataTypeClass = String.class)
     @PostMapping("delete")
-    public RespBean removeUser(@RequestParam String userId){
-        if (Func.hasEmpty(userId)){
+    public RespBean removeUser(@RequestParam String ids){
+        if (Func.hasEmpty(ids)){
             return RespBean.paramError();
         }
-        return RespBean.status(userService.removeUser(userId));
+        List<String> strings = Func.toStrList(",", ids);
+        LinkedList<User> users = new LinkedList<>();
+        strings.forEach(id -> {
+            User user = new User();
+            user.setId(id);
+            user.setRemoveTime(new Date());
+            user.setDisableTime(new Date());
+            user.setStatus(false);
+            user.setStage(0);
+            users.add(user);
+        });
+        return RespBean.status(userService.updateBatchById(users));
     }
 
     @ApiOperation(value = "控制台中，获取单个用户信息", notes = "（已完成，不对外开放）")

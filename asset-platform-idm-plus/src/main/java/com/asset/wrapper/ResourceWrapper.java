@@ -1,13 +1,16 @@
 package com.asset.wrapper;
 
 import com.asset.bean.Resource;
+import com.asset.bean.ResourceGroup;
 import com.asset.bean.Scene;
 import com.asset.common.SystemConstant;
 import com.asset.service.IDictService;
+import com.asset.service.IResourceGroupService;
 import com.asset.service.IResourceService;
 import com.asset.service.ISceneService;
 import com.asset.utils.ResourceVONodeMerger;
 import com.asset.vo.ResourceVO;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
@@ -30,6 +33,8 @@ public class ResourceWrapper {
 
 	ISceneService sceneService;
 
+	IResourceGroupService resourceGroupService;
+
 	public ResourceWrapper() {
 	}
 
@@ -48,6 +53,10 @@ public class ResourceWrapper {
 		Scene scene = sceneService.getById(resource.getSceneId());
 		if (Func.isNotEmpty(scene.getSceneName())){
 			resourceVO.setSceneName(scene.getSceneName());
+		}
+		ResourceGroup group = resourceGroupService.getById(resource.getGroupId());
+		if (Func.isNotEmpty(group)){
+			resourceVO.setGroupName(group.getName());
 		}
 		return resourceVO;
 	}

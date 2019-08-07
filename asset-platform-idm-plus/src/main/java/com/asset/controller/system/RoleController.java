@@ -82,4 +82,6 @@ public class RoleController {
     public RespBean grant(@RequestParam Integer roleId, @RequestParam String menuIds){
         return RespBean.status(roleService.grant(roleId, Func.toLongList(",", menuIds)));
     }
+
+
 }

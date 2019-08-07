@@ -13,6 +13,7 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.checkerframework.checker.units.qual.A;
 import org.springblade.core.tool.api.IResultCode;
 import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class SceneRoleController {
 
     @GetMapping("detail")
     @ApiOperation(value = "获取业务角色详情", notes = "已完成")
-    @ApiImplicitParam(name = "id", value = "资源id", defaultValue = "1", required = true, dataType = "int")
+    @ApiImplicitParam(name = "id", value = "业务角色ID", defaultValue = "1", required = true, dataType = "int")
     public R detail(SceneRole sceneRole){
         SceneRole record = sceneRoleService.getOne(Condition.getQueryWrapper(sceneRole));
         SceneRoleWrapper sceneRoleWrapper = new SceneRoleWrapper(sceneRoleService, roleGroupService, sceneService, dictService);
@@ -79,7 +80,7 @@ public class SceneRoleController {
     }
 
     @PostMapping("submit")
-    @ApiOperation(value = "新增或修改", notes = "（未完成）传入sceneRole实体")
+    @ApiOperation(value = "新增或修改", notes = "（已完成）传入sceneRole实体")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleNameZh", value = "角色名称", required = true, dataType = "int"),
             @ApiImplicitParam(name = "sceneCode", value = "场景id", paramType = "body", dataType = "string"),
@@ -93,9 +94,11 @@ public class SceneRoleController {
             sceneRole.setCreatedTime(new Date());
             sceneRole.setEnableTime(new Date());
             sceneRole.setRoleDefault(0);
+            sceneRole.setRoleType(SystemConstant.ROLE_TYPE_NORMAL);
             sceneRole.setRoleName(SystemConstant.SCENE_NORMAL);
             sceneRole.setStatus(true);
         } else {
+            sceneRole.setRoleType(SystemConstant.ROLE_TYPE_NORMAL);
             sceneRole.setUpdatedTime(new Date());
         }
         return R.status(sceneRoleService.saveOrUpdate(sceneRole));
@@ -270,7 +273,7 @@ public class SceneRoleController {
     }
 
     @PostMapping("set/authority")
-    @ApiOperation(value = "场景中设置用户角色")
+    @ApiOperation(value = "场景中设置用户角色", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "roleIds", value = "角色id的数组", required = true, dataTypeClass = String.class)
@@ -278,4 +281,14 @@ public class SceneRoleController {
     public RespBean setAuthority(@RequestParam String userId, @RequestParam String rids){
         return RespBean.status(sceneRoleService.setAuthority(userId, Func.toLongList(",", rids)));
     }
+
+    @GetMapping("groups")
+    @ApiOperation(value = "获取业务角色分组信息", notes = "已完成")
+    public R roleGroups(@RequestParam String sceneId){
+        List<RoleGroup> list = roleGroupService.list(Wrappers.<RoleGroup>query().lambda()
+                .eq(RoleGroup::getIsDeleted, SystemConstant.DATA_AVAILABLE)
+                .eq(RoleGroup::getSceneCode, sceneId));
+        return R.data(list);
+    }
+
 }

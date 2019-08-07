@@ -7,9 +7,21 @@ import java.util.Arrays;
 import java.util.List;
 
 public interface SystemConstant {
+
+    /**
+     * 业务资源的编号
+     */
     String CODE_APP = "app";
     String CODE_FORM = "form";
     String CODE_FUNC = "func";
+
+    /**
+     * 应用和表单资源的默认显示级别
+     */
+    Integer DEFAULT_RES_LEVEL = 0;
+
+    Integer DATA_AVAILABLE = 0;
+    Integer DATA_DELETED = 1;
 
     String LIST_ADD = "/list/add";
     String LIST_IMPORT = "/list/import";
@@ -67,6 +79,11 @@ public interface SystemConstant {
 
     Long SCENE_ADMIN_ROLE = 1L;
     Long SCENE_DEFAULT_ROLE = 2L;
+
+    Integer ROLE_TYPE_ADMIN = 1;
+    Integer ROLE_TYPE_DEFAULT = 2;
+    Integer ROLE_TYPE_NORMAL = 3;
+
 
     Resource RESOURCE_LIST_ADD = new Resource(CODE_FUNC, NAME_LIST_ADD, ICON_LIST_ADD, LIST_ADD ,1 , SORT_LIST_ADD, 3);
     Resource RESOURCE_LIST_IMPORT = new Resource(CODE_FUNC, NAME_LIST_IMPORT, ICON_LIST_IMPORT, LIST_IMPORT ,1 , SORT_LIST_IMPORT, 3);
