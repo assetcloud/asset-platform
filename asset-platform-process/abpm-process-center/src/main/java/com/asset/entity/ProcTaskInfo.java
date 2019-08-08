@@ -44,6 +44,9 @@ public class ProcTaskInfo implements Serializable {
      */
     private String endTime;
 
+    public ProcTaskInfo() {
+    }
+
     public String getName_() {
         return name_;
     }

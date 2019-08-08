@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName("act_de_model")
+@TableName("ACT_DE_MODEL")
 public class ActDeModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -57,5 +57,6 @@ public class ActDeModel implements Serializable {
 
     private String tenantId;
 
-
+    public ActDeModel() {
+    }
 }

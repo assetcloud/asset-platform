@@ -11,6 +11,7 @@ import com.asset.form.FormItem;
 import com.asset.form.FormSheet;
 import com.asset.utils.Constants;
 import com.asset.utils.FormUtils;
+import org.flowable.form.api.FormModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -34,6 +35,8 @@ public class AuthorityService {
     ProcInstService procInstService;
     @Autowired
     FlowableService flowableService;
+    @Autowired
+    FormModelService formModelService;
 
     public Integer getCurAuthority(String procModelId, String actId, String itemKey) {
         return formAuthorityMapper.getAuthority(procModelId,actId,itemKey);
@@ -98,7 +101,9 @@ public class AuthorityService {
     }
 
     public FormInstDO handleFormSheetAuthority(FormInstDO formInstDO) throws FormException {
-        String modelSheetStr = formInstDO.getFormInstSheetStr();
+        //注意这里从表单实例中获取到的sheet是为null的，需要从对应的model中去获取
+        String formModelId = formInstDO.getFormModelId();
+        String modelSheetStr = formModelService.getModelSheetStr(formModelId);
         FormSheet formSheet = FormConverter.jsonToEntity(modelSheetStr);
 
         String curNode = flowableService.getNodeId(formInstDO.getTaskId());

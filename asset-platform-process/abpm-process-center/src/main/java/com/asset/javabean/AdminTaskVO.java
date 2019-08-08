@@ -18,4 +18,7 @@ public class AdminTaskVO {
     String formInstId;      //对应的表单实例ID
     String instName;  //显示在前台用于指示当前任务节点所属的流程是哪个
     long executorTime;
+
+    public AdminTaskVO() {
+    }
 }

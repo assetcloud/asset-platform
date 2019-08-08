@@ -19,4 +19,7 @@ public class ProcModelBO {
     SignStrategyDTO sign_strategy;
     String todo_strategy;
     Integer if_joint_sign;
+
+    public ProcModelBO() {
+    }
 }

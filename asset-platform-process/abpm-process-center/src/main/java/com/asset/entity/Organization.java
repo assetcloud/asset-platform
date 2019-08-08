@@ -13,6 +13,9 @@ public class Organization implements Serializable {
     private Integer status;
     private String created_time;
 
+    public Organization() {
+    }
+
     public Integer getId() {
         return id;
     }

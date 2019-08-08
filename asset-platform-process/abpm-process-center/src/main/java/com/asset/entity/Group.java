@@ -12,4 +12,6 @@ public class Group {
 
     protected Integer status;
 
+    public Group() {
+    }
 }

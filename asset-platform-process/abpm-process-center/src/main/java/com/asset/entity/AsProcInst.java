@@ -47,6 +47,9 @@ public class AsProcInst implements Serializable {
      */
     private Integer status;
 
+    public AsProcInst() {
+    }
+
     private AsProcInst(Builder builder) {
         setId(builder.id);
         setProcModelId(builder.procModelId);

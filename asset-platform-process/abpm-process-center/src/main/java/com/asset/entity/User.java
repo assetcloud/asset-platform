@@ -31,6 +31,9 @@ public class User {
 
     private Date createdTime;
 
+    public User() {
+    }
+
     public String getId() {
         return id;
     }

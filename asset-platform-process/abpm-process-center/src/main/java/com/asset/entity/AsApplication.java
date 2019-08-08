@@ -62,5 +62,6 @@ public class AsApplication implements Serializable {
      */
     private LocalDateTime removeTime;
 
-
+    public AsApplication() {
+    }
 }
