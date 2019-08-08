@@ -10,7 +10,6 @@ import com.asset.javabean.UnBindFormModelVO;
 import com.asset.utils.Constants;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
-import org.flowable.engine.*;
 import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,18 +35,25 @@ public class ProcNodeService {
     @Autowired
     FormModelService formModelService;
 
-    public int saveProcNode(ProcNodeDO procNodeDO) {
-        return procNodeMapper.insert(procNodeDO);
-    }
-
     public void saveProcModelInfo(ProcModelDTO dto) throws DatabaseException {
+        //对流程模型中每个节点进行单独存储
         for(int i = 0;i<dto.getProc_node_data().size();i++){
             ProcNodeDTO curNodeDTO = dto.getProc_node_data().get(i);
             ProcNodeDO nodeDO =new ProcNodeDO(curNodeDTO,dto.getProc_model_id());
-            int a = saveProcNode(nodeDO);
-            if(a== Constants.DATABASE_FAILED)
+            int flag = Constants.DATABASE_FAILED;
+            //判断当前节点信息有没有在数据库中存在
+            if(!contain(nodeDO.getProcModelId(),nodeDO.getNodeId()))
+                flag = procNodeMapper.insert(nodeDO);
+            else
+                flag = procNodeMapper.updateSelective(nodeDO);
+            if(flag == Constants.DATABASE_FAILED)
                 throw  new DatabaseException("插入数据失败！");
         }
+    }
+
+    //检查数据库中是否已经存在这么一条记录
+    private boolean contain(String procModelId, String nodeId) {
+        return procNodeMapper.getNodeDO(procModelId, nodeId)==null?false:true;
     }
 
     /**

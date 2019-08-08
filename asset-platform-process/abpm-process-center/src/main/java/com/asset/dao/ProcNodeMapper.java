@@ -26,4 +26,6 @@ public interface ProcNodeMapper {
 
     ProcNodeDO getNodeDO(@Param("procModelId") String procModelId,
                                  @Param("nodeId")  String nodeId);
+
+    int updateSelective(ProcNodeDO nodeDO);
 }

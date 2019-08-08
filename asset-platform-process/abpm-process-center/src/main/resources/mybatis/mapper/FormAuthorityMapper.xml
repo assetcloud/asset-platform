@@ -8,14 +8,14 @@
     <result column="authority" jdbcType="INTEGER" property="authority" />
   </resultMap>
   <insert id="insert" parameterType="com.asset.entity.ActAuthority">
-    insert into as_authority
+    insert into as_form_item_authority
     (proc_model_id, act_id, form_item_key,
       authority)
     values (#{procModelId,jdbcType=VARCHAR}, #{actId,jdbcType=VARCHAR}, #{formItemKey,jdbcType=VARCHAR},
       #{authority,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.asset.entity.ActAuthority">
-    insert into as_authority
+    insert into as_form_item_authority
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="procModelId != null">
         proc_model_id,
@@ -48,7 +48,7 @@
 
   <select id="getAuthority" resultType="java.lang.Integer">
     SELECT authority
-    FROM as_authority
+    FROM as_form_item_authority
     WHERE
     proc_model_id = #{param1,jdbcType=VARCHAR} AND
     act_id = #{param2,jdbcType=VARCHAR} AND
@@ -56,7 +56,7 @@
   </select>
 
   <update id="updateAuthority" >
-    UPDATE as_authority
+    UPDATE as_form_item_authority
     SET authority = #{authority,jdbcType=INTEGER}
     WHERE
     proc_model_id = #{procModelId,jdbcType=VARCHAR} AND
