@@ -49,7 +49,7 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
      * @param dto
      * @return
      */
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/node", method = RequestMethod.POST)
     public RespBean editAsProcModel(@RequestBody ProcModelDTO dto) {
         try {
             procNodeService.saveProcModelInfo(dto);

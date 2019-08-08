@@ -11,8 +11,7 @@
  Target Server Version : 50726
  File Encoding         : 65001
 
- Date: 190807 13:50
-
+ Date: 1908081305
 */
 
 SET NAMES utf8mb4;
@@ -1809,6 +1808,17 @@ CREATE TABLE `as_form_inst`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for as_form_item_authority
+-- ----------------------------
+DROP TABLE IF EXISTS `as_form_item_authority`;
+CREATE TABLE `as_form_item_authority`  (
+  `proc_model_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `act_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `form_item_key` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `authority` int(32) NOT NULL COMMENT '1不可见，2可见+不可编辑，3可见+可编辑，4必填'
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for as_form_model
 -- ----------------------------
 DROP TABLE IF EXISTS `as_form_model`;
@@ -1845,17 +1855,6 @@ CREATE TABLE `as_group`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 8 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for as_node_formitem_authority
--- ----------------------------
-DROP TABLE IF EXISTS `as_node_formitem_authority`;
-CREATE TABLE `as_node_formitem_authority`  (
-  `proc_model_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `act_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `form_item_key` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `authority` int(32) NOT NULL COMMENT '1不可见，2可见+不可编辑，3可见+可编辑，4必填'
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
 -- Table structure for as_proc_inst
 -- ----------------------------
 DROP TABLE IF EXISTS `as_proc_inst`;
@@ -1870,6 +1869,16 @@ CREATE TABLE `as_proc_inst`  (
   `status` int(64) NOT NULL COMMENT '流程实例状态 0：激活 1：被挂起 2：被删除 3：已完成',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for as_proc_model
+-- ----------------------------
+DROP TABLE IF EXISTS `as_proc_model`;
+CREATE TABLE `as_proc_model`  (
+  `id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
+  `node_num` int(64) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for as_proc_node
