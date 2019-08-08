@@ -83,6 +83,8 @@ public interface FormModelMapper {
 
     List<FormModelDO> selectAll();
 
+    List<FormModelDO> selectUnBindAll();
+
     List<FormModelDO> listFormModelsByModelId(@Param("formModelIDs")List<String> formModelIds);
 
     String getFormId(@Param("formName") String formName, @Param("procId") String procId);
@@ -90,4 +92,6 @@ public interface FormModelMapper {
     List<String> getFormModelIDs(String appId);
 
     String getFormModelId(String procModelId);
+
+    String getBindFormSheet(String procModelId);
 }

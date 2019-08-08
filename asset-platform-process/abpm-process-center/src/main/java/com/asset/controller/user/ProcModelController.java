@@ -101,11 +101,25 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
      * 这里是获取未绑定流程模型的表单模型
      */
     @PostMapping(value = "/proc_node_num")
-    @ApiOperation(value = "保存设计界面节点数",notes = "")
+    @ApiOperation(value = "首次保存设计界面节点数",notes = "")
     public RespBean saveProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId,
                                     @ApiParam(value = "拖入设计页面的节点数目", required = true) @RequestParam("proc_node_num") Integer procNodeNum) {
         try {
             procModelService.saveProcNodeNum(procModelId, procNodeNum);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespBean.error(e.getMessage());
+
+        }
+        return RespBean.ok("插入成功！");
+    }
+
+    @PutMapping(value = "/proc_node_num")
+    @ApiOperation(value = "更新设计界面节点数",notes = "")
+    public RespBean updateProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId,
+                                    @ApiParam(value = "拖入设计页面的节点数目", required = true) @RequestParam("proc_node_num") Integer procNodeNum) {
+        try {
+            procModelService.updateProcNodeNum(procModelId, procNodeNum);
         } catch (Exception e) {
             e.printStackTrace();
             return RespBean.error(e.getMessage());
@@ -121,5 +135,13 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
         return RespBean.ok("成功！",num);
     }
 
+    @GetMapping(value = "/bind_form_model")
+    @ApiOperation(value = "获取当前流程模型绑定的表单数据")
+    public RespBean getBindFormSheet(@RequestParam("proc_model_id")String procModelId){
+        String sheetStr = procModelService.getBindFormSheet(procModelId);
+        if(sheetStr==null)
+            return RespBean.error("当前流程模型还未绑定表单模型，请先选择表单模型进行绑定!");
+        return RespBean.ok("",sheetStr);
+    }
 
 }
