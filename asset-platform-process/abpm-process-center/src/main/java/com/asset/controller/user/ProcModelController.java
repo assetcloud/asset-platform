@@ -10,6 +10,7 @@ import com.asset.dto.AuthorityItemDTO;
 import com.asset.dto.AuthorityDTO;
 import com.asset.dto.ProcModelDTO;
 import com.asset.javabean.UnBindFormModelVO;
+import com.asset.service.AuthorityService;
 import com.asset.service.ProcNodeService;
 import com.asset.service.impl.AsProcModelServiceImpl;
 import com.asset.utils.Constants;
@@ -39,6 +40,8 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
     FormAuthorityMapper authorityMapper;
     @Autowired
     AsProcModelServiceImpl procModelService;
+    @Autowired
+    AuthorityService authorityService;
 
     /**
      * 保存功能性节点信息，这里不管是创建还是修改都用同一个接口
@@ -60,11 +63,12 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
     /**
      * 对流程模型中每个节点对应的所有表单项权限信息进行存储
      */
-    @RequestMapping(value = "/authority/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/authority", method = RequestMethod.POST)
     public RespBean saveAuthority(@RequestBody AuthorityDTO authorityDTO) {
         if (StringUtils.isEmpty(authorityDTO.getProc_model_id()))
             return RespBean.error("流程模型数据缺失！");
 
+        //对流程节点-表单项进行一项一项存储
         for (int i = 0; i < authorityDTO.getData().size(); i++) {
             AuthorityItemDTO cur = authorityDTO.getData().get(i);
 
@@ -73,17 +77,26 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
                     cur.getAuthority() == null)
                 return RespBean.error("权限数据缺失！");
 
-            ActAuthority actAuthority = new ActAuthority(authorityDTO.getProc_model_id(),
-                    cur.getAct_id(),
-                    cur.getForm_item_key(),
-                    cur.getAuthority());
-            int a = authorityMapper.insert(actAuthority);
-            if (a == Constants.DATABASE_FAILED)
+            ActAuthority actAuthority = new ActAuthority.Builder()
+                    .procModelId(authorityDTO.getProc_model_id())
+                    .actId(cur.getAct_id())
+                    .formItemKey(cur.getForm_item_key())
+                    .authority(cur.getAuthority()).build();
+            int flag  ;
+
+            //不包含这个表单项权限，插入新的
+            if(!authorityService.contain(authorityDTO.getProc_model_id(),cur.getAct_id(),cur.getForm_item_key()))
+                flag = authorityMapper.insert(actAuthority);
+            else
+                flag = authorityService.updateAuthority(authorityDTO.getProc_model_id(),cur.getAct_id(),cur.getForm_item_key(),cur.getAuthority());
+
+            if (flag == Constants.DATABASE_FAILED)
                 return RespBean.error("插入权限数据失败！");
         }
 
         return RespBean.ok("");
     }
+
 
     /**
      * 流程模型与表单模型绑定分离，可以在流程模型设计阶段选择未绑定流程模型的表单模型
