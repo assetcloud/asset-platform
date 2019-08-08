@@ -51,6 +51,8 @@ public class AdminFormModelService {
      */
     public List<AdminFormModelVO> getApplicationFormModels(String appId) {
         List<FormModelDO> DOList = formModelService.getAdminApplicationFormModel(appId);
+        if(DOList  == null)
+            return null;
         List<AdminFormModelVO> VOList = new ArrayList<>();
 
         VOList = transDOtoVO(DOList,VOList);

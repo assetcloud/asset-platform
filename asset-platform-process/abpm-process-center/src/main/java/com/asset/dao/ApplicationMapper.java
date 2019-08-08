@@ -28,4 +28,5 @@ public interface ApplicationMapper {
     ApplicationDO findAppByName(@Param("applicationName") String applicationName);
 
     List<ApplicationDO> getPublishedApp();
+
 }

@@ -161,4 +161,13 @@ public class AuthorityService {
 
         return formSheet;
     }
+
+    //判断当前存的表单
+    public boolean contain(String procModelId, String actId,String formItemKey) {
+        return formAuthorityMapper.getAuthority(procModelId,actId,formItemKey) == null?false:true;
+    }
+
+    public int updateAuthority(String procModelId, String actId, String formItemKey, Integer authority) {
+        return formAuthorityMapper.updateAuthority(procModelId,actId,formItemKey,authority);
+    }
 }

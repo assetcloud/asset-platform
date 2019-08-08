@@ -104,7 +104,7 @@ public class ProcNodeService {
     }
 
     public  List<UnBindFormModelVO> getUnbindFormModels() {
-        List<FormModelDO> formModels = formModelService.getFormModels();
+        List<FormModelDO> formModels = formModelService.getUnbindFormModels();
         List<UnBindFormModelVO> unBindFormModelVOs = new ArrayList<>();
 
         for(int i = 0;i<formModels.size();i++){

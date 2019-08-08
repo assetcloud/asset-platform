@@ -204,7 +204,7 @@ public class FormModelService {
     public List<FormModelDO> getAdminApplicationFormModel(String appId) {
         List<String> formModelIds = getFormModels(appId);
         if(formModelIds==null||formModelIds.size()==0)
-            throw new InfoException("应用ID不存在，请检查");
+            return null;
 
         ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModelsByModelId(formModelIds);
 
@@ -230,5 +230,13 @@ public class FormModelService {
      */
     public String getFormModelId(String procModelId) {
         return formModelMapper.getFormModelId(procModelId);
+    }
+
+    public List<FormModelDO> getUnbindFormModels() {
+        return formModelMapper.selectUnBindAll();
+    }
+
+    public String getBindFormSheet(String procModelId) {
+        return formModelMapper.getBindFormSheet(procModelId);
     }
 }

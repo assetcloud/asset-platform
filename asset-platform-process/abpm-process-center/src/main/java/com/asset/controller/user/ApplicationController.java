@@ -11,6 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.crypto.Data;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,7 +30,6 @@ public class ApplicationController {
 
     @Autowired
     private ApplicationService applicationService;
-
 
 
 
@@ -85,12 +86,17 @@ public class ApplicationController {
             @ApiResponse(code = 200,message = "删除成功",response = RespBean.class),
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
-    public RespBean deleteApp(@RequestBody ApplicationDO application){
-        ApplicationDO oldApp = applicationService.getById(application.getId());
+    public RespBean deleteApp(@RequestParam(value = "app_id") String appId){
+        ApplicationDO oldApp = applicationService.getById(appId);
         if(null == oldApp){
             return RespBean.error("数据错误");
         }
+        //删除某个应用需要先保证该应用下表单都已经失效
+        if (applicationService.checkFormContain(appId))
+            return RespBean.error("无法删除，该应用下还有表单模型存在！");
+
         oldApp.setStatus(0);
+        oldApp.setRemoveTime(new Date());
         int flag = applicationService.updateApplication(oldApp);
         if(flag < 0) {
             return RespBean.error("删除失败");

@@ -31,6 +31,8 @@ public class ApplicationService {
     ApplicationMapper applicationMapper;
     @Autowired
     FormModelMapper formModelMapper;
+    @Autowired
+            FormModelService formModelService;
 
     UuidIdGenerator idGenerator = new UuidIdGenerator();
 
@@ -69,5 +71,17 @@ public class ApplicationService {
 
     public List<ApplicationDO> getPublishedApp() {
         return applicationMapper.getPublishedApp();
+    }
+
+    public String getNameById(String appId) {
+        return applicationMapper.selectByPrimaryKey(appId).getApplicationName();
+    }
+
+    public boolean checkFormContain(String id) {
+        List<String> formModelIds = formModelService.getFormModels(id);
+        if(formModelIds == null || formModelIds.size() == 0 )
+            return false;
+        else
+            return true;
     }
 }

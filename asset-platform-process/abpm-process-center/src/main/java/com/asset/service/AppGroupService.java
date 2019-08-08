@@ -10,6 +10,10 @@ public class AppGroupService {
     @Autowired
     AsGroupMapper groupMapper;
 
+    public String getGroupName(Integer groupId) {
+        return groupMapper.selectByPrimaryKey(groupId).getGroupName();
+    }
+
 
 //     public int createAppGroup(GroupRec dto) {
 //        Group asGroup = new GroupCreate(

@@ -4,6 +4,8 @@ import com.asset.entity.AsFormModel;
 import com.asset.dao.AsFormModelMapper;
 import com.asset.entity.FormModelDO;
 import com.asset.javabean.AdminFormModelVO;
+import com.asset.service.AppGroupService;
+import com.asset.service.ApplicationService;
 import com.asset.service.FormModelService;
 import com.asset.service.IAsFormModelService;
 import com.asset.utils.Constants;
@@ -33,6 +35,10 @@ public class AsFormModelServiceImpl extends ServiceImpl<AsFormModelMapper, AsFor
     AsFormModelMapper modelMapper;
     @Autowired
     FormModelService formModelService;
+    @Autowired
+    ApplicationService applicationService;
+    @Autowired
+    AppGroupService groupService;
 
     public List<AdminFormModelVO> listAdminFormModelInfo(QueryWrapper<AsFormModel> queryWrapper){
         List<AsFormModel> DOs = modelMapper.selectList(queryWrapper);
@@ -44,6 +50,9 @@ public class AsFormModelServiceImpl extends ServiceImpl<AsFormModelMapper, AsFor
             BeanUtils.copyProperties(DOs.get(i),vo);
 
             vo.setCreatedTime(DOs.get(i).getCreatedTime().getTime());
+            vo.setAppName(applicationService.getNameById(vo.getAppId()));
+            if(vo.getGroupId()!=-1)
+                vo.setGroupName(groupService.getGroupName(vo.getGroupId()));
 
             VOs.add(vo);
         }
