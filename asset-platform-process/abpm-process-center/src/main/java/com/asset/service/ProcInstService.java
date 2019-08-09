@@ -461,4 +461,7 @@ public class ProcInstService {
     }
 
 
+    public Integer getStatus(String procInstId) {
+        return procInstMapper.getStatus(procInstId);
+    }
 }

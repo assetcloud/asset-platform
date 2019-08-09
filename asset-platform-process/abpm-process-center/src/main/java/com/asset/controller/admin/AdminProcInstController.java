@@ -47,8 +47,14 @@ public class AdminProcInstController {
      */
     @ApiOperation(value = "激活流程实例")
     @PostMapping(value = "/proc_inst/activate")
-    public void activateProcInst(@Param("proc_inst_id")String procInstId){
-        asProcInstService.activateProcInst(procInstId);
+    public RespBean activateProcInst(@RequestParam("proc_inst_id")String procInstId){
+        try {
+            asProcInstService.activateProcInst(procInstId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespBean.error(e.getMessage());
+        }
+        return RespBean.ok("成功激活实例： "+ procInstId);
     }
 
     /**
@@ -57,8 +63,14 @@ public class AdminProcInstController {
      */
     @ApiOperation(value = "挂起流程实例")
     @PostMapping(value = "/proc_inst/suspend")
-    public void suspendProcInst(@Param("proc_inst_id")String procInstId){
-        asProcInstService.suspendProcInst(procInstId);
+    public RespBean suspendProcInst(@RequestParam("proc_inst_id")String procInstId){
+        try {
+            asProcInstService.suspendProcInst(procInstId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespBean.error(e.getMessage());
+        }
+        return RespBean.ok("成功挂起实例： "+procInstId);
     }
 
     /**
@@ -67,8 +79,9 @@ public class AdminProcInstController {
      */
     @ApiOperation(value = "删除运行中的流程实例")
     @DeleteMapping(value = "/proc_inst/{proc_inst_id}")
-    public void deleteProcInst(@PathVariable("proc_inst_id")String procInstId){
+    public RespBean deleteProcInst(@PathVariable("proc_inst_id")String procInstId){
         asProcInstService.deleteProcInst(procInstId);
+        return RespBean.ok("成功激活实例： "+procInstId);
     }
 
     /**

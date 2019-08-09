@@ -145,4 +145,10 @@
     <include refid="Base_Column_List"/>
     FROM as_proc_inst
   </select>
+
+  <select id="getStatus" parameterType="java.lang.String" resultType="java.lang.Integer">
+    SELECT status
+    FROM as_proc_inst
+    WHERE id = #{id,jdbcType=VARCHAR}
+  </select>
 </mapper>

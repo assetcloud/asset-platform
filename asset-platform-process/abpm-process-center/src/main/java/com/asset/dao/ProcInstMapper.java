@@ -35,4 +35,5 @@ public interface ProcInstMapper {
 
     List<ProcInstDO> listProcInsts();
 
+    Integer getStatus(String id);
 }

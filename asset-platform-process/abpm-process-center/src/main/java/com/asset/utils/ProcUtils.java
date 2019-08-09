@@ -1,5 +1,6 @@
 package com.asset.utils;
 
+import com.asset.exception.ProcException;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
@@ -130,9 +131,12 @@ public class ProcUtils {
      *
      * @param procInstId
      */
-    public static void suspendProcInst(String procInstId) {
+    public static void suspendProcInst(String procInstId) throws Exception{
+        if(isFinished(procInstId))
+            throw new ProcException("流程实例: "+procInstId+"已执行完毕，无法挂起！");
         //根据一个流程实例的id挂起该流程实例
         runtimeService.suspendProcessInstanceById(procInstId);
+
     }
 
     /**
@@ -140,7 +144,10 @@ public class ProcUtils {
      *
      * @param procInstId
      */
-    public static void activateProcInst(String procInstId) {
+    public static void activateProcInst(String procInstId) throws Exception{
+        if(isFinished(procInstId))
+            throw new ProcException("流程实例: "+procInstId+"已执行完毕，无法执行激活操作！");
+
         runtimeService.activateProcessInstanceById(procInstId);
     }
 

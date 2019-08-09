@@ -2,6 +2,7 @@ package com.asset.service.impl;
 
 import com.asset.entity.AsProcInst;
 import com.asset.dao.AsProcInstMapper;
+import com.asset.exception.ProcException;
 import com.asset.javabean.AdminProcInstVO;
 import com.asset.service.*;
 import com.asset.utils.Constants;
@@ -97,20 +98,30 @@ public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcI
         }
     }
 
-    public void activateProcInst(String procInstId) {
-        ProcUtils.activateProcInst(procInstId);
-        AsProcInst inst = new AsProcInst.Builder()
-                .id(procInstId)
-                .status(Constants.PROC_INST_ENABLE).build();
-        asProcInstMapper.updateById(inst);
+    public void activateProcInst(String procInstId) throws Exception {
+        //先判断流程实例状态
+        if(procInstService.getStatus(procInstId) == Constants.PROC_INST_SUSPENDED)
+        {
+            ProcUtils.activateProcInst(procInstId);
+            AsProcInst inst = new AsProcInst.Builder()
+                    .id(procInstId)
+                    .status(Constants.PROC_INST_ENABLE).build();
+            asProcInstMapper.updateById(inst);
+        }
+        else
+            throw new ProcException("流程实例："+procInstId+"已经处于激活状态！");
     }
 
-    public void suspendProcInst(String procInstId) {
-        ProcUtils.suspendProcInst(procInstId);
-        AsProcInst inst = new AsProcInst.Builder()
-                .id(procInstId)
-                .status(Constants.PROC_INST_SUSPENDED).build();
-        asProcInstMapper.updateById(inst);
+    public void suspendProcInst(String procInstId) throws Exception {
+        if(procInstService.getStatus(procInstId) == Constants.PROC_INST_ENABLE){
+            ProcUtils.suspendProcInst(procInstId);
+            AsProcInst inst = new AsProcInst.Builder()
+                    .id(procInstId)
+                    .status(Constants.PROC_INST_SUSPENDED).build();
+            asProcInstMapper.updateById(inst);
+        }
+        else
+            throw new ProcException("流程实例："+procInstId+"已经处于挂起状态！");
     }
 
     /**
