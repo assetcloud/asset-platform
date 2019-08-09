@@ -123,4 +123,20 @@ public class FormModelController {
     }
 
 
+    /**
+     * 在点击外链时，用户不需要考虑工作场景ID这件事情，但是前台需要向组织模块获取相应的部门id，就必须要从我这里获取工作场景ID，
+     * 所以在前台向后台发送user_id之前，需要先去向组织架构模块获取当前task_id的流程模型id所属的工作场景ID，然后再获取部门id，
+     * 在请求点击这个外链的时候同样需要user_id和部门id、工作场景ID这三个信息一起发给我（但是这里不能对工作场景Id进行筛选！！）
+     *
+     * 这里即给定一个taskId,返回对应的流程模型id的工作场景ID
+     * @param taskId
+     * @return
+     */
+    @GetMapping(value = "/form_model/scene_id")
+    public RespBean getSceneId(@RequestParam(value = "task_id") String taskId)
+    {
+        String sceneId = formModelService.getSceneIdByTaskId(taskId);
+        return RespBean.ok("",sceneId);
+    }
+
 }

@@ -77,13 +77,15 @@ public interface Constants {
   Integer APP_STATUS_ENABLE = 1;
 
   String REGISTER_PROC_ID = "register";  //指的是流程模型ID
-String REGISTER_FORM_NAME = "注册审批流程";
+  String REGISTER_FORM_NAME = "注册审批流程";
+  String REGISTER_PROC_NAME = "注册审批流程";
   String REGISTER_BPMN_NAME = "register";
   String REGISTER_PROC_NODE_1 = "task1";
   String REGISTER_PROC_NODE_2 = "task2";
 
   String SCENE_SELECT_PROC_ID = "sceneSelect";
-String SCENE_SELECT_FORM_NAME = "工作场景选择流程";
+  String SCENE_SELECT_FORM_NAME = "工作场景选择流程";
+  String SCENE_SELECT_PROC_NAME = "工作场景选择流程";
   String SCENE_SELECT_BPMN_NAME = "sceneSelect";
   String SCENE_SELECT_PROC_NODE_1 = "task1";
   String SCENE_SELECT_PROC_NODE_2 = "task2";
@@ -101,6 +103,7 @@ String SCENE_SELECT_FORM_NAME = "工作场景选择流程";
   Integer PROC_INST_SUSPENDED = 1;  //被挂起
   Integer PROC_INST_DELETED = 2;  //被删除
   Integer PROC_INST_FINISHED = 3;   // 已完成
+
 
 
 }

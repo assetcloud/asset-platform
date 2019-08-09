@@ -37,7 +37,7 @@ public class AdminProcInstController {
     @GetMapping(value = "/proc_inst/diagram")
     @ApiOperation(value = "获取流程实例对应的流转图")
     public void genProcessDiagram(HttpServletResponse httpServletResponse,
-                                  @ApiParam(value = "流程实例Id",required = true) @Param("proc_inst_id") String procInstId) throws Exception {
+                                  @ApiParam(value = "流程实例Id",required = true) @RequestParam("proc_inst_id") String procInstId) throws Exception {
         asProcInstService.getProcDiagram(httpServletResponse,procInstId);
     }
 

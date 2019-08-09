@@ -94,4 +94,7 @@ public interface FormModelMapper {
     String getFormModelId(String procModelId);
 
     String getBindFormSheet(String procModelId);
+
+    String getSceneIdByProcModelId(String procModelId);
+
 }

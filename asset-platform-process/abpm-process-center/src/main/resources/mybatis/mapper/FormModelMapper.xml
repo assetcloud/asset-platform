@@ -261,4 +261,9 @@
         FROM as_form_model
         WHERE proc_model_id = #{procModelId,jdbcType=VARCHAR}
     </select>
+    <select id="getSceneIdByProcModelId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT scene_id
+        FROM as_form_model
+        WHERE proc_model_id = #{procModelId,jdbcType=VARCHAR}
+    </select>
 </mapper>

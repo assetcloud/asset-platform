@@ -32,7 +32,8 @@ public class FormModelService {
     FormModelMapper formModelMapper;
     @Autowired
     ApplicationService applicationService;
-
+    @Autowired
+    FormInstService formInstService;
 
 
     /**
@@ -238,5 +239,14 @@ public class FormModelService {
 
     public String getBindFormSheet(String procModelId) {
         return formModelMapper.getBindFormSheet(procModelId);
+    }
+
+    public String getSceneIdByProcModelId(String procModelId) {
+        return formModelMapper.getSceneIdByProcModelId(procModelId);
+    }
+
+    public String getSceneIdByTaskId(String taskId) {
+        String formModelId = formInstService.getFormModelId(taskId);
+        return getSceneId(formModelId);
     }
 }

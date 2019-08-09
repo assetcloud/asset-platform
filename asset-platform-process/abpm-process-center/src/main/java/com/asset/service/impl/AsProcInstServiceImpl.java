@@ -53,9 +53,16 @@ public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcI
             BeanUtils.copyProperties(DOs.get(i),vo);
 
             //commitTime类型不一样，所以需要手动复制
+            vo.setProcInstId(DOs.get(i).getId());
             vo.setCommitTime(DOs.get(i).getCommitTime().getTime());
             String procModelId = procInstService.getProcModelId(vo.getProcInstId());
-            vo.setProcInstName(flowableService.getModelName(procModelId));
+            if(procModelId.equals(Constants.REGISTER_PROC_ID))
+                vo.setProcInstName(Constants.REGISTER_PROC_NAME);
+            else if(procModelId.equals(Constants.SCENE_SELECT_PROC_ID))
+                vo.setProcInstName(Constants.SCENE_SELECT_PROC_NAME);
+            else
+                vo.setProcInstName(flowableService.getModelName(procModelId));
+
             if(ProcUtils.isFinished(vo.getProcInstId()))
                 vo.setStatus(Constants.PROC_INST_FINISHED);
             else{
@@ -75,10 +82,13 @@ public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcI
         byte[] buf = new byte[1024];
         int legth = 0;
         try {
+            httpServletResponse.setContentType("image/jpeg");
             out = httpServletResponse.getOutputStream();
             while ((legth = in.read(buf)) != -1) {
                 out.write(buf, 0, legth);
             }
+            out.flush();
+            out.close();
         } catch (IOException e) {
             logger.error("生成流程图操作异常{}",e);
         } finally {

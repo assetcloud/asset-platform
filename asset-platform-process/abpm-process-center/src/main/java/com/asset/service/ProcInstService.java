@@ -310,7 +310,8 @@ public class ProcInstService {
                     .act_id(Constants.REGISTER_PROC_NODE_2)
                     .act_type(Constants.AS_NODE_APPROVE)
                     .if_joint_sign(Constants.AS_NODE_JOINT_DISABLE)
-                    .candidate_user(dto.getCandidate_user_id()).build();
+                    .candidate_user(dto.getCandidate_user_id())
+                    .candidate_group(dto.getCandidate_section_id()).build();
             list.add(node1);
             list.add(node2);
             ProcModelDTO procModelDTO = new ProcModelDTO.Builder()
@@ -381,7 +382,8 @@ public class ProcInstService {
                     .act_id(Constants.SCENE_SELECT_PROC_NODE_2)
                     .act_type(Constants.AS_NODE_APPROVE)
                     .if_joint_sign(Constants.AS_NODE_JOINT_DISABLE)
-                    .candidate_user(dto.getCandidate_user_id()).build();
+                    .candidate_user(dto.getCandidate_user_id())
+                    .candidate_group(dto.getCandidate_section_id()).build();
             list.add(node1);
             list.add(node2);
             ProcModelDTO procModelDTO = new ProcModelDTO.Builder()

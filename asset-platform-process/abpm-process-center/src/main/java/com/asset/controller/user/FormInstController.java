@@ -76,11 +76,13 @@ public class FormInstController {
      */
     @RequestMapping(value = "/form_inst/show",method = RequestMethod.GET)
     public RespBean listFormInst(@RequestParam(value = "user_id") String userID,
-                              @RequestParam(value = "task_type") Integer taskType)
+                                 @RequestParam(value = "task_type") Integer taskType,
+                                 @RequestParam(value = "scene_id") String sceneId,
+                                 @RequestParam(value = "section_id") String sectionId)
     {
         List<FormInstVO> formInstVOs = null;
         try {
-            formInstVOs = formInstService.listFormInst(userID, taskType);
+            formInstVOs = formInstService.listFormInst(userID, taskType,sceneId,sectionId);
         } catch (Exception e) {
             e.printStackTrace();
             return RespBean.error(e.getMessage());
@@ -152,10 +154,12 @@ public class FormInstController {
      */
     @RequestMapping(value = "/form_inst/share_link",method = RequestMethod.GET)
     public RespBean getShareLinkTask(@RequestParam(value = "task_id") String taskId,
-                                     @RequestParam(value = "user_id") String userId){
+                                     @RequestParam(value = "user_id") String userId,
+//                                     @RequestParam(value = "scene_id") String sceneId,   //这里点击外链，不需要对工作场景进行筛选
+                                     @RequestParam(value = "section_id") String sectionId){
         FormInstVO shareLinkTask = null;
         try {
-            shareLinkTask = formInstService.getShareLinkTask(taskId,userId);
+            shareLinkTask = formInstService.getShareLinkTask(taskId,userId,sectionId);
         } catch (Exception e) {
             e.printStackTrace();
             return RespBean.error("",e.getMessage());

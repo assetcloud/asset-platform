@@ -14,4 +14,5 @@ public class RegisterDTO {
     String user_id;
     String scene_id;
     String candidate_user_id;  //审批阶段谁可以审批这个注册请求
+    String candidate_section_id; //哪些部门可以审批
 }

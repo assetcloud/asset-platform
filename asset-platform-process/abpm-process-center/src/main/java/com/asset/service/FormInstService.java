@@ -140,10 +140,19 @@ public class FormInstService {
     /**
      * 业务入口
      * 用户登录系统之后，根据传进来的任务类型不同，前台显示待办（包含审批、经办）/待阅/全部的表单信息
-     * @param userID 对用户ID进行筛选，
+     * @param userID
      * @param taskType
+     * @param curSelectSceneId  当前用户选择的工作场景Id
+     * @param sectionId
+     * @return
+     * @throws InfoException
+     * @throws ProcException
+     * @throws FormException
      */
-    public List<FormInstVO> listFormInst(String userID, Integer taskType) throws InfoException, ProcException, FormException {
+    public List<FormInstVO> listFormInst(String userID,
+                                         Integer taskType,
+                                         String curSelectSceneId,
+                                         String sectionId) throws InfoException, ProcException, FormException {
         //1、先获取流转到该用户对应的FlowableTaskDO
         List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
         if (tasks.size()==0)
@@ -160,13 +169,13 @@ public class FormInstService {
         ArrayList<FormInstDO> formInstDOs = (ArrayList<FormInstDO>)getFormInsts(taskBOs);
         ArrayList<FormInstBO> formInstBOs = new ArrayList<>();
 
-
+        //从数据库中找到的所有任务节点信息
         for(FormInstDO doo:formInstDOs){
             String procModelId = procInstService.getProcModelId(doo.getProcInstId());
             String nodeId = flowableService.getNodeId(doo.getTaskId());
             ProcNodeDO nodeDO = procNodeService.getNodeDO(procModelId, nodeId);
-            String sceneId = formModelService.getSceneId(doo.getFormModelId());
-            formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,sceneId));
+            formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,
+                    formModelService.getSceneId(doo.getFormModelId())));
         }
 
         //4、对所有表单实例的表单Sheet进行表单项操作权限设置
@@ -175,16 +184,19 @@ public class FormInstService {
             authorityService.handleFormSheetAuthority(inst);
         }
 
-        Filter filter = new UserIdFilter();
+        UserIdFilter userIdFilter = new UserIdFilter();
         DuplicateFilter duplicateFilter = new DuplicateFilter();
+        SceneFilter sceneFilter = new SceneFilter();
         //对不属于当前用户的表单任务进行筛选
-        ArrayList<FormInstBO> filtrate1 = filter.filtrate(formInstBOs);
+        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs,sectionId);
         //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
         ArrayList<FormInstBO> filtrate2 = duplicateFilter.filtrate(filtrate1);
+        //过滤工作场景
+        ArrayList<FormInstBO> filtrate3 = sceneFilter.filtrate(filtrate2,curSelectSceneId);
 
         ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
-        for(int i = 0;i<filtrate2.size();i++){
-            FormInstVO voo = filtrate2.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
+        for(int i = 0;i<filtrate3.size();i++){
+            FormInstVO voo = filtrate3.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
             formInstVOs.add(voo);
         }
 
@@ -401,7 +413,8 @@ public class FormInstService {
      * @param taskId
      */
     public FormInstVO getShareLinkTask(String taskId,
-                                       String userId) throws ProcException, FormException {
+                                       String userId,
+                                       String sectionId) throws ProcException, FormException {
         FormInstDO formInstDO = getFormInst(taskId);
 
 //        这边就是，生成的这个外链复制给别人，然后别人点击，通过用户验证之后就可以去执行了
@@ -444,13 +457,13 @@ public class FormInstService {
         boo.setSceneId(formModelService.getSceneId(formInstDO.getFormModelId()));
 //        FormInstBO formInstBO = new FormInstBO(formInstDO,userId,Constants.TASK_ALL);
 
-        Filter userFilter = new UserIdFilter();
-        Filter duplicateFilter = new DuplicateFilter();
+        UserIdFilter userFilter = new UserIdFilter();
+        DuplicateFilter duplicateFilter = new DuplicateFilter();
 
         //对不属于当前用户的表单任务进行筛选
-        FormInstBO formInstBO1 = userFilter.filtrate(boo);
+        FormInstBO formInstBO1 = userFilter.shareLinkFiltrate(boo,sectionId);
         //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
-        FormInstBO formInstBO2 = duplicateFilter.filtrate(formInstBO1);
+        FormInstBO formInstBO2 = duplicateFilter.shareLinkFiltrate(formInstBO1);
 
         FormInstVO voo = formInstBO2.transToVO(procInstService.getCommitter(formInstBO2.getTaskId()));
 
