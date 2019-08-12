@@ -92,4 +92,9 @@ public interface ISceneService extends IService<Scene> {
     List<OrganScene> getNodesByNameAlike(String keyword, String sceneId);
 
     boolean generateRoleInfo(Scene scene, String userId);
+
+    /**
+     * 删除场景
+     */
+    boolean removeScene(String sceneId);
 }

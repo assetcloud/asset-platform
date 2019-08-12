@@ -1,12 +1,11 @@
 package com.asset.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
+@AllArgsConstructor
 @TableName("as_user_scene")
 public class UserScene {
 
@@ -18,12 +17,9 @@ public class UserScene {
     @TableField("user_id")
     private String userId;
 
+    @TableLogic(value = "1", delval = "0")
     private Integer status;
-    /**
-     * 不同场景下的角色（可有多个）
-     */
-//    @TableField("role_id")
-//    private Long roleId;
+
     @TableField("node_id")
     private String nodeId;
     @TableField("node_principal")

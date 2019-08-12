@@ -1,9 +1,6 @@
 package com.asset.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -65,8 +62,11 @@ public class Resource extends Model<Resource> implements Cloneable{
      */
     @TableField("scene_id")
     private String sceneId;
+
     @TableField("is_deleted")
+    @TableLogic
     private Integer isDeleted;
+
     @TableField("add_time")
     private Date addTime;
     @TableField("remove_time")

@@ -51,6 +51,12 @@ public class SceneController {
         return RespBean.ok(SystemConstant.GET_SUCCESS, sceneWrapper.listNodeVO(allScene));
     }
 
+    @PostMapping("remove")
+    @ApiOperation(value = "删除场景", notes = "/")
+    public R removeScene(@ApiParam(value = "sceneId", required = true) @RequestParam String sceneId){
+        return R.status(sceneService.removeScene(sceneId));
+    }
+
     @ApiOperation(value = "获取用户尚未拥有的场景", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(value = "page", name = "起始页", required = true, defaultValue = "1", dataTypeClass = Integer.class),

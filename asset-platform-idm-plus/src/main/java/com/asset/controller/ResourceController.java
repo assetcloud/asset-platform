@@ -215,7 +215,7 @@ public class ResourceController {
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
     @ApiOperation(value = "获取操作型资源", notes = "（已完成）通过点击应用，展现可访问的操作型资源")
-    public RespBean getFuncByForm(@RequestParam("userId")String userId, @RequestParam("formModelId") Long formResourceId
+    public RespBean getFuncByForm(@RequestParam("userId")String userId, @RequestParam("formResourceId") Long formResourceId
             , @RequestParam("sceneId") String sceneId){
         if (Func.hasEmpty(userId, formResourceId, sceneId)){
             return RespBean.error("参数错误");

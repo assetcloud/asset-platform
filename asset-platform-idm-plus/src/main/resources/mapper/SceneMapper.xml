@@ -8,7 +8,6 @@
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
-    <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
   <resultMap id="OrganSceneMap" type="com.asset.bean.OrganScene">
     <id column="id" jdbcType="VARCHAR" property="id" />
@@ -52,15 +51,13 @@
         as_scene s
     WHERE
         s.id IN ( SELECT us.scene_id FROM as_user_scene us WHERE us.user_id = #{userId} and us.status = 1 )
-        AND s.`status` = 1
         AND s.is_deleted = 0
   </select>
   <select id="getAvailableScene" resultMap="BaseResultMap">
-    select * from as_scene where id = #{sceneId} and status = 1
+    select * from as_scene where id = #{sceneId} and is_deleted = 0
   </select>
   <select id="getSceneInvert" resultType="com.asset.bean.Scene">
     SELECT * FROM as_scene WHERE is_deleted = 0
-    AND status = 1
     AND id NOT IN (SELECT scene_id FROM as_user_scene WHERE user_id = #{param1} AND STATUS = 1)
     <if test="param2 != null">
       AND as_scene.scene_name LIKE CONCAT('%', #{param2}, '%')
@@ -89,7 +86,7 @@
     from
         as_scene
     where
-        is_deleted = 0 and status = 1 and scene_name like CONCAT('%', #{sceneName}, '%')
+        is_deleted = 0 and scene_name like CONCAT('%', #{sceneName}, '%')
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from as_scene
@@ -97,9 +94,9 @@
   </delete>
   <insert id="insert" parameterType="com.asset.bean.Scene">
     insert into as_scene (id, scene_name, is_deleted,
-      add_time, status, remark, img)
+      add_time,remark, img)
     values (#{id,jdbcType=VARCHAR}, #{sceneName,jdbcType=VARCHAR}, #{isDeleted,jdbcType=TINYINT},
-      #{addTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR})
+      #{addTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR})
   </insert>
   <insert id="userSceneBind">
     insert into
@@ -122,9 +119,7 @@
       <if test="addTime != null">
         add_time,
       </if>
-      <if test="status != null">
-        status,
-      </if>
+
       <if test="remark != null">
         remark,
       </if>
@@ -144,9 +139,6 @@
       </if>
       <if test="addTime != null">
         #{addTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=TINYINT},
       </if>
       <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
@@ -174,16 +166,13 @@
       <if test="addTime != null">
         add_time = #{addTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="status != null">
-        status = #{status,jdbcType=TINYINT},
-      </if>
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
   <update id="deleteScene" parameterType="java.lang.String">
     update as_scene
     <set>
-      is_deleted = 1, status = 0
+      is_deleted = 1
     </set>
     where id = #{id}
   </update>
@@ -192,7 +181,7 @@
     <set>
       scene_name = #{sceneName}
     </set>
-    where id = #{id} and status = 1
+    where id = #{id}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.asset.bean.Scene">
     update as_scene
@@ -200,8 +189,7 @@
     img = #{img,jdbcType=VARCHAR},
         remark = #{remark,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=TINYINT},
-      add_time = #{addTime,jdbcType=TIMESTAMP},
-      status = #{status,jdbcType=TINYINT}
+      add_time = #{addTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=VARCHAR}
   </update>
 </mapper>

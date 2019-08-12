@@ -1,7 +1,0 @@
-FROM java
-MAINTAINER hjhu
-VOLUME /usr/local/hhj-dev/docker-data
-ADD asset-platform-idm-plus-1.1.1.jar app.jar
-EXPOSE 8084
-ENTRYPOINT ["java","-jar","/app.jar"]
-

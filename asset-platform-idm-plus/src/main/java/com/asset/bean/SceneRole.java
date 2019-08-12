@@ -1,9 +1,6 @@
 package com.asset.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.util.Date;
@@ -25,6 +22,7 @@ public class SceneRole {
     @TableField("role_description")
     private String roleDescription;
 
+    @TableLogic(value = "1", delval = "0")
     private Boolean status;
 
     @TableField("applicable_unit_level")

@@ -1,13 +1,15 @@
 package com.asset.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 
 import io.swagger.annotations.ApiModel;
+import lombok.Data;
+
 import java.util.List;
 
+@Data
 @ApiModel(value = "组织场景关联表")
+@TableName("as_organ_scene")
 public class OrganScene {
 
     @TableField("id")
@@ -16,8 +18,13 @@ public class OrganScene {
     private String nodeId;
     private String parentId;
     private String sceneId;
+
+    @TableLogic(value = "1", delval = "0")
     private Integer status;
+
     private String unitName;
+
+    @TableField(exist = false)
     private List<OrganScene> children;
 
     public String getUnitName() {

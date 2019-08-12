@@ -26,7 +26,7 @@
         AND real_name LIKE CONCAT('%',#{param3},'%')
     </select>
     <select id="getRoles" resultType="com.asset.bean.SceneRole">
-        SELECT * FROM as_scene_role WHERE scene_code = #{param2} AND status = 1 AND id IN (
+        SELECT * FROM as_scene_role WHERE scene_code = #{param2} AND is_deleted = 0 AND id IN (
             SELECT role_id FROM as_user_scene us WHERE us.user_id = #{param1} AND us.scene_id = #{param2} AND status = 1
         )
     </select>
