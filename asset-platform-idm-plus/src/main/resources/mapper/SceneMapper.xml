@@ -21,7 +21,7 @@
     <result column="cnt" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List">
-    id, scene_name, is_deleted, add_time, status, remark, img
+    id, scene_name, is_deleted, add_time, remark, img
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select

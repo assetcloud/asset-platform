@@ -4,6 +4,7 @@ package com.asset.controller;
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
 import com.asset.common.model.Query;
+import com.asset.config.WebLog;
 import com.asset.service.IDictService;
 import com.asset.service.IResourceGroupService;
 import com.asset.service.IResourceService;
@@ -153,6 +154,7 @@ public class ResourceController {
         return RespBean.data(resourceService.updateFuncInfo(formModelId, sceneId));
     }
 
+    @ApiOperation(value = "根据场景id获取资源列表", notes = "已完成")
     @GetMapping("list")
     public RespBean getAll(@NotEmpty @RequestParam String sceneId){
         List<Resource> resourceList = resourceService.list(Wrappers.<Resource>query().lambda()

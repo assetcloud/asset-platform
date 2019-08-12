@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test
+    active: dev
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
 #    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8

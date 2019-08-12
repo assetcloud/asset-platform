@@ -8,6 +8,7 @@ import com.asset.mapper.UuidIdGenerator;
 import com.asset.service.IUserService;
 import com.asset.utils.Func;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,12 +26,11 @@ import java.util.List;
  */
 @Service
 @Transactional
+@AllArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserDetailsService, IUserService {
 
-    @Autowired
-    private UserMapper userMapper;
+    UserMapper userMapper;
 
-    @Autowired
     UuidIdGenerator idGenerator;
 
     @Override
