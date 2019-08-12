@@ -11,14 +11,18 @@ import com.asset.exception.ProcException;
 import com.asset.form.FormItem;
 import com.asset.form.FormSheet;
 import com.asset.dto.*;
+import com.asset.javabean.ActRuVariableBO;
 import com.asset.javabean.FormInstBO;
 import com.asset.javabean.FormInstVO;
 import com.asset.javabean.TaskBO;
+import com.asset.service.impl.ActRuVariableServiceImpl;
 import com.asset.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
+import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -49,6 +53,8 @@ public class FormInstService {
     ProcInstService procInstService;
     @Autowired
     AuthorityService authorityService;
+    @Autowired
+    ActRuVariableServiceImpl actRuVariableService;
     @Autowired
     FormInstMapper formInstMapper;
 
@@ -89,7 +95,7 @@ public class FormInstService {
      * @param dto
      * @return
      */
-    public String[] commitNewFormInst(FormInstRecCreate dto) throws DocumentException {
+    public String[] commitNewFormInst(FormInstRecCreate dto) throws DocumentException, FlowableException {
         //1、先获取与表单模型唯一绑定的流程模型ID
         String procModelID = formModelService.getProcModelID(dto.getForm_model_id());
         //直接由流程模型后台创建流程实例(还没持久化)
@@ -113,6 +119,7 @@ public class FormInstService {
             formInstMapper.insert(inst);
         }
 
+
         //3、数据库表新建流程实例条目,注意这里还需要存储一个叫form_inst_all_value的字段
         ProcInstDO asProcInstDO = new ProcInstDO.Builder()
                 .procInstId(procInst.getProcessInstanceId())
@@ -125,6 +132,13 @@ public class FormInstService {
 
         procInstService.insertProcInst(asProcInstDO);
 
+        //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
+        String executionId = ProcUtils.getExecutionId(taskIDs[0]);
+        ActRuVariableBO boo = new ActRuVariableBO.Builder()
+                .executionId(executionId)
+                .procInstId(procInst.getProcessInstanceId())
+                .form_inst_value(dto.getForm_inst_value()).build();
+        actRuVariableService.saveRunVariable(boo);
         //至此，相当于把第一个任务节点要填的表单内容存进数据库了，而且绑定的流程实例也存进了数据库，当前流程应当流转到下个任务节点上了
         ProcUtils.completeTask(taskIDs[0]);
 
@@ -264,7 +278,7 @@ public class FormInstService {
      * 对审批节点进行审批
      * @param dto
      */
-    public void approveNode(FormInstRecApprove dto) throws ProcException {
+    public void approveNode(FormInstRecApprove dto) throws ProcException , FlowableException{
         //找到当前传入的表单实例对应的流程实例的ID，注意和TaskID进行区分！！一次执行中，TaskId会一直变化，但是流程实例ID是不会变的
         String procInstID = formInstMapper.getProcInstID(dto.getForm_inst_id());
         //当前审批节点同意申请，先把当前新加了 同意 这个信息的 新表单 放入数据库，并完成当前任务节点
@@ -272,6 +286,15 @@ public class FormInstService {
         {
             //同意审批，as_form_inst表中输入approve_result,sheet和value、executor、execute_time值
             updateFormInst(dto);
+            //这里审批节点之后就算存在分支结构，也不会是对这个审批意见进行处理，因为如果是对在之前任务节点上的表单项填写内容进行分支，那个时候就已经写入了runVariable数据，这里不需要再写
+            //但是这里也可以写，如果以后需要对整个流程进行监控，就是比如在哪个节点干了什么事情这种
+//            //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
+//            String executionId = ProcUtils.getExecutionId(dto.getTask_id());
+//            ActRuVariableBO boo = new ActRuVariableBO.Builder()
+//                    .executionId(executionId)
+//                    .procInstId(procInstID)
+//                    .form_inst_value("approve").build();
+//            actRuVariableService.saveRunVariable(boo);
             ProcUtils.completeTask(dto.getTask_id());
             procInstService.saveUnCompleteTask(
                     procInstID,
@@ -369,9 +392,16 @@ public class FormInstService {
      * 对经办节点进行处理
      * @param rec
      */
-    public void applyNode(FormInstRecHandle rec) {
+    public void applyNode(FormInstRecHandle rec) throws FlowableException{
         //当前填写表单数据 对数据库进行更新
         updateFormInst(rec);
+        //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
+        String executionId = ProcUtils.getExecutionId(rec.getTask_id());
+        ActRuVariableBO boo = new ActRuVariableBO.Builder()
+                .executionId(executionId)
+                .procInstId(rec.getProc_inst_id())
+                .form_inst_value(rec.getForm_inst_value()).build();
+        actRuVariableService.saveRunVariable(boo);
         //完成当前经办节点
         ProcUtils.completeTask(rec.getTask_id());
         procInstService.saveUnCompleteTask(
@@ -384,10 +414,10 @@ public class FormInstService {
      * 对抄送节点进行处理
      * @param rec
      */
-    public void pendingNode(FormInstRecReadle rec) {
+    public void pendingNode(FormInstRecReadle rec) throws FlowableException{
         //保存当前抄送节点的已阅信息
         updateFormInst(rec);
-        //完成当前抄送任务
+        //完成当前抄送任务,抄送任务之后也不需要考虑对当前结果的处理意见进行一个保存
         //抄送任务结束之后，默认后面是没有任务节点了！！所以这里不需要再保存未完成任务节点
         ProcUtils.completeTask(rec.getTask_id());
     }
@@ -398,9 +428,17 @@ public class FormInstService {
      * @param userID
      * @return
      */
-    public List<TaskCount> getFormInstsCounts(String userID) throws Exception {
-        TaskCount toDoCount = getCount(userID,Constants.TASK_TO_DO);
-        TaskCount toReadCount = getCount(userID,Constants.TASK_TOBE_READ);
+    public List<TaskCount> getFormInstsCounts(String userID,String sceneId,String sectionId ) throws Exception {
+//        TaskCount toDoCount = getCount(userID,
+//                Constants.TASK_TO_DO,
+//                sceneId,
+//                sectionId);
+//        TaskCount toReadCount = getCount(userID,
+//                Constants.TASK_TOBE_READ,
+//                sceneId,
+//                sectionId);
+        TaskCount toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(userID, Constants.TASK_TO_DO, sceneId, sectionId).size());
+        TaskCount toReadCount =  new TaskCount(Constants.TASK_TOBE_READ, listFormInst(userID, Constants.TASK_TOBE_READ, sceneId, sectionId).size());
         List<TaskCount> taskCounts = new ArrayList<>();
         taskCounts.add(toDoCount);
         taskCounts.add(toReadCount);
@@ -470,7 +508,20 @@ public class FormInstService {
         return voo;
     }
 
-    public TaskCount getCount(String userID, int taskType) throws InfoException, ProcException {
+    /**
+     * 这里的获取任务节点信息都没有经过筛选，不完整
+     * @param userID
+     * @param taskType
+     * @param sceneId
+     * @param sectionId
+     * @return
+     * @throws InfoException
+     * @throws ProcException
+     */
+    public TaskCount getCount(String userID,
+                              int taskType,
+                              String sceneId,
+                              String sectionId) throws InfoException, ProcException {
         //1、先获取流转到该用户对应的FlowableTaskDO
         List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
         if (tasks.size()==0)
@@ -480,6 +531,18 @@ public class FormInstService {
 
         //2、对上面集合进行遍历，从as_proc_node中取出ActType进行比对，确定节点类型，与输入的taskType比对，看是不是要显示的节点
         taskBOs = dressTaskByType(taskBOs, taskType);
+
+//        //对用户、组织筛选
+//        UserIdFilter userIdFilter = new UserIdFilter();
+//        DuplicateFilter duplicateFilter = new DuplicateFilter();
+//        SceneFilter sceneFilter = new SceneFilter();
+//        //对不属于当前用户的表单任务进行筛选
+//        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs,sectionId);
+//        //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
+//        ArrayList<FormInstBO> filtrate2 = duplicateFilter.filtrate(filtrate1);
+//        //过滤工作场景
+//        ArrayList<FormInstBO> filtrate3 = sceneFilter.filtrate(filtrate2,sceneId);
+
         return new TaskCount(taskType, taskBOs.size());
     }
 
@@ -694,7 +757,7 @@ public class FormInstService {
     }
 
 
-    public String getAlreadyCompleteTask(String curUserId, String procInstId) {
+    public String getAlreadyCompleteTask(String curUserId, String procInstId) throws FlowableException{
         return formInstMapper.getAlreadyCompleteTask(curUserId,procInstId);
     }
 }

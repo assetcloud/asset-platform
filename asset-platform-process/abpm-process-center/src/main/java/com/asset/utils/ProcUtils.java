@@ -4,6 +4,7 @@ import com.asset.exception.ProcException;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
+import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -78,7 +79,7 @@ public class ProcUtils {
      *
      * @param taskID
      */
-    public static void completeTask(String taskID) {
+    public static void completeTask(String taskID) throws FlowableException{
         taskService.complete(taskID);
     }
 
@@ -240,5 +241,12 @@ public class ProcUtils {
             runtimeService.deleteProcessInstance(procInstId, "");
             historyService.deleteHistoricProcessInstance(procInstId);//(顺序不能换)
         }
+    }
+
+
+    public static String getExecutionId(String taskId)
+    {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        return task.getExecutionId();
     }
 }

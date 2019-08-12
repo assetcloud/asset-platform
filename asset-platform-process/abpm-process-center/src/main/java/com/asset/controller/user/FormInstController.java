@@ -10,6 +10,7 @@ import com.asset.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.dom4j.DocumentException;
+import org.flowable.common.engine.api.FlowableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,9 @@ public class FormInstController {
         } catch (DocumentException e) {
             e.printStackTrace();
             return RespBean.error(e.getMessage());
+        } catch (FlowableException e){
+            e.printStackTrace();
+            return RespBean.error(e.getMessage()+"  请检查流程模型元素是否有误！");
         }
         return RespBean.ok("",urls);
     }
@@ -91,6 +95,25 @@ public class FormInstController {
     }
 
     /**
+     * 返回当前用户有多少的待办任务，待阅任务
+     * @param userID
+     * @return
+     */
+    @GetMapping(value = "/form_inst/all/count")
+    public RespBean formInstsCount(@RequestParam(value = "user_id")String userID,
+                                   @RequestParam(value = "scene_id") String sceneId,
+                                   @RequestParam(value = "section_id") String sectionId){
+        List<TaskCount> taskCounts = null;
+        try {
+            taskCounts = formInstService.getFormInstsCounts(userID,sceneId,sectionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespBean.error(e.getMessage());
+        }
+        return RespBean.ok("",taskCounts);
+    }
+
+    /**
      * 用户登录系统，对审批节点进行处理，点击 同意 或 拒绝
      * 审批节点对当前节点进行操作
      * 1、点“同意” 即代表当前任务节点会向后流转，同时当前填写的表单实例需要加上这个处理意见，给下一个节点过目
@@ -105,6 +128,9 @@ public class FormInstController {
         } catch (ProcException e) {
             e.printStackTrace();
             return RespBean.error(e.getMessage());
+        } catch (FlowableException e){
+            e.printStackTrace();
+            return RespBean.error(e.getMessage()+"  请检查流程模型元素是否有误！");
         }
         return RespBean.ok("");
     }
@@ -116,7 +142,12 @@ public class FormInstController {
     @RequestMapping(value = "/form_inst/apply_node",method = RequestMethod.POST)
     public RespBean applyNode(@RequestBody FormInstRecHandle rec)
     {
-        formInstService.applyNode(rec);
+        try {
+            formInstService.applyNode(rec);
+        } catch (FlowableException e){
+            e.printStackTrace();
+            return RespBean.error(e.getMessage()+"  请检查流程模型元素是否有误！");
+        }
         return RespBean.ok("");
     }
 
@@ -126,26 +157,16 @@ public class FormInstController {
     @RequestMapping(value = "/form_inst/pending_node",method = RequestMethod.POST)
     public RespBean pendingNode(@RequestBody FormInstRecReadle rec)
     {
-        formInstService.pendingNode(rec);
+        try {
+            formInstService.pendingNode(rec);
+        } catch (FlowableException e){
+            e.printStackTrace();
+            return RespBean.error(e.getMessage()+"  请检查流程模型元素是否有误！");
+        }
         return RespBean.ok("");
     }
 
-    /**
-     * 返回当前用户有多少的待办任务，待阅任务
-     * @param userID
-     * @return
-     */
-    @GetMapping(value = "/form_inst/all/count")
-    public RespBean formInstsCount(@RequestParam(value = "user_id")String userID){
-        List<TaskCount> taskCounts = null;
-        try {
-            taskCounts = formInstService.getFormInstsCounts(userID);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return RespBean.error(e.getMessage());
-        }
-        return RespBean.ok("",taskCounts);
-    }
+
 
     /**
      * 用户点击分享链接，显示当前分配到的节点任务信息
