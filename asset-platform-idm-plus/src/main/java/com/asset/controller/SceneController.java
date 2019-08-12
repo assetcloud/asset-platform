@@ -52,7 +52,7 @@ public class SceneController {
     }
 
     @PostMapping("remove")
-    @ApiOperation(value = "删除场景", notes = "/")
+    @ApiOperation(value = "删除场景", notes = "已完成")
     public R removeScene(@ApiParam(value = "sceneId", required = true) @RequestParam String sceneId){
         return R.status(sceneService.removeScene(sceneId));
     }
