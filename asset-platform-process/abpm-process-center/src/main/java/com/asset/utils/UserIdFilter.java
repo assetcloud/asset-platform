@@ -59,7 +59,7 @@ public class UserIdFilter{
             throw new FormException("当前用户权限不够，无法获取当前任务节点信息！");
 
 
-        for (int i = 0; i < candidateUser.length; i++) {
+        for (int i = 0; i < candidateGroup.length; i++) {
             if (candidateGroup[i].equals(sectionId))
                 return formInstBO;
         }

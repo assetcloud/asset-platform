@@ -8,6 +8,7 @@ import com.asset.entity.*;
 import com.asset.exception.FormException;
 import com.asset.exception.InfoException;
 import com.asset.exception.ProcException;
+import com.asset.exception.SizeNullException;
 import com.asset.form.FormItem;
 import com.asset.form.FormSheet;
 import com.asset.dto.*;
@@ -170,14 +171,14 @@ public class FormInstService {
         //1、先获取流转到该用户对应的FlowableTaskDO
         List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
         if (tasks.size()==0)
-            throw new InfoException("表单实例为空");
+            throw new SizeNullException("表单实例为空");
 
         List<TaskBO> taskBOs = constructTaskBO(tasks);
 
         //2、对上面集合进行遍历，从as_proc_node中取出ActType进行比对，确定节点类型，与输入的taskType比对，看是不是要显示的节点
         taskBOs = dressTaskByType(taskBOs, taskType);
         if (taskBOs.size()==0)
-            throw new InfoException("表单实例为空");
+            throw new SizeNullException("表单实例为空");
 
         //3、获取真正的表单实例表
         ArrayList<FormInstDO> formInstDOs = (ArrayList<FormInstDO>)getFormInsts(taskBOs);
@@ -437,8 +438,20 @@ public class FormInstService {
 //                Constants.TASK_TOBE_READ,
 //                sceneId,
 //                sectionId);
-        TaskCount toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(userID, Constants.TASK_TO_DO, sceneId, sectionId).size());
-        TaskCount toReadCount =  new TaskCount(Constants.TASK_TOBE_READ, listFormInst(userID, Constants.TASK_TOBE_READ, sceneId, sectionId).size());
+        TaskCount toDoCount;
+        TaskCount toReadCount;
+        try{
+            toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(userID, Constants.TASK_TO_DO, sceneId, sectionId).size());
+        } catch (SizeNullException e) {
+            toDoCount = new TaskCount(Constants.TASK_TO_DO,0);
+        }
+
+        try{
+            toReadCount =  new TaskCount(Constants.TASK_TOBE_READ, listFormInst(userID, Constants.TASK_TOBE_READ, sceneId, sectionId).size());
+        } catch (SizeNullException e) {
+            toReadCount = new TaskCount(Constants.TASK_TOBE_READ,0);
+        }
+
         List<TaskCount> taskCounts = new ArrayList<>();
         taskCounts.add(toDoCount);
         taskCounts.add(toReadCount);

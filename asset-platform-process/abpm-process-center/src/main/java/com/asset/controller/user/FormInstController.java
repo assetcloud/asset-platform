@@ -183,7 +183,7 @@ public class FormInstController {
             shareLinkTask = formInstService.getShareLinkTask(taskId,userId,sectionId);
         } catch (Exception e) {
             e.printStackTrace();
-            return RespBean.error("",e.getMessage());
+            return RespBean.error(e.getMessage());
         }
         return RespBean.ok("",shareLinkTask);
     }
