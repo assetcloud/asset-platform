@@ -34,7 +34,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
-@Api(tags = "控制端任务节点管理")
+@Api(tags = "控制端：任务节点管理")
 public class AdminTaskController {
 
     TaskServiceImpl asFormInstService;

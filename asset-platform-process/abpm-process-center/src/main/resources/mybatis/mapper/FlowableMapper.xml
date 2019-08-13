@@ -70,7 +70,7 @@
         SELECT
             name
         FROM
-            act_de_model
+            ACT_DE_MODEL
         WHERE
             id = #{modelId,jdbcType=VARCHAR}
     </select>

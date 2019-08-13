@@ -14,6 +14,8 @@ public class TaskBO {
     String procInstId;
     Integer nodeType;
 
+    public TaskBO() {
+    }
 
     public TaskBO(FlowableTaskDO cur, Integer nodeType) {
         this.actId = cur.getActId();

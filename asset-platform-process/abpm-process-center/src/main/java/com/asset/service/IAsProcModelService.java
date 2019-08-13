@@ -19,4 +19,9 @@ public interface IAsProcModelService extends IService<AsProcModel> {
     String getBindFormSheet(String procModelId);
 
     void updateProcNodeNum(String procModelId, Integer procNodeNum) throws Exception;
+
+    void saveSeqCondition(String procModelId,String seqConditions) throws Exception;
+
+    AsProcModel getProcModelById(String procModelId);
+
 }

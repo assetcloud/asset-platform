@@ -27,7 +27,7 @@ public class Swagger2 {
                 .apiInfo(apiInfo())
                 .select()
                 //为当前包路径
-                .apis(RequestHandlerSelectors.basePackage("com.asset"))
+                .apis(RequestHandlerSelectors.basePackage("com.asset.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }

@@ -5,6 +5,7 @@ import com.asset.service.OrganizationService;
 import com.asset.service.ProcRepositoryService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  * @author hjhu
  */
 @Controller
+@Api(tags = "终端：组织架构管理")
 public class OrganizationController extends BaseController {
 
     @Autowired

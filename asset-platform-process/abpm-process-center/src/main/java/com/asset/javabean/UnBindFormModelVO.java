@@ -23,4 +23,7 @@ public class UnBindFormModelVO {
     private Integer status;
     private String procModelId;
     private String modelSheetStr;
+
+    public UnBindFormModelVO() {
+    }
 }

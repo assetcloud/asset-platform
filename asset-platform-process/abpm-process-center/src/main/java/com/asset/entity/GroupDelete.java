@@ -6,4 +6,7 @@ public class GroupDelete extends Group {
         this.groupId = groupId;
         this.status = status;
     }
+
+    public GroupDelete() {
+    }
 }

@@ -68,5 +68,6 @@ public class AsFormInst implements Serializable {
      */
     private Integer approveResult;
 
-
+    public AsFormInst() {
+    }
 }

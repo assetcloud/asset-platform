@@ -7,19 +7,12 @@ import java.util.Date;
 @Data
 public class ProcInstDO {
     private String procInstId;
-
     private String procModelId;
-
     private String procDefId;
-
     private String procDeployId;
-
     private Date commitTime;
-
     private String committer;
-
     private String formInstAllValue;
-
     private Integer status;
 
     public ProcInstDO() {

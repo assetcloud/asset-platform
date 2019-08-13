@@ -72,4 +72,7 @@ public class AsFormModel implements Serializable {
     private String sceneId;
 
     private String appId;
+
+    public AsFormModel() {
+    }
 }

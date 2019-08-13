@@ -62,13 +62,6 @@ public class ApplicationService {
         return application;
     }
 
-
-
-
-
-
-
-
     public List<ApplicationDO> getPublishedApp() {
         return applicationMapper.getPublishedApp();
     }

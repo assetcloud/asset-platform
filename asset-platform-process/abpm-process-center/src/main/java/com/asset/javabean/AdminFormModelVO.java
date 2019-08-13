@@ -27,7 +27,7 @@ public class AdminFormModelVO {
     private String iconCls;
     private Integer status;
     private String procModelId;
-    private String modelSheetStr;
+    private String modelSheet;
     private String appId;
 
     @ApiModelProperty(value = "表单模型创建时间：时间戳格式")

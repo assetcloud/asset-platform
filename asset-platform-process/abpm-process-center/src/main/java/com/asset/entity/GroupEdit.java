@@ -13,4 +13,6 @@ public class GroupEdit extends Group {
         this.status = Constants.GROUP_ENABLED;
     }
 
+    public GroupEdit() {
+    }
 }

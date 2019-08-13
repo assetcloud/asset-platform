@@ -21,4 +21,7 @@ public class FormModelBO {
     private String modelSheetStr;
     private String sceneId;
     private String appId;
+
+    public FormModelBO() {
+    }
 }

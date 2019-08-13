@@ -36,7 +36,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
-@Api(tags = "控制端流程模型管理")
+@Api(tags = "控制端：流程模型管理")
 public class AdminProcModelController {
 
     ActDeModelServiceImpl actDeModelService;

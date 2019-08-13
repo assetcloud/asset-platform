@@ -1,8 +1,10 @@
 package com.asset.utils;
 
+import com.asset.exception.ProcException;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
+import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntity;
@@ -52,7 +54,11 @@ public class ProcUtils {
 
                 //遍历，然后完成
                 for (Task task : tasks) {
-                    taskService.complete(task.getId());
+                    try {
+                        taskService.complete(task.getId());
+                    }catch (FlowableException e){
+                        System.out.println("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss  "+task.getId());
+                    }
                 }
             }
         }
@@ -77,9 +83,10 @@ public class ProcUtils {
      *
      * @param taskID
      */
-    public static void completeTask(String taskID) {
+    public static void completeTask(String taskID) throws FlowableException{
         taskService.complete(taskID);
     }
+
 
     public static void rollback(String executionId, String rollbackActID, String procInstID) {
         runtimeService.createChangeActivityStateBuilder().processInstanceId(procInstID)
@@ -130,9 +137,12 @@ public class ProcUtils {
      *
      * @param procInstId
      */
-    public static void suspendProcInst(String procInstId) {
+    public static void suspendProcInst(String procInstId) throws Exception{
+        if(isFinished(procInstId))
+            throw new ProcException("流程实例: "+procInstId+"已执行完毕，无法挂起！");
         //根据一个流程实例的id挂起该流程实例
         runtimeService.suspendProcessInstanceById(procInstId);
+
     }
 
     /**
@@ -140,7 +150,10 @@ public class ProcUtils {
      *
      * @param procInstId
      */
-    public static void activateProcInst(String procInstId) {
+    public static void activateProcInst(String procInstId) throws Exception{
+        if(isFinished(procInstId))
+            throw new ProcException("流程实例: "+procInstId+"已执行完毕，无法执行激活操作！");
+
         runtimeService.activateProcessInstanceById(procInstId);
     }
 
@@ -233,5 +246,12 @@ public class ProcUtils {
             runtimeService.deleteProcessInstance(procInstId, "");
             historyService.deleteHistoricProcessInstance(procInstId);//(顺序不能换)
         }
+    }
+
+
+    public static String getExecutionId(String taskId)
+    {
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        return task.getExecutionId();
     }
 }

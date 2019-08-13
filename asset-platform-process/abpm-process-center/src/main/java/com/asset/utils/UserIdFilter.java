@@ -11,15 +11,15 @@ import java.util.List;
  *
  * @author YBY
  */
-public class UserIdFilter implements Filter {
+public class UserIdFilter{
 
-    @Override
-    public ArrayList<FormInstBO> filtrate(List<FormInstBO> formInstBOList) {
+    public ArrayList<FormInstBO> filtrate(List<FormInstBO> formInstBOList,String sectionId) {
         type1:
         for (int m = 0; m < formInstBOList.size(); m++) {
+            FormInstBO formInstBO = formInstBOList.get(m);
+
 
             //对user先进行筛选
-            FormInstBO formInstBO = formInstBOList.get(m);
             String[] candidateUser = formInstBO.getCandidateUser();
             if(candidateUser!=null)
                 for (int i = 0; i < candidateUser.length; i++) {
@@ -29,10 +29,9 @@ public class UserIdFilter implements Filter {
 
             //既然不是候选用户组里的，现在看看当前用户是不是候选组织里的
             String[] candidateGroup = formInstBO.getCandidateGroup();
-            String curGroup = getCurGroup(formInstBO.getCurUserId(), formInstBO.getSceneId());
             if (candidateGroup != null)
                 for (int i = 0; i < candidateGroup.length; i++) {
-                    if (candidateGroup[i].equals(curGroup))
+                    if (candidateGroup[i].equals(sectionId))
                         continue type1;
                 }
 
@@ -44,8 +43,8 @@ public class UserIdFilter implements Filter {
         return (ArrayList<FormInstBO>) formInstBOList;
     }
 
-    @Override
-    public FormInstBO filtrate(FormInstBO formInstBO) throws FormException {
+    public FormInstBO shareLinkFiltrate(FormInstBO formInstBO,
+                                        String sectionId) throws FormException {
         //对user先进行筛选,如果有找到，那就立即返回即可
         String[] candidateUser = formInstBO.getCandidateUser();
         if (candidateUser != null)
@@ -59,9 +58,9 @@ public class UserIdFilter implements Filter {
         if (candidateGroup == null)
             throw new FormException("当前用户权限不够，无法获取当前任务节点信息！");
 
-        String curGroup = getCurGroup(formInstBO.getCurUserId(), formInstBO.getSceneId());
-        for (int i = 0; i < candidateUser.length; i++) {
-            if (candidateGroup[i].equals(curGroup))
+
+        for (int i = 0; i < candidateGroup.length; i++) {
+            if (candidateGroup[i].equals(sectionId))
                 return formInstBO;
         }
 
@@ -69,14 +68,4 @@ public class UserIdFilter implements Filter {
         throw new FormException("当前用户权限不够，无法获取当前任务节点信息！");
     }
 
-    /**
-     * 获取当前用户在当前场景下是属于哪个部门的
-     *
-     * @param curUserId
-     * @param sceneId
-     * @return
-     */
-    private String getCurGroup(String curUserId, String sceneId) {
-        return "部门信息请等待与组织架构串通";
-    }
 }

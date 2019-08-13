@@ -31,7 +31,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
-@Api(tags = "控制端应用管理")
+@Api(tags = "控制端：应用管理")
 public class AdminAppController {
 
     AsApplicationServiceImpl asApplicationService;

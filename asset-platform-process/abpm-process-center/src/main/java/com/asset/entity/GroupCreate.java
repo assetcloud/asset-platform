@@ -10,4 +10,7 @@ public class GroupCreate extends Group {
         this.groupName = groupName;
         this.status = status;
     }
+
+    public GroupCreate() {
+    }
 }

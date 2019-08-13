@@ -13,6 +13,9 @@ public class ProcDefInfo  implements Serializable {
     private String version_;
     private String createtime_;
 
+    public ProcDefInfo() {
+    }
+
     public String getId_() {
         return id_;
     }

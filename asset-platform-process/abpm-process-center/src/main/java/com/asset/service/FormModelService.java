@@ -32,7 +32,8 @@ public class FormModelService {
     FormModelMapper formModelMapper;
     @Autowired
     ApplicationService applicationService;
-
+    @Autowired
+    FormInstService formInstService;
 
 
     /**
@@ -107,7 +108,7 @@ public class FormModelService {
     public List<FormModelBO> getFormModels(String appId, int groupId, int formStatus) {
         List<String> formModelIds = getFormModels(appId);
         if(formModelIds==null||formModelIds.size()==0)
-            throw new InfoException("应用ID不存在，请检查");
+            return null;
         ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
 
         List<FormModelBO> boList = new ArrayList<>();
@@ -238,5 +239,14 @@ public class FormModelService {
 
     public String getBindFormSheet(String procModelId) {
         return formModelMapper.getBindFormSheet(procModelId);
+    }
+
+    public String getSceneIdByProcModelId(String procModelId) {
+        return formModelMapper.getSceneIdByProcModelId(procModelId);
+    }
+
+    public String getSceneIdByTaskId(String taskId) {
+        String formModelId = formInstService.getFormModelId(taskId);
+        return getSceneId(formModelId);
     }
 }
