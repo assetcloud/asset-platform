@@ -33,6 +33,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -225,9 +226,29 @@ public class FormInstService {
         //过滤工作场景
         ArrayList<FormInstBO> filtrate3 = sceneFilter.filtrate(filtrate2,curSelectSceneId);
 
+
         ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
         for(int i = 0;i<filtrate3.size();i++){
-            FormInstVO voo = filtrate3.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
+            FormInstBO boo = filtrate3.get(i);
+            String committer = procInstService.getCommitter(filtrate3.get(i).getTaskId());
+            String formInstValue = procInstService.getFormInstAllValue(boo.getProcInstId());
+            Date commitTime = procInstService.getCommitTime(boo.getProcInstId());
+            FormInstVO voo = new FormInstVO.Builder()
+                    .commitTime(commitTime.getTime())
+                    .title(committer+"发起的表单").build();
+            BeanUtils.copyProperties(boo,voo);
+            voo.setFormInstValue(formInstValue);
+
+            if(boo.getNodeType() == Constants.AS_NODE_APPLY)
+                voo.setContent("经办节点");
+            else if(boo.getNodeType() == Constants.AS_NODE_APPROVE)
+                voo.setContent("审批节点");
+            else if(boo.getNodeType() == Constants.AS_NODE_CC)
+                voo.setContent("抄送节点");
+            else
+                voo.setContent("其他节点");
+
+//            FormInstVO voo = filtrate3.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
             formInstVOs.add(voo);
         }
 

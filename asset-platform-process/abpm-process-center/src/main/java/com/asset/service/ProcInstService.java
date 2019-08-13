@@ -107,7 +107,7 @@ public class ProcInstService {
         }
     }
 
-    private String getFormInstAllValue(String procInstId) {
+    public String getFormInstAllValue(String procInstId) {
         return procInstMapper.getFormInstAllValue(procInstId);
     }
 
@@ -527,5 +527,9 @@ public class ProcInstService {
         }
 
         return VOs;
+    }
+
+    public Date getCommitTime(String procInstId) {
+        return procInstMapper.getCommitTime(procInstId);
     }
 }
