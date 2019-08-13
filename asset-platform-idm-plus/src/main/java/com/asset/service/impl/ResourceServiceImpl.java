@@ -7,19 +7,15 @@ import com.asset.service.IResourceRoleService;
 import com.asset.service.IResourceService;
 import com.asset.service.ISceneRelationService;
 import com.asset.service.ISceneRoleService;
-import com.asset.utils.ResourceNodeManager;
 import com.asset.utils.ResourceNodeMerger;
 import com.asset.utils.ResourceVONodeMerger;
 import com.asset.vo.ResourceVO;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springblade.core.tool.utils.Func;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,21 +52,36 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
      * @param formResource
      * @return int
      */
-    public int addFuncResource(Resource formResource) throws CloneNotSupportedException {
+    @Transactional
+    public boolean addFuncResource(Resource formResource) throws CloneNotSupportedException {
         Resource [] array = SystemConstant.RESOURCES;
         List<Resource> menuList = new ArrayList<>();
+        ArrayList<ResourceRole> roles = new ArrayList<>();
         for (Resource value : array) {
             //操作型菜单深拷贝
             Resource var = (Resource) value.clone();
             var.setParentId(formResource.getId());
+            var.setSceneId(formResource.getSceneId());
             var.setPath(formResource.getPath() + var.getPath());
             var.setIsDeleted(0);
             var.setAddTime(new Date());
             menuList.add(var);
         }
-        resourceMapper.batchInsert(menuList);
-        resourceMapper.batchInsertResourceRole(menuList);
-        return 1;
+        SceneRole one = sceneRoleService.getOne(Wrappers.<SceneRole>lambdaQuery()
+                .eq(SceneRole::getSceneCode, formResource.getSceneId())
+                .eq(SceneRole::getRoleType, SystemConstant.ROLE_TYPE_ADMIN));
+        this.saveBatch(menuList);
+        ArrayList<Long> menuIds = new ArrayList<>();
+        menuList.forEach(menu -> {
+            ResourceRole resourceRole = new ResourceRole();
+            resourceRole.setMenuId(menu.getId());
+            resourceRole.setRoleId(one.getId());
+            roles.add(resourceRole);
+            menuIds.add(menu.getId());
+        });
+        resourceRoleService.remove(Wrappers.<ResourceRole>update().lambda().in(ResourceRole::getMenuId, menuIds)
+                .eq(ResourceRole::getRoleId, one.getId()));
+        return resourceRoleService.saveBatch(roles);
     }
 
     /**
@@ -128,8 +139,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
 
     @Override
     public List<Resource> getFormResourcesByApp(String userId, Long appResourceId, String sceneId){
-        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>query().lambda()
-                .eq(SceneRole::getStatus, 1).eq(SceneRole::getSceneCode, sceneId));
+        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>lambdaQuery().eq(SceneRole::getSceneCode, sceneId));
         List<Long> rids = new ArrayList<>();
         sceneRoles.forEach(map-> rids.add(map.getId()));
         List<SceneRelation> sceneRelations = sceneRelationService.list(Wrappers.<SceneRelation>query().lambda()
@@ -150,8 +160,14 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
      * 为系统管理员增加菜单
      * @param resource
      */
+    @Transactional
     public void addResource4Admin(Resource resource){
-        resourceMapper.addResourceRole(resource.getId(), SystemConstant.SCENE_ADMIN_ROLE);
+        SceneRole one = sceneRoleService.getOne(Wrappers.<SceneRole>lambdaQuery()
+                .eq(SceneRole::getSceneCode, resource.getSceneId())
+                .eq(SceneRole::getRoleType, SystemConstant.ROLE_TYPE_ADMIN));
+        resourceRoleService.remove(Wrappers.<ResourceRole>update().lambda().eq(ResourceRole::getRoleId, one.getId())
+                .eq(ResourceRole::getMenuId, resource.getId()));
+        resourceMapper.addResourceRole(resource.getId(), one.getId());
     }
 
     /**
@@ -184,8 +200,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     @Override
     public Resource getResourceList(String sceneId) {
         List<Resource> resources = resourceMapper.selectList(Wrappers.<Resource>query().lambda()
-                .eq(Resource::getSceneId, sceneId)
-                .eq(Resource::getIsDeleted, 0));
+                .eq(Resource::getSceneId, sceneId));
         return ResourceNodeMerger.merge(resources);
     }
 
@@ -203,5 +218,10 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource> i
     public boolean formExists(String formModelId) {
         List<Resource> resources = resourceMapper.getFormByPath(formModelId);
         return resources.size() > 0;
+    }
+
+    @Override
+    public List<Resource> getFormList(Long appId, List<Long> roleIds) {
+        return baseMapper.formList(appId, roleIds);
     }
 }

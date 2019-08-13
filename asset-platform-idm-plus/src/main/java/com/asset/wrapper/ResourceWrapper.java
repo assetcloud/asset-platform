@@ -9,6 +9,7 @@ import com.asset.service.IResourceGroupService;
 import com.asset.service.IResourceService;
 import com.asset.service.ISceneService;
 import com.asset.utils.ResourceVONodeMerger;
+import com.asset.vo.ResourceGroupVO;
 import com.asset.vo.ResourceVO;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
@@ -64,5 +65,27 @@ public class ResourceWrapper {
 	public List<ResourceVO> listNodeVO(List<Resource> list) {
 		List<ResourceVO> collect = list.stream().map(resource -> BeanUtil.copy(resource, ResourceVO.class)).collect(Collectors.toList());
 		return ResourceVONodeMerger.merge(collect);
+	}
+
+	public List<ResourceGroupVO> listNodeVOWithGroup(Long appId, List<Resource> list) {
+		List<ResourceGroup> groups = resourceGroupService.list(Wrappers.<ResourceGroup>lambdaQuery()
+				.eq(ResourceGroup::getAppId, appId));
+		ResourceGroup noGroup = new ResourceGroup();
+		noGroup.setId(0L);
+		noGroup.setName("未分组");
+		groups.add(noGroup);
+		List<ResourceGroupVO> collect = groups.stream().map(group -> BeanUtil.copy(group, ResourceGroupVO.class)).collect(Collectors.toList());
+		for (ResourceGroupVO group : collect) {
+			for (Resource resource : list) {
+				if (resource.getGroupId().equals(group.getId())){
+					ResourceVO resourceVO = BeanUtil.copy(resource, ResourceVO.class);
+					group.getChildren().add(resourceVO);
+				}
+			}
+		}
+//		if (collect.get(collect.size()-1).getChildren().size() <= 0){
+//			collect.remove(collect.size()-1);
+//		}
+		return collect;
 	}
 }

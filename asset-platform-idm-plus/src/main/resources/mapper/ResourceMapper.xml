@@ -113,7 +113,7 @@
     </resultMap>
 
     <resultMap id="FormResultMap" type="com.asset.bean.FormGroup">
-        <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+        <result column="group_id" jdbcType="INTEGER" property="groupId" />
         <result column="group_name" jdbcType="VARCHAR" property="groupName" />
         <collection property="children" ofType="com.asset.bean.Resource">
             <id column="id" jdbcType="BIGINT" property="id" />
@@ -152,7 +152,7 @@
     <insert id="addResourceRole">
     insert into as_resource_role (menu_id, role_id) values (#{menuId,jdbcType=BIGINT}, #{roleId,jdbcType=INTEGER})
   </insert>
-    <select id="getByPath" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="getByPath" parameterType="java.lang.String" resultType="com.asset.bean.Resource">
         select * from as_resource where path = #{applicationId} AND is_deleted = 0
     </select>
 
@@ -294,16 +294,18 @@
         rg.`name` as group_name
         FROM
         as_resource m
-        LEFT JOIN as_resource_group rg ON m.group_id = rg.id
+        RIGHT JOIN as_resource_group rg ON m.group_id = rg.id
         WHERE
         m.id IN ( SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN
-            <foreach collection="param1" item="item" separator="," open="(" close=")">
-                #{item.rid}
-            </foreach>
+        <foreach collection="param1" item="item" separator="," open="(" close=")">
+            #{item.rid}
+        </foreach>
         )
         AND
         m.`is_deleted` = 0
         AND m.parent_id = #{param2}
+        AND rg.app_id = #{param2}
+        AND rg.`is_deleted` = 0
     </select>
     <select id="getAppResourcesByUser" resultMap="AppMenuMap" parameterType="java.lang.String">
     SELECT
@@ -333,7 +335,7 @@
         and is_deleted = 0
     </select>
     <select id="tree" resultMap="treeNodeResultMap" parameterType="java.lang.String">
-        select id, parent_id, name as title, id as 'value', id as 'key' from as_resource where is_deleted = 0 and (category = 1 or category = 2)
+        select id, parent_id, name as title, id as 'value', id as 'key', icon_cls as iconCls from as_resource where is_deleted = 0 and (category = 1 or category = 2)
         <if test='sceneId != null and sceneId != ""'>
             AND scene_id = #{sceneId}
         </if>
@@ -365,4 +367,12 @@
             AND m1.`is_deleted` = 0
             AND m1.parent_id = #{param2}
   </select>
+    <select id="formList" resultType="com.asset.bean.Resource">
+        SELECT * FROM as_resource WHERE is_deleted = 0 AND parent_id = #{param1} AND id IN (
+            SELECT menu_id FROM as_resource_role WHERE role_id IN
+            <foreach collection="param2" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        )
+    </select>
 </mapper>

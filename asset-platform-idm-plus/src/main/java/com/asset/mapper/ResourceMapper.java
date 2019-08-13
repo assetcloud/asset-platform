@@ -62,4 +62,6 @@ public interface ResourceMapper extends BaseMapper<Resource> {
     List<Resource> getFormByPath(String formModelId);
 
     List<ResourceVO> tree(@Param("sceneId") String sceneId);
+
+    List<Resource> formList(Long appId, List<Long> roleIds);
 }

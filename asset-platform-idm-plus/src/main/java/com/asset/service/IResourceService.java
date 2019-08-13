@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface IResourceService extends IService<Resource> {
 
-    int addFuncResource(Resource formResource) throws CloneNotSupportedException;
+    boolean addFuncResource(Resource formResource) throws CloneNotSupportedException;
 
     int addResourceAll(Resource resource);
 
@@ -125,9 +125,17 @@ public interface IResourceService extends IService<Resource> {
     Resource getResourceList(String sceneId);
 
     /**
-     * 树形结构
+     * 资源树形结构
      *
      * @return
      */
     List<ResourceVO> tree(String sceneId);
+
+    /**
+     * 获取表单资源list
+     * @param appId
+     * @param roleIds
+     * @return
+     */
+    List<Resource> getFormList(Long appId, List<Long> roleIds);
 }

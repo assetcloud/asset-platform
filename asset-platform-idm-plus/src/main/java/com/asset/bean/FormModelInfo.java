@@ -4,6 +4,7 @@ import com.asset.mapper.UuidIdGenerator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -13,26 +14,36 @@ import java.sql.Timestamp;
  * @author hjhu
  * @version 1.0
  */
-
+@Data
 @ApiModel(value = "表单资源类", description = "将表单资源存储至权限时需要")
 public class FormModelInfo implements Serializable {
 
+    private Long id;
+
     @ApiModelProperty(value = "表单模型id")
     private String formModelId;  //数据库表中ID是int类型，自增，这里暂时用不到
+
     @ApiModelProperty(value = "表单名称")
     private String formName;
+
     @ApiModelProperty(value = "创建时间")
     private Timestamp createdTime;
+
     @ApiModelProperty(value = "创建人")
     private String createdBy;
+
     @ApiModelProperty(value = "对应父应用")
     private String applicationId;
+
     @ApiModelProperty(value = "最后更新时间")
     private Timestamp lastUpdatedTime;
+
     @ApiModelProperty(value = "最后更新者")
     private String lastUpdatedBy;
+
     @ApiModelProperty(value = "模型版本")
     int version ;
+
     @ApiModelProperty(value = "表单源数据")
     private String modelJson;
     @ApiModelProperty(value = "表单模型分组id")

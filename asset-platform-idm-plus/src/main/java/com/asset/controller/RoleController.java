@@ -1,5 +1,5 @@
 
-package com.asset.controller.system;
+package com.asset.controller;
 
 import com.asset.bean.RespBean;
 import com.asset.bean.Role;
@@ -8,7 +8,6 @@ import com.asset.service.IRoleService;
 import com.asset.utils.Condition;
 import com.asset.utils.Func;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;

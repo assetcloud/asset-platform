@@ -3,11 +3,11 @@ spring:
     active: dev
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-#    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
 #    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
 #    url: jdbc:mysql://120.77.179.239:3306/asset-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
 #    url: jdbc:mysql://10.1.18.178:3306/asset-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-    url: jdbc:mysql://127.0.0.1:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    url: jdbc:mysql://127.0.0.1:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
     username: root
 #    password: Hdu123456
     password: root
@@ -51,7 +51,7 @@ mybatis-plus:
   type-aliases-package: com.asset.**
   configuration:
     map-underscore-to-camel-case: true
-    cache-enabled: true
+    cache-enabled: false
     call-setters-on-nulls: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:

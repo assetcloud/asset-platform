@@ -1,7 +1,6 @@
-package com.asset.controller.system;
+package com.asset.controller;
 
 import com.asset.bean.Dict;
-import com.asset.config.WebLog;
 import com.asset.service.IDictService;
 import com.asset.utils.Condition;
 import com.asset.vo.DictVO;

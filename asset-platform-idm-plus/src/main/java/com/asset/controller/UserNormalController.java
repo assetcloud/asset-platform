@@ -1,18 +1,24 @@
-package com.asset.controller.system;
+package com.asset.controller;
 
-import com.asset.bean.*;
+import com.asset.bean.RespBean;
+import com.asset.bean.User;
 import com.asset.common.SystemConstant;
-import com.asset.common.model.UserPageParam;
-import com.asset.service.*;
+import com.asset.service.ISceneService;
+import com.asset.service.IUserService;
 import com.asset.utils.Func;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hjhu on 2019/5/27.
