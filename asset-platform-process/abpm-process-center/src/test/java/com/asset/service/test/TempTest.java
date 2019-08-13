@@ -42,6 +42,9 @@ public class TempTest {
         Process process = bpmnModel.getProcesses().get(0);
         Collection<FlowElement> flowElements = process.getFlowElements();
         for (FlowElement flowElement : flowElements) {
+            SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
+            sequenceFlow.setConditionExpression("");
+
             if (flowElement instanceof UserTask ) {
                 UserTask u = (UserTask) flowElement;
                 if(u.getId().equals("u2.2.1"))
@@ -60,7 +63,7 @@ public class TempTest {
     @Test
     public void testJson(){
 
-        String formValue = "{\"input_1562899646000_93408\":\"单行文本\",\"radio_1562899657000_17535\":\"选项3\"}";
+        String formValue = "{\"seq1\":\"${test==1}\",\"seq2\":\"${test==2}\"}";
         JSONObject JSON = JSONObject.parseObject(formValue);
         for(String key:JSON.keySet()){
             System.out.println(key + ":" +JSON.get(key));

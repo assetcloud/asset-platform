@@ -31,7 +31,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/proc_model")
-@Api(value = "流程模型与流程模型中节点管理", tags = "用户端")
+@Api(tags = "终端：流程模型管理")
 public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcModel> {
 
     @Autowired
@@ -143,18 +143,34 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
 
     @GetMapping(value = "/proc_node_num")
     @ApiOperation(value = "获取之前保存的设计界面节点数",notes = "")
-    public RespBean getProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId) {
+    public RespBean getProcNodeNum(@ApiParam(value = "流程模型Id", required = true)
+                                       @RequestParam("proc_model_id") String procModelId) {
         int num = procModelService.getProcNodeNum(procModelId);
         return RespBean.ok("成功！",num);
     }
 
     @GetMapping(value = "/bind_form_model")
     @ApiOperation(value = "获取当前流程模型绑定的表单数据")
-    public RespBean getBindFormSheet(@RequestParam("proc_model_id")String procModelId){
+    public RespBean getBindFormSheet(@RequestParam(value = "proc_model_id")String procModelId){
         String sheetStr = procModelService.getBindFormSheet(procModelId);
         if(sheetStr==null)
             return RespBean.error("当前流程模型还未绑定表单模型，请先选择表单模型进行绑定!");
         return RespBean.ok("",sheetStr);
+    }
+
+    @ApiOperation(value = "保存分支流程中sequenceFlow中包含的流转条件信息")
+    @PostMapping(value = "/seq_condition")
+    public RespBean saveSeqCondition(@RequestParam(value = "proc_model_id") String procModelId,
+                                     @ApiParam(value = "该流程模型中所有的sequenceFlow条件",required = true)
+                                     @RequestParam(value = "seq_condition") String seqConditions)
+    {
+        try {
+            procModelService.saveSeqCondition(procModelId,seqConditions);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RespBean.error(e.getMessage());
+        }
+        return RespBean.ok("");
     }
 
 }

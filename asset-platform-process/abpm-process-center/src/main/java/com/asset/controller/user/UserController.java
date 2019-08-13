@@ -11,10 +11,15 @@ import com.asset.service.ProcInstService;
 import com.asset.service.UserService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
 
@@ -22,6 +27,7 @@ import java.util.Date;
  * @author hjhu
  */
 @RestController
+@Api(tags = "终端：用户角色管理（包含注册审批、工作场景选择流程发起）")
 public class UserController extends BaseController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(UserController.class);
@@ -37,6 +43,7 @@ public class UserController extends BaseController {
      * 用户管理页面
      * @return
      */
+    @ApiIgnore
     @RequestMapping("/userList")
     public String procDefIndex() {
         return "pages/identity/user_list";
@@ -48,6 +55,7 @@ public class UserController extends BaseController {
      * @param pageSize
      * @return PageGrids
      */
+    @ApiIgnore
     @RequestMapping("/queryUsers")
     @ResponseBody
     public PageGrids queryUsers(@RequestParam("page") Integer pageNum,
@@ -101,6 +109,7 @@ public class UserController extends BaseController {
      * @param dto
      * @return
      */
+    @ApiOperation(value = "发起注册审批流程" , notes = "发起注册审批流程" , httpMethod = "POST")
     @RequestMapping(value = "/form_inst/register/save", method = RequestMethod.POST)
     public RespBean register(@RequestBody RegisterDTO dto) {
         String[] urls = null;
@@ -114,7 +123,7 @@ public class UserController extends BaseController {
         return RespBean.ok("",urls);
     }
 
-
+    @ApiOperation(value = "发起工作场景选择流程" , notes = "发起工作场景选择审批流程" , httpMethod = "POST")
     @PostMapping(value = "/form_inst/select_scene")
     public RespBean selectScene(@RequestBody SceneSelectDTO dto){
         String[] urls = null;

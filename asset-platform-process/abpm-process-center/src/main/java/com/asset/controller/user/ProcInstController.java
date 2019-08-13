@@ -1,12 +1,16 @@
 package com.asset.controller.user;
 
+import com.asset.javabean.AdminProcInstVO;
 import com.asset.javabean.RespBean;
 import com.asset.service.ProcInstService;
 import com.asset.utils.ProcUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * @author YBY
@@ -14,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @version 1.0_190723
  */
 @RestController
+@Api(tags = "终端：辅助流程管理（包含获取当前表单模型对应的实例信息)")
 public class ProcInstController {
     @Autowired
     ProcInstService procInstService;
@@ -26,6 +31,17 @@ public class ProcInstController {
     {
         ProcUtils.completeAll();
         return RespBean.ok("");
+    }
+
+    /**
+     * 获取正在运行的与当前form_model_id相关的流程实例信息
+     * 由form_model_id得到proc_model_id，再去as_proc_inst表中去找
+     */
+    @ApiOperation(value = "获取当前表单模型下正在运行的实例")
+    @GetMapping(value = "/proc_inst/insts" )
+    public RespBean getProcInsts(@ApiParam(value = "当前选中的表单模型Id") @RequestParam("form_model_id") String formModelId){
+        List<AdminProcInstVO> procInsts = procInstService.getProcInsts(formModelId);
+        return RespBean.ok("",procInsts);
     }
 
 }

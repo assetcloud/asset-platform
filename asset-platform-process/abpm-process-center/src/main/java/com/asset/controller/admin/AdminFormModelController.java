@@ -29,7 +29,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/admin")
-@Api(tags = "控制端表单模型管理")
+@Api(tags = "控制端：表单模型管理")
 public class AdminFormModelController {
 
     @Autowired

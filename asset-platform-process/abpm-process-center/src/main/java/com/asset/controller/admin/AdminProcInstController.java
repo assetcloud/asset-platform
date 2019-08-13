@@ -20,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
-@Api(tags = "控制端流程实例管理")
+@Api(tags = "控制端：流程实例管理")
 public class AdminProcInstController {
 
 //    @Autowired

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asset.dao.ProcInstMapper">
   <resultMap id="BaseResultMap" type="com.asset.entity.ProcInstDO">
-    <id column="id" jdbcType="VARCHAR" property="id" />
+    <id column="id" jdbcType="VARCHAR" property="procInstId" />
     <result column="proc_model_id" jdbcType="VARCHAR" property="procModelId" />
     <result column="proc_def_id" jdbcType="VARCHAR" property="procDefId" />
     <result column="proc_deploy_id" jdbcType="VARCHAR" property="procDeployId" />
@@ -150,5 +150,12 @@
     SELECT status
     FROM as_proc_inst
     WHERE id = #{id,jdbcType=VARCHAR}
+  </select>
+
+  <select id="getProcInsts" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List"></include>
+    FROM as_proc_inst
+    WHERE proc_model_id = #{procModelId,jdbcType=VARCHAR}
   </select>
 </mapper>

@@ -54,7 +54,11 @@ public class ProcUtils {
 
                 //遍历，然后完成
                 for (Task task : tasks) {
-                    taskService.complete(task.getId());
+                    try {
+                        taskService.complete(task.getId());
+                    }catch (FlowableException e){
+                        System.out.println("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss  "+task.getId());
+                    }
                 }
             }
         }
@@ -82,6 +86,7 @@ public class ProcUtils {
     public static void completeTask(String taskID) throws FlowableException{
         taskService.complete(taskID);
     }
+
 
     public static void rollback(String executionId, String rollbackActID, String procInstID) {
         runtimeService.createChangeActivityStateBuilder().processInstanceId(procInstID)

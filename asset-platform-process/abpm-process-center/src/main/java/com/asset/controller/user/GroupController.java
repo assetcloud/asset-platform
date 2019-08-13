@@ -9,6 +9,7 @@ import com.asset.dto.GroupRec;
 import com.asset.service.AppGroupService;
 import com.asset.utils.Constants;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * @version 1.1_190619 1049
  */
 @RestController
-@Api(value = "App分组管理接口")
+@Api(tags = "终端：分组管理")
 public class GroupController {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(GroupController.class);
@@ -40,6 +41,7 @@ public class GroupController {
      * @param rec
      * @return
      */
+    @ApiOperation(value = "新建分组")
     @RequestMapping(value = "/group/save" ,method = RequestMethod.POST)
     public RespBean createOAppGroup(@RequestBody GroupRec rec)
     {

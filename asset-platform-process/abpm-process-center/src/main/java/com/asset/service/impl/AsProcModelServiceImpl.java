@@ -47,6 +47,32 @@ public class AsProcModelServiceImpl extends ServiceImpl<AsProcModelMapper, AsPro
     }
 
     @Override
+    public void saveSeqCondition(String procModelId,String seqConditions)throws Exception {
+        AsProcModel asProcModel = new AsProcModel.Builder()
+                .id(procModelId)
+                .seqCondition(seqConditions).build();
+
+        int flag = Constants.DATABASE_FAILED;
+
+        if(contain(procModelId))
+            flag = asProcModelMapper.updateById(asProcModel);
+        else
+            flag = asProcModelMapper.insert(asProcModel);
+
+        if(flag == Constants.DATABASE_FAILED)
+            throw new DatabaseException("更新数据失败！");
+    }
+
+    private boolean contain(String procModelId) {
+        return asProcModelMapper.selectById(procModelId)!=null?true:false;
+    }
+
+    @Override
+    public AsProcModel getProcModelById(String procModelId) {
+        return asProcModelMapper.selectById(procModelId);
+    }
+
+    @Override
     public int getProcNodeNum(String procModelId) {
         return asProcModelMapper.selectById(procModelId).getNodeNum();
     }

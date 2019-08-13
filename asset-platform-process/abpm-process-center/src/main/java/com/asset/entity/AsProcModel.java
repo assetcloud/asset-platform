@@ -31,18 +31,22 @@ public class AsProcModel implements Serializable {
      */
     private Integer nodeNum;
 
+    private String seqCondition;
+
     public AsProcModel() {
     }
 
     private AsProcModel(Builder builder) {
         setId(builder.id);
         setNodeNum(builder.nodeNum);
+        setSeqCondition(builder.seqCondition);
     }
 
 
     public static final class Builder {
         private String id;
         private Integer nodeNum;
+        private String seqCondition;
 
         public Builder() {
         }
@@ -54,6 +58,12 @@ public class AsProcModel implements Serializable {
 
         public Builder nodeNum(Integer val) {
             nodeNum = val;
+            return this;
+        }
+
+        public Builder seqCondition(String val)
+        {
+            seqCondition = val;
             return this;
         }
 

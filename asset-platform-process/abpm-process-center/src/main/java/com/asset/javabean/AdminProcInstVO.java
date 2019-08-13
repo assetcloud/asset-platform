@@ -1,5 +1,7 @@
 package com.asset.javabean;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -7,9 +9,11 @@ import lombok.Data;
  * @author YBY
  */
 @Data
+@ApiModel
 public class AdminProcInstVO {
     String procInstId;
     String procInstName;
+    @ApiModelProperty(value = "0——激活状态，1——被挂起，2——被删除，3——已完成")
     Integer status;
     long commitTime;
     String committer;
@@ -17,6 +21,8 @@ public class AdminProcInstVO {
 
     public AdminProcInstVO() {
     }
+
+
 
 }
 //    @Autowired

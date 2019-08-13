@@ -1,6 +1,7 @@
 package com.asset.dao;
 
 
+import com.asset.entity.AsProcInst;
 import com.asset.entity.ProcInstDO;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
@@ -36,4 +37,6 @@ public interface ProcInstMapper {
     List<ProcInstDO> listProcInsts();
 
     Integer getStatus(String id);
+
+    List<ProcInstDO> getProcInsts(String procModelId);
 }

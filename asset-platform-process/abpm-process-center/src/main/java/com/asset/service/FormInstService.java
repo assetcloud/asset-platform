@@ -149,7 +149,7 @@ public class FormInstService {
                 dto.getForm_model_id());
 
         //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
-        return generateUrls(procInst);
+        return generateUrls(procInst.getProcessInstanceId());
     }
 
     /**
@@ -189,8 +189,23 @@ public class FormInstService {
             String procModelId = procInstService.getProcModelId(doo.getProcInstId());
             String nodeId = flowableService.getNodeId(doo.getTaskId());
             ProcNodeDO nodeDO = procNodeService.getNodeDO(procModelId, nodeId);
-            formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,
-                    formModelService.getSceneId(doo.getFormModelId())));
+
+            FormInstBO boo = new FormInstBO.Builder()
+                    .curUserId(userID)
+                    .curTaskType(taskType)
+                    .procModelId(procModelId)
+                    .nodeId(nodeId)
+                    .ifJointSign(nodeDO.getIfJointSign())
+                    .sceneId(formModelService.getSceneId(doo.getFormModelId())).build();
+            BeanUtils.copyProperties(doo,boo);
+            if(!StringUtils.isEmpty(nodeDO.getCandidateUser()))
+                boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
+            if(!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
+                boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
+
+            formInstBOs.add(boo);
+//            formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,
+//                    formModelService.getSceneId(doo.getFormModelId())));
         }
 
         //4、对所有表单实例的表单Sheet进行表单项操作权限设置
@@ -279,7 +294,7 @@ public class FormInstService {
      * 对审批节点进行审批
      * @param dto
      */
-    public void approveNode(FormInstRecApprove dto) throws ProcException , FlowableException{
+    public String[] approveNode(FormInstRecApprove dto) throws ProcException , FlowableException{
         //找到当前传入的表单实例对应的流程实例的ID，注意和TaskID进行区分！！一次执行中，TaskId会一直变化，但是流程实例ID是不会变的
         String procInstID = formInstMapper.getProcInstID(dto.getForm_inst_id());
         //当前审批节点同意申请，先把当前新加了 同意 这个信息的 新表单 放入数据库，并完成当前任务节点
@@ -329,6 +344,7 @@ public class FormInstService {
 //            saveUnCompleteFormInst();
 //            updateFormInstAfterRollback(dto.getTask_id(),lastApplyNode);
         }
+        return generateUrls(procInstID);
     }
 
 //    public void saveRollbackTask(String procInstId,String formModelId){
@@ -393,7 +409,7 @@ public class FormInstService {
      * 对经办节点进行处理
      * @param rec
      */
-    public void applyNode(FormInstRecHandle rec) throws FlowableException{
+    public String[] applyNode(FormInstRecHandle rec) throws FlowableException{
         //当前填写表单数据 对数据库进行更新
         updateFormInst(rec);
         //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
@@ -408,6 +424,7 @@ public class FormInstService {
         procInstService.saveUnCompleteTask(
                 rec.getProc_inst_id(),
                 rec.getForm_model_id());
+        return generateUrls(rec.getProc_inst_id());
     }
 
     /**
@@ -415,12 +432,13 @@ public class FormInstService {
      * 对抄送节点进行处理
      * @param rec
      */
-    public void pendingNode(FormInstRecReadle rec) throws FlowableException{
+    public String[] pendingNode(FormInstRecReadle rec) throws FlowableException{
         //保存当前抄送节点的已阅信息
         updateFormInst(rec);
         //完成当前抄送任务,抄送任务之后也不需要考虑对当前结果的处理意见进行一个保存
         //抄送任务结束之后，默认后面是没有任务节点了！！所以这里不需要再保存未完成任务节点
         ProcUtils.completeTask(rec.getTask_id());
+        return generateUrls(rec.getProc_inst_id());
     }
 
     /**
@@ -742,8 +760,8 @@ public class FormInstService {
 
 
 
-    public String[] generateUrls(ProcessInstance procInst) {
-        String[] curTaskIds = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
+    public String[] generateUrls(String procInstId) {
+        String[] curTaskIds = ProcUtils.getTaskIDs(procInstId);
         String[] urls = new String[curTaskIds.length];
 
         for(int i = 0;i<curTaskIds.length;i++)

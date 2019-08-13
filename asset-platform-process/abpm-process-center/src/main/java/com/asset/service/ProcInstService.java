@@ -1,6 +1,7 @@
 package com.asset.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.asset.dao.ProcInstMapper;
 import com.asset.dao.FormInstMapper;
 import com.asset.dao.ProcNodeMapper;
@@ -8,12 +9,17 @@ import com.asset.dto.*;
 import com.asset.entity.*;
 import com.asset.exception.ProcException;
 import com.asset.form.FormSheet;
+import com.asset.javabean.AdminProcInstVO;
+import com.asset.service.impl.AsProcModelServiceImpl;
 import com.asset.utils.Constants;
 import com.asset.utils.ProcUtils;
 import com.asset.utils.JsonUtils;
 import org.dom4j.*;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
+import org.flowable.bpmn.model.FlowElement;
+import org.flowable.bpmn.model.Process;
+import org.flowable.bpmn.model.SequenceFlow;
 import org.flowable.common.engine.api.io.InputStreamProvider;
 import org.flowable.common.engine.impl.util.io.InputStreamSource;
 import org.flowable.engine.*;
@@ -24,6 +30,7 @@ import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ExecutionQuery;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.ui.modeler.serviceapi.ModelService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -56,6 +63,8 @@ public class ProcInstService {
     ProcNodeService procNodeService;
     @Autowired
     ApplicationService applicationService;
+    @Autowired
+    AsProcModelServiceImpl procModelService;
 
 
     public ProcessInstance getProcInst(String procInstId) {
@@ -137,6 +146,7 @@ public class ProcInstService {
 
     /**
      * 直接由流程模型ID创建相应的流程实例，在创建流程实例之前，需要根据情况添加会签标签
+     * 还需要根据情况为sequenceFlow增加条件分支信息
      *
      * @param procModelId
      * @return
@@ -154,6 +164,27 @@ public class ProcInstService {
         Document document = modelToDocument(bpmnModel);
         Document documentAfter = handleJointXml(procModelId, document);
         bpmnModel = documentToModel(documentAfter);
+
+        //为sequenceFlow增加条件分支信息
+        String seqConditions = procModelService.getProcModelById(procModelId).getSeqCondition();
+        System.out.println(seqConditions);
+        Process process = bpmnModel.getProcesses().get(0);
+        Collection<FlowElement> flowElements = process.getFlowElements();
+        //对条件分支进行解析,并在对应的sequenceFlow上增加条件表达式
+        if(seqConditions!=null)
+        {
+            JSONObject object = JSONObject.parseObject(seqConditions);
+            loop1:
+            for(String key : object.keySet()){
+                for (FlowElement flowElement : flowElements) {
+                    if (flowElement instanceof SequenceFlow && flowElement.getId().equals(key)) {
+                        SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
+                        sequenceFlow.setConditionExpression(object.get(key).toString());
+                        continue loop1;
+                    }
+                }
+            }
+        }
 
 
         DeploymentBuilder builder = repositoryService.createDeployment();
@@ -340,7 +371,7 @@ public class ProcInstService {
                 formModelId
         );
         //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
-        String[] urls = formInstService.generateUrls(procInst);
+        String[] urls = formInstService.generateUrls(procInst.getProcessInstanceId());
         return urls;
     }
 
@@ -412,7 +443,7 @@ public class ProcInstService {
                 formModelId
         );
         //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
-        String[] urls = formInstService.generateUrls(procInst);
+        String[] urls = formInstService.generateUrls(procInst.getProcessInstanceId());
         return urls;
     }
 
@@ -463,5 +494,38 @@ public class ProcInstService {
 
     public Integer getStatus(String procInstId) {
         return procInstMapper.getStatus(procInstId);
+    }
+
+    public List<AdminProcInstVO>  getProcInsts(String formModelId) {
+        String procModelId = formModelService.getProcModelID(formModelId);
+        List<ProcInstDO> DOs = procInstMapper.getProcInsts(procModelId);
+
+        List<AdminProcInstVO> VOs = new ArrayList<>();
+
+        for(int i=0;i<DOs.size();i++)
+        {
+            AdminProcInstVO vo = new AdminProcInstVO();
+            BeanUtils.copyProperties(DOs.get(i),vo);
+
+            //commitTime类型不一样，所以需要手动复制
+            vo.setCommitTime(DOs.get(i).getCommitTime().getTime());
+            if(procModelId.equals(Constants.REGISTER_PROC_ID))
+                vo.setProcInstName(Constants.REGISTER_PROC_NAME);
+            else if(procModelId.equals(Constants.SCENE_SELECT_PROC_ID))
+                vo.setProcInstName(Constants.SCENE_SELECT_PROC_NAME);
+            else
+                vo.setProcInstName(flowableService.getModelName(procModelId));
+
+            if(ProcUtils.isFinished(vo.getProcInstId()))
+                vo.setStatus(Constants.PROC_INST_FINISHED);
+            else{
+                vo.setStatus(DOs.get(i).getStatus());
+            }
+            vo.setBindFormModelId(formModelService.getFormModelId(procModelId));
+
+            VOs.add(vo);
+        }
+
+        return VOs;
     }
 }
