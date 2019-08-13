@@ -137,6 +137,7 @@ public class FormInstService {
         String executionId = ProcUtils.getExecutionId(taskIDs[0]);
         ActRuVariableBO boo = new ActRuVariableBO.Builder()
                 .executionId(executionId)
+                .rev(1)
                 .procInstId(procInst.getProcessInstanceId())
                 .form_inst_value(dto.getForm_inst_value()).build();
         actRuVariableService.saveRunVariable(boo);
@@ -416,6 +417,7 @@ public class FormInstService {
         String executionId = ProcUtils.getExecutionId(rec.getTask_id());
         ActRuVariableBO boo = new ActRuVariableBO.Builder()
                 .executionId(executionId)
+                .rev(1)
                 .procInstId(rec.getProc_inst_id())
                 .form_inst_value(rec.getForm_inst_value()).build();
         actRuVariableService.saveRunVariable(boo);
