@@ -40,6 +40,7 @@ public class ResourceWrapper {
 	}
 
 	public ResourceVO entityVO(Resource resource) {
+
 		ResourceVO resourceVO = BeanUtil.copy(resource, ResourceVO.class);
 		if (Func.equals(resource.getParentId(), SystemConstant.RESOURCE_TOP_PARENT_ID)) {
 			resourceVO.setParentName(SystemConstant.TOP_PARENT_NAME);
@@ -63,11 +64,13 @@ public class ResourceWrapper {
 	}
 
 	public List<ResourceVO> listNodeVO(List<Resource> list) {
+
 		List<ResourceVO> collect = list.stream().map(resource -> BeanUtil.copy(resource, ResourceVO.class)).collect(Collectors.toList());
 		return ResourceVONodeMerger.merge(collect);
 	}
 
 	public List<ResourceGroupVO> listNodeVOWithGroup(Long appId, List<Resource> list) {
+
 		List<ResourceGroup> groups = resourceGroupService.list(Wrappers.<ResourceGroup>lambdaQuery()
 				.eq(ResourceGroup::getAppId, appId));
 		ResourceGroup noGroup = new ResourceGroup();
