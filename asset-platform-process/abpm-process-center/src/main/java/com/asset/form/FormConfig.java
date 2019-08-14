@@ -7,4 +7,5 @@ public class FormConfig {
     int labelWidth;
     String labelPosition;
     String size;
+    Object customClass;
 }

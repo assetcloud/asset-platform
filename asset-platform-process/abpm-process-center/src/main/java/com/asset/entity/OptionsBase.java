@@ -48,6 +48,7 @@ public class OptionsBase {
     Object isRange;
     Object arrowControl;
     Object controlsPosition;
+    Object customClass;
 
     public OptionsBase() {
     }
