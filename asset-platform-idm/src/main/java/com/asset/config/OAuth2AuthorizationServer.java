@@ -13,10 +13,10 @@ public class OAuth2AuthorizationServer extends AuthorizationServerConfigurerAdap
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("clientadmin")
-                //which means "123"
+                // which means "123"
                 .secret("$2a$10$ySG2lkvjFHY5O0./CPIE1OI8VJsuKYEzOYzqIa7AJR6sEgSzUFOAm")
                 .authorizedGrantTypes("client_credentials")
-                .accessTokenValiditySeconds(43200)
+                .accessTokenValiditySeconds(432000)
                 .scopes("admin");
     }
 }

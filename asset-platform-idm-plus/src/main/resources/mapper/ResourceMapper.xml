@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.mapper.ResourceMapper">
+
+    <resultMap id="BaseMap" type="com.asset.bean.Resource">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="level" jdbcType="INTEGER" property="level" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="category" jdbcType="INTEGER" property="category" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+        <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+    </resultMap>
+    <resultMap id="BaseResultMap" type="com.asset.bean.Resource">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="level" jdbcType="INTEGER" property="level" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="category" jdbcType="INTEGER" property="category" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+        <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <collection property="children" ofType="com.asset.bean.Resource">
+            <id column="id2" property="id"/>
+            <result column="path2" property="path" jdbcType="VARCHAR"/>
+            <result column="code2" property="code" jdbcType="VARCHAR"/>
+            <result column="name2" property="name" jdbcType="VARCHAR"/>
+            <result column="iconCls2" property="iconCls" jdbcType="VARCHAR"/>
+            <result column="sort2" property="sort" jdbcType="INTEGER"/>
+            <result column="group_id2" jdbcType="VARCHAR" property="groupId" />
+            <result column="group_name2" jdbcType="VARCHAR" property="groupName" />
+            <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+            <collection property="children" ofType="com.asset.bean.Resource">
+                <id column="id3" property="id"/>
+                <result column="path3" property="path" jdbcType="VARCHAR"/>
+                <result column="code3" property="code" jdbcType="VARCHAR"/>
+                <result column="name3" property="name" jdbcType="VARCHAR"/>
+                <result column="iconCls3" property="iconCls" jdbcType="VARCHAR"/>
+                <result column="sort3" property="sort" jdbcType="INTEGER"/>
+            </collection>
+        </collection>
+    </resultMap>
+    <resultMap id="ResultMapWithGroup" type="com.asset.bean.Resource">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="level" jdbcType="INTEGER" property="level" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="category" jdbcType="INTEGER" property="category" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+        <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <collection property="group" ofType="com.asset.bean.FormGroup">
+            <result column="group_id2" jdbcType="VARCHAR" property="groupId" />
+            <result column="group_name2" jdbcType="VARCHAR" property="groupName" />
+            <collection property="children" ofType="com.asset.bean.Resource">
+                <id column="id2" property="id"/>
+                <result column="path2" property="path" jdbcType="VARCHAR"/>
+                <result column="code2" property="code" jdbcType="VARCHAR"/>
+                <result column="name2" property="name" jdbcType="VARCHAR"/>
+                <result column="iconCls2" property="iconCls" jdbcType="VARCHAR"/>
+                <result column="sort2" property="sort" jdbcType="INTEGER"/>
+                <result column="sceneId2" property="sceneId" jdbcType="VARCHAR"/>
+                <collection property="children" ofType="com.asset.bean.Resource">
+                    <id column="id3" property="id"/>
+                    <result column="path3" property="path" jdbcType="VARCHAR"/>
+                    <result column="code3" property="code" jdbcType="VARCHAR"/>
+                    <result column="name3" property="name" jdbcType="VARCHAR"/>
+                    <result column="iconCls3" property="iconCls" jdbcType="VARCHAR"/>
+                    <result column="sort3" property="sort" jdbcType="INTEGER"/>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+    <resultMap id="AppMenuMap" type="com.asset.bean.Resource">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+        <result column="path" jdbcType="VARCHAR" property="path" />
+        <result column="level" jdbcType="INTEGER" property="level" />
+        <result column="sort" jdbcType="INTEGER" property="sort" />
+        <result column="category" jdbcType="INTEGER" property="category" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+        <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+    </resultMap>
+
+    <resultMap id="FormResultMap" type="com.asset.bean.FormGroup">
+        <result column="group_id" jdbcType="INTEGER" property="groupId" />
+        <result column="group_name" jdbcType="VARCHAR" property="groupName" />
+        <collection property="children" ofType="com.asset.bean.Resource">
+            <id column="id" jdbcType="BIGINT" property="id" />
+            <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+            <result column="code" jdbcType="VARCHAR" property="code" />
+            <result column="name" jdbcType="VARCHAR" property="name" />
+            <result column="icon_cls" jdbcType="VARCHAR" property="iconCls" />
+            <result column="path" jdbcType="VARCHAR" property="path" />
+            <result column="level" jdbcType="INTEGER" property="level" />
+            <result column="sort" jdbcType="INTEGER" property="sort" />
+            <result column="category" jdbcType="INTEGER" property="category" />
+            <result column="remark" jdbcType="VARCHAR" property="remark" />
+            <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+            <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+            <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+            <result column="scene_id" jdbcType="VARCHAR" property="sceneId" />
+        </collection>
+    </resultMap>
+    <resultMap id="treeNodeResultMap" type="com.asset.vo.ResourceVO">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="title" property="name"/>
+        <result column="value" property="id"/>
+        <result column="key" property="id"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, parent_id, code, name, icon_cls, path, level, sort, category, remark, is_deleted,
+    add_time, remove_time, group_id, scene_id
+  </sql>
+    <select id="findAppResourceByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from as_resource where name = #{appName} and code = 'app' and is_deleted = 0 and scene_id = #{sceneId}
+  </select>
+    <select id="findFormResourceByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from as_resource where name = #{appName} and code = 'form' and is_deleted = 0 and scene_id = #{sceneId}
+  </select>
+    <insert id="addResourceRole">
+    insert into as_resource_role (menu_id, role_id) values (#{menuId,jdbcType=BIGINT}, #{roleId,jdbcType=INTEGER})
+  </insert>
+    <select id="getByPath" parameterType="java.lang.String" resultType="com.asset.bean.Resource">
+        select * from as_resource where path = #{applicationId} AND is_deleted = 0
+    </select>
+
+    <!-- 批量插入， -->
+    <insert id="batchInsert" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into
+        as_resource (parent_id, code, name, icon_cls, path, level, sort, category, is_deleted, add_time)
+        values
+        <foreach collection="list" separator="," item="menu">
+            (#{menu.parentId}, #{menu.code}, #{menu.name}, #{menu.iconCls}, #{menu.path}, #{menu.level}, #{menu.sort}, #{menu.category}, #{menu.isDeleted}, #{menu.addTime})
+        </foreach>
+    </insert>
+
+    <insert id="batchInsertResourceRole" parameterType="java.util.List">
+        insert into
+        as_resource_role (menu_id, role_id)
+        values
+        <foreach collection="list" separator="," item="menu">
+            (#{menu.id}, 1)
+        </foreach>
+    </insert>
+
+    <select id="getResourcesByUser" resultMap="ResultMapWithGroup" parameterType="java.lang.String">
+    SELECT
+      m1.*,
+      m2.`id` AS id2,
+      m2.`name` AS name2,
+      m2.path as path2,
+      m2.`code` as code2,
+      m2.icon_cls as iconCls2,
+      m2.`level` as level2,
+      m2.sort as sort2,
+      m2.group_id as group_id2,
+      m2.scene_id AS sceneId2,
+      m3.`id` AS id3,
+      m3.`name` AS name3 ,
+      m3.path as path3,
+      m3.`code` as code3,
+      m3.icon_cls as iconCls3,
+      m3.`level` as level3,
+      m3.sort as sort3
+      FROM
+      as_resource m1,
+      as_resource m2,
+      as_resource m3
+      WHERE
+      m1.id IN (
+        SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item.rid}
+        </foreach>
+       )
+      AND m1.`id` = m2.`parent_id`
+      AND m2.`id` = m3.`parent_id`
+      AND m3.`is_deleted` = 0
+  </select>
+    <select id="getAppResourceByUser" resultMap="ResultMapWithGroup">
+    SELECT
+      m1.*
+      FROM
+      as_resource m1
+      WHERE
+      m1.id IN (
+        SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item.rid}
+        </foreach>
+      )
+      AND m1.`is_deleted` = 0
+      AND m1.`code` = 'app'
+  </select>
+
+    <!--<select id="getResourcesByRole" resultMap="ResultMapWithGroup" parameterType="java.lang.Long">
+    SELECT
+      m1.*,
+      m2.`id` AS id2,
+      m2.`name` AS name2,
+      m2.path as path2,
+      m2.`code` as code2,
+      m2.icon_cls as iconCls2,
+      m2.`level` as level2,
+      m2.sort as sort2,
+      m2.group_id as group_id2,
+      m2.group_name as group_name2,
+      m2.scene_id AS sceneId2,
+      m3.`id` AS id3,
+      m3.`name` AS name3 ,
+      m3.path as path3,
+      m3.`code` as code3,
+      m3.icon_cls as iconCls3,
+      m3.`level` as level3,
+      m3.sort as sort3
+      FROM
+      as_resource m1,
+      as_resource m2,
+      as_resource m3
+      WHERE
+      m1.id IN (SELECT mr.menu_id FROM as_menu_role mr WHERE mr.role_id =#{roleId})
+      AND m1.`id` = m2.`parent_id`
+      AND m2.`id` = m3.`parent_id`
+      AND m3.`is_deleted` = 0
+  </select>-->
+
+
+    <select id="getResourcesByRole" resultMap="ResultMapWithGroup">
+    SELECT
+      m1.*,
+      m2.`id` AS id2,
+      m2.`name` AS name2,
+      m2.path as path2,
+      m2.`code` as code2,
+      m2.icon_cls as iconCls2,
+      m2.`level` as level2,
+      m2.sort as sort2,
+      m2.group_id as group_id2,
+      m2.scene_id AS sceneId2,
+      m3.`id` AS id3,
+      m3.`name` AS name3 ,
+      m3.path as path3,
+      m3.`code` as code3,
+      m3.icon_cls as iconCls3,
+      m3.`level` as level3,
+      m3.sort as sort3
+      FROM
+      as_resource m1,
+      as_resource m2,
+      as_resource m3
+      WHERE
+      m1.id IN (SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id=#{param1})
+      AND m1.`id` = m2.`parent_id`
+      AND m2.`id` = m3.`parent_id`
+      AND m3.`is_deleted` = 0
+      AND m1.`scene_id` = #{param2}
+  </select>
+
+    <select id="getFormResourcesByApp" resultMap="FormResultMap">
+        SELECT
+        m.*,
+        rg.`name` as group_name
+        FROM
+        as_resource m
+        RIGHT JOIN as_resource_group rg ON m.group_id = rg.id
+        WHERE
+        m.id IN ( SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN
+        <foreach collection="param1" item="item" separator="," open="(" close=")">
+            #{item.rid}
+        </foreach>
+        )
+        AND
+        m.`is_deleted` = 0
+        AND m.parent_id = #{param2}
+        AND rg.app_id = #{param2}
+        AND rg.`is_deleted` = 0
+    </select>
+    <select id="getAppResourcesByUser" resultMap="AppMenuMap" parameterType="java.lang.String">
+    SELECT
+	    m1.*
+    FROM
+        as_resource m1
+    WHERE
+        m1.id IN (SELECT mr.menu_id FROM as_resource_role mr WHERE mr.role_id IN (SELECT ur.role_id FROM as_user_scene ur WHERE ur.user_id = #{param1} AND ur.`status` = 1 and ur.scene_id = #{param2}))
+        AND m1.`is_deleted` = 0
+        AND m1.`code` = 'app'
+  </select>
+    <update id="updateFormInfo">
+    update as_resource
+    SET scene_id = #{sceneId}
+    where path = #{formModelId} AND is_deleted = 0 AND category = 2
+  </update>
+    <select id="getFormByName" resultMap="BaseMap">
+        select * from as_resource
+        where name = #{param1}
+        and scene_id = #{param2}
+        and is_deleted = 0
+        and parent_id = #{param3}
+    </select>
+    <select id="getFormByPath" resultMap="BaseMap">
+        select * from as_resource
+        where path = #{formModelId}
+        and is_deleted = 0
+    </select>
+    <select id="tree" resultMap="treeNodeResultMap" parameterType="java.lang.String">
+        select id, parent_id, name as title, id as 'value', id as 'key', icon_cls as iconCls from as_resource where is_deleted = 0 and (category = 1 or category = 2)
+        <if test='sceneId != null and sceneId != ""'>
+            AND scene_id = #{sceneId}
+        </if>
+    </select>
+    <update id="updateFuncInfo">
+        UPDATE as_resource r1
+        LEFT JOIN as_resource r2 ON r1.parent_id = r2.id
+        AND r2.scene_id = #{param2}
+        SET r1.scene_id = #{param2}
+        where r2.path = #{param1}
+    </update>
+    <select id="getFuncResourceByForm" resultMap="AppMenuMap">
+        SELECT
+            m1.*
+        FROM
+            as_resource m1
+        WHERE
+            m1.id IN (
+            SELECT
+                mr.menu_id
+            FROM
+                as_resource_role mr
+            WHERE
+                mr.role_id IN
+                <foreach collection="param1" item="item" separator="," open="(" close=")">
+                    #{item.rid}
+                </foreach>
+            )
+            AND m1.`is_deleted` = 0
+            AND m1.parent_id = #{param2}
+  </select>
+    <select id="formList" resultType="com.asset.bean.Resource">
+        SELECT * FROM as_resource WHERE is_deleted = 0 AND parent_id = #{param1} AND id IN (
+            SELECT menu_id FROM as_resource_role WHERE role_id IN
+            <foreach collection="param2" item="item" separator="," open="(" close=")">
+                #{item}
+            </foreach>
+        )
+    </select>
+</mapper>

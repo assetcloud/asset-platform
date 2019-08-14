@@ -4,12 +4,17 @@
   <resultMap id="BaseResultMap" type="com.asset.bean.Scene">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="scene_name" jdbcType="VARCHAR" property="sceneName" />
+    <result column="img" jdbcType="VARCHAR" property="img"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
     <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
+  <resultMap id="countMap" type="java.lang.Integer">
+    <result column="cnt" jdbcType="INTEGER"/>
+  </resultMap>
   <sql id="Base_Column_List">
-    id, scene_name, is_deleted, add_time, status
+    id, scene_name, is_deleted, add_time, status, remark, img
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
@@ -17,6 +22,20 @@
     from as_scene
     where id = #{id,jdbcType=VARCHAR}
     AND is_deleted = 0
+  </select>
+  <insert id="addNode" parameterType="com.asset.bean.OrganScene">
+    insert into as_organ_scene(node_id, parent_id, unit_name, scene_id, status)
+    values (#{nodeId}, #{parentId}, #{unitName}, #{sceneId}, #{status})
+  </insert>
+  <select id="getSceneNodes" parameterType="java.lang.String" resultMap="countMap">
+    select
+        count(*) as cnt
+    from
+        as_organ_scene
+    where
+        scene_id = #{sceneId}
+    and
+        status = 1
   </select>
   <select id="getScenesByUser" resultMap="BaseResultMap">
     SELECT
@@ -43,10 +62,11 @@
   </select>
   <select id="selectByNameAlike" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_List" />
-    from as_scene
-    where is_deleted = 0
-    and scene_name like CONCAT('%', #{sceneName}, '%')
+        <include refid="Base_Column_List" />
+    from
+        as_scene
+    where
+        is_deleted = 0 and status = 1 and scene_name like CONCAT('%', #{sceneName}, '%')
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from as_scene
@@ -54,9 +74,15 @@
   </delete>
   <insert id="insert" parameterType="com.asset.bean.Scene">
     insert into as_scene (id, scene_name, is_deleted,
-      add_time, status)
+      add_time, status, remark, img)
     values (#{id,jdbcType=VARCHAR}, #{sceneName,jdbcType=VARCHAR}, #{isDeleted,jdbcType=TINYINT},
-      #{addTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT})
+      #{addTime,jdbcType=TIMESTAMP}, #{status,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR})
+  </insert>
+  <insert id="userSceneBind">
+    insert into
+        as_user_scene(scene_id, user_id, role_id, status)
+    values
+        (#{sceneId}, #{userId}, #{roleId}, 1)
   </insert>
   <insert id="insertSelective" parameterType="com.asset.bean.Scene">
     insert into as_scene
@@ -76,6 +102,12 @@
       <if test="status != null">
         status,
       </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="img != null">
+        img,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -93,13 +125,25 @@
       <if test="status != null">
         #{status,jdbcType=TINYINT},
       </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null">
+        #{img,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.asset.bean.Scene">
     update as_scene
     <set>
       <if test="sceneName != null">
-        scene_name = #{sceneName,jdbcType=VARCHAR},
+        scene1_name = #{sceneName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null">
+        remark = #{img,jdbcType=VARCHAR},
       </if>
       <if test="isDeleted != null">
         is_deleted = #{isDeleted,jdbcType=TINYINT},
@@ -130,6 +174,8 @@
   <update id="updateByPrimaryKey" parameterType="com.asset.bean.Scene">
     update as_scene
     set scene_name = #{sceneName,jdbcType=VARCHAR},
+    img = #{img,jdbcType=VARCHAR},
+        remark = #{remark,jdbcType=VARCHAR},
       is_deleted = #{isDeleted,jdbcType=TINYINT},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       status = #{status,jdbcType=TINYINT}

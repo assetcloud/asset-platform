@@ -103,6 +103,12 @@
     from as_menu
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="findAppMenuByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from as_menu where name = #{appName} and code = 'app' and is_deleted = 0 and scene_id = #{sceneId}
+  </select>
+  <select id="findFormMenuByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from as_menu where name = #{appName} and code = 'form' and is_deleted = 0 and scene_id = #{sceneId}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from as_menu
     where id = #{id,jdbcType=BIGINT}

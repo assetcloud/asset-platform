@@ -1,7 +1,13 @@
 package com.asset.bean;
 
+import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
+import com.baomidou.mybatisplus.annotations.TableLogic;
+import com.baomidou.mybatisplus.enums.IdType;
 import io.swagger.annotations.ApiModel;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,9 +15,13 @@ import java.util.List;
 @ApiModel(value = "组织结构表")
 public class OrganTree {
 
+    @TableId(type = IdType.UUID)
     private String id;
+    @NotBlank(message = "组织名称不能为空")
+    @NotNull(message = "组织名称不能为空")
     private String unitName;
     private String unitNameEn;
+    @NotNull(message = "父节点不能为空")
     private String parentId;
     private Integer organizationForm;
     private Integer unitType;
@@ -75,10 +85,13 @@ public class OrganTree {
     private String assetDownloadStatus;
     private String latitudeAndLongitude;
     private Date createdTime;
+    @TableLogic
     private Integer isDeleted;
     private Integer status;
     private Integer sort;
     private String tenantCode;
+    //表示该属性不为数据库表字段，但又是必须使用的
+    @TableField(exist = false)
     private List<OrganTree> children = new ArrayList<>();
 
     public List<OrganTree> getChildren() {

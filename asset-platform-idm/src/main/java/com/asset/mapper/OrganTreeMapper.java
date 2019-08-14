@@ -1,17 +1,19 @@
 package com.asset.mapper;
 
+import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
+import com.baomidou.mybatisplus.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-public interface OrganTreeMapper {
+public interface OrganTreeMapper extends BaseMapper<OrganTree> {
 
     int deleteByPrimaryKey(String id);
 
-    int insert(OrganTree record);
+    Integer insert(OrganTree record);
 
     int insertSelective(OrganTree record);
 
@@ -36,4 +38,9 @@ public interface OrganTreeMapper {
     int batchUpdate(List<OrganTree> organTrees);
 
     List<OrganTree> searchNode(@Param("unitName") String unitName);
+
+    //TODO：批量新增节点到组织场景关联表
+    int batchInsert(List<OrganScene> nodes);
+
+    OrganTree getTopNode();
 }

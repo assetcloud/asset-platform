@@ -27,6 +27,24 @@
     from as_plat_menu
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+        *
+    from
+        as_plat_menu
+    where
+        is_deleted = 0
+  </select>
+  <select id="selectAll4SAdmin" resultMap="BaseResultMap">
+    select
+        *
+    from
+        as_plat_menu
+    where
+        is_deleted = 0
+    and
+        code in ('home', 'application', 'factory', 'organization', 'authority')
+  </select>
   <select id="getPlatMenusByRoles" resultMap="BaseResultMap" parameterType="java.util.Map">
     SELECT
         *
@@ -55,6 +73,14 @@
       #{source,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{category,jdbcType=INTEGER},
       #{action,jdbcType=INTEGER}, #{isOpen,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
       #{isDeleted,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="batchAddPlatMenuRole" parameterType="java.util.List">
+    insert into
+        as_plat_menu_role(menu_id, role_id, scene_code)
+    values
+      <foreach collection="list" separator="," item="item">
+        (#{item.menuId}, #{item.roleId}, #{item.sceneCode})
+      </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.asset.bean.PlatMenu">
     insert into as_plat_menu

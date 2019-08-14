@@ -2,6 +2,7 @@ package com.asset.bean;
 
 import io.swagger.annotations.ApiModel;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -64,7 +65,7 @@ public class PlatMenu {
      */
     private Date addTime;
 
-    private List<PlatMenu> children;
+    private List<PlatMenu> children =  new ArrayList<>();
 
     public List<PlatMenu> getChildren() {
         return children;

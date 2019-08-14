@@ -1,27 +1,27 @@
 spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://127.0.0.1:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
     url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
     username: root
+#    password: Hdu123456
     password: root
   redis:
     database: 0
     host: 10.1.18.178
     port: 6379
-    password: none
-    jedis:
+    password: 123456
+    lettuce:
       pool:
-        max-active: 8
+        max-active: 200
+        min-idle: 0
         max-idle: 8
         max-wait: -1ms
-        min-idle: 0
-#  security:
-#    user:
-#      name: hhj
-#      password: 123
-
-mybatis:
-  config-location: classpath:/mybatis-config.xml
-
+    timeout: 3000
+#server:
+#  port: 12345
 server:
   port: 8083
+mybatis:
+  mapper-locations: classpath:com/asset/mapper/*Mapper.xml
+  type-aliases-package: com.asset.**
