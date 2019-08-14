@@ -3700,7 +3700,7 @@ angular.module('ui.grid')
     // Get the id out of the options, then remove it
     if (options !== undefined && typeof(options.id) !== 'undefined' && options.id) {
       if (!/^[_a-zA-Z0-9-]+$/.test(options.id)) {
-        throw new Error("Grid id '" + options.id + '" is invalid. It must follow CSS selector syntax rules.');
+        throw new Error("Grid id '" + options.id + '" is invalid. It must follow CSS selector syntax itemRuleBases.');
       }
     }
     else {
@@ -4216,7 +4216,7 @@ angular.module('ui.grid')
    * @name registerDataChangeCallback
    * @methodOf ui.grid.class:Grid
    * @description When a data change occurs, the data change callbacks of the specified type
-   * will be called.  The rules are:
+   * will be called.  The itemRuleBases are:
    *
    * - when the data watch fires, that is considered a ROW change (the data watch only notices
    *   added or removed rows)

@@ -1,13 +1,31 @@
 package com.asset.entity;
 
-import com.asset.javabean.IDGenerator;
-import com.asset.javabean.UuidIdGenerator;
-import lombok.Data;
-
+import java.time.LocalDateTime;
+import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+/**
+ * <p>
+ *
+ * </p>
+ *
+ * @author YBY
+ * @since 2019-08-04
+ */
 @Data
-public class AsFormInst {
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class AsFormInst implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableId(type = IdType.UUID)
     private String id;
 
     private String formModelId;
@@ -18,57 +36,38 @@ public class AsFormInst {
 
     private String taskId;
 
-    private Date createdTime;
+    /**
+     * 执行人
+     */
+    private String executor;
 
-    private String createdBy;
+    private Date executeTime;
 
-    private String formInstJson;
+    private String formInstSheet;
 
-    private int status;
+    /**
+     * 表单项中填的信息
+     */
+    private String formInstValue;
 
-    private String formValue;
+    /**
+     *  0;   //表示被创建，等待被执行
+ 1;   //被执行了
+99;  //表单实例被丢弃（即没被执行了，可能是直接被回滚了）
+999;  //表单实例原来被正确执行了的，但是现在被回滚了
+     */
+    private Integer status;
+
+    /**
+     * 用来标示当前任务节点类型：经办1、审批2、抄送3
+     */
+    private Integer nodeType;
+
+    /**
+     * 1表示对当前审批节点同意，0表示不同意
+     */
+    private Integer approveResult;
 
     public AsFormInst() {
-    }
-
-    public AsFormInst(String id, String formValue, String editor) {
-        this.id = id;
-        this.formValue = formValue;
-        this.createdBy = editor;
-    }
-
-    public AsFormInst(String id, String formInstJson, String formValue,String editor) {
-        this.id = id;
-        this.formInstJson = formInstJson;
-        this.createdBy = editor;
-        this.formValue = formValue;
-    }
-
-    public AsFormInst(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public AsFormInst(String id, String formInstJson) {
-        this.id = id;
-        this.formInstJson = formInstJson;
-    }
-
-
-    public AsFormInst(String formModelId,
-                      String procInstId,
-                      String executionId,
-                      String taskId,
-                      String createdBy,
-                      String formInstValue,
-                      String formInstJson) {
-        IDGenerator generator = new UuidIdGenerator();
-        id = generator.generateID();
-        formValue = formInstValue;
-        this.formModelId = formModelId;
-        this.procInstId = procInstId;
-        this.executionId = executionId;
-        this.taskId = taskId;
-        this.createdBy = createdBy;
-        this.formInstJson = formInstJson;
     }
 }

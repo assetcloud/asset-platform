@@ -59,8 +59,10 @@ public class ModelsResource {
     protected ObjectMapper objectMapper;
 
     @RequestMapping(value = "/rest/models", method = RequestMethod.GET, produces = "application/json")
-    public ResultListDataRepresentation getModels(@RequestParam(required = false) String filter, @RequestParam(required = false) String sort, @RequestParam(required = false) Integer modelType,
-            HttpServletRequest request) {
+    public ResultListDataRepresentation getModels(@RequestParam(required = false) String filter,
+                                                  @RequestParam(required = false) String sort,
+                                                  @RequestParam(required = false) Integer modelType,
+                                                  HttpServletRequest request) {
 
         return modelQueryService.getModels(filter, sort, modelType, request);
     }
@@ -69,7 +71,7 @@ public class ModelsResource {
     public ResultListDataRepresentation getModelsToIncludeInAppDefinition() {
         return modelQueryService.getModelsToIncludeInAppDefinition();
     }
-    
+
     @RequestMapping(value = "/rest/cmmn-models-for-app-definition", method = RequestMethod.GET, produces = "application/json")
     public ResultListDataRepresentation getCmmnModelsToIncludeInAppDefinition() {
         return modelQueryService.getCmmnModelsToIncludeInAppDefinition();
@@ -97,7 +99,7 @@ public class ModelsResource {
 
         return modelRepresentationJson;
     }
-    
+
     @RequestMapping(value = "/rest/import-case-model", method = RequestMethod.POST, produces = "application/json")
     public ModelRepresentation importCaseModel(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
         return modelQueryService.importCaseModel(request, file);
@@ -152,11 +154,11 @@ public class ModelsResource {
         if (model == null) {
             throw new InternalServerErrorException("Error duplicating model : Unknown original model");
         }
-        
+
         modelRepresentation.setKey(modelRepresentation.getKey().replaceAll(" ", ""));
         checkForDuplicateKey(modelRepresentation);
-        
-        if (modelRepresentation.getModelType() == null || modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_BPMN)) {            
+
+        if (modelRepresentation.getModelType() == null || modelRepresentation.getModelType().equals(AbstractModel.MODEL_TYPE_BPMN)) {
             // BPMN model
             ObjectNode editorNode = null;
             try {

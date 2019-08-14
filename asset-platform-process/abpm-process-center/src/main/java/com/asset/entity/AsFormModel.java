@@ -1,17 +1,35 @@
 package com.asset.entity;
 
-import com.alibaba.fastjson.JSONObject;
-import com.asset.javabean.IDGenerator;
-import com.asset.javabean.UuidIdGenerator;
-import com.asset.rec.FormModelEditRec;
-import com.asset.utils.JsonUtils;
-import lombok.Data;
-
+import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
+/**
+ * <p>
+ *
+ * </p>
+ *
+ * @author YBY
+ * @since 2019-08-03
+ */
 @Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@TableName("as_form_model")
 public class AsFormModel implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableField("id")
+    @TableId(type = IdType.UUID)
     private String id;
 
     private String formName;
@@ -26,50 +44,35 @@ public class AsFormModel implements Serializable {
 
     private Integer version;
 
+    private String modelSheet;
+
+    /**
+     * 该表单所属分组（负值代表不属于任一分组）
+     */
     private Integer groupId;
 
+    /**
+     * 表单显示的vue图标
+     */
     private String iconCls;
 
+    /**
+     * 表单当前状态（0未绑定流程；1已绑定流程可被发起；2已被删除）
+     */
     private Integer status;
 
+    /**
+     * 绑定的流程模型ID
+     */
     private String procModelId;
 
-    private String modelJson;
+    /**
+     * 当前表单流程模型所属的工作场景
+     */
+    private String sceneId;
+
+    private String appId;
 
     public AsFormModel() {
-    }
-
-    public AsFormModel(String formName,
-                       String createdBy,
-                       String iconCls,
-                       Integer status,
-                       String modelJson) {
-        IDGenerator generator = new UuidIdGenerator();
-        id = generator.generateID();
-        this.formName = formName;
-        this.createdBy = createdBy;
-        this.iconCls = iconCls;
-        this.status = status;
-        this.modelJson = modelJson;
-    }
-
-
-    public AsFormModel(FormModelEditRec rec) {
-        this.id = rec.getForm_model_id();
-        this.formName = rec.getForm_name();
-        this.iconCls = rec.getIcon_cls();
-        String jsonString = JSONObject.toJSONString(rec.getModel_json());
-        this.modelJson = jsonString;
-        this.groupId = rec.getGroup_id();
-    }
-
-    public AsFormModel(String id, String procModelId) {
-        this.id = id;
-        this.procModelId = procModelId;
-    }
-
-    public AsFormModel(String id, Integer groupId) {
-        this.id = id;
-        this.groupId = groupId;
     }
 }

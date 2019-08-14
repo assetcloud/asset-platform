@@ -1,6 +1,8 @@
 package com.asset.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.baomidou.mybatisplus.core.MybatisSqlSessionFactoryBuilder;
+import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -53,17 +55,21 @@ public class FlowableConfig {
 	@Primary
 	public SqlSessionFactory flowableSqlSessionFactory(@Qualifier("flowableDataSource") DataSource dataSource)
 			throws Exception {
-		SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
+//		SqlSessionFactoryBean sessionFactoryBean = new SqlSessionFactoryBean();
 
+		MybatisSqlSessionFactoryBean sessionFactoryBean = new MybatisSqlSessionFactoryBean();
 		sessionFactoryBean.setDataSource(dataSource);
 
+		//读取xml配置文件
 		Resource resource = new PathMatchingResourcePatternResolver()
 				.getResource("classpath:mybatis/mybatis-config.xml");
 		sessionFactoryBean.setConfigLocation(resource);
-
+		//读取mapper.xml文件
 		Resource[] mapperLocations = new PathMatchingResourcePatternResolver()
 				.getResources("classpath:mybatis/mapper/*.xml");
 		sessionFactoryBean.setMapperLocations(mapperLocations);
+		//注意返回的是SqlSessionFactory
+
 		return sessionFactoryBean.getObject();
 	}
 

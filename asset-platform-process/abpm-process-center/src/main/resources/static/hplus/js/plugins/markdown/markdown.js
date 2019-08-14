@@ -295,7 +295,7 @@ Markdown.dialects = {};
 /**
  * Markdown.dialects.Gruber
  *
- * The default dialect that follows the rules set out by John Gruber's
+ * The default dialect that follows the itemRuleBases set out by John Gruber's
  * markdown.pl as closely as possible. Well actually we follow the behaviour of
  * that script which in some places is not exactly what the syntax web page
  * says.
@@ -792,7 +792,7 @@ Markdown.dialects.Gruber.inline = {
       return out;
     },
 
-    // These characters are intersting elsewhere, so have rules for them so that
+    // These characters are intersting elsewhere, so have itemRuleBases for them so that
     // chunks of plain text blocks don't include them
     "]": function () {},
     "}": function () {},

@@ -1,16 +1,17 @@
 package com.asset.service;
 
 
-import com.asset.dao.AppFormBindMapper;
 import com.asset.dao.ApplicationMapper;
-import com.asset.dao.AsFormModelMapper;
-import com.asset.entity.Application;
-import com.asset.entity.AsFormModel;
+import com.asset.dao.FormModelMapper;
+import com.asset.entity.ApplicationDO;
+import com.asset.exception.DatabaseException;
 import com.asset.javabean.UuidIdGenerator;
+import com.asset.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 
 @Service
-@Transactional
+@Transactional(propagation = Propagation.REQUIRED)
 public class ApplicationService {
 
     final static Logger LOGGER = LoggerFactory.getLogger(ApplicationService.class);
@@ -29,44 +30,51 @@ public class ApplicationService {
     @Autowired
     ApplicationMapper applicationMapper;
     @Autowired
-    AppFormBindMapper appFormBindMapper;
+    FormModelMapper formModelMapper;
     @Autowired
-    AsFormModelMapper asFormModelMapper;
+            FormModelService formModelService;
 
     UuidIdGenerator idGenerator = new UuidIdGenerator();
 
-    public int addApplication(Application record){
+    public String addApplication(ApplicationDO record) throws Exception{
         if (record.getId() == null){
             record.setId(idGenerator.generateId());
         }
         record.setCreatedTime(new Date());
         record.setStatus(1);
         record.setIsPublished(0);
-        return applicationMapper.insert(record);
+        int flag = applicationMapper.insert(record);
+        if(flag== Constants.DATABASE_FAILED)
+            throw new DatabaseException("插入数据失败！");
+        return record.getId();
     }
 
-    public List<Application> getAppList(){
+    public List<ApplicationDO> getAppList(){
         return applicationMapper.getAppList();
     }
 
-    public int updateApplication(Application record){
+    public int updateApplication(ApplicationDO record){
         return applicationMapper.updateByPrimaryKey(record);
     }
 
-    public Application getById(String id){
-        Application application = applicationMapper.selectByPrimaryKey(id);
+    public ApplicationDO getById(String id){
+        ApplicationDO application = applicationMapper.selectByPrimaryKey(id);
         return application;
     }
 
-    /**
-     * 获取一个 App应用下 所有表单模型数据
-     * @return
-     */
-    public List<AsFormModel> getFormModels(String appID) {
-        //先从asset_app_form表中找到所有该App应用下 所有绑定的表单模型ID
-        List<String> formModelIDs = appFormBindMapper.getFormModelIDs(appID);
-
-        return asFormModelMapper.getFormModels(formModelIDs);
+    public List<ApplicationDO> getPublishedApp() {
+        return applicationMapper.getPublishedApp();
     }
 
+    public String getNameById(String appId) {
+        return applicationMapper.selectByPrimaryKey(appId).getApplicationName();
+    }
+
+    public boolean checkFormContain(String id) {
+        List<String> formModelIds = formModelService.getFormModels(id);
+        if(formModelIds == null || formModelIds.size() == 0 )
+            return false;
+        else
+            return true;
+    }
 }

@@ -1,35 +1,39 @@
 package com.asset.service;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.asset.controller.FormInstController;
+import com.asset.converter.FormConverter;
 import com.asset.dao.*;
 import com.asset.entity.*;
-import com.asset.javabean.ActType;
-import com.asset.javabean.AsFormInstPlus;
-import com.asset.javabean.FormJson;
-import com.asset.javabean.RespBean;
-import com.asset.rec.*;
-import com.asset.utils.Constants;
+import com.asset.exception.FormException;
+import com.asset.exception.InfoException;
+import com.asset.exception.ProcException;
+import com.asset.exception.SizeNullException;
+import com.asset.form.FormItem;
+import com.asset.form.FormSheet;
+import com.asset.dto.*;
+import com.asset.javabean.ActRuVariableBO;
+import com.asset.javabean.FormInstBO;
+import com.asset.javabean.FormInstVO;
+import com.asset.javabean.TaskBO;
+import com.asset.service.impl.ActRuVariableServiceImpl;
+import com.asset.utils.*;
 import org.apache.commons.lang3.StringUtils;
-import org.flowable.bpmn.converter.BpmnXMLConverter;
-import org.flowable.bpmn.model.BpmnModel;
-import org.flowable.engine.*;
-import org.flowable.engine.repository.Deployment;
-import org.flowable.engine.repository.DeploymentBuilder;
-import org.flowable.engine.repository.ProcessDefinition;
-import org.flowable.engine.runtime.Execution;
-import org.flowable.engine.runtime.ExecutionQuery;
+import org.dom4j.DocumentException;
+import org.flowable.common.engine.api.FlowableException;
+import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.engine.runtime.ProcessInstanceQuery;
 import org.flowable.task.api.Task;
-import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,48 +41,244 @@ import java.util.List;
  * 以下对流程实例的执行均只考虑非并行分支的情况
  */
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class FormInstService {
-    @Autowired
-    AsFormModelMapper asFormModelMapper;
-    @Autowired
-    AsFormInstMapper asFormInstMapper;
-    @Autowired
-    FlowableMapper flowableMapper;
-    @Autowired
-    AsProcModelMapper procModelMapper;
-    @Autowired
-    AsProcInstMapper procInstMapper;
-
-    @Autowired
-    protected ModelService modelService;
-
     Logger logger = LoggerFactory.getLogger(FormInstService.class);
 
+    @Autowired
+    FlowableService flowableService;
+    @Autowired
+    FormModelService formModelService;
+    @Autowired
+    ProcNodeService procNodeService;
+    @Autowired
+    ProcInstService procInstService;
+    @Autowired
+    AuthorityService authorityService;
+    @Autowired
+    ActRuVariableServiceImpl actRuVariableService;
+    @Autowired
+    FormInstMapper formInstMapper;
 
     /**
-     * 当前任务节点完成之后，会自动流转到下一个任务节点，数据库表中会生成这个没有被完成的任务节点的信息，
-     * 这里是在as_proc_inst表中写入这个信息
+     * 业务入口
+     * 选中某个表单模型项，显示该表单第一个节点的formSheet信息
+     * @param formModelId
+     * @return
      */
-    public void saveUnCompleteTask(FormJson formJson,
-            String procInstId,
-                                   String formModelId,
-                                   String formInstValue) {
-        //获取当前执行到的任务节点
-        String[] taskIDs = getTaskIDs(procInstId);
-        //如果下面还有任务节点要处理，就在as_proc_inst中新建这个表单实例字段（每一个TaskId对应一个新的表单实例）
-        for (int i=0;i<taskIDs.length;i++){
-            String a = asFormInstMapper.getTaskId(taskIDs[i]);
-            if (!taskIDs[i].isEmpty()&&
-                    a== null )  //当前要存的taskID不能是已经有的的，否则重复保存了
-                createFormInst(formJson,
-                        procInstId,
-                        "",
-                        formModelId,
-                        formInstValue,
-                        taskIDs[i]);
+    public JSONObject showNewFormSheet(String formModelId) {
+        //获取对应流程模型ID以及流程模型中第一个节点ID
+        String procModelId = formModelService.getProcModelID(formModelId);
+        String firstNodeId = procNodeService.getFirstNodeId(procModelId);
+
+        String formSheetStr = formModelService.getModelSheetStr(formModelId);
+        FormSheet sheet = FormConverter.jsonToEntity(formSheetStr);
+
+        List<FormItem> items = sheet.getList();
+        for(int j=0;j<items.size();j++)
+        {
+            //获取当前Authority
+            Integer curAuthority = authorityService.getCurAuthority(procModelId,firstNodeId,items.get(j).getKey());
+            //添加权限信息
+            authorityService.handleItemAuthority(items.get(j),curAuthority);
         }
+
+        formSheetStr = FormConverter.entityToJson(sheet);
+
+        HashMap<String,String> map = new HashMap<>();
+        map.put("form_json",formSheetStr);
+        JSONObject object = JSON.parseObject(JSON.toJSONString(map));
+        return object;
     }
 
+    /**
+     * 业务入口
+     * 发起一个新的表单实例
+     * @param dto
+     * @return
+     */
+    public String[] commitNewFormInst(FormInstRecCreate dto) throws DocumentException, FlowableException {
+        //1、先获取与表单模型唯一绑定的流程模型ID
+        String procModelID = formModelService.getProcModelID(dto.getForm_model_id());
+        //直接由流程模型后台创建流程实例(还没持久化)
+        HashMap<String,Object> map = procInstService.createProcInstance(procModelID);
+
+        ProcessInstance procInst = (ProcessInstance) map.get("inst");
+        String defID = (String) map.get("defID");
+        String deployID = (String) map.get("deployID");
+
+        String[] taskIDs = ProcUtils.getTaskIDs(procInst.getProcessInstanceId());
+
+        //2、创建表单实例，表单实例信息（包含了流程实例的一些信息）存入as_form_inst表中
+        for(int i=0;i<taskIDs.length;i++)
+        {
+            FormInstDO inst = createFormInst(dto.getForm_inst_sheet(),
+                    procInst.getProcessInstanceId(),
+                    dto.getEditor(),
+                    dto.getForm_model_id(),
+                    dto.getForm_inst_value(),
+                    taskIDs[i]);
+            formInstMapper.insert(inst);
+        }
+
+
+        //3、数据库表新建流程实例条目,注意这里还需要存储一个叫form_inst_all_value的字段
+        ProcInstDO asProcInstDO = new ProcInstDO.Builder()
+                .procInstId(procInst.getProcessInstanceId())
+                .procModelId(procModelID)
+                .procDefId(defID)
+                .procDeployId(deployID)
+                .committer(dto.getEditor())
+                .status(Constants.PROC_INST_ENABLE)
+                .formInstAllValue(dto.getForm_inst_value()).build();
+
+        procInstService.insertProcInst(asProcInstDO);
+
+        //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
+        String executionId = ProcUtils.getExecutionId(taskIDs[0]);
+        ActRuVariableBO boo = new ActRuVariableBO.Builder()
+                .executionId(executionId)
+                .rev(1)
+                .procInstId(procInst.getProcessInstanceId())
+                .form_inst_value(dto.getForm_inst_value()).build();
+        actRuVariableService.saveRunVariable(boo);
+        //至此，相当于把第一个任务节点要填的表单内容存进数据库了，而且绑定的流程实例也存进了数据库，当前流程应当流转到下个任务节点上了
+        ProcUtils.completeTask(taskIDs[0]);
+
+        //在as_form_inst表中创建下一个还没被执行的任务节点的TASK条目
+        procInstService.saveUnCompleteTask(
+                procInst.getProcessInstanceId(),
+                dto.getForm_model_id());
+
+        //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
+        return generateUrls(procInst.getProcessInstanceId());
+    }
+
+    /**
+     * 业务入口
+     * 用户登录系统之后，根据传进来的任务类型不同，前台显示待办（包含审批、经办）/待阅/全部的表单信息
+     * @param userID
+     * @param taskType
+     * @param curSelectSceneId  当前用户选择的工作场景Id
+     * @param sectionId
+     * @return
+     * @throws InfoException
+     * @throws ProcException
+     * @throws FormException
+     */
+    public List<FormInstVO> listFormInst(String userID,
+                                         Integer taskType,
+                                         String curSelectSceneId,
+                                         String sectionId) throws InfoException, ProcException, FormException {
+        //1、先获取流转到该用户对应的FlowableTaskDO
+        List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
+        if (tasks.size()==0)
+            throw new SizeNullException("表单实例为空");
+
+        List<TaskBO> taskBOs = constructTaskBO(tasks);
+
+        //2、对上面集合进行遍历，从as_proc_node中取出ActType进行比对，确定节点类型，与输入的taskType比对，看是不是要显示的节点
+        taskBOs = dressTaskByType(taskBOs, taskType);
+        if (taskBOs.size()==0)
+            throw new SizeNullException("表单实例为空");
+
+        //3、获取真正的表单实例表
+        ArrayList<FormInstDO> formInstDOs = (ArrayList<FormInstDO>)getFormInsts(taskBOs);
+        ArrayList<FormInstBO> formInstBOs = new ArrayList<>();
+
+        //从数据库中找到的所有任务节点信息
+        for(FormInstDO doo:formInstDOs){
+            String procModelId = procInstService.getProcModelId(doo.getProcInstId());
+            String nodeId = flowableService.getNodeId(doo.getTaskId());
+            ProcNodeDO nodeDO = procNodeService.getNodeDO(procModelId, nodeId);
+
+            FormInstBO boo = new FormInstBO.Builder()
+                    .curUserId(userID)
+                    .curTaskType(taskType)
+                    .procModelId(procModelId)
+                    .nodeId(nodeId)
+                    .ifJointSign(nodeDO.getIfJointSign())
+                    .sceneId(formModelService.getSceneId(doo.getFormModelId())).build();
+            BeanUtils.copyProperties(doo,boo);
+            if(!StringUtils.isEmpty(nodeDO.getCandidateUser()))
+                boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
+            if(!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
+                boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
+
+            formInstBOs.add(boo);
+//            formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,
+//                    formModelService.getSceneId(doo.getFormModelId())));
+        }
+
+        //4、对所有表单实例的表单Sheet进行表单项操作权限设置
+        for(int i = 0; i< formInstBOs.size(); i++) {
+            FormInstDO inst = formInstBOs.get(i);
+            authorityService.handleFormSheetAuthority(inst);
+        }
+
+        UserIdFilter userIdFilter = new UserIdFilter();
+        DuplicateFilter duplicateFilter = new DuplicateFilter();
+        SceneFilter sceneFilter = new SceneFilter();
+        //对不属于当前用户的表单任务进行筛选
+        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs,sectionId);
+        //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
+        ArrayList<FormInstBO> filtrate2 = duplicateFilter.filtrate(filtrate1);
+        //过滤工作场景
+        ArrayList<FormInstBO> filtrate3 = sceneFilter.filtrate(filtrate2,curSelectSceneId);
+
+
+        ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
+        for(int i = 0;i<filtrate3.size();i++){
+            FormInstBO boo = filtrate3.get(i);
+            String committer = procInstService.getCommitter(filtrate3.get(i).getTaskId());
+            String formInstValue = procInstService.getFormInstAllValue(boo.getProcInstId());
+            Date commitTime = procInstService.getCommitTime(boo.getProcInstId());
+            FormInstVO voo = new FormInstVO.Builder()
+                    .commitTime(commitTime.getTime())
+                    .title(committer+"发起的表单").build();
+            BeanUtils.copyProperties(boo,voo);
+            voo.setFormInstValue(formInstValue);
+
+            if(boo.getNodeType() == Constants.AS_NODE_APPLY)
+                voo.setContent("经办节点");
+            else if(boo.getNodeType() == Constants.AS_NODE_APPROVE)
+                voo.setContent("审批节点");
+            else if(boo.getNodeType() == Constants.AS_NODE_CC)
+                voo.setContent("抄送节点");
+            else
+                voo.setContent("其他节点");
+
+//            FormInstVO voo = filtrate3.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
+            formInstVOs.add(voo);
+        }
+
+        return formInstVOs;
+    }
+
+    /**
+     * 获取所有表单实例，不作筛选
+     * @return
+     */
+    public List<FormInstDO> listFormInst(){
+        ArrayList<FormInstDO> formInstDOs = (ArrayList<FormInstDO>) formInstMapper.listFormInsts();
+        return formInstDOs;
+    }
+
+    /**
+     * 对当前用户以及当前拿到的任务节点进行匹配，看是不是当前用户可以执行的任务
+     * @param inst
+     * @param userId
+     * @return
+     */
+    private Boolean userMatch(FormInstDO inst,String userId) {
+        String curNodeId = flowableService.getNodeId(inst.getTaskId());
+        ProcNodeDO nodeDO = procNodeService.getNodeDO(procInstService.getProcModelId(inst.getProcInstId()),
+                curNodeId);
+        nodeDO.getCandidateUser();
+
+        //默认匹配
+        return true;
+    }
 
     /**
      * 一个是节点类型，一个是页面显示的任务类型，看两者是不是匹配
@@ -86,7 +286,7 @@ public class FormInstService {
      * @param taskType 任务类型：待办、待阅
      * @return
      */
-    public boolean match(int curActType, Integer taskType) {
+    public boolean nodeTypeMatch(int curActType, Integer taskType) {
         if(taskType== Constants.TASK_TO_DO)
         {
             if(curActType == Constants.AS_NODE_APPLY
@@ -102,276 +302,516 @@ public class FormInstService {
     }
 
 
-    public List<AsFormInst> getTobeReadInsts(List<AsFormInst> formInsts) {
-        List<TaskInst> taskInsts = flowableMapper.getActIDs(formInsts);
-//        AsProcModel model = procModelMapper.
-        return null;
+    private ArrayList<FormInstVO> transToVO(ArrayList<FormInstDO> formInstDOs) {
+        ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
+        for (int i = 0; i < formInstDOs.size(); i++) {
+            formInstVOs.add(new FormInstVO(formInstDOs.get(i),
+                    procInstService.getCommitter(formInstDOs.get(i).getTaskId())));
+        }
+        return formInstVOs;
     }
+
+    /**
+     * 业务入口
+     * 对审批节点进行审批
+     * @param dto
+     */
+    public String[] approveNode(FormInstRecApprove dto) throws ProcException , FlowableException{
+        //找到当前传入的表单实例对应的流程实例的ID，注意和TaskID进行区分！！一次执行中，TaskId会一直变化，但是流程实例ID是不会变的
+        String procInstID = formInstMapper.getProcInstID(dto.getForm_inst_id());
+        //当前审批节点同意申请，先把当前新加了 同意 这个信息的 新表单 放入数据库，并完成当前任务节点
+        if(dto.getApprove_result() == Constants.APPROVE_AGREE)
+        {
+            //同意审批，as_form_inst表中输入approve_result,sheet和value、executor、execute_time值
+            updateFormInst(dto);
+            //这里审批节点之后就算存在分支结构，也不会是对这个审批意见进行处理，因为如果是对在之前任务节点上的表单项填写内容进行分支，那个时候就已经写入了runVariable数据，这里不需要再写
+            //但是这里也可以写，如果以后需要对整个流程进行监控，就是比如在哪个节点干了什么事情这种
+//            //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
+//            String executionId = ProcUtils.getExecutionId(dto.getTask_id());
+//            ActRuVariableBO boo = new ActRuVariableBO.Builder()
+//                    .executionId(executionId)
+//                    .procInstId(procInstID)
+//                    .form_inst_value("approve").build();
+//            actRuVariableService.saveRunVariable(boo);
+            ProcUtils.completeTask(dto.getTask_id());
+            procInstService.saveUnCompleteTask(
+                    procInstID,
+                    dto.getForm_model_id());
+        }
+        // 当前审批节点拒绝申请，应当是当前流程被强行结束
+        // 那么就是直接回滚到上个申请节点（如果前一个是审批节点，前前一个是申请节点，那么就是回滚到前前节点的位置）
+        // 回滚流程
+        // 1、找到上一个经办节点
+        // 2、回滚
+        // 3、在form_inst表中把晚于这个节点执行时间且相同procInstId的项目的状态置为 已被回滚
+        // 这里现在还有一个问题就是如果存在多个分支同时执行的话，另一个分支上的execution是没有回滚的！
+        // 这里现在的思路是在回滚前把当前流程实例的其他任务节点状态统一设成 已被回滚，同时回滚之后还要把新生成的form_inst加入数据库
+        else if(dto.getApprove_result() == Constants.APPROVE_DISAGREE)
+        {
+            ProcUtils.deleteProcInst(procInstID);
+
+//            String lastApplyNode = getLastApplyNode(getProcInstId(dto.getTask_id()));
+//            if(lastApplyNode.equals(""))
+//                throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
+//            procInstService.rollback(procInstID,lastApplyNode);
+            // 上面这段注释代码是对的，这里暂时先把审批拒绝的逻辑改为当前流程被抛弃
+            // 1、这里在流程回滚之后会生成新的任务节点，需要也存入数据库
+            // 2、表单内容也要重置
+            // 3、
+            //在act_hi_actinst表中读取相同inst_id且END_time为空的条目，将其封装存入as_form_inst表中
+            //在as_form_inst表中创建下一个还没被执行的任务节点的TASK条目
+//            saveRollbackTask(procInstID, dto.getForm_model_id());
+//
+//            saveRollbackTask();
+//            saveUnCompleteFormInst();
+//            updateFormInstAfterRollback(dto.getTask_id(),lastApplyNode);
+        }
+        return generateUrls(procInstID);
+    }
+
+//    public void saveRollbackTask(String procInstId,String formModelId){
+//        FormSheet originalFormSheet = formModelService.getModelSheet(formModelId);
+//        //获取当前执行到的任务节点
+//        String[] taskIDs = ProcUtils.getTaskIDs(procInstId);
+//        //如果下面还有任务节点要处理，就在as_proc_inst中新建这个表单实例字段（每一个TaskId对应一个新的表单实例）
+//        for (int i = 0; i < taskIDs.length; i++) {
+//            boolean isNotContain = formInstMapper.getTaskId(taskIDs[i]) == null ? true : false;
+//            //当前要存的taskID不能是已经有的的，否则重复保存了
+//            if (isNotContain) {
+//                String formInstAllValue = getFormInstAllValue(procInstId);
+//                FormInstDO formInst = formInstService.createFormInst(originalFormSheet,
+//                        procInstId,
+//                        null,
+//                        formModelId,
+//                        formInstAllValue,
+//                        taskIDs[i]);
+//                String procModelId = formModelService.getProcModelID(formModelId);
+//                String nodeId = flowableService.getNodeId(taskIDs[i]);
+//                //在存进去之前，就必须要求这个节点的节点类型是确定的
+//                formInst.setNodeType(procModelService.getNodeType(procModelId, nodeId));
+//                formInstService.saveUnCompleteFormInst(formInst);
+//            }
+//        }
+//    }
+
+    public String getProcInstId(String taskId) {
+        return formInstMapper.getProcInstId(taskId);
+    }
+
+    /**
+     * 这块逻辑太复杂了，先暂时不搞了
+     * 回滚结束后，在form_inst表中把晚于这个节点执行时间且相同procInstId的项目的状态置为 已被回滚
+     * 当前的处理逻辑是：
+     * 1、先判断要回滚到的上一个经办节点位置是不是有两个出度（即是否是分支节点）
+     * 2、如果不是，那么就是从curTaskId开始在数据库中遍历相同procInstId的条目直到lastApplyNodeId，把这些条目都置为 已回滚
+     *    如果是，先把as_form_inst表中的指定proc_inst_id的条目都取出来，构造<task_id,act_id>的哈希表（需两次读取数据库表，先拿task_id，再由task_id拿act_id），然后
+     *             获取经办节点的所有出度，遍历所有act_id，直到endNode，出现了的就把这一项的task_id取出来去as_form_inst中找到这个条目置为 已回滚
+     */
+    private void updateFormInstAfterRollback(String curTaskId, String lastApplyNodeId) {
+        String procInstId = getProcInstId(curTaskId);
+        String defId = procInstService.getDefId(procInstId);
+        if(ProcUtils.containParral(defId,lastApplyNodeId))
+        {
+
+        }
+        //不包含分支结构
+        else {
+//            Date lastlastApplyNodeExecuteTime = getExecuteTime(lastApplyNodeId);
+        }
+
+    }
+
+    private void getExecuteTime(String lastApplyNodeId) {
+//        return formInstMapper.getFormInst(lastApplyNodeId);
+    }
+
+
+    /**
+     * 业务入口
+     * 对经办节点进行处理
+     * @param rec
+     */
+    public String[] applyNode(FormInstRecHandle rec) throws FlowableException{
+        //当前填写表单数据 对数据库进行更新
+        updateFormInst(rec);
+        //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
+        String executionId = ProcUtils.getExecutionId(rec.getTask_id());
+        ActRuVariableBO boo = new ActRuVariableBO.Builder()
+                .executionId(executionId)
+                .rev(1)
+                .procInstId(rec.getProc_inst_id())
+                .form_inst_value(rec.getForm_inst_value()).build();
+        actRuVariableService.saveRunVariable(boo);
+        //完成当前经办节点
+        ProcUtils.completeTask(rec.getTask_id());
+        procInstService.saveUnCompleteTask(
+                rec.getProc_inst_id(),
+                rec.getForm_model_id());
+        return generateUrls(rec.getProc_inst_id());
+    }
+
+    /**
+     * 业务入口
+     * 对抄送节点进行处理
+     * @param rec
+     */
+    public String[] pendingNode(FormInstRecReadle rec) throws FlowableException{
+        //保存当前抄送节点的已阅信息
+        updateFormInst(rec);
+        //完成当前抄送任务,抄送任务之后也不需要考虑对当前结果的处理意见进行一个保存
+        //抄送任务结束之后，默认后面是没有任务节点了！！所以这里不需要再保存未完成任务节点
+        ProcUtils.completeTask(rec.getTask_id());
+        return generateUrls(rec.getProc_inst_id());
+    }
+
+    /**
+     * 入口方法
+     * 统计各个类型的表单实例数目分别是多少
+     * @param userID
+     * @return
+     */
+    public List<TaskCount> getFormInstsCounts(String userID,String sceneId,String sectionId ) throws Exception {
+//        TaskCount toDoCount = getCount(userID,
+//                Constants.TASK_TO_DO,
+//                sceneId,
+//                sectionId);
+//        TaskCount toReadCount = getCount(userID,
+//                Constants.TASK_TOBE_READ,
+//                sceneId,
+//                sectionId);
+        TaskCount toDoCount;
+        TaskCount toReadCount;
+        try{
+            toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(userID, Constants.TASK_TO_DO, sceneId, sectionId).size());
+        } catch (SizeNullException e) {
+            toDoCount = new TaskCount(Constants.TASK_TO_DO,0);
+        }
+
+        try{
+            toReadCount =  new TaskCount(Constants.TASK_TOBE_READ, listFormInst(userID, Constants.TASK_TOBE_READ, sceneId, sectionId).size());
+        } catch (SizeNullException e) {
+            toReadCount = new TaskCount(Constants.TASK_TOBE_READ,0);
+        }
+
+        List<TaskCount> taskCounts = new ArrayList<>();
+        taskCounts.add(toDoCount);
+        taskCounts.add(toReadCount);
+        return taskCounts;
+    }
+
+    /**
+     * 入口方法
+     * 点击外链之后,显示当前待执行节点的表单sheet
+     * @param taskId
+     */
+    public FormInstVO getShareLinkTask(String taskId,
+                                       String userId,
+                                       String sectionId) throws ProcException, FormException {
+        FormInstDO formInstDO = getFormInst(taskId);
+
+//        这边就是，生成的这个外链复制给别人，然后别人点击，通过用户验证之后就可以去执行了
+//        if(!userService.validateFormInst(formInstDO.getTaskId(),"?????"))
+//            return RespBean.error("当前任务节点不属于该用户！");
+
+        formInstDO = authorityService.handleFormSheetAuthority(formInstDO);
+
+        String procModelId = formModelService.getProcModelID(formInstDO.getFormModelId());
+        if(procModelId.equals(Constants.REGISTER_PROC_ID)||
+                procModelId.equals(Constants.SCENE_SELECT_PROC_ID))
+        {
+            formInstDO.setNodeType(Constants.AS_NODE_APPROVE);
+        }
+        else
+        {
+            Integer nodeType = formInstDO.getNodeType();
+            if (nodeType == null)
+            {
+                logger.error("流程中间层生成的流程模型出错！procModelId为:{}",procModelId);
+                throw new ProcException("流程中间层生成的流程模型出错！");
+            }
+        }
+        FormInstBO boo = new FormInstBO();
+        BeanUtils.copyProperties(formInstDO,boo);
+
+        boo.setCurUserId(userId);
+        boo.setCurTaskType(Constants.TASK_ALL);
+        boo.setProcModelId(procInstService.getProcModelId(formInstDO.getProcInstId()));
+        boo.setNodeId(flowableService.getNodeId(taskId));
+
+        ProcNodeDO nodeDO = procNodeService.getNodeDO(procModelId, boo.getNodeId());
+        if(!StringUtils.isEmpty(nodeDO.getCandidateUser()))
+            boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
+        if(!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
+            boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
+
+        boo.setIfJointSign(nodeDO.getIfJointSign());
+
+        boo.setSceneId(formModelService.getSceneId(formInstDO.getFormModelId()));
+//        FormInstBO formInstBO = new FormInstBO(formInstDO,userId,Constants.TASK_ALL);
+
+        UserIdFilter userFilter = new UserIdFilter();
+        DuplicateFilter duplicateFilter = new DuplicateFilter();
+
+        //对不属于当前用户的表单任务进行筛选
+        FormInstBO formInstBO1 = userFilter.shareLinkFiltrate(boo,sectionId);
+        //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
+        FormInstBO formInstBO2 = duplicateFilter.shareLinkFiltrate(formInstBO1);
+
+        FormInstVO voo = formInstBO2.transToVO(procInstService.getCommitter(formInstBO2.getTaskId()));
+
+        return voo;
+    }
+
+    /**
+     * 这里的获取任务节点信息都没有经过筛选，不完整
+     * @param userID
+     * @param taskType
+     * @param sceneId
+     * @param sectionId
+     * @return
+     * @throws InfoException
+     * @throws ProcException
+     */
+    public TaskCount getCount(String userID,
+                              int taskType,
+                              String sceneId,
+                              String sectionId) throws InfoException, ProcException {
+        //1、先获取流转到该用户对应的FlowableTaskDO
+        List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
+        if (tasks.size()==0)
+            return new TaskCount(taskType, 0);
+
+        List<TaskBO> taskBOs = constructTaskBO(tasks);
+
+        //2、对上面集合进行遍历，从as_proc_node中取出ActType进行比对，确定节点类型，与输入的taskType比对，看是不是要显示的节点
+        taskBOs = dressTaskByType(taskBOs, taskType);
+
+//        //对用户、组织筛选
+//        UserIdFilter userIdFilter = new UserIdFilter();
+//        DuplicateFilter duplicateFilter = new DuplicateFilter();
+//        SceneFilter sceneFilter = new SceneFilter();
+//        //对不属于当前用户的表单任务进行筛选
+//        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs,sectionId);
+//        //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
+//        ArrayList<FormInstBO> filtrate2 = duplicateFilter.filtrate(filtrate1);
+//        //过滤工作场景
+//        ArrayList<FormInstBO> filtrate3 = sceneFilter.filtrate(filtrate2,sceneId);
+
+        return new TaskCount(taskType, taskBOs.size());
+    }
+
+
+    /**
+     * 需要根据修改的节点类型的不同更新as_form_inst表中的不同字段
+     */
+    public FormInstDO updateFormInst(FormInstRecBase recBase){
+        FormInstDO inst = null;
+        //审批表单实例,更新approve_result、executor、execute_time值
+        //sheet、value不用更新
+        if (recBase instanceof FormInstRecApprove)
+        {
+            inst = new FormInstDO(
+                    ((FormInstRecApprove) recBase).getForm_inst_id(),
+                    ((FormInstRecApprove) recBase).getApprove_result(),
+                    recBase.getEditor()
+            );
+            formInstMapper.approveFormInst(inst);
+        }
+        // 经办节点,更新executor、execute_time、sheet、value值
+        // 注意这里还需要对as_proc_inst表的eform_inst_all_value字段进行更新
+        else if (recBase instanceof FormInstRecHandle)
+        {
+            String formInstSheet = JSONObject.toJSONString(((FormInstRecHandle) recBase).getForm_inst_sheet());
+            inst = new FormInstDO(
+                    ((FormInstRecHandle) recBase).getProc_inst_id(),
+                    ((FormInstRecHandle) recBase).getForm_inst_id(),
+                    formInstSheet,
+                    ((FormInstRecHandle) recBase).getForm_inst_value(),
+                    recBase.getEditor()
+            );
+            formInstMapper.handleFormInst(inst);
+            procInstService.updateFormValueForAll(((FormInstRecHandle) recBase).getForm_inst_value(),inst.getProcInstId());
+        }
+        // 抄送节点，更新executor、execute_time值
+        else if(recBase instanceof FormInstRecReadle)
+        {
+            inst = new FormInstDO(
+                    ((FormInstRecReadle) recBase).getForm_inst_id(),
+                    recBase.getEditor()
+            );
+            formInstMapper.readFormInst(inst);
+        }
+        return inst;
+    }
+
+    /**
+     * 业务入口
+     * 这里根据Task信息返回对应的表单实例信息，但是注意这里表单实例信息中的formValue值来自as_proc_inst表中
+     * formSheet值来自as_form_model
+     * @param taskBOs
+     * @return
+     */
+    private List<FormInstDO> getFormInsts(List<TaskBO> taskBOs) {
+        List<FormInstDO> formInstsByTasks = formInstMapper.getFormInstsByTasks(taskBOs);
+        for (int i = 0; i < formInstsByTasks.size(); i++) {
+            FormInstDO formInstDO = formInstsByTasks.get(i);
+            String originFormSheet = JSON.toJSONString(formModelService.getModelSheet(formInstDO.getFormModelId()));
+            formInstDO.setFormInstSheetStr(originFormSheet);
+        }
+        return formInstsByTasks;
+    }
+
+    /**
+     * 由flowable数据库取出来的TASK信息加上当前task的节点类型信息，然后返回
+     * @param tasks
+     */
+    private List<TaskBO> constructTaskBO(List<FlowableTaskDO> tasks) throws ProcException {
+        List<TaskBO> taskBOs = new ArrayList<>();
+        for(int i = 0;i<tasks.size();i++)
+        {
+            FlowableTaskDO cur = tasks.get(i);
+            String procModelId = procInstService.getProcModelId(cur.getProcInstId());
+            //这里说明我们在as_proc_inst表中找不到这个在ac_hi_actinst表中存在的流程实例，说明数据库中存在脏的流程实例数据
+            if (StringUtils.isEmpty(procModelId)){
+                logger.error("在as_proc_inst表中找不到这个在act_hi_actinst表中存在的流程实例!没有如下ProcInstID:{}", cur.getProcInstId());
+                throw new ProcException("有运行中流程实例没有与流程中间层绑定，请调用/completeAll，完成所有流程实例后，再重新尝试执行！");
+            }
+
+            Integer nodeType = null;
+
+            if(procModelId.equals(Constants.REGISTER_PROC_ID)||
+                    procModelId.equals(Constants.SCENE_SELECT_PROC_ID)) {
+                nodeType = Constants.AS_NODE_APPROVE;
+            }else{
+                nodeType = procNodeService.getNodeType(procModelId,cur.getActId());
+                if (nodeType == null)
+                {
+                    logger.error("流程中间层生成的流程模型出错！procModelId为:{},没有如下NodeId:{}",procModelId, cur.getActId());
+                    throw new ProcException("流程中间层生成的流程模型出错！");
+                }
+            }
+
+            TaskBO taskBO = new TaskBO(cur,nodeType);
+            taskBOs.add(taskBO);
+        }
+        return taskBOs;
+    }
+
+    /**
+     * 对当前得到的Task进行筛选，看是否符合前台请求的任务类型（待办、待阅、全部）
+     * @param tasks
+     * @param taskType
+     * @return
+     * @throws ProcException
+     */
+    private List<TaskBO> dressTaskByType(List<TaskBO> tasks, Integer taskType) throws ProcException {
+        for(int i =0;i<tasks.size();i++)
+        {
+            TaskBO curTaskBO = tasks.get(i);
+            //判断是不是符合当前页面要找的节点类型
+            if(!nodeTypeMatch(curTaskBO.getNodeType(),taskType))
+            {
+                tasks.remove(i);
+                i--;
+            }
+        }
+        return tasks;
+    }
+
+    /**
+     * 独立功能模块
+     * 创建表单实例
+     * @param formSheet
+     * @param procInstId
+     * @param editor
+     * @param formModelId
+     * @param formInstValue
+     * @param taskId
+     * @return 返回创建好的表单实例
+     */
+    public FormInstDO createFormInst(FormSheet formSheet,
+                                     String procInstId,
+                                     String editor,
+                                     String formModelId,
+                                     String formInstValue,
+                                     String taskId){
+        String executionID = procInstService.getExecutionId(procInstId);
+        String formInstJson = JSONObject.toJSONString(formSheet);
+        FormInstDO inst = new FormInstDO.Builder()
+                .formModelId(formModelId)
+                .procInstId(procInstId)
+                .executionId(executionID)
+                .taskId(taskId)
+                .executor(editor)
+                .formInstValue(formInstValue)
+                .formInstSheetStr(formInstJson).build();
+
+        String procModelID = formModelService.getProcModelID(formModelId);
+
+        if(procModelID.equals(Constants.REGISTER_PROC_ID)||
+                procModelID.equals(Constants.SCENE_SELECT_PROC_ID))
+            inst.setNodeType(Constants.AS_NODE_APPLY);
+        else {
+            String firstNodeId = procNodeService.getFirstNodeId(procModelID);
+            inst.setNodeType(procNodeService.getNodeType(procModelID,firstNodeId));
+        }
+
+        return inst;
+    }
+
 
 
 
     /**
      * 获取流程实例中的上一个申请节点
-     * 1、先获取当前流程实例执行的ACT_ID
-     * 2、找到当初存在proc_model表中的功能性节点信息
-     * @param procInstID
+     * 1、用comingflow那个操作获取上一个节点
+     * 2、查看它的node——type是不是经办节点类型
+     * 3、如果不是，回到1；如果是，返回该节点
+     * @param procInstId 当前待执行的Task所属的流程实例Id
      * @return
      */
-    public String getLastApplyNode(String procInstID) {
-        String curActId = flowableMapper.getCurActId(procInstID);
+    public String getLastApplyNode(String procInstId) {
+        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActs(procInstId);
+        String procModelId = procInstService.getProcModelId(procInstId);
+        for(HistoricActivityInstance instance:historicActs){
+            String actId = instance.getActivityId();
+            if(procNodeService.getNodeType(procModelId,actId) == Constants.AS_NODE_APPLY);
+                return actId;
+        }
+        return "";
+    }
 
-        return "1";
 
+
+    public String[] generateUrls(String procInstId) {
+        String[] curTaskIds = ProcUtils.getTaskIDs(procInstId);
+        String[] urls = new String[curTaskIds.length];
+
+        for(int i = 0;i<curTaskIds.length;i++)
+        {
+            urls[i] = Constants.REQUEST_URL_PREFIX+"/form_inst/share_link?task_id="+curTaskIds[i];
+        }
+        return urls;
     }
 
     /**
-     * 从当前审批节点回滚到上一个申请节点
-     * @param procInstID
-     * @param rollbackActID 上一个申请节点的ActivityID
+     * 用户点击这个外链，自动跳转到相应的待办 或者 待阅 页面对任务节点进行处理
+     * @param taskId
      */
-    public void rollback(String procInstID,String rollbackActID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-
-        runtimeService.createChangeActivityStateBuilder().processInstanceId(procInstID)
-                .moveExecutionToActivityId(getExecutionId(procInstID), rollbackActID).changeState();
+    public FormInstDO getFormInst(String taskId) {
+        return formInstMapper.getFormInst(taskId);
     }
 
-    //创建表单实例，表单实例信息（包含了流程实例的一些信息）存入as_form_inst表中
-    public AsFormInst createFormInst(FormJson formJson,
-                                      String procInstId,
-                                      String editor,
-                                      String formModelId,
-                                     String formInstValue,
-                                     String taskId){
-        String executionID = getExecutionId(procInstId);
-        String formInstJson = JSONObject.toJSONString(formJson);
-
-        AsFormInst inst = new AsFormInst(
-                formModelId,
-                procInstId,
-                executionID,
-                taskId,
-                editor,
-                formInstValue,
-                formInstJson
-        );
-        asFormInstMapper.insertSelective(inst);
-        return inst;
+    public String getFormModelId(String taskId) {
+        return null;
     }
 
-    //as_form_inst表中中包含这条表单实例信息，但是是属于还没完成的那种类型，需要填写表单信息后对这项进行更新
-    public AsFormInst updateFormInst(FormInstRecBase recBase){
-        AsFormInst inst = null;
-        // 审批表单实例
-        if (recBase instanceof FormInstRecApprove)
-        {
-            inst = new AsFormInst(
-                    ((FormInstRecApprove) recBase).getForm_inst_id(),
-                    recBase.getForm_inst_value(),
-                    recBase.getEditor()
-            );
-            asFormInstMapper.approveFormInst(inst);
-        }
-        // 经办节点
-        if (recBase instanceof FormInstRecHandle)
-        {
-            String formInstJson = JSONObject.toJSONString(((FormInstRecHandle) recBase).getForm_inst_json());
-
-            inst = new AsFormInst(
-                    ((FormInstRecHandle) recBase).getForm_inst_id(),
-                    formInstJson,
-                    recBase.getForm_inst_value(),
-                    recBase.getEditor()
-            );
-            asFormInstMapper.handleFormInst(inst);
-        }
-        // 待阅
-        if(recBase instanceof FormInstRecReadle)
-        {
-            inst = new AsFormInst(
-                    ((FormInstRecReadle) recBase).getForm_inst_id(),
-                    recBase.getForm_inst_value(),
-                    recBase.getEditor()
-            );
-            asFormInstMapper.readFormInst(inst);
-        }
-        return inst;
-    }
-
-    public ProcessInstance getProcInst(String procInstId){
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
-
-        return runtimeService.createProcessInstanceQuery().processInstanceId(procInstId).singleResult();
+    public void saveUnCompleteFormInst(FormInstDO formInst) {
+        formInstMapper.saveUnCompleteFormInst(formInst);
     }
 
 
-    public void completeCurTask(String taskID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
-
-        taskService.complete(taskID);
-    }
-
-    public String[] getTaskIDs(String procInstID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
-
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(procInstID).list();
-        String[] taskIDs = new String[tasks.size()];
-        for (int i=0;i<tasks.size();i++)
-            taskIDs[i]=tasks.get(i).getId();
-        return taskIDs;
-    }
-
-    public String getExecutionId(String procInstID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RuntimeService runtimeService = engine.getRuntimeService();
-
-        ExecutionQuery executionQuery = runtimeService.createExecutionQuery().processInstanceId(procInstID);
-        List<Execution> executions = executionQuery.list();
-
-        Execution temp = null;
-        for (int j = 0; j < executions.size(); j++) {
-            temp = executions.get(j);
-            if (temp.getActivityId() == null)
-                continue;
-            else
-                break;
-        }
-        return temp.getId();
-    }
-
-    //直接由流程模型ID创建相应的流程实例
-    public ProcessInstance createProcInstance(String procModelId,String defID,String deployID) {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
-
-
-        org.flowable.ui.modeler.domain.Model modelData = modelService.getModel(procModelId);
-        BpmnModel bpmnModel = modelService.getBpmnModel(modelData);
-
-        DeploymentBuilder builder = repositoryService.createDeployment();
-        byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(bpmnModel);
-        String processXMLName = modelData.getName()+".bpmn20.xml";
-        String depResourceName = modelData.getName()+"ResName";
-        String depName = modelData.getName()+"DepName";
-        String depKey = modelData.getName()+"DepKey";
-        //部署
-        Deployment dep = builder.addBpmnModel(depResourceName,bpmnModel).
-                name(depName).
-                key(depKey).
-                addBytes(processXMLName,bpmnBytes).   //必须加这个，否则流程定义文件会为空
-                deploy();
-        //获取流程定义
-        deployID = dep.getId();
-        ProcessDefinition def = repositoryService.createProcessDefinitionQuery().deploymentId(dep.getId()).singleResult();
-        defID = def.getId();
-        //创建流程实例
-        ProcessInstance instance = runtimeService.startProcessInstanceById(def.getId());
-        return instance;
-    }
-
-    public void completeAll() {
-        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-        RepositoryService repositoryService = engine.getRepositoryService();
-        RuntimeService runtimeService = engine.getRuntimeService();
-        TaskService taskService = engine.getTaskService();
-
-        ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
-
-        List<ProcessInstance> lists = query.active().list();
-
-        for(int j = 0 ; j<lists.size() ; j++) {
-            ProcessInstance instance = lists.get(j);
-
-            for (int i = 0; i < Integer.MAX_VALUE; i++)
-            {
-                List<Task> tasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
-
-                if (tasks.size() == 0)
-                    break;
-
-                //遍历，然后完成
-                for (Task task : tasks) {
-                    taskService.complete(task.getId());
-                }
-            }
-        }
-    }
-
-    public TaskCount getCount(String userID,int taskType) throws Exception {
-        //map2是TaskId和ActType的Map
-        HashMap<String,Integer> map2 =new HashMap<String, Integer>();
-
-        //1、先获取流转到该用户对应的procInstId\taskID\actId的集合
-        List<TaskInst> taskInfos = flowableMapper.getTaskInfos(userID);
-        //2、对上面集合进行遍历，与List<ActType>进行比对，确定节点类型，与输入的taskType比对，是不是要显示的节点
-        for(int i =0;i<taskInfos.size();i++)
-        {
-            TaskInst curTaskInst = taskInfos.get(i);
-            //2.1 获取流程实例更多的信息，这里我们主要要的是proc_model_id
-            AsProcInst asProcInst = procInstMapper.selectByPrimaryKey(curTaskInst.getProcInstId());
-            if (asProcInst==null)
-                throw new Exception("有流程实例没有与流程中间层绑定，请调用/completeAll，完成所有流程实例后，再重新尝试执行！");
-            String procModelId = asProcInst.getProcModelId();
-            //2.2 根据流程模型获取对应的ActType的list
-            AsProcModel asProcModel = procModelMapper.selectByPrimaryKey(procModelId);
-            String asJson = asProcModel.getAsJson();
-            JSONArray array = JSONArray.parseArray(asJson);
-            List<ActType> actTypes = JSONObject.parseArray(array.toJSONString(), ActType.class);
-
-            //2.3 构造hashmap，方便查找
-            HashMap<String,Integer> map = new HashMap<String, Integer>();
-            int curActType;
-
-            for(int j= 0;j<actTypes.size();j++)
-            {
-                map.put(actTypes.get(j).getAct_id(),
-                        actTypes.get(j).getAct_type());
-            }
-
-            //这里注意一个问题，就是如果你在流程模型创建阶段输入的ACT_TYPE有错误，那么这里map就获取不到这个curActType，这里会抛出异常，
-            //这里应该对这个异常进行处理！！
-            //查看当前procInstIDs.get(i)的TASK_ID是什么类型的节点
-            try {
-                curActType = map.get(curTaskInst.getActId());
-            }
-            catch (NullPointerException e){
-                logger.error("流程中间层生成的流程模型出错！没有如下ActID:{}",curTaskInst.getActId());
-                throw new Exception("流程中间层生成的流程模型出错！");
-            }
-
-            if(!match(curActType,taskType))
-            {
-                taskInfos.remove(i);
-                i--;
-            }
-            else {
-                map2.put(curTaskInst.getTaskId(),curActType);
-            }
-
-        }
-        //3、把所有流程实例的taskID都取出来，然后获取对应的表单实例列表
-        String[] procTaskIds = new String[taskInfos.size()];
-        int k=0;
-        for(int i= 0;i<taskInfos.size();i++)
-        {
-            procTaskIds[k++] = taskInfos.get(i).getTaskId();
-        }
-        if (taskInfos.size()==0)
-            return new TaskCount(taskType,0);
-
-        return new TaskCount(taskType,procTaskIds.length);
+    public String getAlreadyCompleteTask(String curUserId, String procInstId) throws FlowableException{
+        return formInstMapper.getAlreadyCompleteTask(curUserId,procInstId);
     }
 }

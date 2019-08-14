@@ -1148,7 +1148,7 @@ if (
              * If 0, Infinity, or NaN: 0
              * If positive number: limit = Math.floor(limit); if (limit > 4294967295) limit -= 4294967296;
              * If negative number: 4294967296 - Math.floor(Math.abs(limit))
-             * If other: Type-convert, then use the above rules
+             * If other: Type-convert, then use the above itemRuleBases
              */
             limit = limit === void 0 ?
                 -1 >>> 0 : // Math.pow(2, 32) - 1

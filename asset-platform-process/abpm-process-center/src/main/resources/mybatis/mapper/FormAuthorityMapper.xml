@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.FormAuthorityMapper">
+  <resultMap id="BaseResultMap" type="com.asset.entity.ActAuthority">
+    <result column="proc_model_id" jdbcType="VARCHAR" property="procModelId" />
+    <result column="act_id" jdbcType="VARCHAR" property="actId" />
+    <result column="form_item_key" jdbcType="VARCHAR" property="formItemKey" />
+    <result column="authority" jdbcType="INTEGER" property="authority" />
+  </resultMap>
+  <insert id="insert" parameterType="com.asset.entity.ActAuthority">
+    insert into as_form_item_authority
+    (proc_model_id, act_id, form_item_key,
+      authority)
+    values (#{procModelId,jdbcType=VARCHAR}, #{actId,jdbcType=VARCHAR}, #{formItemKey,jdbcType=VARCHAR},
+      #{authority,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.asset.entity.ActAuthority">
+    insert into as_form_item_authority
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="procModelId != null">
+        proc_model_id,
+      </if>
+      <if test="actId != null">
+        act_id,
+      </if>
+      <if test="formItemKey != null">
+        form_item_key,
+      </if>
+      <if test="authority != null">
+        authority,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="procModelId != null">
+        #{procModelId,jdbcType=VARCHAR},
+      </if>
+      <if test="actId != null">
+        #{actId,jdbcType=VARCHAR},
+      </if>
+      <if test="formItemKey != null">
+        #{formItemKey,jdbcType=VARCHAR},
+      </if>
+      <if test="authority != null">
+        #{authority,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="getAuthority" resultType="java.lang.Integer">
+    SELECT authority
+    FROM as_form_item_authority
+    WHERE
+    proc_model_id = #{param1,jdbcType=VARCHAR} AND
+    act_id = #{param2,jdbcType=VARCHAR} AND
+    form_item_key = #{param3,jdbcType=VARCHAR}
+  </select>
+
+  <update id="updateAuthority" >
+    UPDATE as_form_item_authority
+    SET authority = #{authority,jdbcType=INTEGER}
+    WHERE
+    proc_model_id = #{procModelId,jdbcType=VARCHAR} AND
+    act_id = #{actId,jdbcType=VARCHAR} AND
+    form_item_key = #{formItemKey,jdbcType=VARCHAR}
+  </update>
+</mapper>

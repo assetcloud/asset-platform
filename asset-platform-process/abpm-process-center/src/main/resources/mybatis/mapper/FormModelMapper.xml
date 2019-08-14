@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.asset.dao.FormModelMapper">
+    <resultMap id="BaseResultMap" type="com.asset.entity.FormModelDO">
+        <result column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="form_name" jdbcType="VARCHAR" property="formName"/>
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime"/>
+        <result column="created_by" jdbcType="VARCHAR" property="createdBy"/>
+        <result column="last_updated_time" jdbcType="TIMESTAMP" property="lastUpdatedTime"/>
+        <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+        <result column="model_sheet" jdbcType="LONGVARCHAR" property="modelSheetStr"/>
+        <result column="group_id" jdbcType="INTEGER" property="groupId"/>
+        <result column="icon_cls" jdbcType="VARCHAR" property="iconCls"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="proc_model_id" jdbcType="VARCHAR" property="procModelId"/>
+        <result column="scene_id" jdbcType="VARCHAR" property="sceneId"/>
+        <result column="app_id" jdbcType="VARCHAR" property="appId"/>
+    </resultMap>
+
+    <sql id="Blob_Column_List">
+        id,
+        form_name,
+        created_time,
+        created_by,
+        last_updated_time,
+        last_updated_by,
+        version,
+        model_sheet,
+        group_id,
+        icon_cls,
+        status,
+        proc_model_id,
+        scene_id,
+        app_id
+    </sql>
+
+    <insert id="insert" parameterType="com.asset.entity.FormModelDO">
+        insert into as_form_model
+        (
+        <include refid="Blob_Column_List"/>
+        )
+        values (#{id,jdbcType=VARCHAR},
+        #{formName,jdbcType=VARCHAR},
+        now(),
+        #{createdBy,jdbcType=VARCHAR},
+        #{lastUpdatedTime,jdbcType=TIMESTAMP},
+        #{lastUpdatedBy,jdbcType=VARCHAR},
+        #{version,jdbcType=INTEGER},
+        #{modelSheetStr,jdbcType=LONGVARCHAR}
+        #{groupId,jdbcType=INTEGER},
+        #{iconCls,jdbcType=VARCHAR},
+        #{status,jdbcType=TINYINT},
+        #{procModelId,jdbcType=VARCHAR},
+        #{sceneId,jdbcType=VARCHAR},
+        #{appId,jdbcType=VARCHAR},
+        )
+    </insert>
+
+    <insert id="insertSelective" parameterType="com.asset.entity.FormModelDO">
+        insert into as_form_model
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="formName != null">form_name,</if>
+            <if test="createdTime != null">created_time,</if>
+           <if test="createdBy != null">created_by,</if>
+            <if test="lastUpdatedTime != null">last_updated_time,</if>
+            <if test="lastUpdatedBy != null">last_updated_by,</if>
+           <if test="version != null">version,</if>
+            <if test="groupId != null">group_id,</if>
+            <if test="iconCls != null">icon_cls,</if>
+           <if test="status != null">status,</if>
+            <if test="procModelId != null">proc_model_id,</if>
+            <if test="modelSheetStr != null">model_sheet,</if>
+            <if test="sceneId != null">scene_id,</if>
+            <if test="appId != null">app_id</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=VARCHAR},</if>
+            <if test="formName != null">#{formName,jdbcType=VARCHAR},</if>
+            <if test="createdTime != null">#{createdTime,jdbcType=TIMESTAMP},</if>
+            <if test="createdBy != null">#{createdBy,jdbcType=VARCHAR},</if>
+            <if test="lastUpdatedTime != null">#{lastUpdatedTime,jdbcType=TIMESTAMP},</if>
+            <if test="lastUpdatedBy != null">#{lastUpdatedBy,jdbcType=VARCHAR},</if>
+            <if test="version != null">#{version,jdbcType=INTEGER},</if>
+            <if test="groupId != null">#{groupId,jdbcType=INTEGER},</if>
+            <if test="iconCls != null">#{iconCls,jdbcType=VARCHAR},</if>
+            <if test="status != null">#{status,jdbcType=INTEGER},</if>
+            <if test="procModelId != null">#{procModelId,jdbcType=VARCHAR},</if>
+            <if test="modelSheetStr != null">#{modelSheetStr,jdbcType=LONGVARCHAR},</if>
+            <if test="sceneId != null">#{sceneId,jdbcType=VARCHAR},</if>
+            <if test="appId != null">#{appId,jdbcType=VARCHAR},</if>
+        </trim>
+    </insert>
+
+    <!--返回对应的表单模型
+        @param formModelID-->
+    <select id="getFormModel" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Blob_Column_List"/>
+        FROM as_form_model
+        WHERE id = #{formModelID,jdbcType =VARCHAR };
+    </select>
+
+    <!--修改表单模型
+        @param FormModelDO formModelDO-->
+    <update id="editFormModel" parameterType="com.asset.entity.FormModelDO">
+        UPDATE as_form_model
+        SET form_name   = #{formName,jdbcType=VARCHAR},
+            model_sheet = #{modelSheetStr,jdbcType=VARCHAR},
+            group_id    = #{groupId,jdbcType=INTEGER},
+            icon_cls    = #{iconCls,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=VARCHAR};
+    </update>
+
+    <!-- 在表单模型表中绑定对应的流程模型，还需要修改表单模型的状态
+         @param FormModelDO bindInfo
+         其中：
+    表单模型创建之后的状态：
+    public static final int FORM_MODEL_UNBIND = 0;   //还没和流程模型绑定
+    public static final int FORM_MODEL_BINDED = 1;  //已绑定，表单流程已经可以被发起
+    public static final int FORM_MODEL_DELETED = 2;  //表单流程已被删除-->
+    <update id="bindFormAndProcModel" parameterType="com.asset.entity.FormModelDO">
+        UPDATE
+                as_form_model
+        SET proc_model_id = #{procModelId,jdbcType = VARCHAR},
+            status        = 1
+        WHERE id = #{formModelId,jdbcType = VARCHAR};
+    </update>
+
+    <!--根据传进来的表单模型ID一个一个取出来
+         @param List<String> formModelIDs-->
+    <select id="listAllFormModels" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Blob_Column_List"/>
+        FROM
+        as_form_model
+        WHERE
+        id in
+        <foreach item="formModelIDs" index="index" collection="list" open="(" separator="," close=")">
+            #{formModelIDs,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+
+    <!--根据传进来的表单模型ID一个一个取出来
+       @param List<String> formModelIDs-->
+    <select id="listFormModels" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Blob_Column_List"/>
+        FROM
+        as_form_model
+        WHERE
+        id in
+        <foreach item="item" index="index" collection="formModelIDs" open="(" separator="," close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+        <if test="formStatus!=-1">
+            AND
+            status = #{formStatus,jdbcType = INTEGER}
+        </if>
+        <if test="groupId!=-1">
+            AND
+            group_id = #{groupId,jdbcType = INTEGER}
+        </if>
+    </select>
+
+    <!--给应用下的表单模型进行分组
+        @param FormModelDO groupInfo-->
+    <update id="setFormGroup" parameterType="com.asset.entity.FormModelDO">
+        UPDATE
+                as_form_model
+        SET group_id = #{groupId,jdbcType = INTEGER}
+        WHERE id = #{id,jdbcType = VARCHAR}
+    </update>
+
+    <!--获取与该表单模型绑定的流程模型ID
+        @param String formModelId-->
+    <select id="getProcModelID" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT proc_model_id
+        FROM as_form_model
+        WHERE id = #{formModelId,jdbcType = VARCHAR}
+    </select>
+
+    <!--根据modelID返回model_sheet数据
+        @param String formModelID-->
+    <select id="getModelSheetStr" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT model_sheet
+        FROM as_form_model
+        WHERE id = #{formModelID,jdbcType = VARCHAR};
+    </select>
+
+    <select id="checkFormContain" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT id
+        FROM as_form_model
+        WHERE id = #{formModelId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getSceneId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT scene_id
+        FROM as_form_model
+        WHERE id = #{formModelId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getFormModelName" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT form_name
+        FROM as_form_model
+        WHERE id = #{formModelId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Blob_Column_List"/>
+        FROM
+        as_form_model
+    </select>
+
+    <select id="selectUnBindAll" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Blob_Column_List"/>
+        FROM
+        as_form_model
+        WHERE
+        proc_model_id is null
+    </select>
+
+
+    <select id="listFormModelsByModelId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Blob_Column_List"/>
+        FROM
+        as_form_model
+        WHERE
+        id in
+        <foreach item="item" index="index" collection="formModelIDs" open="(" separator="," close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
+
+    <select id="getFormId" resultType="java.lang.String">
+        SELECT id
+        FROM as_form_model
+        WHERE form_name = #{formName,jdbcType=VARCHAR}
+          AND proc_model_id = #{procId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getFormModelIDs" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT id
+        FROM as_form_model
+        WHERE app_id = #{appId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getFormModelId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT id
+        FROM as_form_model
+        WHERE proc_model_id = #{procModelId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="getBindFormSheet" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT model_sheet
+        FROM as_form_model
+        WHERE proc_model_id = #{procModelId,jdbcType=VARCHAR}
+    </select>
+    <select id="getSceneIdByProcModelId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT scene_id
+        FROM as_form_model
+        WHERE proc_model_id = #{procModelId,jdbcType=VARCHAR}
+    </select>
+</mapper>

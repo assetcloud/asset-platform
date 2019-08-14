@@ -220,7 +220,7 @@ var uriAttrs = makeMap("background,cite,href,longdesc,src,usemap,xlink:href");
 
 var htmlAttrs = makeMap('abbr,align,alt,axis,bgcolor,border,cellpadding,cellspacing,class,clear,' +
     'color,cols,colspan,compact,coords,dir,face,headers,height,hreflang,hspace,' +
-    'ismap,lang,language,nohref,nowrap,rel,rev,rows,rowspan,rules,' +
+    'ismap,lang,language,nohref,nowrap,rel,rev,rows,rowspan,itemRuleBases,' +
     'scope,scrolling,shape,size,span,start,summary,target,title,type,' +
     'valign,value,vspace,width');
 

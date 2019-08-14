@@ -10,6 +10,60 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>abpm-process-center</artifactId>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+
+            <!--mybatis generator maven start-->
+            <!--<plugin>-->
+                <!--<groupId>org.mybatis.generator</groupId>-->
+                <!--<artifactId>mybatis-generator-maven-plugin</artifactId>-->
+                <!--<version>1.3.5</version>-->
+                <!--<configuration>-->
+                    <!--&lt;!&ndash;generatorConfig.xml位置&ndash;&gt;-->
+                    <!--<configurationFile>src/main/resources/mybatis-config.xml</configurationFile>-->
+                    <!--<verbose>true</verbose>-->
+                    <!--<overwrite>true</overwrite>-->
+                <!--</configuration>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<id>Generate MyBatis Artifacts</id>-->
+                        <!--<goals>-->
+                            <!--<goal>generate</goal>-->
+                        <!--</goals>-->
+                        <!--<phase>generate-sources</phase>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--&lt;!&ndash;此处必须添加mysql驱动包&ndash;&gt;-->
+                <!--<dependencies>-->
+                    <!--<dependency>-->
+                        <!--<groupId>mysql</groupId>-->
+                        <!--<artifactId>mysql-connector-java</artifactId>-->
+                        <!--<scope>runtime</scope>-->
+                        <!--<version>5.1.47</version>-->
+                    <!--</dependency>-->
+                <!--</dependencies>-->
+            <!--</plugin>-->
+            <!--mybatis generator maven end-->
+
+        </plugins>
+        <!--这里应该是扫描mapper文件-->
+        <resources>
+            <resource>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.xml</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -53,6 +107,18 @@
         </dependency>
         <!-- flowable end -->
 
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>5.1.6.RELEASE</version>
+        </dependency>
+
+        <!--&lt;!&ndash;添加feign依赖&ndash;&gt;-->
+        <!--<dependency>-->
+            <!--<groupId>org.springframework.cloud</groupId>-->
+            <!--<artifactId>spring-cloud-starter-feign</artifactId>-->
+        <!--</dependency>-->
+
         <!--lombok start-->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -73,12 +139,9 @@
             <optional>true</optional>
             <scope>true</scope>
         </dependency>
+
         <!-- database begin -->
-        <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>1.3.2</version>
-        </dependency>
+
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid</artifactId>
@@ -89,11 +152,53 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.47</version>
         </dependency>
-        <!--<dependency>-->
-        <!--<groupId>mysql</groupId>-->
-        <!--<artifactId>mysql-connector-java</artifactId>-->
-        <!--<version>8.0.12</version>-->
-        <!--</dependency>-->
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatisplus-spring-boot-starter</artifactId>
+            <version>1.0.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-core</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-autoconfigure</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.velocity</groupId>
+            <artifactId>velocity-engine-core</artifactId>
+            <version>2.1</version>
+        </dependency>
         <!-- database end -->
 
         <dependency>
@@ -124,12 +229,32 @@
         </dependency>
 
         <!--分页插件-->
+        <!--<dependency>-->
+            <!--<groupId>com.github.pagehelper</groupId>-->
+            <!--<artifactId>pagehelper</artifactId>-->
+            <!--<version>5.1.8</version>-->
+        <!--</dependency>-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper</artifactId>
-            <version>5.1.8</version>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.10</version>
         </dependency>
         <!--分页插件-->
+
+        <!-- dom4j start -->
+        <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>1.6.1</version>
+        </dependency>
+        <!-- dom4j end -->
+        <!-- jaxen start 使用dom4j中的xpath必须引入这个包 -->
+        <dependency>
+            <groupId>jaxen</groupId>
+            <artifactId>jaxen</artifactId>
+            <version>1.1.6</version>
+        </dependency>
+        <!-- jaxen end -->
 
         <dependency>
             <groupId>io.springfox</groupId>
@@ -141,27 +266,14 @@
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.9.2</version>
         </dependency>
-    </dependencies>
+        <!--oauth-->
+        <dependency>
+            <groupId>org.springframework.security.oauth</groupId>
+            <artifactId>spring-security-oauth2</artifactId>
+            <version>2.1.1.RELEASE</version>
+        </dependency>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-        <!--这里应该是扫描mapper文件-->
-        <resources>
-            <resource>
-                <directory>src/main/java</directory>
-                <includes>
-                    <include>**/*.xml</include>
-                </includes>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
-    </build>
+
+    </dependencies>
 
 </project>

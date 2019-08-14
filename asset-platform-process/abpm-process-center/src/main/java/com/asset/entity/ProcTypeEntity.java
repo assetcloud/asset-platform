@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class ProcTypeEntity implements Serializable {
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 1L;
 
@@ -20,6 +20,9 @@ public class ProcTypeEntity implements Serializable {
     private Integer pid;
 
     private Long state;
+
+    public ProcTypeEntity() {
+    }
 
     public Integer getId() {
         return id;

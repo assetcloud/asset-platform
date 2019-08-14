@@ -40,6 +40,9 @@ public class ProcInstInfo implements Serializable {
      */
     private String startTime;
 
+    public ProcInstInfo() {
+    }
+
     public String getId_() {
         return id_;
     }

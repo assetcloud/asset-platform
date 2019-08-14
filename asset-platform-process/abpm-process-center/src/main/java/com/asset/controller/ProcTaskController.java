@@ -3,16 +3,19 @@ package com.asset.controller;
 import com.asset.service.ProcTaskService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * @author lichao
  */
 @Controller
+@ApiIgnore
 public class ProcTaskController {
 
     private Integer pageNum = 1;

@@ -1,21 +1,18 @@
 package com.asset.dao;
 
-
 import com.asset.entity.AsProcInst;
-import org.springframework.stereotype.Repository;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Mapper;
 
-@Repository
-public interface AsProcInstMapper {
-    int deleteByPrimaryKey(String procInstId);
-
-    int insert(AsProcInst record);
-
-    int insertSelective(AsProcInst record);
-
-    AsProcInst selectByPrimaryKey(String procInstId);
-
-    int updateByPrimaryKeySelective(AsProcInst record);
-
-    int updateByPrimaryKey(AsProcInst record);
+/**
+ * <p>
+ *  Mapper 接口
+ * </p>
+ *
+ * @author YBY
+ * @since 2019-08-04
+ */
+@Mapper
+public interface AsProcInstMapper extends BaseMapper<AsProcInst> {
 
 }

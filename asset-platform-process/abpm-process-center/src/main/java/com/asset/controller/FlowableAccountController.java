@@ -2,11 +2,14 @@ package com.asset.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
+
 /**
  * @author lichao
  */
 @RestController
 @RequestMapping("/app")
+@ApiIgnore
 public class FlowableAccountController {
 
 	@RequestMapping(value = "/rest/account")
@@ -20,4 +23,6 @@ public class FlowableAccountController {
 				+ "\"access-admin\""
 				+ "]}\n";
 	}
+
+
 }
