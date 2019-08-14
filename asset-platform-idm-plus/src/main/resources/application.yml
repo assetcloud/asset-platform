@@ -1,11 +1,13 @@
 spring:
+  profiles:
+    active: dev
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
 #    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
 #    url: jdbc:mysql://120.77.179.239:3306/asset-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
 #    url: jdbc:mysql://10.1.18.178:3306/asset-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-#    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    url: jdbc:mysql://127.0.0.1:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
     username: root
 #    password: Hdu123456
     password: root
@@ -44,25 +46,36 @@ spring:
     expose-spring-macro-helpers: false
 #server:
 #  port: 12345
-server:
-  port: 8084
-  path: http://localhost:8084/
-#mybatis:
-#  mapper-locations: classpath:mapper/*.xml
-##  mapper-locations: classpath:resources/mapper/*Mapper.xml
-#  type-aliases-package: com.asset.**
-#  configuration:
-#    map-underscore-to-camel-case: true
-#    cache-enabled: true
-#    call-setters-on-nulls: true
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*Mapper.xml
   type-aliases-package: com.asset.**
   configuration:
     map-underscore-to-camel-case: true
-    cache-enabled: true
+    cache-enabled: false
     call-setters-on-nulls: true
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       table-prefix: as_
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+---
+spring:
+  profiles: dev
+server:
+  port: 8083
+  path: http://localhost:8083/
+---
+spring:
+  profiles: test
+server:
+  port: 8082
+  path: http://localhost:8082/
+---
+spring:
+  profiles: prod
+server:
+  port: 8084
+  path: http://localhost:8084/
+

@@ -215,7 +215,6 @@ public class OrganController {
                 return RespBean.error("场景名称已被使用，请更换后重试");
             }
         }
-        scene.setStatus(1);
         return RespBean.data(sceneService.updateById(scene));
     }
 

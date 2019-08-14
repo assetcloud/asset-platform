@@ -4,35 +4,28 @@ package com.asset.controller;
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
 import com.asset.common.model.Query;
-import com.asset.service.IDictService;
-import com.asset.service.IResourceGroupService;
-import com.asset.service.IResourceService;
-import com.asset.service.ISceneService;
+import com.asset.service.*;
 import com.asset.utils.Condition;
 import com.asset.utils.Func;
 import com.asset.vo.ResourceGroupVO;
 import com.asset.vo.ResourceVO;
 import com.asset.wrapper.ResourceGroupWrapper;
 import com.asset.wrapper.ResourceWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springblade.core.tool.api.R;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -56,8 +49,14 @@ public class ResourceController {
 
     IResourceGroupService resourceGroupService;
 
+    IResourceRoleService resourceRoleService;
+
+    ISceneRelationService sceneRelationService;
+
+    ISceneRoleService sceneRoleService;
+
     @RequestMapping(value = "/app/add", method = RequestMethod.POST)
-    @ApiOperation(value = "添加资源", notes = "（已完成）传Application实体与sceneId(param);")
+    @ApiOperation(value = "添加应用资源", notes = "（已完成）传Application实体与sceneId(param);")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "应用id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "applicationName", value = "应用名称", required = true, dataType = "String"),
@@ -89,50 +88,48 @@ public class ResourceController {
         return RespBean.ok("添加成功");
     }
 
-    @ApiOperation(value = "添加资源（表单类型）", notes = "（已完成）传FormModelInfo实体与sceneId(param);")
+    @ApiOperation(value = "添加表单资源", notes = "（已完成）传FormModelInfo实体与sceneId(param);")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "applicationId", value = "应用id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "formModelId", value = "表单id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "formName", value = "表单名称", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "iconCls", value = "表单图标", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "groupId", value = "表单分组id", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "groupName", value = "表单分组名称", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "id", value = "表单资源id", required = true, dataType = "long"),
+            @ApiImplicitParam(name = "applicationId", value = "应用id", required = true, dataType = "long"),
+            @ApiImplicitParam(name = "formModelId", value = "表单模型id", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "formName", value = "表单名称", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "iconCls", value = "表单图标", required = true, dataType = "string"),
             @ApiImplicitParam(name = "groupId", value = "资源分组id", required = true, dataType = "int")
     })
     @PostMapping(value = "form/add")
     @Transactional
-    public RespBean addResource(@RequestBody FormModelInfo formModelInfo, @RequestParam("sceneId")String sceneId
-            , @RequestParam("groupId")Long groupId) throws CloneNotSupportedException {
-        if (Func.hasEmpty(formModelInfo.getApplicationId(), formModelInfo.getFormModelId(), formModelInfo.getFormName()
-                , formModelInfo.getIconCls(), formModelInfo.getGroupId(), formModelInfo.getGroupName())){
-            return RespBean.error("参数错误");
+    public R addResource(@RequestBody FormModelInfo formModelInfo, @RequestParam("groupId")Long groupId) throws CloneNotSupportedException {
+        if (Func.hasEmpty(formModelInfo.getApplicationId(), formModelInfo.getFormModelId(), formModelInfo.getFormName())){
+            return R.fail("参数错误");
         }
         Resource parentResource = resourceService.getResourceByPath(formModelInfo.getApplicationId());
         if (Func.isNull(parentResource)){
-            return RespBean.error("应用不存在");
+            return R.fail("应用不存在");
         }
-        if(resourceService.formExists(formModelInfo.getFormName(), sceneId, parentResource.getId())){
-            return RespBean.error("表单名称已被使用，请更换后再试");
+        if(formModelInfo.getId() == null && resourceService.formExists(formModelInfo.getFormName(), parentResource.getSceneId(), parentResource.getId())){
+            return R.fail("表单名称已被使用，请更换后再试");
         }
         Resource resource = new Resource();
         //1-应用；2-表单；3-表单操作
+        resource.setId(formModelInfo.getId());
         resource.setCategory(2);
         resource.setParentId(parentResource.getId());
-        resource.setAddTime(new Date());
-        resource.setIsDeleted(0);
         resource.setSort(0);
         resource.setLevel(0);
+        resource.setSceneId(parentResource.getSceneId());
         resource.setPath(formModelInfo.getFormModelId());
         resource.setName(formModelInfo.getFormName());
         resource.setIconCls(formModelInfo.getIconCls());
         resource.setCode(SystemConstant.CODE_FORM);
         resource.setGroupId(groupId);
         //为表单设置场景
-        resourceService.save(resource);
-        resourceService.addResource4Admin(resource);
-        resourceService.addFuncResource(resource);
-        return RespBean.ok(SystemConstant.ADD_SUCCESS);
+        resourceService.saveOrUpdate(resource);
+        if (formModelInfo.getId() == null){
+            resourceService.addResource4Admin(resource);
+            resourceService.addFuncResource(resource);
+        }
+        return R.data(resource.getId());
     }
 
     @ApiOperation(value = "绑定场景与表单", notes = "（已完成）保存流程时将表单与场景相互绑定")
@@ -153,12 +150,13 @@ public class ResourceController {
         return RespBean.data(resourceService.updateFuncInfo(formModelId, sceneId));
     }
 
+    @ApiOperation(value = "根据场景id获取资源列表", notes = "已完成")
     @GetMapping("list")
-    public RespBean getAll(@NotEmpty @RequestParam String sceneId){
+    public R getAll(@NotEmpty @RequestParam String sceneId){
         List<Resource> resourceList = resourceService.list(Wrappers.<Resource>query().lambda()
-                .eq(Resource::getIsDeleted, SystemConstant.DATA_AVAILABLE).eq(Resource::getSceneId, sceneId));
+                .eq(Resource::getSceneId, sceneId));
         ResourceWrapper resourceWrapper = new ResourceWrapper(resourceService, dictService, sceneService, resourceGroupService);
-        return RespBean.data(resourceWrapper.listNodeVO(resourceList));
+        return R.data(resourceWrapper.listNodeVO(resourceList));
     }
 
     @ApiOperation(value = "获取资源", notes = "（已完成）通过当前用户获取所有资源（终端用户操作时使用）")
@@ -208,6 +206,26 @@ public class ResourceController {
         return RespBean.data(resourceService.getFormResourcesByApp(userId, appResourceId, sceneId));
     }
 
+
+    @ApiOperation(value = "根据应用获取表单资源", notes = "通过点击应用，展现可访问的表单资源")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "appId", value = "应用id", required = true, dataType = "Long"),
+            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
+    })
+    @GetMapping(value = "form/list")
+    public R getFormResourceByApp(@RequestParam("userId")String userId
+            , @RequestParam("appId") Long appId, @RequestParam("sceneId") String sceneId){
+        if (Func.hasEmpty(userId, appId, sceneId)){
+            return R.fail("参数错误");
+        }
+        List<SceneRole> rolesOwned = sceneRoleService.getRolesOwned(userId, sceneId);
+        List<Long> roleIds = rolesOwned.stream().map(SceneRole::getId).collect(Collectors.toList());
+        List<Resource> formList = resourceService.getFormList(appId, roleIds);
+        ResourceWrapper resourceWrapper = new ResourceWrapper(resourceService, dictService, sceneService, resourceGroupService);
+        return R.data(resourceWrapper.listNodeVOWithGroup(appId, formList));
+    }
+
     @GetMapping("func/byForm")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "String"),
@@ -215,7 +233,7 @@ public class ResourceController {
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
     @ApiOperation(value = "获取操作型资源", notes = "（已完成）通过点击应用，展现可访问的操作型资源")
-    public RespBean getFuncByForm(@RequestParam("userId")String userId, @RequestParam("formModelId") Long formResourceId
+    public RespBean getFuncByForm(@RequestParam("userId")String userId, @RequestParam("formResourceId") Long formResourceId
             , @RequestParam("sceneId") String sceneId){
         if (Func.hasEmpty(userId, formResourceId, sceneId)){
             return RespBean.error("参数错误");
@@ -250,21 +268,21 @@ public class ResourceController {
         return R.data(resourceWrapper.entityVO(record));
     }
 
-    @PostMapping("submit")
-    @ApiOperation(value = "新增或修改", notes = "（已完成）传入resource实体")
-    public R submit(@Valid @RequestBody Resource resource){
-        switch (resource.getCategory()){
-            case 1:
-                resource.setCode(SystemConstant.CODE_APP);
-                resource.setLevel(SystemConstant.DEFAULT_RES_LEVEL);
-            case 2:
-                resource.setCode(SystemConstant.CODE_FORM);
-                resource.setLevel(SystemConstant.DEFAULT_RES_LEVEL);
-            case 3:
-                resource.setCode(SystemConstant.CODE_FUNC);
-        }
-        return R.status(resourceService.saveOrUpdate(resource));
-    }
+//    @PostMapping("submit")
+//    @ApiOperation(value = "新增或修改", notes = "（已完成）传入resource实体")
+//    public R submit(@Valid @RequestBody Resource resource){
+//        switch (resource.getCategory()){
+//            case 1:
+//                resource.setCode(SystemConstant.CODE_APP);
+//                resource.setLevel(SystemConstant.DEFAULT_RES_LEVEL);
+//            case 2:
+//                resource.setCode(SystemConstant.CODE_FORM);
+//                resource.setLevel(SystemConstant.DEFAULT_RES_LEVEL);
+//            case 3:
+//                resource.setCode(SystemConstant.CODE_FUNC);
+//        }
+//        return R.status(resourceService.saveOrUpdate(resource));
+//    }
 
     @PostMapping("remove")
     @ApiOperation(value = "删除", notes = "（已完成）")
@@ -290,11 +308,10 @@ public class ResourceController {
 
     @GetMapping("groups")
     @ApiOperation(value = "获取资源分组", notes = "（已完成）")
-    public R<List<ResourceGroupVO>> groups(@ApiParam(value = "sceneId", required = true, name = "场景ID")
-                                             @RequestParam String sceneId){
+    public R<List<ResourceGroupVO>> groups(@ApiParam(value = "sceneId", required = true, name = "场景ID") @RequestParam String sceneId
+    , @ApiParam(value = "appId", required = true, name = "应用ID") @RequestParam Long appId){
         List<ResourceGroup> list = resourceGroupService.list(Wrappers.<ResourceGroup>query().lambda()
-                .eq(ResourceGroup::getIsDeleted, SystemConstant.DATA_AVAILABLE)
-                .eq(ResourceGroup::getSceneId, sceneId));
+                .eq(ResourceGroup::getSceneId, sceneId).eq(ResourceGroup::getAppId, appId));
         ResourceGroupWrapper resourceGroupWrapper = new ResourceGroupWrapper(resourceGroupService, sceneService);
         return R.data(resourceGroupWrapper.listNodeVO(list));
     }
@@ -302,6 +319,9 @@ public class ResourceController {
     @PostMapping("group/submit")
     @ApiOperation(value = "资源分组新增或修改", notes = "（已完成）传入resourceGroup实体")
     public R submit(@Valid @RequestBody ResourceGroup resourceGroup){
+        if (resourceGroupService.groupExists(resourceGroup)){
+            return R.fail("该分组已存在,请更换名称后重试");
+        }
         return R.status(resourceGroupService.saveOrUpdate(resourceGroup));
     }
 
@@ -310,13 +330,11 @@ public class ResourceController {
     public R removeGroups(String ids){
         List<Long> groupIds = Func.toLongList(",", ids);
         int count = resourceService.count(Wrappers.<Resource>query().lambda()
-                .in(Resource::getGroupId, groupIds)
-                .eq(Resource::getIsDeleted, SystemConstant.DATA_AVAILABLE));
+                .in(Resource::getGroupId, groupIds));
         if (count > 0){
-            return R.fail("目标分组下存在表单资源，请清空后重试");
+            return R.fail("目标分组下存在表单资源，请删除后重试");
         }
-        return R.status(resourceGroupService.update(Wrappers.<ResourceGroup>update().lambda()
-                .in(ResourceGroup::getId, groupIds)
-                .set(ResourceGroup::getIsDeleted, SystemConstant.DATA_DELETED)));
+        return R.status(resourceGroupService.remove(Wrappers.<ResourceGroup>query().lambda()
+                .in(ResourceGroup::getId, groupIds)));
     }
 }

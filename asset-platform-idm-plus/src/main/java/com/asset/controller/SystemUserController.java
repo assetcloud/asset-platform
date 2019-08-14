@@ -1,11 +1,17 @@
-package com.asset.controller.system;
+package com.asset.controller;
 
-import com.asset.bean.*;
+import com.asset.bean.RespBean;
+import com.asset.bean.User;
+import com.asset.bean.UserRole;
+import com.asset.bean.UserScene;
 import com.asset.common.SystemConstant;
 import com.asset.common.model.UserPageParam;
-import com.asset.service.*;
-import com.asset.utils.Condition;
+import com.asset.service.ISceneService;
+import com.asset.service.IUserRoleService;
+import com.asset.service.IUserSceneService;
+import com.asset.service.IUserService;
 import com.asset.utils.Func;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -14,18 +20,12 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.BeanUtil;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -158,9 +158,9 @@ public class SystemUserController {
             @ApiImplicitParam(value = "userId", name = "用户id", required = true),
             @ApiImplicitParam(value = "sceneId", name = "场景id", required = true)
     })
-    public R userSignify(@ApiIgnore @RequestParam Map<String, Object> userScene){
-        UserScene record = userSceneService.getOne(Condition.getQueryWrapper(userScene, UserScene.class)
-                .lambda()
+    public R userSignify(@RequestParam String userId, @RequestParam String sceneId){
+        UserScene record = userSceneService.getOne(Wrappers.<UserScene>lambdaQuery()
+                .eq(UserScene::getUserId, userId).eq(UserScene::getSceneId, sceneId)
                 .eq(UserScene::getStatus, 1));
         return R.data(record.getNodeId());
     }

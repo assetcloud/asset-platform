@@ -1,5 +1,6 @@
 package com.asset.vo;
 
+import com.asset.bean.Resource;
 import com.asset.bean.ResourceGroup;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
@@ -7,6 +8,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -27,4 +30,8 @@ public class ResourceGroupVO extends Model<ResourceGroup> implements Serializabl
      */
     private String sceneName;
 
+    /**
+     * 分组下资源
+     */
+    private List<ResourceVO> children = new LinkedList<>();
 }

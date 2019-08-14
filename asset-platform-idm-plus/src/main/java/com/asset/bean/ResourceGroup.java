@@ -1,16 +1,18 @@
 package com.asset.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.asset.vo.ResourceVO;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.checkerframework.checker.units.qual.A;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -28,7 +30,12 @@ public class ResourceGroup extends Model implements Serializable {
     private String name;
 
     @TableField("is_deleted")
+    @TableLogic
     private Integer isDeleted;
+
+    @NotNull(message = "应用id不能为空")
+    @TableField("app_id")
+    private Long appId;
 
     @TableField("scene_id")
     private String sceneId;

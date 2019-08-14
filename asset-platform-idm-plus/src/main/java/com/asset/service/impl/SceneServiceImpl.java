@@ -6,62 +6,53 @@ import com.asset.mapper.*;
 import com.asset.service.*;
 import com.asset.utils.CommonUtils;
 import com.asset.utils.Func;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by hjhu on 2019/6/3.
  */
 
+@AllArgsConstructor
 @Service
-@Transactional
 public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements ISceneService {
 
-    final static Logger LOGGER = LoggerFactory.getLogger(SceneServiceImpl.class);
+    IOrganSceneService organSceneService;
 
-    @Autowired
-    private IOrganSceneService organSceneService;
+    IUserSceneService userSceneService;
 
-    @Autowired
-    private IUserSceneService userSceneService;
+    SceneMapper sceneMapper;
 
-    @Autowired
-    private SceneMapper sceneMapper;
+    UserSceneMapper userSceneMapper;
 
-    @Autowired
-    private UserSceneMapper userSceneMapper;
+    OrganTreeMapper organTreeMapper;
 
-    @Autowired
-    private OrganTreeMapper organTreeMapper;
-
-    @Autowired
     UuidIdGenerator uuidIdGenerator;
 
-    @Autowired
     MenuMapper menuMapper;
 
-    @Autowired
-    private OrganSceneMapper organSceneMapper;
+    OrganSceneMapper organSceneMapper;
 
-    @Autowired
-    private ISceneRoleService sceneRoleService;
+    ISceneRoleService sceneRoleService;
 
-    @Autowired
-    private ISceneService sceneService;
+    IRoleGroupService roleGroupService;
 
-    @Autowired
-    private IRoleGroupService roleGroupService;
+    ISceneRelationService sceneRelationService;
 
-    @Autowired
-    private ISceneRelationService sceneRelationService;
+    IResourceService resourceService;
+
+    IResourceRoleService resourceRoleService;
+
+    IResourceGroupService resourceGroupService;
 
     /**
      * 获取所有场景
@@ -85,7 +76,6 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
         record.setId(uuidIdGenerator.generateId());
         record.setAddTime(new Date());
         record.setIsDeleted(0);
-        record.setStatus(1);
         OrganTree topNode = organTreeMapper.getTopNode();
         OrganScene organScene = CommonUtils.NodeTransformer(topNode);
         organScene.setSceneId(record.getId());
@@ -102,7 +92,6 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
         record.setId(uuidIdGenerator.generateId());
         record.setAddTime(new Date());
         record.setIsDeleted(0);
-        record.setStatus(0);
         //在场景中添加顶级节点
         List<OrganScene> nodes = new ArrayList<>();
         OrganTree topNode = organTreeMapper.getTopNode();
@@ -227,7 +216,6 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
 
     public boolean enableScene(String userId, String sceneId){
         Scene scene = sceneMapper.selectByPrimaryKey(sceneId);
-        scene.setStatus(1);
         scene.setIsDeleted(0);
         sceneMapper.updateById(scene);
         return userSceneMapper.updateByUserAndScene(userId, sceneId) > 0;
@@ -259,5 +247,27 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
         sceneRoleService.addDefaultRole4Reg(scene.getId(), list);
         //将该用户设置为组织管理员
         return sceneRelationService.save(new SceneRelation(userId, roleAdmin.getId()));
+    }
+
+    @Override
+    @Transactional
+    public boolean removeScene(String sceneId) {
+        // 删除场景
+        baseMapper.deleteById(sceneId);
+        List<SceneRole> sceneRoles = sceneRoleService.list(Wrappers.<SceneRole>lambdaQuery().eq(SceneRole::getSceneCode, sceneId));
+        List<Long> roleIds = sceneRoles.stream().map(SceneRole::getId).collect(Collectors.toList());
+        // 删除场景角色&&场景角色组
+        sceneRoleService.removeByIds(roleIds);
+        sceneRelationService.remove(Wrappers.<SceneRelation>lambdaQuery().in(SceneRelation::getRid, roleIds));
+        roleGroupService.remove(Wrappers.<RoleGroup>lambdaQuery().eq(RoleGroup::getSceneCode, sceneId));
+        // 删除场景中的资源&&资源-角色关系
+        resourceService.remove(Wrappers.<Resource>lambdaQuery().eq(Resource::getSceneId, sceneId));
+        resourceGroupService.remove(Wrappers.<ResourceGroup>lambdaQuery().eq(ResourceGroup::getSceneId, sceneId));
+        resourceRoleService.remove(Wrappers.<ResourceRole>lambdaQuery().in(ResourceRole::getRoleId, roleIds));
+        // 删除组织架构
+        organSceneService.remove(Wrappers.<OrganScene>lambdaQuery().eq(OrganScene::getSceneId, sceneId));
+        // 删除用户与场景的绑定关系
+        userSceneService.remove(Wrappers.<UserScene>lambdaQuery().eq(UserScene::getSceneId, sceneId));
+        return true;
     }
 }

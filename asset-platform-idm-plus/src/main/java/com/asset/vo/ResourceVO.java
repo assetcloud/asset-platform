@@ -1,6 +1,5 @@
 package com.asset.vo;
 
-import com.asset.bean.Resource;
 import com.asset.utils.RNode;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;

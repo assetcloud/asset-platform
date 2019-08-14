@@ -38,30 +38,35 @@ public interface ISceneRoleService extends IService<SceneRole> {
      * @return
      */
     boolean roleExist(SceneRole record);
+
     /**
      * 该场景下，判断角色组名称已被占用
      * @param record
      * @return
      */
     boolean roleGroupExist(RoleGroup record);
+
     /**
      * 判断角色组下是否还有角色存在
      * @param groupId
      * @return
      */
     boolean rolesInGroup(Long groupId);
+
     /**
      * 获取场景中的默认角色
      * @param sceneId
      * @return
      */
     SceneRole getDefaultRole(String sceneId);
+
     /**
      * 新增场景时，为场景添加默认角色
      * @param sceneId
      * @return boolean
      */
     boolean addRoles4Scene(String sceneId);
+
     /**
      * 将场景中的默认角色有效化
      * @param sceneId

@@ -1,4 +1,4 @@
-package com.asset.controller.system;
+package com.asset.controller;
 
 import com.asset.bean.Menu;
 import com.asset.bean.MenuRole;

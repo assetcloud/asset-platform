@@ -1,12 +1,14 @@
 package com.asset.bean;
 
 import com.baomidou.mybatisplus.annotation.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 
 @Data
+@AllArgsConstructor
 @TableName(value = "as_role_group")
 public class RoleGroup {
 

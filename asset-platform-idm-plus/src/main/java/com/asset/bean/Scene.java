@@ -1,10 +1,9 @@
 package com.asset.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.Scope;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Generated;
 import org.springframework.stereotype.Component;
@@ -17,6 +16,8 @@ import java.util.UUID;
 
 @Data
 @ApiModel(value = "场景对象")
+@AllArgsConstructor
+@TableName("as_scene")
 public class Scene implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -33,12 +34,11 @@ public class Scene implements Serializable {
     private String remark;
 
     @TableField("is_deleted")
+    @TableLogic
     private int isDeleted;
 
     @TableField("add_time")
     private Date addTime;
-
-    private int status;
 
     private String img;
 
@@ -48,7 +48,6 @@ public class Scene implements Serializable {
         this.img = img;
         this.addTime = new Date();
         this.isDeleted = 0;
-        this.status = 1;
     }
 
     public Scene(){

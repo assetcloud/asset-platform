@@ -1,9 +1,6 @@
 package com.asset.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,8 +21,8 @@ import java.util.List;
  * @author hjhu
  * @since 2019-07-18
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("as_resource")
 public class Resource extends Model<Resource> implements Cloneable{
@@ -35,24 +32,33 @@ public class Resource extends Model<Resource> implements Cloneable{
     @TableField("id")
     @TableId(type = IdType.AUTO)
     private Long id;
+
     @TableField("parent_id")
     private Long parentId;
+
     @NotNull
     @NotBlank
     private String code;
+
     @NotNull
     @NotBlank
     private String name;
+
     @TableField("icon_cls")
     private String iconCls;
+
     @NotNull
     @NotBlank
     private String path;
+
     private Integer level;
+
     private Integer sort;
+
     @NotNull
     @NotBlank
     private Integer category;
+
     private String remark;
     /**
      * 表单分组id
@@ -65,15 +71,20 @@ public class Resource extends Model<Resource> implements Cloneable{
      */
     @TableField("scene_id")
     private String sceneId;
+
     @TableField("is_deleted")
+    @TableLogic
     private Integer isDeleted;
+
     @TableField("add_time")
     private Date addTime;
+
     @TableField("remove_time")
     private Date removeTime;
 
     @TableField(exist = false)
     private List<FormGroup> group;
+
     @TableField(exist = false)
     private List<Resource> children = new ArrayList<>();
 

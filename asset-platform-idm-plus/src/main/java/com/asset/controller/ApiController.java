@@ -2,6 +2,7 @@ package com.asset.controller;
 
 import com.asset.bean.*;
 import com.asset.common.SystemConstant;
+import com.asset.config.WebLog;
 import com.asset.service.*;
 import com.asset.utils.Func;
 import com.github.pagehelper.PageHelper;
@@ -56,6 +57,7 @@ public class ApiController {
             @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10", paramType = "query")
     })
     @ApiOperation(value = "获取所有场景信息", notes = "获取所有场景信息;page为起始页;size为每页显示数量")
+    @WebLog(description = "获取所有场景信息")
     public RespBean getAllSceneByPage(Integer page, Integer size){
         PageHelper.startPage(page, size);
         List<Scene> scenes = sceneService.getAllScene();
