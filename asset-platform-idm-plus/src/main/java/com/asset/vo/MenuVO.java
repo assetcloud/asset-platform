@@ -24,12 +24,12 @@ public class MenuVO extends Menu implements INode {
 	/**
 	 * 主键ID
 	 */
-	private Integer id;
+//	private Integer id;
 
 	/**
 	 * 父节点ID
 	 */
-	private Integer parentId;
+//	private Integer parentId;
 
 	/**
 	 * 子孙节点
