@@ -21,4 +21,5 @@ public class FormItem {
     String key;
     String model;
     List<JSONObject> rules;
+    List<JSONObject> columns;
 }

@@ -7,6 +7,7 @@ import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -39,4 +40,6 @@ public interface ProcInstMapper {
     Integer getStatus(String id);
 
     List<ProcInstDO> getProcInsts(String procModelId);
+
+    Date getCommitTime(String procInstId);
 }

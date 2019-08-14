@@ -1,6 +1,8 @@
 package com.asset.dto;
 
 import com.asset.form.FormSheet;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -9,12 +11,19 @@ import lombok.Data;
  * @version 1.0_190604 1911
  */
 @Data
+@ApiModel
 public class FormModelCreateDTO {
+    @ApiModelProperty(value = "表单名称",required = true)
     String form_name;
+    @ApiModelProperty(value = "创建人",required = true)
     String created_by;
+    @ApiModelProperty(value = "表单模型图标",required = true)
     String icon_cls;
+    @ApiModelProperty(value = "所属应用Id（必须真实存在）",required = true)
     String app_id;
+    @ApiModelProperty(value = "表单样式",required = true)
     FormSheet form_sheet;
+    @ApiModelProperty(value = "当前用户登录时选择的工作场景Id",required = true)
     String scene_id;
 
     public FormModelCreateDTO() {

@@ -107,7 +107,7 @@ public class ProcInstService {
         }
     }
 
-    private String getFormInstAllValue(String procInstId) {
+    public String getFormInstAllValue(String procInstId) {
         return procInstMapper.getFormInstAllValue(procInstId);
     }
 
@@ -166,25 +166,32 @@ public class ProcInstService {
         bpmnModel = documentToModel(documentAfter);
 
         //为sequenceFlow增加条件分支信息
-        String seqConditions = procModelService.getProcModelById(procModelId).getSeqCondition();
-        System.out.println(seqConditions);
-        Process process = bpmnModel.getProcesses().get(0);
-        Collection<FlowElement> flowElements = process.getFlowElements();
-        //对条件分支进行解析,并在对应的sequenceFlow上增加条件表达式
-        if(seqConditions!=null)
+        AsProcModel procModelById = procModelService.getProcModelById(procModelId);
+        if(procModelById!=null)
         {
-            JSONObject object = JSONObject.parseObject(seqConditions);
-            loop1:
-            for(String key : object.keySet()){
-                for (FlowElement flowElement : flowElements) {
-                    if (flowElement instanceof SequenceFlow && flowElement.getId().equals(key)) {
-                        SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
-                        sequenceFlow.setConditionExpression(object.get(key).toString());
-                        continue loop1;
+            String seqConditions = procModelById.getSeqCondition();
+            if(seqConditions!=null)
+            {
+                Process process = bpmnModel.getProcesses().get(0);
+                Collection<FlowElement> flowElements = process.getFlowElements();
+                //对条件分支进行解析,并在对应的sequenceFlow上增加条件表达式
+                if(seqConditions!=null)
+                {
+                    JSONObject object = JSONObject.parseObject(seqConditions);
+                    loop1:
+                    for(String key : object.keySet()){
+                        for (FlowElement flowElement : flowElements) {
+                            if (flowElement instanceof SequenceFlow && flowElement.getId().equals(key)) {
+                                SequenceFlow sequenceFlow = (SequenceFlow) flowElement;
+                                sequenceFlow.setConditionExpression(object.get(key).toString());
+                                continue loop1;
+                            }
+                        }
                     }
                 }
             }
         }
+
 
 
         DeploymentBuilder builder = repositoryService.createDeployment();
@@ -527,5 +534,9 @@ public class ProcInstService {
         }
 
         return VOs;
+    }
+
+    public Date getCommitTime(String procInstId) {
+        return procInstMapper.getCommitTime(procInstId);
     }
 }

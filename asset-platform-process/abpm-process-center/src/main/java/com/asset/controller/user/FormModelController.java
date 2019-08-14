@@ -6,9 +6,7 @@ import com.asset.javabean.RespBean;
 import com.asset.dto.*;
 import com.asset.service.FormModelService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +34,12 @@ public class FormModelController {
     /**
      * 表单创建、存储
      */
-    @ApiOperation(value = "表单创建、存储", notes = "", httpMethod = "POST")
+    @ApiOperation(value = "表单模型创建", notes = "", httpMethod = "POST")
     @RequestMapping(value = "/form_model/save", method = RequestMethod.POST)
-    public RespBean createFormModel(@RequestBody FormModelCreateDTO dto)  {
+    public RespBean createFormModel(@ApiParam(value = "表单模型创建实体类", required = true) @RequestBody FormModelCreateDTO modelCreate)  {
         FormModelBO formModelBO = null;
         try {
-            formModelBO = formModelService.createFormModel(dto);
+            formModelBO = formModelService.createFormModel(modelCreate);
         } catch (DatabaseException databaseException) {
             databaseException.printStackTrace();
             return RespBean.error(databaseException.getMessage());
@@ -57,8 +55,9 @@ public class FormModelController {
      * @return
      * @throws JsonProcessingException
      */
+    @ApiOperation(value = "表单模型修改", notes = "", httpMethod = "PATCH")
     @RequestMapping(value = "/form_model/update", method = RequestMethod.PATCH)
-    public RespBean updateFormModel(@RequestBody FormModelEditDTO dto) {
+    public RespBean updateFormModel(@ApiParam(value = "表单模型修改实体类") @RequestBody FormModelEditDTO dto) {
         try {
             formModelService.updateFormModel(dto);
         } catch (DatabaseException databaseException) {
@@ -73,9 +72,10 @@ public class FormModelController {
     /**
      * 绑定流程模型和表单模型
      */
+    @ApiOperation(value = "表单模型与流程模型绑定", notes = "", httpMethod = "PATCH")
     @RequestMapping(value = "/form_model/bind", method = RequestMethod.PATCH)
-    public RespBean bindFormModel(@RequestParam(value = "form_model_id") String formModelId,
-                                  @RequestParam(value = "proc_model_id") String procModelId)  {
+    public RespBean bindFormModel(@ApiParam(value = "表单模型Id",required = true) @RequestParam(value = "form_model_id") String formModelId,
+                                  @ApiParam(value = "要绑定的流程模型Id",required = true) @RequestParam(value = "proc_model_id") String procModelId)  {
         try {
             formModelService.bindFormAndProcModel(formModelId,procModelId);
         } catch (DatabaseException databaseException) {
@@ -93,10 +93,14 @@ public class FormModelController {
      * @param formStatus -1:全部 0:还没和流程模型绑定  1:和流程模型绑定  2:已删除
      * @return
      */
+    @ApiOperation(value = "表单模型与流程模型绑定", notes = "", httpMethod = "PATCH")
     @RequestMapping(value = "/form_model/models",method = RequestMethod.GET)
-    public RespBean getFormModels(@RequestParam(value = "app_id")String appId,
-                                @ApiParam(value = "传入的值为-1时表示不对分组进行限制，某一个具体值表示只筛选这个分组的表单模型",required = true) @RequestParam(value = "group_id")int groupId,
-                                  @ApiParam(value = "-1——全部,0——还没和流程模型绑定，1——和流程模型绑定，2——已删除",required = true)@RequestParam(value = "form_status")int formStatus
+    public RespBean getFormModels(@ApiParam(value = "要找的应用Id",required = true)
+                                        @RequestParam(value = "app_id") String appId,
+                                  @ApiParam(value = "传入的值为-1时表示不对分组进行限制，某一个具体值表示只筛选这个分组的表单模型",required = true)
+                                        @RequestParam(value = "group_id")int groupId,
+                                  @ApiParam(value = "-1——全部,0——还没和流程模型绑定，1——和流程模型绑定，2——已删除",required = true,allowableValues = "-1,0,1,2")
+                                        @RequestParam(value = "form_status")int formStatus
                                 ){
         List<FormModelBO> formModelDOS = formModelService.getFormModels(appId,groupId,formStatus);
         if(formModelDOS==null)
@@ -111,8 +115,10 @@ public class FormModelController {
      * @param formModelID
      * @return
      */
+    @ApiOperation(value = "获取绑定的流程模型id")
     @RequestMapping(value = "/form_model/proc_model_id",method = RequestMethod.GET)
-    public RespBean getBindProc(@RequestParam(value = "form_model_id")String formModelID)
+    public RespBean getBindProc(
+            @RequestParam(value = "form_model_id")String formModelID)
     {
         String procModelID = formModelService.getProcModelID(formModelID);
         if(procModelID.equals("null"))

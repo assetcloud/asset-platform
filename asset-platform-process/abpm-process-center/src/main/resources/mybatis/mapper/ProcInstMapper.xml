@@ -158,4 +158,10 @@
     FROM as_proc_inst
     WHERE proc_model_id = #{procModelId,jdbcType=VARCHAR}
   </select>
+
+  <select id="getCommitTime" parameterType="java.lang.String" resultType="java.util.Date">
+    SELECT commit_time
+    FROM as_proc_inst
+    WHERE id = #{procInstId,jdbcType=VARCHAR}
+  </select>
 </mapper>
