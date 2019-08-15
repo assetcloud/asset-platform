@@ -164,4 +164,12 @@
     FROM as_proc_inst
     WHERE id = #{procInstId,jdbcType=VARCHAR}
   </select>
+
+  <update id="updateProcInstStatus" >
+    UPDATE as_proc_inst
+    SET
+        status = #{status,jdbcType=INTEGER}
+    WHERE
+            id = #{procInstId,jdbcType=VARCHAR}
+  </update>
 </mapper>

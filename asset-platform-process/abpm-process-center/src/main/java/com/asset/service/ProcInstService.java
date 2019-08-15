@@ -539,4 +539,8 @@ public class ProcInstService {
     public Date getCommitTime(String procInstId) {
         return procInstMapper.getCommitTime(procInstId);
     }
+
+    public int updateProcStatus(String procInstId , Integer status) {
+        return procInstMapper.updateProcInstStatus(procInstId,status);
+    }
 }
