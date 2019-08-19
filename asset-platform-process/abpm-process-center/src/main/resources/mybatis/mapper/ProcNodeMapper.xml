@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asset.dao.ProcNodeMapper">
     <resultMap id="BaseResultMap" type="com.asset.entity.ProcNodeDO">
+        <result column="id" jdbcType="VARCHAR" property="id"/>
         <result column="proc_model_id" jdbcType="VARCHAR" property="procModelId"/>
         <result column="node_id" jdbcType="VARCHAR" property="nodeId"/>
         <result column="node_type" jdbcType="INTEGER" property="nodeType"/>
@@ -15,6 +16,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
+        id,
         proc_model_id,
         node_id,
         node_type,
@@ -44,6 +46,7 @@
     <insert id="insertSelective" parameterType="com.asset.entity.ProcNodeDO">
         insert into as_proc_node
         <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
             <if test="procModelId != null">proc_model_id,</if>
             <if test="nodeId != null">node_id,</if>
             <if test="nodeType != null">node_type,</if>
@@ -56,6 +59,7 @@
             <if test="ifJointSign != null">if_joint_sign,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id,jdbcType=VARCHAR},</if>
             <if test="procModelId != null">#{procModelId,jdbcType=VARCHAR},</if>
             <if test="nodeId != null">#{nodeId,jdbcType=VARCHAR},</if>
             <if test="nodeType != null">#{nodeType,jdbcType=INTEGER},</if>
@@ -140,5 +144,12 @@
         proc_model_id = #{procModelId,jdbcType=VARCHAR} AND
         node_id = #{nodeId,jdbcType=VARCHAR}
     </update>
+
+    <select id="selectNodes" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM as_proc_node
+        WHERE proc_model_id = #{procModelId,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

@@ -59,6 +59,16 @@ public interface Constants {
   public static final int AS_NODE_JOINT_SERIAL = 1;     //该节点包含 串行会签功能
   public static final int AS_NODE_JOINT_PARRAL = 2;    //该节点包含 并行会签功能
 
+  public static final int AS_APPLICATION_UNABLE = 0;    //应用 可用
+  public static final int AS_APPLICATION_ENABLE = 1;    //应用 不可用
+
+  public static final int AS_APPLICATION_UNPUBLISHED = 0;    //应用 未发布
+  public static final int AS_APPLICATION_PUBLISHED = 1;    //应用 已发布
+
+  public static final int TEMPLET_UNABLE = 0;           //模板 未发布
+  public static final int TEMPLET_ENABLE = 1;           //模板 已发布
+  public static final int TEMPLET_DELETED  = 2;    //模板 被删除
+
 
 
   public static final int DATABASE_SUCCESS = 1;      //表示对数据库插入数据或者修改数据成功

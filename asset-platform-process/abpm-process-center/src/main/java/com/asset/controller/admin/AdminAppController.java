@@ -1,21 +1,17 @@
 package com.asset.controller.admin;
 
-import com.asset.entity.ActDeModel;
-import com.asset.entity.AsApplication;
+import com.asset.entity.AsApplicationDO;
 import com.asset.javabean.AdminAppInfoVO;
-import com.asset.javabean.AdminFormModelVO;
-import com.asset.javabean.AdminProcModelVO;
-import com.asset.javabean.RespBean;
-import com.asset.service.AdminAppService;
 import com.asset.service.impl.AsApplicationServiceImpl;
 import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.asset.utils.R;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,12 +36,13 @@ public class AdminAppController {
      * 获取应用下表单资源信息
      * @return
      */
+    @ApiOperation(value = "获取应用下表单资源信息",httpMethod = "GET")
     @GetMapping("/app_info")
-    public RespBean getAppInfo(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
-        QueryWrapper<AsApplication> queryWrapper = Condition.getQueryWrapper(role, AsApplication.class);
+    public R<PageInfo<AdminAppInfoVO>> getAppInfo(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
+        QueryWrapper<AsApplicationDO> queryWrapper = Condition.getQueryWrapper(role, AsApplicationDO.class);
         PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminAppInfoVO> list = new PageInfo<>(asApplicationService.getAppInfos(queryWrapper));
-        return RespBean.ok("",list);
+        return R.data(list);
     }
 
 

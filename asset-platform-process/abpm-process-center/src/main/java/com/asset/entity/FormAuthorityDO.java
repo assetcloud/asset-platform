@@ -1,21 +1,25 @@
 package com.asset.entity;
 
+import com.asset.javabean.IDGenerator;
+import com.asset.javabean.UuidIdGenerator;
 import lombok.Data;
 
 @Data
-public class ActAuthority {
+public class FormAuthorityDO {
+    private String id;
     private String procModelId;
-
     private String actId;
-
     private String formItemKey;
-
     private Integer authority;
 
-    public ActAuthority() {
+    public FormAuthorityDO() {
+        IDGenerator generator = new UuidIdGenerator();
+        id = generator.generateID();
     }
 
-    private ActAuthority(Builder builder) {
+
+    private FormAuthorityDO(Builder builder) {
+        setId(builder.id);
         setProcModelId(builder.procModelId);
         setActId(builder.actId);
         setFormItemKey(builder.formItemKey);
@@ -24,10 +28,12 @@ public class ActAuthority {
 
 
     public static final class Builder {
+
         private String procModelId;
         private String actId;
         private String formItemKey;
         private Integer authority;
+        private String id;
 
         public Builder() {
         }
@@ -52,8 +58,10 @@ public class ActAuthority {
             return this;
         }
 
-        public ActAuthority build() {
-            return new ActAuthority(this);
+        public FormAuthorityDO build() {
+            IDGenerator generator = new UuidIdGenerator();
+            id = generator.generateID();
+            return new FormAuthorityDO(this);
         }
     }
 }

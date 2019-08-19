@@ -22,13 +22,13 @@ public class FormModelDO implements Serializable {
     private String iconCls;
     private Integer status;
     private String procModelId;
-    private String modelSheetStr;
+    private String modelSheet;
     private String sceneId;
     private String appId;
     public FormModelDO() {
     }
 
-    public FormModelDO(String id, String formName,  String createdBy, Integer version, Integer groupId, Integer status, String procModelId, String modelSheetStr) {
+    public FormModelDO(String id, String formName,  String createdBy, Integer version, Integer groupId, Integer status, String procModelId, String modelSheet) {
         this.id = id;
         this.formName = formName;
         this.createdBy = createdBy;
@@ -36,21 +36,21 @@ public class FormModelDO implements Serializable {
         this.groupId = groupId;
         this.status = status;
         this.procModelId = procModelId;
-        this.modelSheetStr = modelSheetStr;
+        this.modelSheet = modelSheet;
     }
 
     public FormModelDO(String formName,
                        String createdBy,
                        String iconCls,
                        Integer status,
-                       String modelSheetStr) {
+                       String modelSheet) {
         IDGenerator generator = new UuidIdGenerator();
         id = generator.generateID();
         this.formName = formName;
         this.createdBy = createdBy;
         this.iconCls = iconCls;
         this.status = status;
-        this.modelSheetStr = modelSheetStr;
+        this.modelSheet = modelSheet;
     }
 
 
@@ -59,7 +59,7 @@ public class FormModelDO implements Serializable {
         this.formName = rec.getForm_name();
         this.iconCls = rec.getIcon_cls();
         String jsonString = JSONObject.toJSONString(rec.getForm_sheet());
-        this.modelSheetStr = jsonString;
+        this.modelSheet = jsonString;
         this.groupId = rec.getGroup_id();
     }
 
@@ -86,7 +86,7 @@ public class FormModelDO implements Serializable {
         setIconCls(builder.iconCls);
         setStatus(builder.status);
         setProcModelId(builder.procModelId);
-        setModelSheetStr(builder.modelSheetStr);
+        setModelSheet(builder.modelSheetStr);
         setAppId(builder.appId);
     }
 

@@ -20,10 +20,11 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName(value = "as_proc_model")
-public class AsProcModel implements Serializable {
+public class AsProcModelDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    //这个id就是流程模型的Id
     @TableId
     private String id;
     /**
@@ -33,10 +34,10 @@ public class AsProcModel implements Serializable {
 
     private String seqCondition;
 
-    public AsProcModel() {
+    public AsProcModelDO() {
     }
 
-    private AsProcModel(Builder builder) {
+    private AsProcModelDO(Builder builder) {
         setId(builder.id);
         setNodeNum(builder.nodeNum);
         setSeqCondition(builder.seqCondition);
@@ -67,8 +68,8 @@ public class AsProcModel implements Serializable {
             return this;
         }
 
-        public AsProcModel build() {
-            return new AsProcModel(this);
+        public AsProcModelDO build() {
+            return new AsProcModelDO(this);
         }
     }
 }

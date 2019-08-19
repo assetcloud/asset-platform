@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Group {
-    protected Integer groupId;
+    protected Integer id;
 
     protected String appId;
 

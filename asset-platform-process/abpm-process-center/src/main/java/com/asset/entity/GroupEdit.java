@@ -7,7 +7,7 @@ import lombok.Data;
 public class GroupEdit extends Group {
 
     public GroupEdit(Integer groupId, String appId, String groupName) {
-        this.groupId = groupId;
+        this.id = groupId;
         this.appId = appId;
         this.groupName = groupName;
         this.status = Constants.GROUP_ENABLED;

@@ -266,4 +266,10 @@
         FROM as_form_model
         WHERE proc_model_id = #{procModelId,jdbcType=VARCHAR}
     </select>
+    <select id="selectById" parameterType="java.lang.String">
+        SELECT
+        <include refid="Blob_Column_List"></include>
+        FROM as_form_model
+        WHERE id = #{formModelId,jdbcType=VARCHAR}
+    </select>
 </mapper>

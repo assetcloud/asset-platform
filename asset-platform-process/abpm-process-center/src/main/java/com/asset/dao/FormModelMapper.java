@@ -97,4 +97,5 @@ public interface FormModelMapper {
 
     String getSceneIdByProcModelId(String procModelId);
 
+    FormModelDO selectById(String formModelId);
 }

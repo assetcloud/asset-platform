@@ -1,16 +1,16 @@
 package com.asset.service.impl;
 
-import com.asset.entity.AsProcModel;
+import com.asset.entity.ApplicationDO;
+import com.asset.entity.AsProcModelDO;
 import com.asset.dao.AsProcModelMapper;
+import com.asset.entity.AsTempletDeModelDO;
 import com.asset.exception.DatabaseException;
 import com.asset.service.FormModelService;
 import com.asset.service.IAsProcModelService;
 import com.asset.utils.Constants;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * 负责对流程模型整体属性进行处理，as_proc_model
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @since 2019-08-07
  */
 @Service
-public class AsProcModelServiceImpl extends ServiceImpl<AsProcModelMapper, AsProcModel> implements IAsProcModelService {
+public class AsProcModelServiceImpl extends ServiceImpl<AsProcModelMapper, AsProcModelDO> implements IAsProcModelService {
 
     @Autowired
     AsProcModelMapper asProcModelMapper;
@@ -28,36 +28,36 @@ public class AsProcModelServiceImpl extends ServiceImpl<AsProcModelMapper, AsPro
 
     @Override
     public void saveProcNodeNum(String procModelId,Integer procNodeNum) throws Exception{
-        AsProcModel asProcModel = new AsProcModel.Builder()
+        AsProcModelDO asProcModelDO = new AsProcModelDO.Builder()
                 .id(procModelId)
                 .nodeNum(procNodeNum).build();
-        int flag = asProcModelMapper.insert(asProcModel);
+        int flag = asProcModelMapper.insert(asProcModelDO);
         if(flag == Constants.DATABASE_FAILED)
             throw new DatabaseException("插入数据失败！");
     }
 
     @Override
     public void updateProcNodeNum(String procModelId, Integer procNodeNum)  throws Exception{
-        AsProcModel asProcModel = new AsProcModel.Builder()
+        AsProcModelDO asProcModelDO = new AsProcModelDO.Builder()
                 .id(procModelId)
                 .nodeNum(procNodeNum).build();
-        int flag = asProcModelMapper.updateById(asProcModel);
+        int flag = asProcModelMapper.updateById(asProcModelDO);
         if(flag == Constants.DATABASE_FAILED)
             throw new DatabaseException("更新数据失败！");
     }
 
     @Override
     public void saveSeqCondition(String procModelId,String seqConditions)throws Exception {
-        AsProcModel asProcModel = new AsProcModel.Builder()
+        AsProcModelDO asProcModelDO = new AsProcModelDO.Builder()
                 .id(procModelId)
                 .seqCondition(seqConditions).build();
 
         int flag = Constants.DATABASE_FAILED;
 
         if(contain(procModelId))
-            flag = asProcModelMapper.updateById(asProcModel);
+            flag = asProcModelMapper.updateById(asProcModelDO);
         else
-            flag = asProcModelMapper.insert(asProcModel);
+            flag = asProcModelMapper.insert(asProcModelDO);
 
         if(flag == Constants.DATABASE_FAILED)
             throw new DatabaseException("更新数据失败！");
@@ -68,7 +68,7 @@ public class AsProcModelServiceImpl extends ServiceImpl<AsProcModelMapper, AsPro
     }
 
     @Override
-    public AsProcModel getProcModelById(String procModelId) {
+    public AsProcModelDO getProcModelById(String procModelId) {
         return asProcModelMapper.selectById(procModelId);
     }
 
@@ -83,4 +83,19 @@ public class AsProcModelServiceImpl extends ServiceImpl<AsProcModelMapper, AsPro
     }
 
 
+    public void insertTempletResource(AsTempletDeModelDO asTempletDeModelDO,
+                                      String generateModelId) throws DatabaseException{
+        AsProcModelDO asProcModelDO = new AsProcModelDO.Builder()
+                .id(generateModelId)
+                .nodeNum(asTempletDeModelDO.getNodeNum())
+                .seqCondition(asTempletDeModelDO.getSeqCondition())
+                .build();
+        int flag = asProcModelMapper.insert(asProcModelDO);
+        if(flag== Constants.DATABASE_FAILED)
+            throw new DatabaseException("导入流程模型资源失败！");
+    }
+
+    public AsProcModelDO selectOne(String procModelId) {
+        return asProcModelMapper.selectById(procModelId);
+    }
 }

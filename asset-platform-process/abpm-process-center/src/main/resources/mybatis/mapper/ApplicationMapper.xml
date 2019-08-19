@@ -154,4 +154,10 @@
         FROM as_application
         WHERE is_published = 1;
     </select>
+
+    <select id="selectOne" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT *
+        FROM as_application
+        WHERE id = #{appId,jdbcType=VARCHAR}
+    </select>
 </mapper>

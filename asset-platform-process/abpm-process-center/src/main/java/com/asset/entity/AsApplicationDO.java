@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 @TableName("as_application")
-public class AsApplication implements Serializable {
+public class AsApplicationDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -65,6 +65,6 @@ public class AsApplication implements Serializable {
      */
     private Date removeTime;
 
-    public AsApplication() {
+    public AsApplicationDO() {
     }
 }

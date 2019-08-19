@@ -2,10 +2,9 @@ package com.asset.controller.user;
 
 import com.asset.dao.AsProcModelMapper;
 import com.asset.dao.FormAuthorityMapper;
-import com.asset.entity.ActAuthority;
-import com.asset.entity.AsProcModel;
+import com.asset.entity.FormAuthorityDO;
+import com.asset.entity.AsProcModelDO;
 import com.asset.exception.DatabaseException;
-import com.asset.javabean.RespBean;
 import com.asset.dto.AuthorityItemDTO;
 import com.asset.dto.AuthorityDTO;
 import com.asset.dto.ProcModelDTO;
@@ -14,6 +13,7 @@ import com.asset.service.AuthorityService;
 import com.asset.service.ProcNodeService;
 import com.asset.service.impl.AsProcModelServiceImpl;
 import com.asset.utils.Constants;
+import com.asset.utils.R;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +32,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/proc_model")
 @Api(tags = "终端：流程模型管理")
-public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcModel> {
+public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcModelDO> {
 
     @Autowired
     ProcNodeService procNodeService;
@@ -50,23 +50,23 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
      * @return
      */
     @RequestMapping(value = "/node", method = RequestMethod.POST)
-    public RespBean editAsProcModel(@RequestBody ProcModelDTO dto) {
+    public R editAsProcModel(@RequestBody ProcModelDTO dto) {
         try {
             procNodeService.saveProcModelInfo(dto);
         } catch (DatabaseException databaseException) {
             databaseException.printStackTrace();
-            return RespBean.error("插入数据失败！");
+            return R.fail("插入数据失败！");
         }
-        return RespBean.ok("");
+        return R.success("插入成功");
     }
 
     /**
      * 对流程模型中每个节点对应的所有表单项权限信息进行存储
      */
     @RequestMapping(value = "/authority", method = RequestMethod.POST)
-    public RespBean saveAuthority(@RequestBody AuthorityDTO authorityDTO) {
+    public R saveAuthority(@RequestBody AuthorityDTO authorityDTO) {
         if (StringUtils.isEmpty(authorityDTO.getProc_model_id()))
-            return RespBean.error("流程模型数据缺失！");
+            return R.fail("流程模型数据缺失！");
 
         //对流程节点-表单项进行一项一项存储
         for (int i = 0; i < authorityDTO.getData().size(); i++) {
@@ -75,9 +75,9 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
             if (StringUtils.isEmpty(cur.getAct_id()) ||
                     StringUtils.isEmpty(cur.getForm_item_key()) ||
                     cur.getAuthority() == null)
-                return RespBean.error("权限数据缺失！");
+                return R.fail("权限数据缺失！");
 
-            ActAuthority actAuthority = new ActAuthority.Builder()
+            FormAuthorityDO formAuthorityDO = new FormAuthorityDO.Builder()
                     .procModelId(authorityDTO.getProc_model_id())
                     .actId(cur.getAct_id())
                     .formItemKey(cur.getForm_item_key())
@@ -86,15 +86,15 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
 
             //不包含这个表单项权限，插入新的
             if(!authorityService.contain(authorityDTO.getProc_model_id(),cur.getAct_id(),cur.getForm_item_key()))
-                flag = authorityMapper.insert(actAuthority);
+                flag = authorityMapper.insert(formAuthorityDO);
             else
                 flag = authorityService.updateAuthority(authorityDTO.getProc_model_id(),cur.getAct_id(),cur.getForm_item_key(),cur.getAuthority());
 
             if (flag == Constants.DATABASE_FAILED)
-                return RespBean.error("插入权限数据失败！");
+                return R.fail("插入权限数据失败！");
         }
 
-        return RespBean.ok("");
+        return R.success("插入成功");
     }
 
 
@@ -103,10 +103,9 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
      * 这里是获取未绑定流程模型的表单模型
      */
     @GetMapping(value = "/unbind_form_model")
-    public RespBean getUnbindFormModels() {
+    public R< List<UnBindFormModelVO> > getUnbindFormModels() {
         List<UnBindFormModelVO> unbindFormModels = procNodeService.getUnbindFormModels();
-
-        return RespBean.ok("", unbindFormModels);
+        return R.data(unbindFormModels);
     }
 
     /**
@@ -115,52 +114,52 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
      */
     @PostMapping(value = "/proc_node_num")
     @ApiOperation(value = "首次保存设计界面节点数",notes = "")
-    public RespBean saveProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId,
+    public R saveProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId,
                                     @ApiParam(value = "拖入设计页面的节点数目", required = true) @RequestParam("proc_node_num") Integer procNodeNum) {
         try {
             procModelService.saveProcNodeNum(procModelId, procNodeNum);
         } catch (Exception e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage());
+            return R.fail(e.getMessage());
 
         }
-        return RespBean.ok("插入成功！");
+        return R.success("插入成功！");
     }
 
     @PutMapping(value = "/proc_node_num")
     @ApiOperation(value = "更新设计界面节点数",notes = "")
-    public RespBean updateProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId,
+    public R updateProcNodeNum(@ApiParam(value = "流程模型Id", required = true) @RequestParam("proc_model_id") String procModelId,
                                     @ApiParam(value = "拖入设计页面的节点数目", required = true) @RequestParam("proc_node_num") Integer procNodeNum) {
         try {
             procModelService.updateProcNodeNum(procModelId, procNodeNum);
         } catch (Exception e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage());
+            return R.fail(e.getMessage());
 
         }
-        return RespBean.ok("插入成功！");
+        return R.success("插入成功！");
     }
 
     @GetMapping(value = "/proc_node_num")
     @ApiOperation(value = "获取之前保存的设计界面节点数",notes = "")
-    public RespBean getProcNodeNum(@ApiParam(value = "流程模型Id", required = true)
+    public R<Integer> getProcNodeNum(@ApiParam(value = "流程模型Id", required = true)
                                        @RequestParam("proc_model_id") String procModelId) {
         int num = procModelService.getProcNodeNum(procModelId);
-        return RespBean.ok("成功！",num);
+        return R.data(num);
     }
 
     @GetMapping(value = "/bind_form_model")
     @ApiOperation(value = "获取当前流程模型绑定的表单数据")
-    public RespBean getBindFormSheet(@RequestParam(value = "proc_model_id")String procModelId){
+    public R<String> getBindFormSheet(@RequestParam(value = "proc_model_id")String procModelId){
         String sheetStr = procModelService.getBindFormSheet(procModelId);
         if(sheetStr==null)
-            return RespBean.error("当前流程模型还未绑定表单模型，请先选择表单模型进行绑定!");
-        return RespBean.ok("",sheetStr);
+            return R.fail("当前流程模型还未绑定表单模型，请先选择表单模型进行绑定!");
+        return R.data(sheetStr);
     }
 
     @ApiOperation(value = "保存分支流程中sequenceFlow中包含的流转条件信息")
     @PostMapping(value = "/seq_condition")
-    public RespBean saveSeqCondition(@RequestParam(value = "proc_model_id") String procModelId,
+    public R saveSeqCondition(@RequestParam(value = "proc_model_id") String procModelId,
                                      @ApiParam(value = "该流程模型中所有的sequenceFlow条件",required = true)
                                      @RequestParam(value = "seq_condition") String seqConditions)
     {
@@ -168,9 +167,9 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
             procModelService.saveSeqCondition(procModelId,seqConditions);
         } catch (Exception e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
-        return RespBean.ok("");
+        return R.success("保存成功");
     }
 
 }

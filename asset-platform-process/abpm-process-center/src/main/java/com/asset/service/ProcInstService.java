@@ -166,7 +166,7 @@ public class ProcInstService {
         bpmnModel = documentToModel(documentAfter);
 
         //为sequenceFlow增加条件分支信息
-        AsProcModel procModelById = procModelService.getProcModelById(procModelId);
+        AsProcModelDO procModelById = procModelService.getProcModelById(procModelId);
         if(procModelById!=null)
         {
             String seqConditions = procModelById.getSeqCondition();

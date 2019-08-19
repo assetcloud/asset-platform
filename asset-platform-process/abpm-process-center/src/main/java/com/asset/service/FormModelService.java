@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.dao.FormModelMapper;
 import com.asset.dto.FormModelEditDTO;
+import com.asset.entity.AsTempletFormModelDO;
 import com.asset.entity.FormModelDO;
 import com.asset.dto.FormModelCreateDTO;
 import com.asset.exception.DatabaseException;
@@ -248,5 +249,35 @@ public class FormModelService {
     public String getSceneIdByTaskId(String taskId) {
         String formModelId = formInstService.getFormModelId(taskId);
         return getSceneId(formModelId);
+    }
+
+    /**
+     * 导入表单模型资源
+     * @param asTempletFormModelDO
+     * @return
+     */
+    public void insertTempletResource(AsTempletFormModelDO asTempletFormModelDO,
+                                        String sceneId,
+                                        String userId,
+                                        String bindProcModelId,
+                                        String bindAppId) throws DatabaseException{
+        FormModelDO formModelDO = new FormModelDO.Builder()
+                .sceneId(sceneId)
+                .createdTime(new Date())
+                .createdBy(userId)
+                .version(1)
+                .groupId(Constants.GROUP_ALL)
+                .status(Constants.FORM_MODEL_BINDED)
+                .procModelId(bindProcModelId)
+                .appId(bindAppId)
+                .build();
+        BeanUtils.copyProperties(asTempletFormModelDO,formModelDO,new String[]{"id"});
+        int flag = formModelMapper.insertSelective(formModelDO);
+        if(flag==Constants.DATABASE_FAILED)
+            throw new DatabaseException("插入表单模型资源失败！");
+    }
+
+    public FormModelDO selectFormModelDO(String formModelId) {
+        return formModelMapper.selectById(formModelId);
     }
 }

@@ -8,6 +8,7 @@ import com.asset.javabean.RespBean;
 import com.asset.dto.GroupRec;
 import com.asset.service.AppGroupService;
 import com.asset.utils.Constants;
+import com.asset.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class GroupController {
      */
     @ApiOperation(value = "新建分组")
     @RequestMapping(value = "/group/save" ,method = RequestMethod.POST)
-    public RespBean createOAppGroup(@RequestBody GroupRec rec)
+    public R createOAppGroup(@RequestBody GroupRec rec)
     {
         Group group = new GroupCreate(
                 rec.getApp_id(),
@@ -51,9 +52,9 @@ public class GroupController {
                 Constants.GROUP_ENABLED);
         int i =groupMapper.insertSelective(group);
         if(i==Constants.DATABASE_FAILED)
-            return RespBean.error("创建失败！");
+            return R.fail("创建失败！");
 
-        return RespBean.ok("");
+        return R.success("创建成功");
     }
 
     /**
@@ -62,15 +63,15 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value = "/group/save" ,method = RequestMethod.PATCH)
-    public RespBean updateGroup(@RequestBody GroupRec rec)
+    public R updateGroup(@RequestBody GroupRec rec)
     {
         Group info = new GroupEdit(rec.getGroup_id(),
                 rec.getApp_id(),
                 rec.getGroup_name());
         int i = groupMapper.updateGroup(info);
         if(i==Constants.DATABASE_FAILED)
-            return RespBean.error("修改失败！");
-        return RespBean.ok("");
+            return R.fail("修改失败！");
+        return R.success("修改成功");
     }
 
     /**
@@ -79,14 +80,14 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value = "/group/save" ,method = RequestMethod.DELETE)
-    public RespBean deleteGroup(@RequestBody GroupRec rec)
+    public R deleteGroup(@RequestBody GroupRec rec)
     {
         Group info = new GroupDelete(rec.getGroup_id(),
                 Constants.GROUP_DISABLED);
         int  i = groupMapper.deleteGroup(info);
         if(i==Constants.DATABASE_FAILED)
-            return RespBean.error("删除失败！");
-        return RespBean.ok("");
+            return R.fail("删除失败！");
+        return R.success("删除成功");
     }
 
     /**
@@ -95,7 +96,7 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value = "/group/all" ,method = RequestMethod.GET)
-    public RespBean showGroups(@RequestParam(value = "app_id") String appID)
+    public R<ArrayList<Group>> showGroups(@RequestParam(value = "app_id") String appID)
     {
         ArrayList<Group> groups = (ArrayList<Group>) groupMapper.selectAll(appID);
         for(int i = 0; i< groups.size(); i++)
@@ -107,8 +108,8 @@ public class GroupController {
             }
         }
         if (groups.size()==0)
-            return RespBean.ok("分组为空！");
-        return RespBean.ok("", groups);
+            return R.fail("分组为空！");
+        return R.data(groups);
     }
 
 }

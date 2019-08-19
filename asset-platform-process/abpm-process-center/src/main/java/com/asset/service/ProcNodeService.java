@@ -3,6 +3,7 @@ package com.asset.service;
 import com.asset.dao.ProcNodeMapper;
 import com.asset.dto.ProcModelDTO;
 import com.asset.dto.ProcNodeDTO;
+import com.asset.entity.AsTempletProcNodeDO;
 import com.asset.entity.FormModelDO;
 import com.asset.entity.ProcNodeDO;
 import com.asset.exception.DatabaseException;
@@ -13,6 +14,7 @@ import org.flowable.bpmn.model.Process;
 import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -120,5 +122,24 @@ public class ProcNodeService {
             unBindFormModelVOs.add(vo);
         }
         return unBindFormModelVOs;
+    }
+
+    public void insertTempletResource(List<AsTempletProcNodeDO> asTempletProcNodeDOs,String procModelId) throws DatabaseException{
+        //对每个节点进行单独存储
+        for(int i = 0;i<asTempletProcNodeDOs.size();i++){
+            AsTempletProcNodeDO templet = asTempletProcNodeDOs.get(i);
+            ProcNodeDO nodeDO = new ProcNodeDO.Builder()
+                    .procModelId(procModelId)
+                    .build();
+            BeanUtils.copyProperties(templet,nodeDO,new String[]{"id"});
+
+            int flag = procNodeMapper.insert(nodeDO);
+            if(flag == Constants.DATABASE_FAILED)
+                throw  new DatabaseException("插入数据失败！");
+        }
+    }
+
+    public List<ProcNodeDO> selectNodes(String procModelId) {
+        return procNodeMapper.selectNodes(procModelId);
     }
 }

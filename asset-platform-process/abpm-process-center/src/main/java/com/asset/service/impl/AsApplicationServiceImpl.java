@@ -1,6 +1,6 @@
 package com.asset.service.impl;
 
-import com.asset.entity.AsApplication;
+import com.asset.entity.AsApplicationDO;
 import com.asset.javabean.AdminAppInfoVO;
 import com.asset.javabean.AdminFormModelVO;
 import com.asset.dao.AsApplicationMapper;
@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class AsApplicationServiceImpl extends ServiceImpl<AsApplicationMapper, AsApplication> implements IAsApplicationService {
+public class AsApplicationServiceImpl extends ServiceImpl<AsApplicationMapper, AsApplicationDO> implements IAsApplicationService {
 
     ApplicationService applicationService;
     AdminFormModelService adminFormModelService;
@@ -36,9 +36,9 @@ public class AsApplicationServiceImpl extends ServiceImpl<AsApplicationMapper, A
      * 先获取对应分页数的应用条目，然后去找相应应用下的表单模型信息（这里就是前面获取表单模型列表相同的操作），然后在组装成一个整体、返回
      * @return
      */
-    public List<AdminAppInfoVO> getAppInfos(QueryWrapper<AsApplication> queryWrapper) {
+    public List<AdminAppInfoVO> getAppInfos(QueryWrapper<AsApplicationDO> queryWrapper) {
         //先获取应用列表
-        List<AsApplication> applicationDOs = asApplicationMapper.selectList(queryWrapper);
+        List<AsApplicationDO> applicationDOs = asApplicationMapper.selectList(queryWrapper);
         List<AdminAppInfoVO> VOs= new ArrayList<>();
 
         for(int i=0;i<applicationDOs.size();i++)

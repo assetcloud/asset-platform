@@ -8,6 +8,7 @@ import com.asset.service.impl.TaskServiceImpl;
 import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.asset.utils.R;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -49,11 +50,11 @@ public class AdminTaskController {
             @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10",required = true , paramType = "query", dataType = "integer")
     })
     @GetMapping(value = "/task/list")
-    public RespBean showTasks(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
+    public R<PageInfo<AdminTaskVO>> showTasks(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
         QueryWrapper<AsFormInst> queryWrapper = Condition.getQueryWrapper(role, AsFormInst.class);
         PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminTaskVO> list = new PageInfo<>(asFormInstService.listAdminProcTaskInfo(queryWrapper));
-        return RespBean.ok("",list);
+        return R.data(list);
     }
 
 

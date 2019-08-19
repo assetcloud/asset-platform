@@ -5,15 +5,16 @@ import com.asset.entity.ApplicationDO;
 import com.asset.javabean.RespBean;
 import com.asset.service.ApplicationService;
 import com.asset.utils.Constants;
+import com.asset.utils.R;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
 import java.util.List;
+
 
 /**
  * 应用管理控制器
@@ -39,15 +40,15 @@ public class ApplicationController {
             @ApiResponse(code = 200,message = "新建成功",response = RespBean.class),
             @ApiResponse(code = 500,message = "系统错误",response = RespBean.class)
     })
-    public RespBean addApp(@RequestBody ApplicationDO application){
+    public R addApp(@RequestBody ApplicationDO application){
         try {
             applicationService.addApplication(application);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.info("应用新建失败");
-            return RespBean.error("新建失败");
+            return R.fail("新建失败");
         }
-        return RespBean.ok("新建成功","");
+        return R.success("新建成功");
     }
 
     @RequestMapping(value = "/updateApp", method = RequestMethod.PUT, produces = "application/json;charset=UTF-8")
