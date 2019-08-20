@@ -3,14 +3,21 @@ package com.asset.service.impl;
 import com.asset.entity.*;
 import com.asset.dao.AsTempletMapper;
 import com.asset.exception.DatabaseException;
+import com.asset.javabean.AdminProcInstVO;
+import com.asset.javabean.AdminTempletVO;
 import com.asset.service.*;
 import com.asset.utils.Constants;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageInfo;
 import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -154,5 +161,22 @@ public class AsTempletServiceImpl extends ServiceImpl<AsTempletMapper, AsTemplet
         int flag = asTempletMapper.insert(doo);
         if(flag== Constants.DATABASE_FAILED)
             throw new DatabaseException("发布表单模型失败！");
+    }
+
+    /**
+     * 返回给控制端模板信息列表
+     * @param queryWrapper
+     * @return
+     */
+    public List<AdminTempletVO> selectAdminList(QueryWrapper<AsTempletDO> queryWrapper) {
+        List<AsTempletDO> DOs = asTempletMapper.selectList(queryWrapper);
+        List<AdminTempletVO> VOs = new ArrayList<>();
+
+        for(int i=0;i<DOs.size();i++){
+            AdminTempletVO vo = new AdminTempletVO();
+            BeanUtils.copyProperties(DOs.get(i),vo);
+            VOs.add(vo);
+        }
+        return VOs;
     }
 }

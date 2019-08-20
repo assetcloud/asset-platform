@@ -14,6 +14,7 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +45,7 @@ public class AdminTaskController {
      * 任务节点信息
      * @return
      */
+    @ApiOperation(value = "获取任务信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "formModelId", value = "表单模型id", required = false , paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true ,paramType = "query", dataType = "integer"),
