@@ -22,9 +22,14 @@
         (
         <include refid="Base"></include>
         )
-        values (#{procModelId,jdbcType=VARCHAR}, #{actId,jdbcType=VARCHAR}, #{formItemKey,jdbcType=VARCHAR},
+        values (
+        #{id,jdbcType=VARCHAR},
+        #{procModelId,jdbcType=VARCHAR},
+        #{actId,jdbcType=VARCHAR},
+        #{formItemKey,jdbcType=VARCHAR},
         #{authority,jdbcType=INTEGER})
     </insert>
+
     <insert id="insertSelective" parameterType="com.asset.entity.FormAuthorityDO">
         insert into as_form_authority
         <trim prefix="(" suffix=")" suffixOverrides=",">

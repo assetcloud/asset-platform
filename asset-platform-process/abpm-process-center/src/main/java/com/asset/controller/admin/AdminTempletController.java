@@ -47,7 +47,7 @@ public class AdminTempletController {
     }
 
     @ApiOperation(value = "获取模板信息",notes = "点击表单模型资源Id可以显示相应的表单样式")
-    @GetMapping(value = "/list")
+    @GetMapping(value = "/form_sheet")
     public R showTempletFormModelSheet(@RequestParam("templet_form_model_id")
                                                    String templetFormModelId)
     {

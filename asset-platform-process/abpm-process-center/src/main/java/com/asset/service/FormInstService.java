@@ -318,7 +318,22 @@ public class FormInstService {
      */
     public String[] approveNode(FormInstRecApprove dto) throws ProcException , FlowableException{
         //找到当前传入的表单实例对应的流程实例的ID，注意和TaskID进行区分！！一次执行中，TaskId会一直变化，但是流程实例ID是不会变的
-        String procInstID = formInstMapper.getProcInstID(dto.getForm_inst_id());
+//        String procInstID = formInstMapper.getProcInstID(dto.getForm_inst_id());
+        String procInstID = dto.getProc_inst_id();
+
+        //审批节点还可以对表单内容进行修改
+        //当前填写表单数据 对数据库进行更新
+        updateFormInst(dto);
+        //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
+        String executionId = ProcUtils.getExecutionId(dto.getTask_id());
+        ActRuVariableBO boo = new ActRuVariableBO.Builder()
+                .executionId(executionId)
+                .rev(1)
+                .procInstId(dto.getProc_inst_id())
+                .form_inst_value(dto.getForm_inst_value()).build();
+        actRuVariableService.saveRunVariable(boo);
+
+
         //当前审批节点同意申请，先把当前新加了 同意 这个信息的 新表单 放入数据库，并完成当前任务节点
         if(dto.getApprove_result() == Constants.APPROVE_AGREE)
         {

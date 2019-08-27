@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class FormInstRecHandle extends FormInstRecBase {
     //待办节点的表单实例ID
-    @ApiModelProperty(value = "当前填写的表单样式")
+    @ApiModelProperty(value = "表单实例Id")
     String form_inst_id;
     @ApiModelProperty(value = "当前运行的实例任务Id")
     String task_id;

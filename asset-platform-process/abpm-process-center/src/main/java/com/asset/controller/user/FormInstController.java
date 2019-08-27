@@ -130,6 +130,7 @@ public class FormInstController {
 
     /**
      * 用户登录系统，对审批节点进行处理，点击 同意 或 拒绝
+     * 同时还可以对表单内容进行填写
      * 审批节点对当前节点进行操作
      * 1、点“同意” 即代表当前任务节点会向后流转，同时当前填写的表单实例需要加上这个处理意见，给下一个节点过目
      * 2、点“拒绝” 那么就是流程需要回滚到申请节点那个位置（这边的处理逻辑变成 当前节点直接不可用）
@@ -139,6 +140,7 @@ public class FormInstController {
     public R<String[]> approveNode(
             @ApiParam(value = "对当前待审阅任务进行处理的实体类", required = true)
             @RequestBody FormInstRecApprove rec) {
+
         String[] urls;
         try {
             urls = formInstService.approveNode(rec);
@@ -149,6 +151,7 @@ public class FormInstController {
             e.printStackTrace();
             return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
         }
+
         return R.data(urls);
     }
 

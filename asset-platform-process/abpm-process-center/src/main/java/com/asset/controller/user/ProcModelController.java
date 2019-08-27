@@ -160,7 +160,7 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
     @ApiOperation(value = "保存分支流程中sequenceFlow中包含的流转条件信息")
     @PostMapping(value = "/seq_condition")
     public R saveSeqCondition(@RequestParam(value = "proc_model_id") String procModelId,
-                                     @ApiParam(value = "该流程模型中所有的sequenceFlow条件",required = true)
+                                     @ApiParam(value = "该流程模型中所有的sequenceFlow条件，例：{\"seq1\":\"${select_1566385304784 eq '本部门'}\",\"seq2\":\"${select_1566385304784 ne '本部门'}\"}",required = true)
                                      @RequestParam(value = "seq_condition") String seqConditions)
     {
         try {

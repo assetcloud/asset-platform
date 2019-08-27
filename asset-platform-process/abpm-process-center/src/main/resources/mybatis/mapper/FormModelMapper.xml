@@ -9,7 +9,7 @@
         <result column="last_updated_time" jdbcType="TIMESTAMP" property="lastUpdatedTime"/>
         <result column="last_updated_by" jdbcType="VARCHAR" property="lastUpdatedBy"/>
         <result column="version" jdbcType="INTEGER" property="version"/>
-        <result column="model_sheet" jdbcType="LONGVARCHAR" property="modelSheetStr"/>
+        <result column="model_sheet" jdbcType="LONGVARCHAR" property="modelSheet"/>
         <result column="group_id" jdbcType="INTEGER" property="groupId"/>
         <result column="icon_cls" jdbcType="VARCHAR" property="iconCls"/>
         <result column="status" jdbcType="INTEGER" property="status"/>
@@ -47,7 +47,7 @@
         #{lastUpdatedTime,jdbcType=TIMESTAMP},
         #{lastUpdatedBy,jdbcType=VARCHAR},
         #{version,jdbcType=INTEGER},
-        #{modelSheetStr,jdbcType=LONGVARCHAR}
+        #{modelSheet,jdbcType=LONGVARCHAR}
         #{groupId,jdbcType=INTEGER},
         #{iconCls,jdbcType=VARCHAR},
         #{status,jdbcType=TINYINT},
@@ -71,7 +71,7 @@
             <if test="iconCls != null">icon_cls,</if>
            <if test="status != null">status,</if>
             <if test="procModelId != null">proc_model_id,</if>
-            <if test="modelSheetStr != null">model_sheet,</if>
+            <if test="modelSheet != null">model_sheet,</if>
             <if test="sceneId != null">scene_id,</if>
             <if test="appId != null">app_id</if>
         </trim>
@@ -87,7 +87,7 @@
             <if test="iconCls != null">#{iconCls,jdbcType=VARCHAR},</if>
             <if test="status != null">#{status,jdbcType=INTEGER},</if>
             <if test="procModelId != null">#{procModelId,jdbcType=VARCHAR},</if>
-            <if test="modelSheetStr != null">#{modelSheetStr,jdbcType=LONGVARCHAR},</if>
+            <if test="modelSheet != null">#{modelSheet,jdbcType=LONGVARCHAR},</if>
             <if test="sceneId != null">#{sceneId,jdbcType=VARCHAR},</if>
             <if test="appId != null">#{appId,jdbcType=VARCHAR},</if>
         </trim>
@@ -107,7 +107,7 @@
     <update id="editFormModel" parameterType="com.asset.entity.FormModelDO">
         UPDATE as_form_model
         SET form_name   = #{formName,jdbcType=VARCHAR},
-            model_sheet = #{modelSheetStr,jdbcType=VARCHAR},
+            model_sheet = #{modelSheet,jdbcType=VARCHAR},
             group_id    = #{groupId,jdbcType=INTEGER},
             icon_cls    = #{iconCls,jdbcType=VARCHAR}
         WHERE id = #{id,jdbcType=VARCHAR};

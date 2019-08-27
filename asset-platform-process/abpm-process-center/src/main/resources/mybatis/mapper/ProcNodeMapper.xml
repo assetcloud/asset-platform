@@ -32,7 +32,8 @@
         insert into as_proc_node (
         <include refid="Base_Column_List"></include>
                 )
-        values (#{procModelId,jdbcType=VARCHAR},
+        values (#{id,jdbcType=VARCHAR},
+                #{procModelId,jdbcType=VARCHAR},
                 #{nodeId,jdbcType=VARCHAR},
                 #{nodeType,jdbcType=INTEGER},
                 #{candidateUser,jdbcType=VARCHAR},
