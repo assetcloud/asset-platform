@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class AsApplicationServiceImpl extends ServiceImpl<AsApplicationMapper, AsApplicationDO> implements IAsApplicationService {
+public class AsApplicationService extends ServiceImpl<AsApplicationMapper, AsApplicationDO> implements IAsApplicationService {
 
     ApplicationService applicationService;
     AdminFormModelService adminFormModelService;

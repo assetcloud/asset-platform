@@ -3,7 +3,7 @@ package com.asset.controller.admin;
 
 import com.asset.entity.ActDeModelDO;
 import com.asset.javabean.AdminProcModelVO;
-import com.asset.service.impl.ActDeModelServiceImpl;
+import com.asset.service.impl.ActDeModelService;
 import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -38,7 +38,7 @@ import java.util.Map;
 @Api(tags = "控制端：流程模型管理")
 public class AdminProcModelController {
 
-    ActDeModelServiceImpl actDeModelService;
+    ActDeModelService actDeModelService;
 
     /**
      * 获取表单模型信息

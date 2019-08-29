@@ -98,4 +98,10 @@ public interface FormModelMapper {
     String getSceneIdByProcModelId(String procModelId);
 
     FormModelDO selectById(String formModelId);
+
+    void bindAuthority(String formModelId);
+
+    void bindSeq(String formModelId);
+
+    void bindNodes(String formModelId);
 }

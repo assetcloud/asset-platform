@@ -25,7 +25,7 @@ import java.util.List;
  * @since 2019-08-12
  */
 @Service
-public class ActRuVariableServiceImpl extends ServiceImpl<ActRuVariableMapper, ActRuVariableDO> implements IActRuVariableService {
+public class ActRuVariableService extends ServiceImpl<ActRuVariableMapper, ActRuVariableDO> implements IActRuVariableService {
 
     @Autowired
     ActRuVariableMapper actRuVariableMapper;

@@ -10,7 +10,7 @@ import com.asset.entity.*;
 import com.asset.exception.ProcException;
 import com.asset.form.FormSheet;
 import com.asset.javabean.AdminProcInstVO;
-import com.asset.service.impl.AsProcModelServiceImpl;
+import com.asset.service.impl.AsProcModelService;
 import com.asset.utils.Constants;
 import com.asset.utils.ProcUtils;
 import com.asset.utils.JsonUtils;
@@ -64,7 +64,7 @@ public class ProcInstService {
     @Autowired
     ApplicationService applicationService;
     @Autowired
-    AsProcModelServiceImpl procModelService;
+    AsProcModelService procModelService;
 
 
     public ProcessInstance getProcInst(String procInstId) {
@@ -355,7 +355,7 @@ public class ProcInstService {
             ProcModelDTO procModelDTO = new ProcModelDTO.Builder()
                     .proc_model_id(Constants.REGISTER_PROC_ID)
                     .proc_node_data(list).build();
-            procNodeService.saveProcModelInfo(procModelDTO);
+            procNodeService.saveProcNodes(procModelDTO);
         }
         //4、创建流程实例、表单实例
         ProcessInstance procInst = ProcUtils.createProcInstByXml(Constants.REGISTER_BPMN_NAME);
@@ -427,7 +427,7 @@ public class ProcInstService {
             ProcModelDTO procModelDTO = new ProcModelDTO.Builder()
                     .proc_model_id(Constants.SCENE_SELECT_PROC_ID)
                     .proc_node_data(list).build();
-            procNodeService.saveProcModelInfo(procModelDTO);
+            procNodeService.saveProcNodes(procModelDTO);
         }
         //4、创建流程实例、表单实例
         ProcessInstance procInst = ProcUtils.createProcInstByXml(Constants.SCENE_SELECT_BPMN_NAME);

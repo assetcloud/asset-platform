@@ -35,9 +35,9 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class AsProcInstServiceImpl extends ServiceImpl<AsProcInstMapper, AsProcInst> implements IAsProcInstService {
+public class AsProcInstService extends ServiceImpl<AsProcInstMapper, AsProcInst> implements IAsProcInstService {
 
-    static Logger logger = LoggerFactory.getLogger(AsProcInstServiceImpl.class);
+    static Logger logger = LoggerFactory.getLogger(AsProcInstService.class);
     ProcInstService procInstService;
     FlowableService flowableService;
     AsProcInstMapper asProcInstMapper;

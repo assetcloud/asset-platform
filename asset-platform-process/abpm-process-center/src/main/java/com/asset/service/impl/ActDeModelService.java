@@ -25,7 +25,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class ActDeModelServiceImpl extends ServiceImpl<ActDeModelMapper, ActDeModelDO> implements IActDeModelService {
+public class ActDeModelService extends ServiceImpl<ActDeModelMapper, ActDeModelDO> implements IActDeModelService {
 
     ActDeModelMapper actDeModelMapper;
 

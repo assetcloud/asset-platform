@@ -207,4 +207,9 @@ public class AuthorityService {
     public List<FormAuthorityDO> selectList(String procModelId) {
         return formAuthorityMapper.selectList(procModelId);
     }
+
+
+    public void updateFormModelStatus(String procModelId) {
+        formModelService.bindAuthority(procModelId);
+    }
 }

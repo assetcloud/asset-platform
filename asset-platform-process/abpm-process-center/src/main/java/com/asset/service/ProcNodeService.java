@@ -37,7 +37,7 @@ public class ProcNodeService {
     @Autowired
     FormModelService formModelService;
 
-    public void saveProcModelInfo(ProcModelDTO dto) throws DatabaseException {
+    public void saveProcNodes(ProcModelDTO dto) throws DatabaseException {
         //对流程模型中每个节点进行单独存储
         for(int i = 0;i<dto.getProc_node_data().size();i++){
             ProcNodeDTO curNodeDTO = dto.getProc_node_data().get(i);
@@ -51,6 +51,8 @@ public class ProcNodeService {
             if(flag == Constants.DATABASE_FAILED)
                 throw  new DatabaseException("插入数据失败！");
         }
+        formModelService.bindNodes(dto.getProc_model_id());
+
     }
 
     //检查数据库中是否已经存在这么一条记录

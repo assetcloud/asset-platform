@@ -6,7 +6,7 @@ import com.asset.utils.PageGrids;
 /**
  * @author lichao
  */
-public interface ProcRuntimeService {
+public interface IProcRuntimeService {
 
     /**
      * 流程实例查询分页

@@ -1,5 +1,6 @@
 package com.asset.service;
 
+import com.asset.dto.SeqConditionDTO;
 import com.asset.entity.AsProcModelDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -20,7 +21,7 @@ public interface IAsProcModelService extends IService<AsProcModelDO> {
 
     void updateProcNodeNum(String procModelId, Integer procNodeNum) throws Exception;
 
-    void saveSeqCondition(String procModelId,String seqConditions) throws Exception;
+    void saveSeqCondition(SeqConditionDTO dto) throws Exception;
 
     AsProcModelDO getProcModelById(String procModelId);
 

@@ -1,6 +1,6 @@
 package com.asset.controller;
 
-import com.asset.service.ProcRuntimeService;
+import com.asset.service.IProcRuntimeService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class ProcRuntimeController {
     private Integer pageNum = 1;
 
     @Autowired
-    ProcRuntimeService procRuntimeService;
+    IProcRuntimeService IProcRuntimeService;
 
     /**
      * 流程实例页面
@@ -51,7 +51,7 @@ public class ProcRuntimeController {
         if(pageSize==null||pageSize<=0){
             pageSize = Constants.PageSize;
         }
-        PageGrids pageGrids = procRuntimeService.getProcInstPages(pageNum,pageSize,id_,proc_def_id_);
+        PageGrids pageGrids = IProcRuntimeService.getProcInstPages(pageNum,pageSize,id_,proc_def_id_);
         return pageGrids;
     }
 

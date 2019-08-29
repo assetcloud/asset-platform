@@ -3,18 +3,13 @@ package com.asset.service.impl;
 import com.asset.entity.*;
 import com.asset.dao.AsTempletMapper;
 import com.asset.exception.DatabaseException;
-import com.asset.javabean.AdminProcInstVO;
 import com.asset.javabean.AdminTempletVO;
 import com.asset.service.*;
 import com.asset.utils.Constants;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.github.pagehelper.PageInfo;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -39,7 +34,7 @@ public class AsTempletServiceImpl extends ServiceImpl<AsTempletMapper, AsTemplet
     @Autowired
     AsTempletFormModelServiceImpl asTempletFormModelService;
     @Autowired
-    AsTempletApplicationServiceImpl asTempletApplicationService;
+    AsTempletApplicationService asTempletApplicationService;
     @Autowired
     AsTempletFormAuthorityServiceImpl asTempletFormAuthorityService;
     @Autowired
@@ -47,9 +42,9 @@ public class AsTempletServiceImpl extends ServiceImpl<AsTempletMapper, AsTemplet
 
 
     @Autowired
-    ActDeModelServiceImpl actDeModelService;
+    ActDeModelService actDeModelService;
     @Autowired
-    AsProcModelServiceImpl asProcModelService;
+    AsProcModelService asProcModelService;
     @Autowired
     FormModelService formModelService;
     @Autowired

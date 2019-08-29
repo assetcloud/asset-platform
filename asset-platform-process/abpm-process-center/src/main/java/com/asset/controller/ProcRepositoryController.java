@@ -1,6 +1,6 @@
 package com.asset.controller;
 
-import com.asset.service.ProcRepositoryService;
+import com.asset.service.IProcRepositoryService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import springfox.documentation.annotations.ApiIgnore;
 public class ProcRepositoryController {
 
     @Autowired
-    ProcRepositoryService procRepositoryService;
+    IProcRepositoryService IProcRepositoryService;
 
     /**
      * 流程定义页面
@@ -47,7 +47,7 @@ public class ProcRepositoryController {
         if(pageSize==null||pageSize<=0){
             pageSize = Constants.PageSize;
         }
-        PageGrids pageGrids = procRepositoryService.getProcDefPages(pageNum,pageSize,id_,name_);
+        PageGrids pageGrids = IProcRepositoryService.getProcDefPages(pageNum,pageSize,id_,name_);
         return pageGrids;
     }
 

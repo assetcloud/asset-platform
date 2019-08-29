@@ -2,7 +2,6 @@ package com.asset.controller.user;
 
 import com.asset.exception.DatabaseException;
 import com.asset.javabean.FormModelBO;
-import com.asset.javabean.RespBean;
 import com.asset.dto.*;
 import com.asset.service.FormModelService;
 import com.asset.utils.R;
@@ -103,7 +102,7 @@ public class FormModelController {
                                   @ApiParam(value = "-1——全部,0——还没和流程模型绑定，1——和流程模型绑定，2——已删除",required = true,allowableValues = "-1,0,1,2")
                                         @RequestParam(value = "form_status")int formStatus
                                 ){
-        List<FormModelBO> formModelDOS = formModelService.getFormModels(appId,groupId,formStatus);
+        List<FormModelBO> formModelDOS = formModelService.getFormModelBOs(appId,groupId,formStatus);
         if(formModelDOS==null)
             R.fail("当前应用下表单模型为空！");
 

@@ -34,8 +34,10 @@ public class AdminFormModelService {
         return VOList;
     }
 
+
     public List<AdminFormModelVO> getFormModels(String appId) {
-        List<FormModelDO> DOList = formModelService.getFormModelDOs(appId, Constants.GROUP_ALL,Constants.FORM_MODEL_ALL);
+        //这里是不加筛选，全部取出来
+        List<FormModelDO> DOList = formModelService.listAllFormModelDO(appId, Constants.GROUP_ALL);
         List<AdminFormModelVO> VOList = new ArrayList<>();
 
         VOList = transDOtoVO(DOList,VOList);

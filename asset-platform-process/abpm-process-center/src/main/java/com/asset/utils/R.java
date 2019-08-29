@@ -17,13 +17,16 @@ public class R<T> implements Serializable {
             required = true
     )
     private int code;
+
     @ApiModelProperty(
             value = "是否成功",
             required = true
     )
     private boolean success;
+
     @ApiModelProperty("承载数据")
-    private T data;
+    private T obj;
+
     @ApiModelProperty(
             value = "返回消息",
             required = true
@@ -42,17 +45,17 @@ public class R<T> implements Serializable {
                 msg);
     }
 
-    private R(IResultCode resultCode, T data) {
-        this(resultCode, data, resultCode.getMessage());
+    private R(IResultCode resultCode, T obj) {
+        this(resultCode, obj, resultCode.getMessage());
     }
 
-    private R(IResultCode resultCode, T data, String msg) {
-        this(resultCode.getCode(), data, msg);
+    private R(IResultCode resultCode, T obj, String msg) {
+        this(resultCode.getCode(), obj, msg);
     }
 
-    private R(int code, T data, String msg) {
+    private R(int code, T obj, String msg) {
         this.code = code;
-        this.data = data;
+        this.obj = obj;
         this.msg = msg;
         this.success = ResultCode.SUCCESS.code == code;
     }
@@ -119,8 +122,8 @@ public class R<T> implements Serializable {
         return this.success;
     }
 
-    public T getData() {
-        return this.data;
+    public T getObj() {
+        return this.obj;
     }
 
     public String getMsg() {
@@ -135,8 +138,8 @@ public class R<T> implements Serializable {
         this.success = success;
     }
 
-    public void setData(final T data) {
-        this.data = data;
+    public void setObj(final T obj) {
+        this.obj = obj;
     }
 
     public void setMsg(final String msg) {
@@ -144,7 +147,7 @@ public class R<T> implements Serializable {
     }
 
     public String toString() {
-        return "R(code=" + this.getCode() + ", success=" + this.isSuccess() + ", data=" + this.getData() + ", msg=" + this.getMsg() + ")";
+        return "R(code=" + this.getCode() + ", success=" + this.isSuccess() + ", data=" + this.getObj() + ", msg=" + this.getMsg() + ")";
     }
 
     public R() {

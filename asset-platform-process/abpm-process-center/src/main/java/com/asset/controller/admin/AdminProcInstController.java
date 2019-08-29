@@ -2,8 +2,7 @@ package com.asset.controller.admin;
 
 import com.asset.entity.AsProcInst;
 import com.asset.javabean.AdminProcInstVO;
-import com.asset.javabean.RespBean;
-import com.asset.service.impl.AsProcInstServiceImpl;
+import com.asset.service.impl.AsProcInstService;
 import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.asset.utils.R;
@@ -11,7 +10,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -27,7 +25,7 @@ public class AdminProcInstController {
 //    @Autowired
 //    AdminProcInstService adminProcInstService;
     @Autowired
-    AsProcInstServiceImpl asProcInstService;
+AsProcInstService asProcInstService;
 
     /**
      * 获取对应的流程实例的流程执行图

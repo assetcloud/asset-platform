@@ -2,9 +2,8 @@ package com.asset.controller.admin;
 
 import com.asset.entity.AsFormModel;
 import com.asset.javabean.AdminFormModelVO;
-import com.asset.javabean.RespBean;
 import com.asset.service.AdminFormModelService;
-import com.asset.service.impl.AsFormModelServiceImpl;
+import com.asset.service.impl.AsFormModelService;
 import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -36,7 +35,7 @@ public class AdminFormModelController {
     @Autowired
     AdminFormModelService adminFormModelService;
     @Autowired
-    AsFormModelServiceImpl asFormModelService;
+    AsFormModelService asFormModelService;
 
     /**
      * 获取表单模型信息

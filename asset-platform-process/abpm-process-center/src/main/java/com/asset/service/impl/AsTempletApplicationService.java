@@ -22,7 +22,7 @@ import org.springframework.stereotype.Service;
  * @since 2019-08-19
  */
 @Service
-public class AsTempletApplicationServiceImpl extends ServiceImpl<AsTempletApplicationMapper, AsTempletApplicationDO> implements IAsTempletApplicationService {
+public class AsTempletApplicationService extends ServiceImpl<AsTempletApplicationMapper, AsTempletApplicationDO> implements IAsTempletApplicationService {
 
     AsTempletApplicationMapper mapper;
 

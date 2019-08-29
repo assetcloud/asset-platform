@@ -1,9 +1,8 @@
 package com.asset.controller;
 
-import com.asset.service.ProcTaskService;
+import com.asset.service.IProcTaskService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +20,7 @@ public class ProcTaskController {
     private Integer pageNum = 1;
 
     @Autowired
-    ProcTaskService procTaskService;
+    IProcTaskService IProcTaskService;
 
     /**
      * 待办任务页面
@@ -52,7 +51,7 @@ public class ProcTaskController {
         if(pageSize == null||pageSize <= 0){
             pageSize = Constants.PageSize;
         }
-        PageGrids pageGrids = procTaskService.getToDoTaskPages(pageNum,pageSize,id_,assignee);
+        PageGrids pageGrids = IProcTaskService.getToDoTaskPages(pageNum,pageSize,id_,assignee);
         return pageGrids;
     }
 
@@ -85,7 +84,7 @@ public class ProcTaskController {
         if(pageSize == null||pageSize <= 0){
             pageSize = Constants.PageSize;
         }
-        PageGrids pageGrids = procTaskService.getToDoTaskPages(pageNum,pageSize,id_,assignee);
+        PageGrids pageGrids = IProcTaskService.getToDoTaskPages(pageNum,pageSize,id_,assignee);
         return pageGrids;
     }
 }

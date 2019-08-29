@@ -20,21 +20,25 @@ public class FormModelDO implements Serializable {
     private Integer version;
     private Integer groupId;
     private String iconCls;
-    private Integer status;
     private String procModelId;
     private String modelSheet;
     private String sceneId;
     private String appId;
+    private Integer isBinded = 0;  //表单模型是否绑定流程模型，0否，1是
+    private Integer isBindAuthority = 0;   //表单项权限数据是否添加，0否，1是
+    private Integer isAddNodeInfo = 0;   //是否正确增加节点信息，0否，1是
+    private Integer isAddSeqCondition = 0;   //是否增加seqCondition，0否，1是
+
     public FormModelDO() {
     }
 
-    public FormModelDO(String id, String formName,  String createdBy, Integer version, Integer groupId, Integer status, String procModelId, String modelSheet) {
+    public FormModelDO(String id, String formName, String createdBy, Integer version, Integer groupId, Integer isBinded, String procModelId, String modelSheet) {
         this.id = id;
         this.formName = formName;
         this.createdBy = createdBy;
         this.version = version;
         this.groupId = groupId;
-        this.status = status;
+        this.isBinded = isBinded;
         this.procModelId = procModelId;
         this.modelSheet = modelSheet;
     }
@@ -42,14 +46,14 @@ public class FormModelDO implements Serializable {
     public FormModelDO(String formName,
                        String createdBy,
                        String iconCls,
-                       Integer status,
+                       Integer isBinded,
                        String modelSheet) {
         IDGenerator generator = new UuidIdGenerator();
         id = generator.generateID();
         this.formName = formName;
         this.createdBy = createdBy;
         this.iconCls = iconCls;
-        this.status = status;
+        this.isBinded = isBinded;
         this.modelSheet = modelSheet;
     }
 
@@ -75,7 +79,6 @@ public class FormModelDO implements Serializable {
 
     private FormModelDO(Builder builder) {
         setId(builder.id);
-        setSceneId(builder.sceneId);
         setFormName(builder.formName);
         setCreatedTime(builder.createdTime);
         setCreatedBy(builder.createdBy);
@@ -84,10 +87,14 @@ public class FormModelDO implements Serializable {
         setVersion(builder.version);
         setGroupId(builder.groupId);
         setIconCls(builder.iconCls);
-        setStatus(builder.status);
         setProcModelId(builder.procModelId);
-        setModelSheet(builder.modelSheetStr);
+        setModelSheet(builder.modelSheet);
+        setSceneId(builder.sceneId);
         setAppId(builder.appId);
+        setIsBinded(builder.isBinded);
+        setIsBindAuthority(builder.isBindAuthority);
+        setIsAddNodeInfo(builder.isAddNodeInfo);
+        setIsAddSeqCondition(builder.isAddSeqCondition);
     }
 
 
@@ -102,10 +109,13 @@ public class FormModelDO implements Serializable {
         private Integer version;
         private Integer groupId;
         private String iconCls;
-        private Integer status;
         private String procModelId;
-        private String modelSheetStr;
+        private String modelSheet;
         private String appId;
+        private Integer isBinded = 0 ;
+        private Integer isBindAuthority =0;
+        private Integer isAddNodeInfo =0;
+        private Integer isAddSeqCondition =0;
 
         public Builder() {
         }
@@ -160,23 +170,38 @@ public class FormModelDO implements Serializable {
             return this;
         }
 
-        public Builder status(Integer val) {
-            status = val;
-            return this;
-        }
-
         public Builder procModelId(String val) {
             procModelId = val;
             return this;
         }
 
-        public Builder modelSheetStr(String val) {
-            modelSheetStr = val;
+        public Builder modelSheet(String val) {
+            modelSheet = val;
             return this;
         }
 
-        public Builder appId(String val){
+        public Builder appId(String val) {
             appId = val;
+            return this;
+        }
+
+        public Builder isBinded(Integer val) {
+            isBinded = val;
+            return this;
+        }
+
+        public Builder isBindAuthority(Integer val) {
+            isBindAuthority = val;
+            return this;
+        }
+
+        public Builder isAddNodeInfo(Integer val) {
+            isAddNodeInfo = val;
+            return this;
+        }
+
+        public Builder isAddSeqCondition(Integer val) {
+            isAddSeqCondition = val;
             return this;
         }
 

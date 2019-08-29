@@ -6,7 +6,7 @@ import com.asset.utils.PageGrids;
 /**
  * @author lichao
  */
-public interface ProcTaskService {
+public interface IProcTaskService {
 
     /**
      * 流程待办任务查询分页数据

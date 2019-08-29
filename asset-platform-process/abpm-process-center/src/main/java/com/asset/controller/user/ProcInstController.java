@@ -1,7 +1,6 @@
 package com.asset.controller.user;
 
 import com.asset.javabean.AdminProcInstVO;
-import com.asset.javabean.RespBean;
 import com.asset.service.ProcInstService;
 import com.asset.utils.ProcUtils;
 import com.asset.utils.R;

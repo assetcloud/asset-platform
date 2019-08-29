@@ -8,11 +8,9 @@ import com.asset.entity.AsTempletFormModelDO;
 import com.asset.entity.FormModelDO;
 import com.asset.dto.FormModelCreateDTO;
 import com.asset.exception.DatabaseException;
-import com.asset.exception.InfoException;
 import com.asset.form.FormSheet;
 import com.asset.javabean.FormModelBO;
 import com.asset.utils.Constants;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -63,8 +61,7 @@ public class FormModelService {
                 .formName(dto.getForm_name())
                 .createdBy(dto.getCreated_by())
                 .iconCls(dto.getIcon_cls())
-                .status(Constants.FORM_MODEL_UNBIND)
-                .modelSheetStr(formSheetStr)
+                .modelSheet(formSheetStr)
                 .appId(dto.getApp_id())
                 .sceneId(dto.getScene_id())
                 .groupId(-1)
@@ -106,7 +103,7 @@ public class FormModelService {
      * @param formStatus 0:还没和流程模型绑定  1:和流程模型绑定  2:已删除
      * @return
      */
-    public List<FormModelBO> getFormModels(String appId, int groupId, int formStatus) {
+    public List<FormModelBO> getFormModelBOs(String appId, int groupId, int formStatus) {
         List<String> formModelIds = getFormModels(appId);
         if(formModelIds==null||formModelIds.size()==0)
             return null;
@@ -121,9 +118,15 @@ public class FormModelService {
         return boList;
     }
 
-    public List<FormModelDO> getFormModelDOs(String appId, int groupId, int formStatus){
+    /**
+     * 返回所有表单模型，不对其状态进行筛选
+     * @param appId
+     * @param groupId
+     * @return
+     */
+    public List<FormModelDO> listAllFormModelDO(String appId, int groupId){
         List<String> formModelIds = getFormModels(appId);
-        ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
+        ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,-1,groupId);
         return formModelDOs;
     }
 
@@ -267,7 +270,10 @@ public class FormModelService {
                 .createdBy(userId)
                 .version(1)
                 .groupId(Constants.GROUP_ALL)
-                .status(Constants.FORM_MODEL_BINDED)
+                .isBinded(1)
+                .isAddNodeInfo(1)
+                .isAddSeqCondition(1)
+                .isBindAuthority(1)
                 .procModelId(bindProcModelId)
                 .appId(bindAppId)
                 .build();
@@ -279,5 +285,20 @@ public class FormModelService {
 
     public FormModelDO selectFormModelDO(String formModelId) {
         return formModelMapper.selectById(formModelId);
+    }
+
+    public void bindAuthority(String procModelId) {
+        String formModelId = getFormModelId(procModelId);
+        formModelMapper.bindAuthority(formModelId);
+    }
+
+    public void updateSeqCondition(String procModelId) {
+        String formModelId = getFormModelId(procModelId);
+        formModelMapper.bindSeq(formModelId);
+    }
+
+    public void bindNodes(String procModelId) {
+        String formModelId = getFormModelId(procModelId);
+        formModelMapper.bindNodes(formModelId);
     }
 }

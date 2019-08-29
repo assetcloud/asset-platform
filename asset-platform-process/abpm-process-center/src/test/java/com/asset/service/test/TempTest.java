@@ -3,14 +3,10 @@ package com.asset.service.test;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.FlowableApplication;
 import com.asset.entity.ActRuVariableDO;
-import com.asset.entity.FormInstDO;
-import com.asset.javabean.FormInstVO;
-import com.asset.service.impl.ActRuVariableServiceImpl;
-import com.asset.utils.ProcUtils;
+import com.asset.service.impl.ActRuVariableService;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.engine.*;
-import org.flowable.engine.runtime.ProcessInstance;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +22,7 @@ import java.util.List;
 public class TempTest {
 
     @Autowired
-    ActRuVariableServiceImpl actRuVariableService;
+    ActRuVariableService actRuVariableService;
 
 
     @Test

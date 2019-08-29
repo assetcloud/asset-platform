@@ -1,5 +1,6 @@
 package com.asset.service.impl;
 
+import com.asset.dto.SeqConditionDTO;
 import com.asset.entity.ApplicationDO;
 import com.asset.entity.AsProcModelDO;
 import com.asset.dao.AsProcModelMapper;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
  * @since 2019-08-07
  */
 @Service
-public class AsProcModelServiceImpl extends ServiceImpl<AsProcModelMapper, AsProcModelDO> implements IAsProcModelService {
+public class AsProcModelService extends ServiceImpl<AsProcModelMapper, AsProcModelDO> implements IAsProcModelService {
 
     @Autowired
     AsProcModelMapper asProcModelMapper;
@@ -47,7 +48,9 @@ public class AsProcModelServiceImpl extends ServiceImpl<AsProcModelMapper, AsPro
     }
 
     @Override
-    public void saveSeqCondition(String procModelId,String seqConditions)throws Exception {
+    public void saveSeqCondition(SeqConditionDTO dto)throws Exception {
+        String procModelId = dto.getProc_model_id();
+        String seqConditions = dto.getSeq_condition();
         AsProcModelDO asProcModelDO = new AsProcModelDO.Builder()
                 .id(procModelId)
                 .seqCondition(seqConditions).build();
@@ -58,6 +61,8 @@ public class AsProcModelServiceImpl extends ServiceImpl<AsProcModelMapper, AsPro
             flag = asProcModelMapper.updateById(asProcModelDO);
         else
             flag = asProcModelMapper.insert(asProcModelDO);
+
+        formModelService.updateSeqCondition(procModelId);
 
         if(flag == Constants.DATABASE_FAILED)
             throw new DatabaseException("更新数据失败！");

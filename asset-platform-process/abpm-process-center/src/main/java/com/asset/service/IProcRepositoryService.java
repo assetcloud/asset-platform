@@ -6,7 +6,7 @@ import com.asset.utils.PageGrids;
 /**
  * @author lichao
  */
-public interface ProcRepositoryService {
+public interface IProcRepositoryService {
 
 
     /**

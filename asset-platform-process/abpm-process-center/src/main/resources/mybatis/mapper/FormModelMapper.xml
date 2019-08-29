@@ -12,10 +12,14 @@
         <result column="model_sheet" jdbcType="LONGVARCHAR" property="modelSheet"/>
         <result column="group_id" jdbcType="INTEGER" property="groupId"/>
         <result column="icon_cls" jdbcType="VARCHAR" property="iconCls"/>
-        <result column="status" jdbcType="INTEGER" property="status"/>
         <result column="proc_model_id" jdbcType="VARCHAR" property="procModelId"/>
         <result column="scene_id" jdbcType="VARCHAR" property="sceneId"/>
         <result column="app_id" jdbcType="VARCHAR" property="appId"/>
+        <result column="is_binded" jdbcType="INTEGER" property="isBinded"/>
+        <result column="is_bind_authority" jdbcType="INTEGER" property="isBindAuthority"/>
+        <result column="is_add_node_info" jdbcType="INTEGER" property="isAddNodeInfo"/>
+        <result column="is_add_seq_condition" jdbcType="INTEGER" property="isAddSeqCondition"/>
+
     </resultMap>
 
     <sql id="Blob_Column_List">
@@ -29,10 +33,13 @@
         model_sheet,
         group_id,
         icon_cls,
-        status,
         proc_model_id,
         scene_id,
-        app_id
+        app_id,
+        is_binded,
+        is_bind_authority,
+        is_add_node_info,
+        is_add_seq_condition
     </sql>
 
     <insert id="insert" parameterType="com.asset.entity.FormModelDO">
@@ -50,10 +57,13 @@
         #{modelSheet,jdbcType=LONGVARCHAR}
         #{groupId,jdbcType=INTEGER},
         #{iconCls,jdbcType=VARCHAR},
-        #{status,jdbcType=TINYINT},
         #{procModelId,jdbcType=VARCHAR},
         #{sceneId,jdbcType=VARCHAR},
         #{appId,jdbcType=VARCHAR},
+        #{isBinded,jdbcType=TINYINT},
+        #{isBindAuthority,jdbcType=TINYINT},
+        #{isAddNodeInfo,jdbcType=TINYINT},
+        #{isAddSeqCondition,jdbcType=TINYINT}
         )
     </insert>
 
@@ -69,11 +79,14 @@
            <if test="version != null">version,</if>
             <if test="groupId != null">group_id,</if>
             <if test="iconCls != null">icon_cls,</if>
-           <if test="status != null">status,</if>
             <if test="procModelId != null">proc_model_id,</if>
             <if test="modelSheet != null">model_sheet,</if>
             <if test="sceneId != null">scene_id,</if>
-            <if test="appId != null">app_id</if>
+            <if test="appId != null">app_id,</if>
+            <if test="isBinded != null">is_binded,</if>
+            <if test="isBindAuthority != null">is_bind_authority,</if>
+            <if test="isAddNodeInfo != null">is_add_node_info,</if>
+            <if test="isAddSeqCondition != null">is_add_seq_condition</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">#{id,jdbcType=VARCHAR},</if>
@@ -85,11 +98,14 @@
             <if test="version != null">#{version,jdbcType=INTEGER},</if>
             <if test="groupId != null">#{groupId,jdbcType=INTEGER},</if>
             <if test="iconCls != null">#{iconCls,jdbcType=VARCHAR},</if>
-            <if test="status != null">#{status,jdbcType=INTEGER},</if>
             <if test="procModelId != null">#{procModelId,jdbcType=VARCHAR},</if>
             <if test="modelSheet != null">#{modelSheet,jdbcType=LONGVARCHAR},</if>
             <if test="sceneId != null">#{sceneId,jdbcType=VARCHAR},</if>
             <if test="appId != null">#{appId,jdbcType=VARCHAR},</if>
+            <if test="isBinded != null">#{isBinded,jdbcType=INTEGER},</if>
+            <if test="isBindAuthority != null">#{isBindAuthority,jdbcType=INTEGER},</if>
+            <if test="isAddNodeInfo != null">#{isAddNodeInfo,jdbcType=INTEGER},</if>
+            <if test="isAddSeqCondition != null">#{isAddSeqCondition,jdbcType=INTEGER}</if>
         </trim>
     </insert>
 
@@ -117,14 +133,14 @@
          @param FormModelDO bindInfo
          其中：
     表单模型创建之后的状态：
-    public static final int FORM_MODEL_UNBIND = 0;   //还没和流程模型绑定
+    public static final int FORM_MODEL_CREATED = 0;   //还没和流程模型绑定
     public static final int FORM_MODEL_BINDED = 1;  //已绑定，表单流程已经可以被发起
     public static final int FORM_MODEL_DELETED = 2;  //表单流程已被删除-->
     <update id="bindFormAndProcModel" parameterType="com.asset.entity.FormModelDO">
         UPDATE
                 as_form_model
         SET proc_model_id = #{procModelId,jdbcType = VARCHAR},
-            status        = 1
+            is_binded        = 1
         WHERE id = #{formModelId,jdbcType = VARCHAR};
     </update>
 
@@ -155,9 +171,13 @@
         <foreach item="item" index="index" collection="formModelIDs" open="(" separator="," close=")">
             #{item,jdbcType=VARCHAR}
         </foreach>
+#         如果不是-1，表示要获取的是能够正常运行的表单模型，所以需要各种信息已经增加上去了
         <if test="formStatus!=-1">
             AND
-            status = #{formStatus,jdbcType = INTEGER}
+            is_binded = 1 AND
+            is_bind_authority = 1 AND
+            is_add_node_info = 1 AND
+            is_add_seq_condition = 1
         </if>
         <if test="groupId!=-1">
             AND
@@ -272,4 +292,22 @@
         FROM as_form_model
         WHERE id = #{formModelId,jdbcType=VARCHAR}
     </select>
+
+    <update id="bindAuthority" parameterType="java.lang.String">
+        UPDATE as_form_model
+        SET is_bind_authority = 1
+        WHERE id = #{formModelId,jdbcType = VARCHAR}
+    </update>
+
+    <update id="bindSeq" parameterType="java.lang.String">
+        UPDATE as_form_model
+        SET is_add_seq_condition = 1
+        WHERE id = #{formModelId,jdbcType = VARCHAR}
+    </update>
+
+    <update id="bindNodes" parameterType="java.lang.String">
+        UPDATE as_form_model
+        SET is_add_node_info = 1
+        WHERE id = #{formModelId,jdbcType = VARCHAR}
+    </update>
 </mapper>

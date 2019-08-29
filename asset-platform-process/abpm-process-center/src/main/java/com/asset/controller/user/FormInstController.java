@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.*;
 import com.asset.exception.ProcException;
 import com.asset.javabean.FormInstVO;
-import com.asset.javabean.RespBean;
 import com.asset.dto.*;
 import com.asset.service.*;
 import com.asset.utils.R;
@@ -161,7 +160,7 @@ public class FormInstController {
      */
     @ApiOperation(value = "处理经办任务", notes = "对经办任务进行处理，需要填写表单", httpMethod = "POST")
     @RequestMapping(value = "/form_inst/apply_node", method = RequestMethod.POST)
-    public RespBean applyNode(
+    public R applyNode(
             @ApiParam(value = "对当前经办任务进行处理的实体类", required = true)
             @RequestBody FormInstRecHandle rec) {
         String[] urls;
@@ -169,9 +168,9 @@ public class FormInstController {
             urls = formInstService.applyNode(rec);
         } catch (FlowableException e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage() + "  请检查流程模型元素是否有误！");
+            return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
         }
-        return RespBean.ok("", urls);
+        return R.data(urls);
     }
 
     /**
@@ -179,7 +178,7 @@ public class FormInstController {
      */
     @ApiOperation(value = "处理待阅任务", notes = "对待阅任务进行处理", httpMethod = "POST")
     @RequestMapping(value = "/form_inst/pending_node", method = RequestMethod.POST)
-    public RespBean pendingNode(
+    public R pendingNode(
             @ApiParam(value = "对当前待阅任务进行处理的实体类", required = true)
             @RequestBody FormInstRecReadle rec) {
         String[] urls;
@@ -187,9 +186,9 @@ public class FormInstController {
             urls = formInstService.pendingNode(rec);
         } catch (FlowableException e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage() + "  请检查流程模型元素是否有误！");
+            return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
         }
-        return RespBean.ok("", urls);
+        return R.data(urls);
     }
 
     /**
@@ -200,7 +199,7 @@ public class FormInstController {
      */
     @ApiOperation(value = "外链任务处理", notes = "用户点击外链，自动跳转到相应的任务处理页面，对分配到自己的任务进行快速处理", httpMethod = "POST")
     @RequestMapping(value = "/form_inst/share_link", method = RequestMethod.GET)
-    public RespBean getShareLinkTask(
+    public R getShareLinkTask(
             @ApiParam(value = "外链中包含的TaskId", required = true)
             @RequestParam(value = "task_id") String taskId,
             @ApiParam(value = "当前用户Id", required = true)
@@ -213,9 +212,9 @@ public class FormInstController {
             shareLinkTask = formInstService.getShareLinkTask(taskId, userId, sectionId);
         } catch (Exception e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
-        return RespBean.ok("", shareLinkTask);
+        return R.data(shareLinkTask);
     }
 
 

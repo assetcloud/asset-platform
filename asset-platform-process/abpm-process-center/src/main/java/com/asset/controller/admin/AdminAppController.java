@@ -2,7 +2,7 @@ package com.asset.controller.admin;
 
 import com.asset.entity.AsApplicationDO;
 import com.asset.javabean.AdminAppInfoVO;
-import com.asset.service.impl.AsApplicationServiceImpl;
+import com.asset.service.impl.AsApplicationService;
 import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -30,7 +30,7 @@ import java.util.Map;
 @Api(tags = "控制端：应用管理")
 public class AdminAppController {
 
-    AsApplicationServiceImpl asApplicationService;
+    AsApplicationService asApplicationService;
 
     /**
      * 获取应用下表单资源信息
