@@ -9,6 +9,9 @@ import com.asset.exception.FormException;
 import com.asset.exception.InfoException;
 import com.asset.exception.ProcException;
 import com.asset.exception.SizeNullException;
+import com.asset.filter.DuplicateFilter;
+import com.asset.filter.SceneFilter;
+import com.asset.filter.UserIdFilter;
 import com.asset.form.FormItem;
 import com.asset.form.FormSheet;
 import com.asset.dto.*;
@@ -210,6 +213,8 @@ public class FormInstService {
                 boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
             if(!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
                 boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
+
+            boo.setCommitter(procInstService.getCommitter(doo.getTaskId()));
 
             formInstBOs.add(boo);
 //            formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,
