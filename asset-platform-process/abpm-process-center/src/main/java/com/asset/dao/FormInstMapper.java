@@ -77,4 +77,5 @@ public interface FormInstMapper {
 
     List<FormInstDO> listFormInsts();
 
+    String getFormModelIdByTaskId(String taskId);
 }

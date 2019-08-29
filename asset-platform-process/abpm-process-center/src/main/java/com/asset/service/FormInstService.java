@@ -824,7 +824,7 @@ public class FormInstService {
     }
 
     public String getFormModelId(String taskId) {
-        return null;
+        return formInstMapper.getFormModelIdByTaskId(taskId);
     }
 
     public void saveUnCompleteFormInst(FormInstDO formInst) {
