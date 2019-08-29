@@ -42,4 +42,7 @@ public interface ProcInstMapper {
     List<ProcInstDO> getProcInsts(String procModelId);
 
     Date getCommitTime(String procInstId);
+
+    int updateProcInstStatus(@Param("procInstId") String procInstId,
+                              @Param("status") Integer status);
 }

@@ -16,14 +16,13 @@ import com.asset.javabean.ActRuVariableBO;
 import com.asset.javabean.FormInstBO;
 import com.asset.javabean.FormInstVO;
 import com.asset.javabean.TaskBO;
-import com.asset.service.impl.ActRuVariableServiceImpl;
+import com.asset.service.impl.ActRuVariableService;
 import com.asset.utils.*;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.task.api.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -56,7 +55,7 @@ public class FormInstService {
     @Autowired
     AuthorityService authorityService;
     @Autowired
-    ActRuVariableServiceImpl actRuVariableService;
+    ActRuVariableService actRuVariableService;
     @Autowired
     FormInstMapper formInstMapper;
 
@@ -98,6 +97,14 @@ public class FormInstService {
      * @return
      */
     public String[] commitNewFormInst(FormInstRecCreate dto) throws DocumentException, FlowableException {
+        String procInst = commitFormInst(dto);
+
+        //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
+        return generateUrls(procInst);
+    }
+
+
+    public String commitFormInst(FormInstRecCreate dto) throws DocumentException {
         //1、先获取与表单模型唯一绑定的流程模型ID
         String procModelID = formModelService.getProcModelID(dto.getForm_model_id());
         //直接由流程模型后台创建流程实例(还没持久化)
@@ -150,8 +157,7 @@ public class FormInstService {
                 procInst.getProcessInstanceId(),
                 dto.getForm_model_id());
 
-        //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
-        return generateUrls(procInst.getProcessInstanceId());
+        return procInst.getProcessInstanceId();
     }
 
     /**
@@ -318,7 +324,22 @@ public class FormInstService {
      */
     public String[] approveNode(FormInstRecApprove dto) throws ProcException , FlowableException{
         //找到当前传入的表单实例对应的流程实例的ID，注意和TaskID进行区分！！一次执行中，TaskId会一直变化，但是流程实例ID是不会变的
-        String procInstID = formInstMapper.getProcInstID(dto.getForm_inst_id());
+//        String procInstID = formInstMapper.getProcInstID(dto.getForm_inst_id());
+        String procInstID = dto.getProc_inst_id();
+
+        //审批节点还可以对表单内容进行修改
+        //当前填写表单数据 对数据库进行更新
+        updateFormInst(dto);
+        //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
+        String executionId = ProcUtils.getExecutionId(dto.getTask_id());
+        ActRuVariableBO boo = new ActRuVariableBO.Builder()
+                .executionId(executionId)
+                .rev(1)
+                .procInstId(dto.getProc_inst_id())
+                .form_inst_value(dto.getForm_inst_value()).build();
+        actRuVariableService.saveRunVariable(boo);
+
+
         //当前审批节点同意申请，先把当前新加了 同意 这个信息的 新表单 放入数据库，并完成当前任务节点
         if(dto.getApprove_result() == Constants.APPROVE_AGREE)
         {

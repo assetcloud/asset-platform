@@ -1,33 +1,33 @@
 package com.asset.dao;
 
 
-import com.asset.entity.Group;
+import com.asset.entity.GroupDO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
 public interface AsGroupMapper {
-    int deleteByPrimaryKey(Integer groupId);
+    int deleteByPrimaryKey(Integer id);
 
-    int insert(Group record);
+    int insert(GroupDO record);
 
-    int insertSelective(Group record);
+    int insertSelective(GroupDO record);
 
-    Group selectByPrimaryKey(Integer groupId);
+    GroupDO selectByPrimaryKey(Integer groupId);
 
-    int updateByPrimaryKeySelective(Group record);
+    int updateByPrimaryKeySelective(GroupDO record);
 
-    int updateByPrimaryKey(Group record);
+    int updateByPrimaryKey(GroupDO record);
 
     /**
      * 获取一个App下的所有分组
      * @param appID
      * @return
      */
-    List<Group> selectAll(String appID);
+    List<GroupDO> selectAll(String appID);
 
-    int deleteGroup(Group info);
+    int deleteGroup(GroupDO info);
 
-    int updateGroup(Group info);
+    int updateGroup(GroupDO info);
 }

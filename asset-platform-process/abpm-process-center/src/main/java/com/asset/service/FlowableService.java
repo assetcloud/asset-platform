@@ -43,6 +43,10 @@ public class FlowableService {
     public String getModelName(String procModelId) {
         return flowableMapper.getModelName(procModelId);
     }
+
+    public String getProcInstId(String taskId) {
+        return flowableMapper.getProcInstId(taskId);
+    }
 }
 
 

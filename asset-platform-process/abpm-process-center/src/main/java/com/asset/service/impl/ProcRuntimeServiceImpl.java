@@ -2,7 +2,7 @@ package com.asset.service.impl;
 
 import com.asset.dao.ProcRuntimeMapper;
 import com.asset.entity.ProcInstInfo;
-import com.asset.service.ProcRuntimeService;
+import com.asset.service.IProcRuntimeService;
 import com.asset.utils.PageGrids;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author lichao
  */
 @Service
-public class ProcRuntimeServiceImpl implements ProcRuntimeService {
+public class ProcRuntimeServiceImpl implements IProcRuntimeService {
 
     @Autowired
     ProcRuntimeMapper procRuntimeMapper;

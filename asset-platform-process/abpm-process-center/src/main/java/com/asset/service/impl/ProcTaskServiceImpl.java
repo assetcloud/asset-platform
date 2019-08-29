@@ -2,7 +2,7 @@ package com.asset.service.impl;
 
 import com.asset.dao.ProcTaskMapper;
 import com.asset.entity.ProcTaskInfo;
-import com.asset.service.ProcTaskService;
+import com.asset.service.IProcTaskService;
 import com.asset.utils.PageGrids;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author lichao
  */
 @Service
-public class ProcTaskServiceImpl implements ProcTaskService {
+public class ProcTaskServiceImpl implements IProcTaskService {
 
     @Autowired
     ProcTaskMapper procTaskMapper;

@@ -2,12 +2,12 @@ package com.asset.controller.admin;
 
 import com.asset.entity.AsFormModel;
 import com.asset.javabean.AdminFormModelVO;
-import com.asset.javabean.RespBean;
 import com.asset.service.AdminFormModelService;
-import com.asset.service.impl.AsFormModelServiceImpl;
+import com.asset.service.impl.AsFormModelService;
 import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.asset.utils.R;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -35,7 +35,7 @@ public class AdminFormModelController {
     @Autowired
     AdminFormModelService adminFormModelService;
     @Autowired
-    AsFormModelServiceImpl asFormModelService;
+    AsFormModelService asFormModelService;
 
     /**
      * 获取表单模型信息
@@ -43,18 +43,18 @@ public class AdminFormModelController {
      * @param query
      * @return
      */
+    @ApiOperation(value = "获取表单模型信息",httpMethod = "GET")
     @GetMapping("/form_model/list")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "formName", value = "表单名称", required = false , paramType = "query", dataType = "string"),
             @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true ,paramType = "query", dataType = "integer"),
             @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10",required = true , paramType = "query", dataType = "integer")
     })
-    @ApiOperation(value = "展示表单模型列表")
-    public RespBean getFormModelListPlus(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
+    public R<PageInfo<AdminFormModelVO>> getFormModelListPlus(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
         QueryWrapper<AsFormModel> queryWrapper = Condition.getQueryWrapper(role, AsFormModel.class);
         PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminFormModelVO> list = new PageInfo<>(asFormModelService.listAdminFormModelInfo(queryWrapper));
-        return RespBean.ok("",list);
+        return R.data(list);
     }
 
 }

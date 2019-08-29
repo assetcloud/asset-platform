@@ -18,7 +18,7 @@ public class FormModelBO {
     private String iconCls;
     private Integer status;
     private String procModelId;
-    private String modelSheetStr;
+    private String modelSheet;
     private String sceneId;
     private String appId;
 

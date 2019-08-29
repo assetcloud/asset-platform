@@ -33,45 +33,21 @@ public class AsFormModel implements Serializable {
     private String id;
 
     private String formName;
-
     private Date createdTime;
-
     private String createdBy;
-
     private Date lastUpdatedTime;
-
     private String lastUpdatedBy;
-
     private Integer version;
-
-    private String modelSheet;
-
-    /**
-     * 该表单所属分组（负值代表不属于任一分组）
-     */
     private Integer groupId;
-
-    /**
-     * 表单显示的vue图标
-     */
     private String iconCls;
-
-    /**
-     * 表单当前状态（0未绑定流程；1已绑定流程可被发起；2已被删除）
-     */
-    private Integer status;
-
-    /**
-     * 绑定的流程模型ID
-     */
     private String procModelId;
-
-    /**
-     * 当前表单流程模型所属的工作场景
-     */
+    private String modelSheet;
     private String sceneId;
-
     private String appId;
+    private Integer isBinded = 0;  //表单模型是否绑定流程模型，0否，1是
+    private Integer isBindAuthority = 0;   //表单项权限数据是否添加，0否，1是
+    private Integer isAddNodeInfo = 0;   //是否正确增加节点信息，0否，1是
+    private Integer isAddSeqCondition = 0;   //是否增加seqCondition，0否，1是
 
     public AsFormModel() {
     }

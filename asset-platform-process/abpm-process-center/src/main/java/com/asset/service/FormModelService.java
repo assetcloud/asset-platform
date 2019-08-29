@@ -4,14 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.dao.FormModelMapper;
 import com.asset.dto.FormModelEditDTO;
+import com.asset.entity.AsTempletFormModelDO;
 import com.asset.entity.FormModelDO;
 import com.asset.dto.FormModelCreateDTO;
 import com.asset.exception.DatabaseException;
-import com.asset.exception.InfoException;
 import com.asset.form.FormSheet;
 import com.asset.javabean.FormModelBO;
 import com.asset.utils.Constants;
-import com.sun.org.apache.regexp.internal.RE;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -62,8 +61,7 @@ public class FormModelService {
                 .formName(dto.getForm_name())
                 .createdBy(dto.getCreated_by())
                 .iconCls(dto.getIcon_cls())
-                .status(Constants.FORM_MODEL_UNBIND)
-                .modelSheetStr(formSheetStr)
+                .modelSheet(formSheetStr)
                 .appId(dto.getApp_id())
                 .sceneId(dto.getScene_id())
                 .groupId(-1)
@@ -98,31 +96,37 @@ public class FormModelService {
     }
 
 
+//    /**
+//     * 返回流程模型
+//     * @param appId
+//     * @param groupId 传入的值为-1时表示不对分组进行限制，某一个具体值表示只筛选这个分组的表单模型
+//     * @param formStatus 0:还没和流程模型绑定  1:和流程模型绑定  2:已删除
+//     * @return
+//     */
+//    public List<FormModelBO> getFormModelBOs(String appId, int groupId, int formStatus) {
+//        List<String> formModelIds = getFormModels(appId);
+//        if(formModelIds==null||formModelIds.size()==0)
+//            return null;
+//        ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
+//
+//        List<FormModelBO> boList = new ArrayList<>();
+//        for (int i = 0; i < formModelDOs.size(); i++) {
+//            FormModelBO bo = new FormModelBO();
+//            BeanUtils.copyProperties(formModelDOs.get(i),bo);
+//            boList.add(bo);
+//        }
+//        return boList;
+//    }
+
     /**
-     * 返回流程模型
+     * 返回所有表单模型，不对其状态进行筛选
      * @param appId
-     * @param groupId 传入的值为-1时表示不对分组进行限制，某一个具体值表示只筛选这个分组的表单模型
-     * @param formStatus 0:还没和流程模型绑定  1:和流程模型绑定  2:已删除
+     * @param groupId
      * @return
      */
-    public List<FormModelBO> getFormModels(String appId, int groupId, int formStatus) {
+    public List<FormModelDO> listAllFormModelDO(String appId, int groupId){
         List<String> formModelIds = getFormModels(appId);
-        if(formModelIds==null||formModelIds.size()==0)
-            return null;
-        ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
-
-        List<FormModelBO> boList = new ArrayList<>();
-        for (int i = 0; i < formModelDOs.size(); i++) {
-            FormModelBO bo = new FormModelBO();
-            BeanUtils.copyProperties(formModelDOs.get(i),bo);
-            boList.add(bo);
-        }
-        return boList;
-    }
-
-    public List<FormModelDO> getFormModelDOs(String appId, int groupId, int formStatus){
-        List<String> formModelIds = getFormModels(appId);
-        ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
+        ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,-1,groupId);
         return formModelDOs;
     }
 
@@ -248,5 +252,53 @@ public class FormModelService {
     public String getSceneIdByTaskId(String taskId) {
         String formModelId = formInstService.getFormModelId(taskId);
         return getSceneId(formModelId);
+    }
+
+    /**
+     * 导入表单模型资源
+     * @param asTempletFormModelDO
+     * @return
+     */
+    public void insertTempletResource(AsTempletFormModelDO asTempletFormModelDO,
+                                        String sceneId,
+                                        String userId,
+                                        String bindProcModelId,
+                                        String bindAppId) throws DatabaseException{
+        FormModelDO formModelDO = new FormModelDO.Builder()
+                .sceneId(sceneId)
+                .createdTime(new Date())
+                .createdBy(userId)
+                .version(1)
+                .groupId(Constants.GROUP_ALL)
+                .isBinded(1)
+                .isAddNodeInfo(1)
+                .isAddSeqCondition(1)
+                .isBindAuthority(1)
+                .procModelId(bindProcModelId)
+                .appId(bindAppId)
+                .build();
+        BeanUtils.copyProperties(asTempletFormModelDO,formModelDO,new String[]{"id"});
+        int flag = formModelMapper.insertSelective(formModelDO);
+        if(flag==Constants.DATABASE_FAILED)
+            throw new DatabaseException("插入表单模型资源失败！");
+    }
+
+    public FormModelDO selectFormModelDO(String formModelId) {
+        return formModelMapper.selectById(formModelId);
+    }
+
+    public void bindAuthority(String procModelId) {
+        String formModelId = getFormModelId(procModelId);
+        formModelMapper.bindAuthority(formModelId);
+    }
+
+    public void updateSeqCondition(String procModelId) {
+        String formModelId = getFormModelId(procModelId);
+        formModelMapper.bindSeq(formModelId);
+    }
+
+    public void bindNodes(String procModelId) {
+        String formModelId = getFormModelId(procModelId);
+        formModelMapper.bindNodes(formModelId);
     }
 }

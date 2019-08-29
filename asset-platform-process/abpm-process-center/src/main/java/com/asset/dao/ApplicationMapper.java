@@ -29,4 +29,5 @@ public interface ApplicationMapper {
 
     List<ApplicationDO> getPublishedApp();
 
+    ApplicationDO selectOne(String appId);
 }
