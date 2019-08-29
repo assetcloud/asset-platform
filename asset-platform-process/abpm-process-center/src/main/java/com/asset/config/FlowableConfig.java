@@ -68,8 +68,8 @@ public class FlowableConfig {
 		Resource[] mapperLocations = new PathMatchingResourcePatternResolver()
 				.getResources("classpath:mybatis/mapper/*.xml");
 		sessionFactoryBean.setMapperLocations(mapperLocations);
-		//注意返回的是SqlSessionFactory
 
+		//注意返回的是SqlSessionFactory
 		return sessionFactoryBean.getObject();
 	}
 
