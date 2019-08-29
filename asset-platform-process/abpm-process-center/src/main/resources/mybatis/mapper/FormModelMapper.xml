@@ -176,8 +176,7 @@
             AND
             is_binded = 1 AND
             is_bind_authority = 1 AND
-            is_add_node_info = 1 AND
-            is_add_seq_condition = 1
+            is_add_node_info = 1
         </if>
         <if test="groupId!=-1">
             AND

@@ -96,27 +96,27 @@ public class FormModelService {
     }
 
 
-    /**
-     * 返回流程模型
-     * @param appId
-     * @param groupId 传入的值为-1时表示不对分组进行限制，某一个具体值表示只筛选这个分组的表单模型
-     * @param formStatus 0:还没和流程模型绑定  1:和流程模型绑定  2:已删除
-     * @return
-     */
-    public List<FormModelBO> getFormModelBOs(String appId, int groupId, int formStatus) {
-        List<String> formModelIds = getFormModels(appId);
-        if(formModelIds==null||formModelIds.size()==0)
-            return null;
-        ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
-
-        List<FormModelBO> boList = new ArrayList<>();
-        for (int i = 0; i < formModelDOs.size(); i++) {
-            FormModelBO bo = new FormModelBO();
-            BeanUtils.copyProperties(formModelDOs.get(i),bo);
-            boList.add(bo);
-        }
-        return boList;
-    }
+//    /**
+//     * 返回流程模型
+//     * @param appId
+//     * @param groupId 传入的值为-1时表示不对分组进行限制，某一个具体值表示只筛选这个分组的表单模型
+//     * @param formStatus 0:还没和流程模型绑定  1:和流程模型绑定  2:已删除
+//     * @return
+//     */
+//    public List<FormModelBO> getFormModelBOs(String appId, int groupId, int formStatus) {
+//        List<String> formModelIds = getFormModels(appId);
+//        if(formModelIds==null||formModelIds.size()==0)
+//            return null;
+//        ArrayList<FormModelDO> formModelDOs = (ArrayList<FormModelDO>) formModelMapper.listFormModels(formModelIds,formStatus,groupId);
+//
+//        List<FormModelBO> boList = new ArrayList<>();
+//        for (int i = 0; i < formModelDOs.size(); i++) {
+//            FormModelBO bo = new FormModelBO();
+//            BeanUtils.copyProperties(formModelDOs.get(i),bo);
+//            boList.add(bo);
+//        }
+//        return boList;
+//    }
 
     /**
      * 返回所有表单模型，不对其状态进行筛选
