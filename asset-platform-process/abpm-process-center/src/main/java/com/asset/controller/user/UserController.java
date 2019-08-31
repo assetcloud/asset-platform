@@ -4,13 +4,13 @@ import com.asset.base.BaseController;
 import com.asset.dto.SceneSelectDTO;
 import com.asset.entity.User;
 import com.asset.exception.ProcException;
-import com.asset.javabean.RespBean;
 import com.asset.dto.RegisterDTO;
 import com.asset.service.FormInstService;
 import com.asset.service.ProcInstService;
 import com.asset.service.UserService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
+import com.asset.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -58,10 +58,10 @@ public class UserController extends BaseController {
     @ApiIgnore
     @RequestMapping("/queryUsers")
     @ResponseBody
-    public PageGrids queryUsers(@RequestParam("page") Integer pageNum,
-                                @RequestParam("rows") Integer pageSize,
-                                @RequestParam String id,
-                                @RequestParam String displayName) {
+    public R<PageGrids> queryUsers(@RequestParam("page") Integer pageNum,
+                        @RequestParam("rows") Integer pageSize,
+                        @RequestParam String id,
+                        @RequestParam String displayName) {
 
         if (pageNum == null || pageNum <= 0) {
             pageNum = 1;
@@ -70,7 +70,7 @@ public class UserController extends BaseController {
             pageSize = Constants.PageSize;
         }
         PageGrids pageGrids = userService.getUsers(pageNum, pageSize, id, displayName);
-        return pageGrids;
+        return R.data(pageGrids);
     }
 
     /**
@@ -111,30 +111,30 @@ public class UserController extends BaseController {
      */
     @ApiOperation(value = "发起注册审批流程" , notes = "发起注册审批流程" , httpMethod = "POST")
     @RequestMapping(value = "/form_inst/register/save", method = RequestMethod.POST)
-    public RespBean register(@RequestBody RegisterDTO dto) {
+    public R<String[]> register(@RequestBody RegisterDTO dto) {
         String[] urls = null;
         try {
             urls = procInstService.createRegisterProcByXml(dto);
         } catch (Exception procException) {
             LOGGER.error(procException.getMessage());
-            return RespBean.error("创建注册流程出错！");
+            return R.fail("创建注册流程出错！");
         }
 
-        return RespBean.ok("",urls);
+        return R.data(urls);
     }
 
     @ApiOperation(value = "发起工作场景选择流程" , notes = "发起工作场景选择审批流程" , httpMethod = "POST")
     @PostMapping(value = "/form_inst/select_scene")
-    public RespBean selectScene(@RequestBody SceneSelectDTO dto){
+    public R<String[]> selectScene(@RequestBody SceneSelectDTO dto){
         String[] urls = null;
         try {
             urls = procInstService.createSceneSelectProcByXml(dto);
         } catch (Exception procException) {
             LOGGER.error(procException.getMessage());
-            return RespBean.error("创建注册流程出错！");
+            return R.fail("创建注册流程出错！");
         }
 
-        return RespBean.ok("",urls);
+        return R.data(urls);
     }
 
 }

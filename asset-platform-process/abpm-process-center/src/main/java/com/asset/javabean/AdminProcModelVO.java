@@ -1,12 +1,10 @@
 package com.asset.javabean;
 
-import com.asset.entity.ActDeModel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.sql.Blob;
-import java.util.Date;
 
 @Data
 @ApiModel(description = "控制端返回的流程模型信息")

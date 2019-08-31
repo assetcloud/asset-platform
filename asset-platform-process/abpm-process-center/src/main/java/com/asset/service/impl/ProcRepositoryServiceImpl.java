@@ -2,7 +2,7 @@ package com.asset.service.impl;
 
 import com.asset.dao.ProcRepositoryMapper;
 import com.asset.entity.ProcDefInfo;
-import com.asset.service.ProcRepositoryService;
+import com.asset.service.IProcRepositoryService;
 import com.asset.utils.PageGrids;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author lichao
  */
 @Service
-public class ProcRepositoryServiceImpl implements ProcRepositoryService {
+public class ProcRepositoryServiceImpl implements IProcRepositoryService {
 
     @Autowired
     ProcRepositoryMapper procRepositoryMapper;

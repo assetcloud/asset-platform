@@ -1,6 +1,6 @@
 package com.asset.dao;
 
-import com.asset.entity.ActDeModel;
+import com.asset.entity.ActDeModelDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @author YBY
  * @since 2019-08-04
  */
-public interface ActDeModelMapper extends BaseMapper<ActDeModel> {
+public interface ActDeModelMapper extends BaseMapper<ActDeModelDO> {
 
 }

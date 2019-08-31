@@ -3,15 +3,20 @@ package com.asset.service;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.converter.FormConverter;
 import com.asset.dao.FormAuthorityMapper;
+import com.asset.entity.FormAuthorityDO;
+import com.asset.entity.AsTempletFormAuthorityDO;
 import com.asset.entity.FormInstDO;
 import com.asset.entity.OptionsBase;
 import com.asset.exception.DatabaseException;
 import com.asset.exception.FormException;
+import com.asset.exception.InfoException;
 import com.asset.form.FormItem;
 import com.asset.form.FormSheet;
 import com.asset.utils.Constants;
 import com.asset.utils.FormUtils;
-import org.flowable.form.api.FormModel;
+import com.asset.utils.R;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -174,5 +179,37 @@ public class AuthorityService {
 
     public int updateAuthority(String procModelId, String actId, String formItemKey, Integer authority) {
         return formAuthorityMapper.updateAuthority(procModelId,actId,formItemKey,authority);
+    }
+
+    public void insertTempletResource(List<AsTempletFormAuthorityDO> asTempletFormAuthorityDOs,
+                                        String procModelId) throws InfoException,DatabaseException{
+        //对流程节点-表单项进行一项一项存储
+        for (int i = 0; i < asTempletFormAuthorityDOs.size(); i++) {
+            AsTempletFormAuthorityDO cur = asTempletFormAuthorityDOs.get(i);
+
+            if (StringUtils.isEmpty(cur.getActId()) ||
+                    StringUtils.isEmpty(cur.getFormItemKey()) ||
+                    cur.getAuthority() == null)
+                throw new InfoException("权限数据缺失");
+
+            FormAuthorityDO formAuthorityDO = new FormAuthorityDO.Builder()
+                    .procModelId(procModelId)
+                    .build();
+            BeanUtils.copyProperties(cur,formAuthorityDO,new String[]{"id"});
+
+            int flag = formAuthorityMapper.insert(formAuthorityDO);
+
+            if (flag == Constants.DATABASE_FAILED)
+                throw new DatabaseException("插入权限数据失败！");
+        }
+    }
+
+    public List<FormAuthorityDO> selectList(String procModelId) {
+        return formAuthorityMapper.selectList(procModelId);
+    }
+
+
+    public void updateFormModelStatus(String procModelId) {
+        formModelService.bindAuthority(procModelId);
     }
 }

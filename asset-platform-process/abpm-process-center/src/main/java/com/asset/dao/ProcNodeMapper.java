@@ -1,5 +1,6 @@
 package com.asset.dao;
 
+import com.asset.entity.AsTempletProcNodeDO;
 import com.asset.entity.ProcNodeDO;
 
 import org.apache.ibatis.annotations.Param;
@@ -28,4 +29,6 @@ public interface ProcNodeMapper {
                                  @Param("nodeId")  String nodeId);
 
     int updateSelective(ProcNodeDO nodeDO);
+
+    List<ProcNodeDO> selectNodes(String procModelId);
 }

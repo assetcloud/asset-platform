@@ -15,7 +15,7 @@ public class AppGroupService {
     }
 
 
-//     public int createAppGroup(GroupRec dto) {
+//     public int createAppGroup(GroupCreateDTO dto) {
 //        Group asGroup = new GroupCreate(
 //                dto.getApp_id(),
 //                dto.getGroup_name(),
@@ -29,7 +29,7 @@ public class AppGroupService {
 //     * @param dto
 //     * @return
 //     */
-//    public int updateAppGroup(GroupRec dto) {
+//    public int updateAppGroup(GroupCreateDTO dto) {
 //        Group info = new GroupEdit(dto.getGroup_id(),
 //                dto.getApp_id(),
 //                dto.getGroup_name());
@@ -42,7 +42,7 @@ public class AppGroupService {
 //     * @param dto
 //     * @return
 //     */
-//    public int deleteAppGroup(GroupRec dto) {
+//    public int deleteAppGroup(GroupCreateDTO dto) {
 //        Group info = new GroupDelete(dto.getGroup_id(),
 //                Constants.GROUP_DISABLED);
 //        groupMapper.updateByPrimaryKey(info);

@@ -86,5 +86,9 @@
         <!--ORDER BY-->
         <!--END_TIME_ DESC-->
     <!--</select>-->
-
+    <select id="getProcInstId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT PROC_INST_ID_
+        FROM ACT_HI_ACTINST
+        WHERE TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+    </select>
 </mapper>

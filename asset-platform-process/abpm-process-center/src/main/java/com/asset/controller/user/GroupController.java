@@ -1,13 +1,12 @@
 package com.asset.controller.user;
 
 import com.asset.dao.AsGroupMapper;
-import com.asset.entity.*;
-import com.asset.entity.GroupDelete;
-import com.asset.entity.Group;
-import com.asset.javabean.RespBean;
-import com.asset.dto.GroupRec;
+import com.asset.dto.GroupCreateDTO;
+import com.asset.dto.GroupUpdateDTO;
+import com.asset.entity.GroupDO;
 import com.asset.service.AppGroupService;
 import com.asset.utils.Constants;
+import com.asset.utils.R;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -43,17 +42,19 @@ public class GroupController {
      */
     @ApiOperation(value = "新建分组")
     @RequestMapping(value = "/group/save" ,method = RequestMethod.POST)
-    public RespBean createOAppGroup(@RequestBody GroupRec rec)
+    public R createOAppGroup(@RequestBody GroupCreateDTO rec)
     {
-        Group group = new GroupCreate(
-                rec.getApp_id(),
-                rec.getGroup_name(),
-                Constants.GROUP_ENABLED);
-        int i =groupMapper.insertSelective(group);
-        if(i==Constants.DATABASE_FAILED)
-            return RespBean.error("创建失败！");
 
-        return RespBean.ok("");
+        GroupDO groupDO = new GroupDO.Builder()
+                .appId(rec.getApp_id())
+                .groupName(rec.getGroup_name())
+                .status(Constants.GROUP_ENABLED)
+                .build();
+        int i =groupMapper.insertSelective(groupDO);
+        if(i==Constants.DATABASE_FAILED)
+            return R.fail("创建失败！");
+
+        return R.success("创建成功");
     }
 
     /**
@@ -62,15 +63,16 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value = "/group/save" ,method = RequestMethod.PATCH)
-    public RespBean updateGroup(@RequestBody GroupRec rec)
+    public R updateGroup(@RequestBody GroupUpdateDTO rec)
     {
-        Group info = new GroupEdit(rec.getGroup_id(),
-                rec.getApp_id(),
-                rec.getGroup_name());
-        int i = groupMapper.updateGroup(info);
+        GroupDO groupDO = new GroupDO.Builder()
+                .id(rec.getGroup_id())
+                .appId(rec.getApp_id())
+                .groupName(rec.getGroup_name()).build();
+        int i = groupMapper.updateGroup(groupDO);
         if(i==Constants.DATABASE_FAILED)
-            return RespBean.error("修改失败！");
-        return RespBean.ok("");
+            return R.fail("修改失败！");
+        return R.success("修改成功");
     }
 
     /**
@@ -79,14 +81,16 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value = "/group/save" ,method = RequestMethod.DELETE)
-    public RespBean deleteGroup(@RequestBody GroupRec rec)
+    public R deleteGroup(@RequestBody GroupUpdateDTO rec)
     {
-        Group info = new GroupDelete(rec.getGroup_id(),
-                Constants.GROUP_DISABLED);
-        int  i = groupMapper.deleteGroup(info);
+        GroupDO groupDO = new GroupDO.Builder()
+                .id(rec.getGroup_id())
+                .status(Constants.GROUP_DISABLED)
+                .build();
+        int  i = groupMapper.deleteGroup(groupDO);
         if(i==Constants.DATABASE_FAILED)
-            return RespBean.error("删除失败！");
-        return RespBean.ok("");
+            return R.fail("删除失败！");
+        return R.success("删除成功");
     }
 
     /**
@@ -95,9 +99,9 @@ public class GroupController {
      * @return
      */
     @RequestMapping(value = "/group/all" ,method = RequestMethod.GET)
-    public RespBean showGroups(@RequestParam(value = "app_id") String appID)
+    public R<ArrayList<GroupDO>> showGroups(@RequestParam(value = "app_id") String appID)
     {
-        ArrayList<Group> groups = (ArrayList<Group>) groupMapper.selectAll(appID);
+        ArrayList<GroupDO> groups = (ArrayList<GroupDO>) groupMapper.selectAll(appID);
         for(int i = 0; i< groups.size(); i++)
         {
             if(groups.get(i).getStatus()== Constants.GROUP_DISABLED)
@@ -107,8 +111,8 @@ public class GroupController {
             }
         }
         if (groups.size()==0)
-            return RespBean.ok("分组为空！");
-        return RespBean.ok("", groups);
+            return R.fail("分组为空！");
+        return R.data(groups);
     }
 
 }

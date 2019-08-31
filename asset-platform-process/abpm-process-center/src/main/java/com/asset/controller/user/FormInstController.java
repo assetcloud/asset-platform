@@ -4,9 +4,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.*;
 import com.asset.exception.ProcException;
 import com.asset.javabean.FormInstVO;
-import com.asset.javabean.RespBean;
 import com.asset.dto.*;
 import com.asset.service.*;
+import com.asset.utils.R;
 import io.swagger.annotations.*;
 import org.dom4j.DocumentException;
 import org.flowable.common.engine.api.FlowableException;
@@ -40,10 +40,10 @@ public class FormInstController {
      */
     @ApiOperation(value = "请求第一个节点要填写的表单内容", notes = "在用户的应用界面，选择该应用下一个表单，点新增之后，展示给用户的第一个要填写的任务节点表单信息", httpMethod = "GET")
     @RequestMapping(value = "/form_inst/form_sheet", method = RequestMethod.GET)
-    public RespBean showNewFormSheet(@RequestParam(value = "form_model_id") String formModelId) {
+    public R<JSONObject> showNewFormSheet(@RequestParam(value = "form_model_id") String formModelId) {
         JSONObject object = formInstService.showNewFormSheet(formModelId);
 
-        return RespBean.ok("", object);
+        return R.data(object);
     }
 
     /**
@@ -59,18 +59,18 @@ public class FormInstController {
      */
     @ApiOperation(value = "发起实例", notes = "实例发起时，用户填写完表单，接着点击“提交”发送的请求", httpMethod = "POST")
     @RequestMapping(value = "/form_inst/save", method = RequestMethod.POST)
-    public RespBean commitNewFormInst(@ApiParam(value = "实例发起实体类", required = true) @RequestBody FormInstRecCreate dto) {
+    public R<String[]> commitNewFormInst(@ApiParam(value = "实例发起实体类", required = true) @RequestBody FormInstRecCreate dto) {
         String[] urls;
         try {
             urls = formInstService.commitNewFormInst(dto);
         } catch (DocumentException e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage());
+            return R.fail(e.getMessage());
         } catch (FlowableException e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage() + "  请检查流程模型元素是否有误！");
+            return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
         }
-        return RespBean.ok("", urls);
+        return R.data(urls);
     }
 
     /**
@@ -83,7 +83,7 @@ public class FormInstController {
      */
     @ApiOperation(value = "获取分配到的任务信息", notes = "", httpMethod = "GET")
     @RequestMapping(value = "/form_inst/show", method = RequestMethod.GET)
-    public RespBean listFormInst(
+    public R listFormInst(
             @ApiParam(value = "当前用户Id", required = true)
             @RequestParam(value = "user_id") String userID,
             @ApiParam(value = "当前要查看的任务节点类型,0——待办任务,1——待阅任务,2——全部任务", required = true, allowableValues = "0,1,2")
@@ -97,9 +97,9 @@ public class FormInstController {
             formInstVOs = formInstService.listFormInst(userID, taskType, sceneId, sectionId);
         } catch (Exception e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
-        return RespBean.ok("", formInstVOs);
+        return R.data( formInstVOs);
     }
 
     /**
@@ -110,7 +110,7 @@ public class FormInstController {
      */
     @ApiOperation(value = "获取分配到的任务数目", notes = "在首页展示当前当前用户分配到的任务数目", httpMethod = "GET")
     @GetMapping(value = "/form_inst/all/count")
-    public RespBean formInstsCount(
+    public R<List<TaskCount>> formInstsCount(
             @ApiParam(value = "当前用户Id", required = true)
             @RequestParam(value = "user_id") String userID,
             @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
@@ -122,33 +122,36 @@ public class FormInstController {
             taskCounts = formInstService.getFormInstsCounts(userID, sceneId, sectionId);
         } catch (Exception e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
-        return RespBean.ok("", taskCounts);
+        return R.data(taskCounts);
     }
 
     /**
      * 用户登录系统，对审批节点进行处理，点击 同意 或 拒绝
+     * 同时还可以对表单内容进行填写
      * 审批节点对当前节点进行操作
      * 1、点“同意” 即代表当前任务节点会向后流转，同时当前填写的表单实例需要加上这个处理意见，给下一个节点过目
      * 2、点“拒绝” 那么就是流程需要回滚到申请节点那个位置（这边的处理逻辑变成 当前节点直接不可用）
      */
     @ApiOperation(value = "处理待审阅任务", notes = "对待审阅任务进行处理", httpMethod = "POST")
     @RequestMapping(value = "/form_inst/approval_node", method = RequestMethod.POST)
-    public RespBean approveNode(
+    public R<String[]> approveNode(
             @ApiParam(value = "对当前待审阅任务进行处理的实体类", required = true)
             @RequestBody FormInstRecApprove rec) {
+
         String[] urls;
         try {
             urls = formInstService.approveNode(rec);
         } catch (ProcException e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage());
+            return R.fail(e.getMessage());
         } catch (FlowableException e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage() + "  请检查流程模型元素是否有误！");
+            return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
         }
-        return RespBean.ok("", urls);
+
+        return R.data(urls);
     }
 
 
@@ -157,7 +160,7 @@ public class FormInstController {
      */
     @ApiOperation(value = "处理经办任务", notes = "对经办任务进行处理，需要填写表单", httpMethod = "POST")
     @RequestMapping(value = "/form_inst/apply_node", method = RequestMethod.POST)
-    public RespBean applyNode(
+    public R applyNode(
             @ApiParam(value = "对当前经办任务进行处理的实体类", required = true)
             @RequestBody FormInstRecHandle rec) {
         String[] urls;
@@ -165,9 +168,9 @@ public class FormInstController {
             urls = formInstService.applyNode(rec);
         } catch (FlowableException e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage() + "  请检查流程模型元素是否有误！");
+            return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
         }
-        return RespBean.ok("", urls);
+        return R.data(urls);
     }
 
     /**
@@ -175,7 +178,7 @@ public class FormInstController {
      */
     @ApiOperation(value = "处理待阅任务", notes = "对待阅任务进行处理", httpMethod = "POST")
     @RequestMapping(value = "/form_inst/pending_node", method = RequestMethod.POST)
-    public RespBean pendingNode(
+    public R pendingNode(
             @ApiParam(value = "对当前待阅任务进行处理的实体类", required = true)
             @RequestBody FormInstRecReadle rec) {
         String[] urls;
@@ -183,9 +186,9 @@ public class FormInstController {
             urls = formInstService.pendingNode(rec);
         } catch (FlowableException e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage() + "  请检查流程模型元素是否有误！");
+            return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
         }
-        return RespBean.ok("", urls);
+        return R.data(urls);
     }
 
     /**
@@ -196,7 +199,7 @@ public class FormInstController {
      */
     @ApiOperation(value = "外链任务处理", notes = "用户点击外链，自动跳转到相应的任务处理页面，对分配到自己的任务进行快速处理", httpMethod = "POST")
     @RequestMapping(value = "/form_inst/share_link", method = RequestMethod.GET)
-    public RespBean getShareLinkTask(
+    public R getShareLinkTask(
             @ApiParam(value = "外链中包含的TaskId", required = true)
             @RequestParam(value = "task_id") String taskId,
             @ApiParam(value = "当前用户Id", required = true)
@@ -209,9 +212,9 @@ public class FormInstController {
             shareLinkTask = formInstService.getShareLinkTask(taskId, userId, sectionId);
         } catch (Exception e) {
             e.printStackTrace();
-            return RespBean.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
-        return RespBean.ok("", shareLinkTask);
+        return R.data(shareLinkTask);
     }
 
 

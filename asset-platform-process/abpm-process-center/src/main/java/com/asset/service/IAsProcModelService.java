@@ -1,6 +1,7 @@
 package com.asset.service;
 
-import com.asset.entity.AsProcModel;
+import com.asset.dto.SeqConditionDTO;
+import com.asset.entity.AsProcModelDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,7 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author YBY
  * @since 2019-08-07
  */
-public interface IAsProcModelService extends IService<AsProcModel> {
+public interface IAsProcModelService extends IService<AsProcModelDO> {
     public void saveProcNodeNum(String procModelId,Integer procNodeNum)throws Exception;
 
     int getProcNodeNum(String procModelId);
@@ -20,8 +21,8 @@ public interface IAsProcModelService extends IService<AsProcModel> {
 
     void updateProcNodeNum(String procModelId, Integer procNodeNum) throws Exception;
 
-    void saveSeqCondition(String procModelId,String seqConditions) throws Exception;
+    void saveSeqCondition(SeqConditionDTO dto) throws Exception;
 
-    AsProcModel getProcModelById(String procModelId);
+    AsProcModelDO getProcModelById(String procModelId);
 
 }

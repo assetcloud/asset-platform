@@ -2,7 +2,7 @@ package com.asset.controller.user;
 
 import com.asset.base.BaseController;
 import com.asset.service.OrganizationService;
-import com.asset.service.ProcRepositoryService;
+import com.asset.service.IProcRepositoryService;
 import com.asset.utils.Constants;
 import com.asset.utils.PageGrids;
 import io.swagger.annotations.Api;
@@ -23,7 +23,7 @@ public class OrganizationController extends BaseController {
     OrganizationService organizationService;
 
     @Autowired
-    ProcRepositoryService procRepositoryService;
+    IProcRepositoryService IProcRepositoryService;
 
     /**
      * 流程定义页面
