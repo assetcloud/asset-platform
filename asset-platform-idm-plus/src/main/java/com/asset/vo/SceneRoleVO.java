@@ -5,7 +5,7 @@ import lombok.Data;
 
 
 @Data
-@ApiModel(value = "ResourceVO对象", description = "ResourceVO对象")
+@ApiModel(value = "SceneRoleVO对象", description = "SceneRoleVO对象")
 public class SceneRoleVO {
 
     /**

@@ -321,6 +321,17 @@
     ORDER BY
         os.id ASC
   </select>
+  <select id="getNodeByScene" resultMap="ResultMapByScene">
+    SELECT
+	*
+    FROM
+        as_organ_scene os
+    WHERE
+        os.`status` = 1
+        AND os.scene_id = #{id} AND os.node_id = #{nodeId}
+    ORDER BY
+        os.id ASC
+  </select>
   <select id="searchNode" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT * FROM as_organ_tree WHERE unit_name LIKE CONCAT('%', #{unitName}, '%') AND status != 0 AND is_deleted = 0
   </select>

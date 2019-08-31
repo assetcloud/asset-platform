@@ -6,8 +6,10 @@ import com.asset.bean.UserScene;
 import com.asset.mapper.SceneRoleMapper;
 import com.asset.mapper.UserSceneMapper;
 import com.asset.service.IUserSceneService;
+import com.asset.vo.UserVO;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +17,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class UserSceneServiceImpl extends ServiceImpl<UserSceneMapper, UserScene> implements IUserSceneService {
 
-    @Autowired
     UserSceneMapper userSceneMapper;
 
-    @Autowired
     SceneRoleMapper sceneRoleMapper;
 
     @Override

@@ -48,7 +48,6 @@ public class SceneWrapper {
 		return BeanUtil.copy(scene, SceneVO.class);
 	}
 
-
 	public List<SceneVO> listNodeVO(List<Scene> list) {
 		return list.stream().map(scene -> BeanUtil.copy(scene, SceneVO.class)).collect(Collectors.toList());
 	}

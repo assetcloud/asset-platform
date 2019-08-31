@@ -19,12 +19,14 @@ import com.asset.bean.User;
 import com.asset.service.IDictService;
 import com.asset.service.IRoleService;
 import com.asset.service.IUserService;
+import com.asset.vo.SceneRoleVO;
 import com.asset.vo.UserVO;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 包装类,返回视图层所需的字段
@@ -54,4 +56,14 @@ public class UserWrapper{
 		return userVO;
 	}
 
+	public List<UserVO> listNodeVO(List<User> list) {
+		return list.stream().map(user -> BeanUtil.copy(user, UserVO.class)).collect(Collectors.toList());
+	}
+//
+//	public List<UserVO> listNodeVOWithSceneRoles(List<User> list) {
+//		for (User user1 : list) {
+//			user1.getSceneRoles().forEach(sceneRole -> BeanUtil.copy(sceneRole, SceneRoleVO.class));
+//		}
+//		return list.stream().map(user -> BeanUtil.copy(user, UserVO.class)).collect(Collectors.toList());
+//	}
 }

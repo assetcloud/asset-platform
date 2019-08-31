@@ -3,6 +3,8 @@ package com.asset.mapper;
 import com.asset.bean.SceneRole;
 import com.asset.bean.User;
 import com.asset.bean.UserScene;
+import com.asset.vo.SceneRoleVO;
+import com.asset.vo.UserVO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springframework.stereotype.Component;
 

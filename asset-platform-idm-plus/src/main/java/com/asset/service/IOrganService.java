@@ -1,5 +1,6 @@
 package com.asset.service;
 
+import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
 import com.asset.bean.User;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -48,6 +49,13 @@ public interface IOrganService extends IService<OrganTree> {
      * @return
      */
     OrganTree getTreeByScene(String sceneId);
+
+    /**
+     * 通过场景获取组织结构树中的特定节点（不包含顶级节点）
+     * @param sceneId
+     * @return
+     */
+    List<OrganScene> getNodeByScene(String sceneId, String nodeId);
     /**
      * 节点模糊检索
      * @param unitName

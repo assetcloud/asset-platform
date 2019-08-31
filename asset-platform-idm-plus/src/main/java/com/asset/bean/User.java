@@ -75,6 +75,9 @@ public class User implements UserDetails, Serializable {
     @TableField(exist = false)
     private List<Role> roles;
 
+    @TableField(exist = false)
+    private List<SceneRole> sceneRoles;
+
     public User (String accountName, String userEmail){
         this.accountName = accountName;
         this.userEmail = userEmail;

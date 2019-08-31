@@ -8,6 +8,7 @@ import com.asset.utils.CommonUtils;
 import com.asset.utils.Email;
 import com.asset.utils.Func;
 import com.asset.wrapper.SceneWrapper;
+import com.asset.wrapper.UserWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.google.common.collect.Lists;
@@ -42,6 +43,12 @@ public class SceneController {
     IMailService mailService;
 
     ISceneRelationService sceneRelationService;
+
+    IUserService userService;
+
+    IRoleService roleService;
+
+    IDictService dictService;
 
     @ApiOperation(value = "获取所有场景信息", notes = "已完成")
     @RequestMapping(value = "/sceneList", method = RequestMethod.GET)
@@ -207,11 +214,13 @@ public class SceneController {
             @ApiImplicitParam(name = "memberName", value = "用户姓名", required = true, dataTypeClass = String.class)
     })
     @GetMapping("node/members/list")
-    public RespBean getUsersByNode(@RequestParam("page") Integer page, @RequestParam("size") Integer size
+    public R getUsersByNode(@RequestParam("page") Integer page, @RequestParam("size") Integer size
             , @RequestParam("sceneId") String sceneId, @RequestParam("nodeId") String nodeId
             , @RequestParam("memberName") String memberName){
         PageHelper.startPage(page, size);
-        return RespBean.data(new PageInfo<>(userSceneService.getNodeUsers(sceneId, nodeId, memberName)));
+        List<User> nodeUsers = userSceneService.getNodeUsers(sceneId, nodeId, memberName);
+        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
+        return R.data(new PageInfo<>(userWrapper.listNodeVO(nodeUsers)));
     }
 
     @ApiOperation(value = "场景中通过组织部门获取所属用户（无分页）", notes = "已完成")
