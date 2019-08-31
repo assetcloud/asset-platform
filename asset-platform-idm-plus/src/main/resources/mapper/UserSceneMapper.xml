@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asset.mapper.UserSceneMapper">
+
+    <resultMap id="userVOMap" type="com.asset.bean.User">
+        <result column="id" property="id"/>
+        <result column="real_name" property="realName"/>
+        <result column="phone_number" property="phoneNumber"/>
+        <result column="user_email" property="userEmail"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <resultMap id="loadSceneRoles" type="com.asset.bean.User" extends="userVOMap">
+        <collection property="sceneRoles" ofType="com.asset.bean.SceneRole"
+                    select="com.asset.mapper.UserSceneMapper.getRoles" column="{userId=id,sceneId=sceneId}">
+        </collection>
+    </resultMap>
     <select id="hasScene" resultType="com.asset.bean.UserScene">
         select * from as_user_scene where user_id = #{param1} and scene_id = #{param2} and status =1
     </select>
@@ -17,17 +30,18 @@
         UPDATE as_user_scene SET node_principal = 0
         WHERE scene_id = #{param1} AND node_id = #{param2} AND status = 1 AND node_principal = 1
     </update>
-    <select id="getUsers" resultType="com.asset.bean.User">
-        select account_name, id, real_name, account_name, user_email, phone_number, account_picture, user_address, status
-        from as_user
+    <select id="getUsers" resultMap="loadSceneRoles">
+        select id, real_name, user_email, phone_number, status, #{param1} as sceneId from as_user
         where as_user.id IN (
             SELECT user_id from as_user_scene WHERE scene_id = #{param1} AND node_id = #{param2} AND status = 1
         )
-        AND real_name LIKE CONCAT('%',#{param3},'%')
+        <if test="param3 != null and param3 != ''">
+            AND real_name LIKE CONCAT('%',#{param3},'%')
+        </if>
     </select>
     <select id="getRoles" resultType="com.asset.bean.SceneRole">
-        SELECT * FROM as_scene_role WHERE scene_code = #{param2} AND is_deleted = 0 AND id IN (
-            SELECT role_id FROM as_user_scene us WHERE us.user_id = #{param1} AND us.scene_id = #{param2} AND status = 1
+        SELECT * FROM as_scene_role WHERE scene_code = #{sceneId} AND status = 1 AND id IN (
+            SELECT rid FROM as_scene_relation sr WHERE sr.uid = #{userId} AND is_deleted = 0
         )
     </select>
 </mapper>

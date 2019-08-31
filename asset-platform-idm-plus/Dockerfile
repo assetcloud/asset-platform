@@ -1,12 +1,13 @@
-FROM java
+# FROM java
+FROM hub.c.163.com/library/java:8-jre
 MAINTAINER hjhu
 RUN mkdir -p /platform/idm
 WORKDIR /platform/idm
-EXPOSE 8084
+EXPOSE 8083
 VOLUME /docker
-ADD ./target/asset-platform-idm-plus-1.1.1.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
-#CMD ["--spring.profiles.active=test"]
-ENV MYSQL_USER root
-ENV MYSQL_PASS root
-ENV MYSQL_URL jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+ADD target/*.jar app.jar
+ENTRYPOINT ["java","-Dfile.encoding=utf-8","-jar","app.jar"]
+CMD ["--spring.profiles.active=dev"]
+# ENV MYSQL_USER root
+# ENV MYSQL_PASS root
+# ENV MYSQL_URL jdbc:mysql://localhost:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8

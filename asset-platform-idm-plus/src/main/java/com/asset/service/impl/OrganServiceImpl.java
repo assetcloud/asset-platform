@@ -142,7 +142,13 @@ public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> im
     public OrganTree getTreeByScene(String sceneId){
         List<OrganScene> list = organTreeMapper.getTreeByScene(sceneId);
         List<OrganTree> organTrees = CommonUtils.NodeTransformer(list);
+
         return TreeNodeMerger.merge(organTrees);
+    }
+
+    @Override
+    public List<OrganScene> getNodeByScene(String sceneId, String nodeId) {
+        return organTreeMapper.getNodeByScene(sceneId, nodeId);
     }
 
     /**

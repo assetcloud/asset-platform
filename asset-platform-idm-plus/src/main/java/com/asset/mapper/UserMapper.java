@@ -1,5 +1,6 @@
 package com.asset.mapper;
 
+import com.asset.bean.Role;
 import com.asset.bean.SceneRole;
 import com.asset.bean.User;
 import com.asset.common.model.UserPageParam;
@@ -16,7 +17,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     User findUserByUsername(@Param("username") String username);
 
-    List<SceneRole> getRolesByUserId(String id);
+    List<Role> getRolesByUserId(String id);
 
     List<User> getAllUser(int currentId);
 

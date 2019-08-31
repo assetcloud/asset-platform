@@ -5,10 +5,12 @@ import com.asset.common.SystemConstant;
 import com.asset.config.WebLog;
 import com.asset.service.*;
 import com.asset.utils.Func;
+import com.asset.wrapper.UserWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,12 @@ public class ApiController {
     ISceneRoleService sceneRoleService;
 
     IUserRoleService userRoleService;
+
+    IUserSceneService userSceneService;
+
+    IRoleService roleService;
+
+    IDictService dictService;
 
     /*@ApiOperation(value = "获取所有场景信息", notes = "获取所有场景信息",tags = "组织", httpMethod = "GET")
     @RequestMapping(value = "rest/scenes", method = RequestMethod.GET)
@@ -89,6 +97,7 @@ public class ApiController {
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String"),
             @ApiImplicitParam(name = "groupId", value = "场景id", required = true, dataType = "String")
     })
+
     @PostMapping(value = "form/add")
     @Transactional
     public RespBean addResource(@RequestBody FormModelInfo formModelInfo, @RequestParam("sceneId") String sceneId
@@ -146,5 +155,45 @@ public class ApiController {
         userRoleService.save(userRole);
         sceneService.enableScene(userId, sceneId);
         return RespBean.ok("用户审核通过");
+    }
+
+    @GetMapping("hdu/organization")
+    public R getHduOrgan(@RequestParam("sceneId") String sceneId, @RequestParam("nodeId") String nodeId){
+        // 杭电的工作场景 e65edc60-96ee-11e9-ac96-005056c00001
+        // 杭电级别的部门集合 743ccc5fb94314d08490c4662b16753a
+        return R.data(organService.getNodeByScene(sceneId, nodeId));
+    }
+
+    @GetMapping("hdu/node/user/list")
+    public R getUsersByNode(@RequestParam("sceneId") String sceneId, @RequestParam("nodeId") String nodeId){
+        List<User> nodeUsers = userSceneService.getNodeUsers(sceneId, nodeId, "");
+        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
+        return R.data(userWrapper.listNodeVO(nodeUsers));
+    }
+
+    @ApiOperation(value = "批量添加组织树节点", notes = "已完成")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "id", value = "单位id", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "unitName", value = "单位名称", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "parentId", value = "父节点id，若无则为\"\"", required = true, dataType = "String"),
+            @ApiImplicitParam(name = "sort", value = "排序编号，默认为0", required = true, dataType = "Integer")
+    })
+    @PostMapping("hdu/organ/nodes/add")
+    public R addNode(@RequestBody List<OrganTree> organTrees){
+        for (OrganTree organTree : organTrees) {
+            if (Func.isNull(organTree.getSort())){
+                organTree.setSort(0);
+            }
+            if (organService.nodeExists(organTree.getUnitName())){
+                return R.fail(String.format("组织部门: %s 已存在", organTree.getUnitName()));
+            }
+//            if (!organService.hasParent(organTree.getParentId())){
+//                return R.fail("目标父节点不存在");
+//            }
+            organTree.setStatus(1);
+            organTree.setIsDeleted(0);
+            organTree.setEnableTime(new Date());
+        }
+        return R.data(organService.batchAddNodes(organTrees));
     }
 }

@@ -35,6 +35,8 @@ public interface OrganTreeMapper extends BaseMapper<OrganTree> {
 
     List<OrganScene> getTreeByScene(@Param("id") String id);
 
+    List<OrganScene> getNodeByScene(@Param("id") String id, @Param("nodeId") String nodeId);
+
     int batchUpdate(List<OrganTree> organTrees);
 
     List<OrganTree> searchNode(@Param("unitName") String unitName);

@@ -3,6 +3,7 @@ package com.asset.service;
 import com.asset.bean.SceneRole;
 import com.asset.bean.User;
 import com.asset.bean.UserScene;
+import com.asset.vo.UserVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
