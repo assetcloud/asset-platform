@@ -91,4 +91,15 @@
         FROM ACT_HI_ACTINST
         WHERE TASK_ID_ = #{taskId,jdbcType=VARCHAR}
     </select>
+
+    <select id="selectModelEditorJson" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT model_editor_json
+        FROM ACT_DE_MODEL
+        WHERE id = #{procModelId,jdbcType=VARCHAR}
+    </select>
+    <update id="updateModelEditorJson" parameterType="java.lang.String">
+        UPDATE ACT_DE_MODEL
+        SET model_editor_json = #{newModelEditorJson,jdbcType=LONGVARCHAR}
+        WHERE id = #{procModelId,jdbcType=VARCHAR}
+    </update>
 </mapper>

@@ -2,6 +2,7 @@ package com.asset.controller.user;
 
 import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.*;
+import com.asset.exception.DatabaseException;
 import com.asset.exception.ProcException;
 import com.asset.javabean.FormInstVO;
 import com.asset.dto.*;
@@ -69,6 +70,10 @@ public class FormInstController {
         } catch (FlowableException e) {
             e.printStackTrace();
             return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
+        } catch (DatabaseException e)
+        {
+            e.printStackTrace();
+            return R.fail(e.getMessage() );
         }
         return R.data(urls);
     }

@@ -18,6 +18,7 @@ public class OptionsBase {
     Boolean disabled;
     Object width;
     Object defaultValue;
+    Object labelWidth;
     Object dataType;
     Object pattern;
     Object placeholder;
@@ -48,7 +49,10 @@ public class OptionsBase {
     Object isRange;
     Object arrowControl;
     Object controlsPosition;
+    Object isLabelWidth;
     Object customClass;
+    Object hidden;
+    Object dataBind;
 
     public OptionsBase() {
     }

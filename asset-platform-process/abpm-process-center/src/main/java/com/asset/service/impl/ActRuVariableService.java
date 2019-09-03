@@ -32,6 +32,7 @@ public class ActRuVariableService extends ServiceImpl<ActRuVariableMapper, ActRu
 
     /**
      * 往act_ru_variable表中存储流程运行中变量
+     * 当前的处理结果是所有都是string类型
      */
     @Override
     public void saveRunVariable(ActRuVariableBO boo) {

@@ -2,6 +2,7 @@ package com.asset.dao;
 
 import com.asset.entity.FlowableTaskDO;
 import com.asset.entity.FormInstDO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -37,6 +38,11 @@ public interface FlowableMapper {
     String getModelName(String modelId);
 
     String getProcInstId(String taskId);
+
+    String selectModelEditorJson(String procModelId);
+
+    Integer updateModelEditorJson(@Param("procModelId") String procModelId,
+                               @Param("newModelEditorJson") String newModelEditorJson);
 
 //    /**
 //     * 找到在taskId之前 相同执行链（executionId）上按时间排序所有被执行的流程节点

@@ -7,6 +7,8 @@ import org.flowable.bpmn.model.Process;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
+import org.flowable.engine.history.HistoricProcessInstance;
+import org.flowable.engine.impl.RepositoryServiceImpl;
 import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.DeploymentBuilder;
@@ -56,8 +58,8 @@ public class ProcUtils {
                 for (Task task : tasks) {
                     try {
                         taskService.complete(task.getId());
-                    }catch (FlowableException e){
-                        System.out.println("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss  "+task.getId());
+                    } catch (FlowableException e) {
+                        System.out.println("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss  " + task.getId());
                     }
                 }
             }
@@ -83,7 +85,7 @@ public class ProcUtils {
      *
      * @param taskID
      */
-    public static void completeTask(String taskID) throws FlowableException{
+    public static void completeTask(String taskID) throws FlowableException {
         taskService.complete(taskID);
     }
 
@@ -137,9 +139,9 @@ public class ProcUtils {
      *
      * @param procInstId
      */
-    public static void suspendProcInst(String procInstId) throws Exception{
-        if(isFinished(procInstId))
-            throw new ProcException("流程实例: "+procInstId+"已执行完毕，无法挂起！");
+    public static void suspendProcInst(String procInstId) throws Exception {
+        if (isFinished(procInstId))
+            throw new ProcException("流程实例: " + procInstId + "已执行完毕，无法挂起！");
         //根据一个流程实例的id挂起该流程实例
         runtimeService.suspendProcessInstanceById(procInstId);
 
@@ -150,9 +152,9 @@ public class ProcUtils {
      *
      * @param procInstId
      */
-    public static void activateProcInst(String procInstId) throws Exception{
-        if(isFinished(procInstId))
-            throw new ProcException("流程实例: "+procInstId+"已执行完毕，无法执行激活操作！");
+    public static void activateProcInst(String procInstId) throws Exception {
+        if (isFinished(procInstId))
+            throw new ProcException("流程实例: " + procInstId + "已执行完毕，无法执行激活操作！");
 
         runtimeService.activateProcessInstanceById(procInstId);
     }
@@ -233,7 +235,11 @@ public class ProcUtils {
                 .processInstanceId(processInstanceId).count() > 0;
     }
 
-
+    /**
+     * 删除流程
+     *
+     * @param procInstId
+     */
     public static void deleteProcInst(String procInstId) {
         ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
                 .processInstanceId(procInstId) // 使用流程实例ID查询
@@ -249,9 +255,82 @@ public class ProcUtils {
     }
 
 
-    public static String getExecutionId(String taskId)
-    {
+    public static String getExecutionId(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         return task.getExecutionId();
     }
+
+    /**
+     * 审批节点点击“不同意”，导致实例结束
+     */
+    public static void completeProcInstForRejected(String procInstId) throws FlowableException{
+        ProcessInstance instance = runtimeService.createProcessInstanceQuery()
+                .processInstanceId(procInstId) // 使用流程实例ID查询
+                .singleResult();
+
+        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+            List<Task> tasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
+
+            if (tasks.size() == 0)
+                break;
+
+            //遍历，然后完成
+            for (Task task : tasks) {
+                    taskService.complete(task.getId());
+            }
+        }
+
+    }
+
+
+//    /**
+//     * 终止正在运行的流程实例
+//     * @author:kaka
+//     * @param dkey:流程定义key,businessKey:业务id
+//     */
+//    public void stopRunProcessInstance( String dkey,String businessKey) {
+//        if( null != businessKey ) {
+//            HistoricProcessInstance processInstanceId = historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey( businessKey ).singleResult();
+//            Task task = taskService.createTaskQuery().processInstanceId( processInstanceId.getId() ).singleResult();
+//            if(null != task){
+//                // 直接跳转到结束
+//                String eventActivityId = getEndEventActivityId(dkey);
+//                taskService.getCommandExecutor().execute( new JumpTaskCmdService( task.getExecutionId(), eventActivityId) );
+//            }
+//        }
+//
+//    }
+//
+//    public String getEndEventActivityId(String dkey){
+//        String endActivityId = null;
+//        List<ActivityImpl> allActivities = getAllActivities(dkey);
+//        for(ActivityImpl activity : allActivities){
+//            String type = activity.getProperty("type").toString();
+//            if(type.equals("endEvent")){
+//                endActivityId = activity.getId();
+//                break;
+//            }
+//        }
+//        return endActivityId;
+//    }
+//
+//    //存放流程对应的所有activity
+//    private static Map<String,List<ActivityImpl>> processActivitiMap = new HashMap<>();
+//
+//    public List<ActivityImpl> getAllActivities(String dkey) {
+//        List<ActivityImpl> activities = processActivitiMap.get(dkey);
+//        if(activities == null){
+//            RepositoryService repositoryService = factory.getRepositoryService();
+//            ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionKey(dkey).singleResult();
+//            ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+//                    .getDeployedProcessDefinition(definition.getId());
+//
+//            //获取所有的activity
+//            activities = processDefinition.getActivities();
+//            processActivitiMap.put(dkey,activities);
+//        }
+//
+//        return activities;
+//    }
+
 }

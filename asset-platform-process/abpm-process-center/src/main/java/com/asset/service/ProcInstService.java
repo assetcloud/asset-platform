@@ -7,6 +7,7 @@ import com.asset.dao.FormInstMapper;
 import com.asset.dao.ProcNodeMapper;
 import com.asset.dto.*;
 import com.asset.entity.*;
+import com.asset.exception.DatabaseException;
 import com.asset.exception.ProcException;
 import com.asset.form.FormSheet;
 import com.asset.javabean.AdminProcInstVO;
@@ -14,6 +15,8 @@ import com.asset.service.impl.AsProcModelService;
 import com.asset.utils.Constants;
 import com.asset.utils.ProcUtils;
 import com.asset.utils.JsonUtils;
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.ReadContext;
 import org.dom4j.*;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
@@ -151,7 +154,16 @@ public class ProcInstService {
      * @param procModelId
      * @return
      */
-    public HashMap<String, Object> createProcInstance(String procModelId) throws DocumentException {
+    public HashMap<String, Object> createProcInstance(String procModelId) throws DocumentException,DatabaseException {
+        //因为陈慢慢前端的审批节点、待阅节点的任务类型是ServiceTask和ScriptTask，需要把这两个改成UserTask
+        //先从数据库表中获取相应内容
+        String modelEditorJson = flowableService.getModelEditorJson(procModelId);
+        String replace1 = modelEditorJson.replace("\"stencil\":{\"id\":\"ScriptTask\"}", "\"stencil\":{\"id\":\"UserTask\"}");
+        String replace2 = replace1.replace("\"stencil\":{\"id\":\"ServiceTask\"}", "\"stencil\":{\"id\":\"UserTask\"}");
+        int flag = flowableService.updateModelEditorJson(procModelId,replace2);
+        if(flag == Constants.DATABASE_FAILED)
+            throw new DatabaseException("节点数据更新失败！");
+
         ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
         RepositoryService repositoryService = engine.getRepositoryService();
         RuntimeService runtimeService = engine.getRuntimeService();
