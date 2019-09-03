@@ -27,13 +27,9 @@ public class AsFormInst implements Serializable {
 
     @TableId(type = IdType.UUID)
     private String id;
-
     private String formModelId;
-
     private String procInstId;
-
     private String executionId;
-
     private String taskId;
 
     /**

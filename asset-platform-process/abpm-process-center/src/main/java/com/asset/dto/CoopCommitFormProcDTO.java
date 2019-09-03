@@ -36,4 +36,7 @@ public class CoopCommitFormProcDTO {
     //提交人的Id
     @ApiModelProperty(value = "提交人的用户Id，这个值应当从组织架构模块中获取",required = true)
     String committer_id;
+
+    @ApiModelProperty(value = "用于指示是部门内资产移交还是部门间资产移交,1——部门间移交，0——部门内移交")
+    int condition;
 }

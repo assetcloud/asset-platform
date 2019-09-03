@@ -151,7 +151,8 @@ public class FormModelController {
             httpMethod = "GET")
     @GetMapping(value = "/form_model/scene_id")
     public R<String> getSceneId(@RequestParam(value = "task_id") String taskId) {
-        String sceneId = formModelService.getSceneIdByTaskId(taskId);
+        String sceneId = asFormModelService.getFormModelSceneId(taskId);
+//        String sceneId = formModelService.getSceneIdByTaskId(taskId);
         return R.data(sceneId);
     }
 

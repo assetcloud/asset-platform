@@ -206,7 +206,7 @@
     <select id="getModelSheetStr" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT model_sheet
         FROM as_form_model
-        WHERE id = #{formModelID,jdbcType = VARCHAR};
+        WHERE id = #{formModelID,jdbcType = VARCHAR}
     </select>
 
     <select id="checkFormContain" parameterType="java.lang.String" resultType="java.lang.String">

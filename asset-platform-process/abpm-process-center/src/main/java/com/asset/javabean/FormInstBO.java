@@ -23,50 +23,10 @@ public class FormInstBO extends FormInstDO {
     String nodeId;
     Integer ifJointSign;
     String sceneId;
+    String committer;
 
 
     public FormInstBO() {
-    }
-
-//    @Autowired
-//    ProcInstService procInstService;
-//    @Autowired
-//    ProcModelService procModelService;
-//    @Autowired
-//    FlowableService flowableService;
-//    @Autowired
-//    FormModelService formModelService;
-
-    public FormInstBO (FormInstDO doo,
-                       String curUserId,
-                       Integer curTaskType,
-                       ProcNodeDO nodeDO,
-                       String sceneId){
-        this.formInstValue = doo.getFormInstValue();
-        this.formModelId = doo.getFormModelId();
-        this.procInstId = doo.getProcInstId();
-        this.executionId = doo.getExecutionId();
-        this.taskId = doo.getTaskId();
-        this.executor = doo.getExecutor();
-        this.formInstSheetStr = doo.getFormInstSheetStr();
-        this.executeTime = doo.getExecuteTime();
-        this.id = doo.getId();
-        this.nodeType = doo.getNodeType();
-        this.status = doo.getStatus();
-
-//        this.procModelId = procInstService.getProcModelId(procInstId);
-//        this.nodeId = flowableService.getNodeId(taskId);
-//        ProcNodeDO nodeDO = procModelService.getNodeDO(procModelId, nodeId);
-        this.curTaskType = curTaskType;
-        this.curUserId = curUserId;
-
-        if(!StringUtils.isEmpty(nodeDO.getCandidateUser()))
-            this.candidateUser = nodeDO.getCandidateUser().split("\\|");
-        if(!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
-            this.candidateGroup = nodeDO.getCandidateGroup().split("\\|");
-        this.ifJointSign = nodeDO.getIfJointSign();
-
-        this.sceneId = sceneId;
     }
 
     private FormInstBO(Builder builder) {
@@ -90,6 +50,7 @@ public class FormInstBO extends FormInstDO {
         setNodeId(builder.nodeId);
         setIfJointSign(builder.ifJointSign);
         setSceneId(builder.sceneId);
+        setCommitter(builder.committer);
     }
 
     public FormInstVO transToVO(String committer) {
@@ -142,6 +103,7 @@ public class FormInstBO extends FormInstDO {
         private String nodeId;
         private Integer ifJointSign;
         private String sceneId;
+        private String committer;
 
         public Builder() {
         }
@@ -243,6 +205,11 @@ public class FormInstBO extends FormInstDO {
 
         public Builder sceneId(String val) {
             sceneId = val;
+            return this;
+        }
+
+        public Builder committer(String val) {
+            committer = val;
             return this;
         }
 

@@ -5,10 +5,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.asset.converter.FormConverter;
 import com.asset.dao.*;
 import com.asset.entity.*;
-import com.asset.exception.FormException;
-import com.asset.exception.InfoException;
-import com.asset.exception.ProcException;
-import com.asset.exception.SizeNullException;
+import com.asset.exception.*;
+import com.asset.filter.DuplicateFilter;
+import com.asset.filter.SceneFilter;
+import com.asset.filter.UserIdFilter;
 import com.asset.form.FormItem;
 import com.asset.form.FormSheet;
 import com.asset.dto.*;
@@ -18,6 +18,7 @@ import com.asset.javabean.FormInstVO;
 import com.asset.javabean.TaskBO;
 import com.asset.service.impl.ActRuVariableService;
 import com.asset.utils.*;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.flowable.common.engine.api.FlowableException;
@@ -58,6 +59,8 @@ public class FormInstService {
     ActRuVariableService actRuVariableService;
     @Autowired
     FormInstMapper formInstMapper;
+    @Autowired
+    AsFormInstMapper asFormInstMapper;
 
     /**
      * 业务入口
@@ -65,7 +68,7 @@ public class FormInstService {
      * @param formModelId
      * @return
      */
-    public JSONObject showNewFormSheet(String formModelId) {
+    public JSONObject showNewFormSheet(String formModelId) throws InfoException{
         //获取对应流程模型ID以及流程模型中第一个节点ID
         String procModelId = formModelService.getProcModelID(formModelId);
         String firstNodeId = procNodeService.getFirstNodeId(procModelId);
@@ -104,7 +107,7 @@ public class FormInstService {
     }
 
 
-    public String commitFormInst(FormInstRecCreate dto) throws DocumentException {
+    public String commitFormInst(FormInstRecCreate dto) throws DocumentException, DatabaseException {
         //1、先获取与表单模型唯一绑定的流程模型ID
         String procModelID = formModelService.getProcModelID(dto.getForm_model_id());
         //直接由流程模型后台创建流程实例(还没持久化)
@@ -210,6 +213,8 @@ public class FormInstService {
                 boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
             if(!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
                 boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
+
+            boo.setCommitter(procInstService.getCommitter(doo.getTaskId()));
 
             formInstBOs.add(boo);
 //            formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,
@@ -327,9 +332,10 @@ public class FormInstService {
 //        String procInstID = formInstMapper.getProcInstID(dto.getForm_inst_id());
         String procInstID = dto.getProc_inst_id();
 
-        //审批节点还可以对表单内容进行修改
+        //审批节点还可以对表单内容进行修改,这里的代码在updateFormInst方法里面写了
         //当前填写表单数据 对数据库进行更新
         updateFormInst(dto);
+
         //在flowable流程引擎完成任务之前，需要确保表单项的值写入了act_ru_variable表中，否则分支结构的流程不能正常运行,第一个节点填写的
         String executionId = ProcUtils.getExecutionId(dto.getTask_id());
         ActRuVariableBO boo = new ActRuVariableBO.Builder()
@@ -369,7 +375,7 @@ public class FormInstService {
         // 这里现在的思路是在回滚前把当前流程实例的其他任务节点状态统一设成 已被回滚，同时回滚之后还要把新生成的form_inst加入数据库
         else if(dto.getApprove_result() == Constants.APPROVE_DISAGREE)
         {
-            ProcUtils.deleteProcInst(procInstID);
+            ProcUtils.completeProcInstForRejected(procInstID);
 
 //            String lastApplyNode = getLastApplyNode(getProcInstId(dto.getTask_id()));
 //            if(lastApplyNode.equals(""))
@@ -631,12 +637,17 @@ public class FormInstService {
         //sheet、value不用更新
         if (recBase instanceof FormInstRecApprove)
         {
-            inst = new FormInstDO(
-                    ((FormInstRecApprove) recBase).getForm_inst_id(),
-                    ((FormInstRecApprove) recBase).getApprove_result(),
-                    recBase.getEditor()
-            );
+            String formInstSheet = JSONObject.toJSONString(((FormInstRecApprove) recBase).getForm_inst_sheet());
+            inst = new FormInstDO.Builder()
+                    .id(((FormInstRecApprove) recBase).getForm_inst_id())
+                    .approveResult(((FormInstRecApprove) recBase).getApprove_result())
+                    .executor(recBase.getEditor())
+                    .procInstId(((FormInstRecApprove) recBase).getProc_inst_id())
+                    .formInstValue(((FormInstRecApprove) recBase).getForm_inst_value())
+                    .formInstSheetStr(formInstSheet)
+                    .build();
             formInstMapper.approveFormInst(inst);
+            procInstService.updateFormValueForAll(((FormInstRecApprove) recBase).getForm_inst_value(),inst.getProcInstId());
         }
         // 经办节点,更新executor、execute_time、sheet、value值
         // 注意这里还需要对as_proc_inst表的eform_inst_all_value字段进行更新
@@ -824,7 +835,7 @@ public class FormInstService {
     }
 
     public String getFormModelId(String taskId) {
-        return null;
+        return formInstMapper.getFormModelIdByTaskId(taskId);
     }
 
     public void saveUnCompleteFormInst(FormInstDO formInst) {
@@ -832,7 +843,20 @@ public class FormInstService {
     }
 
 
-    public String getAlreadyCompleteTask(String curUserId, String procInstId) throws FlowableException{
+    public List<String> getAlreadyCompleteTask(String curUserId, String procInstId) throws FlowableException{
         return formInstMapper.getAlreadyCompleteTask(curUserId,procInstId);
+    }
+
+    /**
+     * 获取指定实例Id的所有任务节点信息
+     * @param procInstId
+     * @return
+     */
+    public List<AsFormInst> listFormInst(String procInstId) {
+        QueryWrapper<AsFormInst> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(AsFormInst::getProcInstId,procInstId);
+        List<AsFormInst> formInstDOs = asFormInstMapper.selectList(queryWrapper);
+        return formInstDOs;
     }
 }

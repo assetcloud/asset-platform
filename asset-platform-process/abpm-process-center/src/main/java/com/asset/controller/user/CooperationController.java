@@ -34,7 +34,8 @@ public class CooperationController {
         return R.data(procInstId);
     }
 
-    @ApiOperation(value = "获取业务中台实例运行情况",notes = "获取之前通过业务中台发起的表单流程的运行情况，-1——运行出错，0——该流程还没开始运行，1——运行中，2——实例执行结束")
+    @ApiOperation(value = "获取业务中台实例运行情况",notes = "获取之前通过业务中台发起的表单流程的运行情况，-1——运行出错，0——该流程还没开始运行，1——运行中，2——实例执行结束，且审批节点全部同意，" +
+            "3——实例因为中途有审批人点击拒绝导致实例执行结束")
     @GetMapping("/form_proc/status")
     public R getFormProcStatus(
             @ApiParam(value = "通过业务中台发起表单流程成功后返回的实例Id",required = true)
@@ -42,7 +43,4 @@ public class CooperationController {
         int status = cooperationService.getFormProcStatus(procInstId);
         return R.data(status);
     }
-
-
-
 }

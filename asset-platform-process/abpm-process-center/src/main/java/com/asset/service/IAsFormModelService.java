@@ -23,4 +23,6 @@ public interface IAsFormModelService extends IService<AsFormModel> {
 
 
     List<FormModelBO> listFormModelBOs(String appId, int groupId, int formStatus);
+
+    String getFormModelSceneId(String taskId);
 }

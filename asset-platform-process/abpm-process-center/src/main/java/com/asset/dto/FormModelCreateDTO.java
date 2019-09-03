@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author YBY
  * @time 190604 1911
@@ -13,16 +15,22 @@ import lombok.Data;
 @Data
 @ApiModel
 public class FormModelCreateDTO {
+    @NotNull(message = "表单名称不能为空")
     @ApiModelProperty(value = "表单名称",required = true)
     String form_name;
+    @NotNull(message = "创建人Id不能为空")
     @ApiModelProperty(value = "创建人",required = true)
     String created_by;
+    @NotNull(message = "表单模型图标不能为空")
     @ApiModelProperty(value = "表单模型图标",required = true)
     String icon_cls;
+    @NotNull(message = "应用Id不能为空")
     @ApiModelProperty(value = "所属应用Id（必须真实存在）",required = true)
     String app_id;
+    @NotNull(message = "表单样式不能为空")
     @ApiModelProperty(value = "表单样式",required = true)
     FormSheet form_sheet;
+    @NotNull(message = "工作场景Id不能为空")
     @ApiModelProperty(value = "当前用户登录时选择的工作场景Id",required = true)
     String scene_id;
 

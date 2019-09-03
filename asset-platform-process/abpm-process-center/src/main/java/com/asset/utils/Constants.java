@@ -40,10 +40,10 @@ public interface Constants {
     public static final int FORM_MODEL_WITH_NODE = 3;  //表单模型对应的流程模型还往数据库中写了节点数据
     public static final int FORM_MODEL_DELETED = 4;  //表单流程已被删除
     //表单项权限
-    public static final int AUTHORITY_INVISIBLE = 1;      //表单项设置不可见权限
-    public static final int AUTHORITY_DISABLE = 2;      //可见+不可编辑
-    public static final int AUTHORITY_ENABLE = 3;      //可见+可编辑
-    public static final int AUTHORITY_REQUIRED = 4;      //必填
+    public static final int AUTHORITY_INVISIBLE = 1;      //表单项 不可见
+    public static final int AUTHORITY_DISABLE = 2;      //表单项 可见
+    public static final int AUTHORITY_ENABLE = 3;      //表单项 可写
+    public static final int AUTHORITY_REQUIRED = 4;      //表单项 必填
 
 
     /**
@@ -122,6 +122,8 @@ public interface Constants {
     String SCENE_SELECT_BPMN_NAME = "sceneSelect";
     String SCENE_SELECT_PROC_NODE_1 = "task1";
     String SCENE_SELECT_PROC_NODE_2 = "task2";
+    //流程模型中常量
+    String CANDIDATE_GROUP_CUR_SECTION = "CANDIDATE_GROUP_CUR_SECTION";  //这一项表示当前申请人的所在部门
 
 
     /**
@@ -131,7 +133,8 @@ public interface Constants {
     public static final int COOP_PROC_FAILED = -1;   //运行出错
     public static final int COOP_PROC_INIT = 0;     //还没开始
     public static final int COOP_PROC_RUN = 1;      //运行中
-    public static final int COOP_PROC_COMPLETED = 2;    //运行结束
+    public static final int COOP_PROC_COMPLETED = 2;    //审批节点全部同意，运行结束
+    public static final int COOP_PROC_COMPLETED_REJECTED = 3;    //实例因为中间审批节点拒绝,运行结束
 
 
 

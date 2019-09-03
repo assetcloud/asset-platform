@@ -16,6 +16,8 @@ public class FormInstRecCreate extends FormInstRecBase {
     @ApiModelProperty(value = "流程中第一个节点填写的表单内容",required = true)
     String form_inst_value; //填写的表单数据信息
 
+    public FormInstRecCreate() {
+    }
 
     private FormInstRecCreate(Builder builder) {
         setEditor(builder.editor);

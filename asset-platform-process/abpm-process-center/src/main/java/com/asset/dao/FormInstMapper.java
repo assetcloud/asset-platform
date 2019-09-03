@@ -72,9 +72,10 @@ public interface FormInstMapper {
 
     String getProcInstId(String taskId);
 
-    String getAlreadyCompleteTask(@Param("curUserId") String curUserId,
+    List<String> getAlreadyCompleteTask(@Param("curUserId") String curUserId,
                                   @Param("procInstId") String procInstId);
 
     List<FormInstDO> listFormInsts();
 
+    String getFormModelIdByTaskId(String taskId);
 }

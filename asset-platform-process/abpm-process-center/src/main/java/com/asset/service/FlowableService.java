@@ -47,6 +47,14 @@ public class FlowableService {
     public String getProcInstId(String taskId) {
         return flowableMapper.getProcInstId(taskId);
     }
+
+    public String getModelEditorJson(String procModelId) {
+        return flowableMapper.selectModelEditorJson(procModelId);
+    }
+
+    public int updateModelEditorJson(String procModelId,String newModelEditorJson) {
+        return flowableMapper.updateModelEditorJson(procModelId,newModelEditorJson);
+    }
 }
 
 

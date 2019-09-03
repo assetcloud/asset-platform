@@ -1,0 +1,7 @@
+From hub.c.163.com/library/java:8-jre
+
+ADD abpm-process-center/target/abpm-process-center-1.0-SNAPSHOT.jar app.jar
+
+EXPOSE 9000
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

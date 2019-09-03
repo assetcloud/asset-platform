@@ -5,10 +5,7 @@ import com.asset.dao.AsFormModelMapper;
 import com.asset.entity.FormModelDO;
 import com.asset.javabean.AdminFormModelVO;
 import com.asset.javabean.FormModelBO;
-import com.asset.service.AppGroupService;
-import com.asset.service.ApplicationService;
-import com.asset.service.FormModelService;
-import com.asset.service.IAsFormModelService;
+import com.asset.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -37,6 +34,9 @@ public class AsFormModelService extends ServiceImpl<AsFormModelMapper, AsFormMod
     ApplicationService applicationService;
     @Autowired
     AppGroupService groupService;
+    @Autowired
+    FormInstService formInstService;
+
 
     public List<AdminFormModelVO> listAdminFormModelInfo(QueryWrapper<AsFormModel> queryWrapper) {
         List<AsFormModel> DOs = modelMapper.selectList(queryWrapper);
@@ -103,6 +103,12 @@ public class AsFormModelService extends ServiceImpl<AsFormModelMapper, AsFormMod
             boList.add(bo);
         }
         return boList;
+    }
+
+    @Override
+    public String getFormModelSceneId(String taskId) {
+        String formModelId = formInstService.getFormModelId(taskId);
+        return modelMapper.selectById(formModelId).getSceneId();
     }
 
 

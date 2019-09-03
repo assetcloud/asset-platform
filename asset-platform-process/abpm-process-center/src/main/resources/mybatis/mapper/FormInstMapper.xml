@@ -289,5 +289,10 @@
         as_form_inst
     </select>
 
+    <select id="getFormModelIdByTaskId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT form_model_id
+        FROM as_form_inst
+        WHERE task_id = #{taskId,jdbcType = VARCHAR}
+    </select>
 
 </mapper>
