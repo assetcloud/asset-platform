@@ -162,7 +162,7 @@ public class ProcInstService {
         String replace2 = replace1.replace("\"stencil\":{\"id\":\"ServiceTask\"}", "\"stencil\":{\"id\":\"UserTask\"}");
         int flag = flowableService.updateModelEditorJson(procModelId,replace2);
         if(flag == Constants.DATABASE_FAILED)
-            throw new DatabaseException("节点数据更新失败！");
+            throw new DatabaseException("流程模型信息更新失败！");
 
         ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
         RepositoryService repositoryService = engine.getRepositoryService();
@@ -233,6 +233,12 @@ public class ProcInstService {
         map.put("inst", instance);
         map.put("defID", defID);
         map.put("deployID", deployID);
+
+        //这边发起结束之后，需要把原来修改了的model_editor_json数据再修改回来
+        int flag1 = flowableService.updateModelEditorJson(procModelId,modelEditorJson);
+        if(flag1 == Constants.DATABASE_FAILED)
+            throw new DatabaseException("流程模型信息还原失败！");
+
 
         return map;
     }

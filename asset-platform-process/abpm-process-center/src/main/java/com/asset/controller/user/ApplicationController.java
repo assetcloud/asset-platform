@@ -34,19 +34,19 @@ public class ApplicationController {
 
 
     @RequestMapping(value = "/addApp", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-    @ApiOperation(value = "添加应用", notes = "应用添加", httpMethod = "POST")
-    @ApiResponses({
-            @ApiResponse(code = 200,message = "新建成功",response = R.class),
-            @ApiResponse(code = 500,message = "系统错误",response = R.class)
-    })
-    public R addApp(@RequestBody ApplicationDO application){
-        try {
-            applicationService.addApplication(application);
-        } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.info("应用新建失败");
-            return R.fail("新建失败");
-        }
+        @ApiOperation(value = "添加应用", notes = "应用添加", httpMethod = "POST")
+        @ApiResponses({
+                @ApiResponse(code = 200,message = "新建成功",response = R.class),
+                @ApiResponse(code = 500,message = "系统错误",response = R.class)
+        })
+        public R addApp(@RequestBody ApplicationDO application){
+            try {
+                applicationService.addApplication(application);
+            } catch (Exception e) {
+                e.printStackTrace();
+                LOGGER.info("应用新建失败");
+                return R.fail("新建失败");
+            }
         return R.success("新建成功");
     }
 

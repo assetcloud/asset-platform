@@ -110,7 +110,7 @@ public class FormInstService {
     public String commitFormInst(FormInstRecCreate dto) throws DocumentException, DatabaseException {
         //1、先获取与表单模型唯一绑定的流程模型ID
         String procModelID = formModelService.getProcModelID(dto.getForm_model_id());
-        //直接由流程模型后台创建流程实例(还没持久化)
+        //直接由流程模型后台创建流程实例
         HashMap<String,Object> map = procInstService.createProcInstance(procModelID);
 
         ProcessInstance procInst = (ProcessInstance) map.get("inst");

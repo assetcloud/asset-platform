@@ -59,7 +59,7 @@ public class CooperationService implements ICooperationService {
         //导入模板，生成对应的表单流程模型，这里先直接指定
         String formModelId = "";
         if(dto.getForm_proc_uid().equals("201908281106"))
-            formModelId = "03557671-cb08-11e9-807d-0242ac120004";
+            formModelId = "a920b8e7-ce45-11e9-97ce-0242ac120004";
 
         //由导入的表单流程模型创建相应的实例
         String firstNodeFormSheetStr = formInstService.showNewFormSheet(formModelId).getString("form_json");
