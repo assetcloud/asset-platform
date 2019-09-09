@@ -162,13 +162,16 @@
     set role_group_name = #{groupName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-    <select id="getUsersByRole" parameterType="java.lang.Long" resultMap="UserResultMap">
-    SELECT
-	*
-    FROM
-	as_user u
-	LEFT JOIN as_scene_relation ur ON u.id = ur.uid
-	AND ur.rid = #{roleId}
+    <select id="getUsersByRole" resultMap="UserResultMap">
+        SELECT
+        *
+        FROM
+        as_user u
+        LEFT JOIN as_scene_relation ur ON u.id = ur.uid
+        WHERE ur.rid = #{param1} AND status = 1 AND stage = 2
+        <if test="userName != '' and userName != null">
+            AND u.real_name LIKE CONCAT('%',#{param2},'%')
+        </if>
   </select>
     <select id="getRolesOwned" resultType="com.asset.bean.SceneRole">
         SELECT * FROM as_scene_role WHERE id IN (SELECT rid FROM as_scene_relation WHERE uid = #{param1})

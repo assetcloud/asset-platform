@@ -1,9 +1,6 @@
 package com.asset.bean;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.models.auth.In;
 import lombok.Data;
@@ -49,6 +46,7 @@ public class Role{
      * 是否已删除
      */
     @TableField("is_deleted")
+    @TableLogic
     private Integer isDeleted;
 
     public Integer getId() {

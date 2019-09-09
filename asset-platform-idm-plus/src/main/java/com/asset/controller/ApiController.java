@@ -44,20 +44,20 @@ public class ApiController {
 
     /*@ApiOperation(value = "获取所有场景信息", notes = "获取所有场景信息",tags = "组织", httpMethod = "GET")
     @RequestMapping(value = "rest/scenes", method = RequestMethod.GET)
-    public RespBean getAllScene(@ApiParam(value = "page", defaultValue = "1",required = true) @RequestParam(defaultValue = "1") Integer page
+    public R getAllScene(@ApiParam(value = "page", defaultValue = "1",required = true) @RequestParam(defaultValue = "1") Integer page
             , @ApiParam(value = "size", defaultValue = "1",required = true) @RequestParam(defaultValue = "20") Integer size){
         List<Scene> scenes = sceneService.getAllScenesByPage(page, size);
         if (Func.isNull(scenes)){
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+            return R.error(SystemConstant.SYSTEM_FAILURE);
         }
-        return RespBean.ok(SystemConstant.GET_SUCCESS, scenes);
+        return R.ok(SystemConstant.GET_SUCCESS, scenes);
     }*/
 
     /**
      * 分页获取场景信息
      * @param page
      * @param size
-     * @return RespBean
+     * @return R
      */
     @GetMapping("rest/scenes")
     @ApiImplicitParams({
@@ -66,24 +66,24 @@ public class ApiController {
     })
     @ApiOperation(value = "获取所有场景信息", notes = "获取所有场景信息;page为起始页;size为每页显示数量")
     @WebLog(description = "获取所有场景信息")
-    public RespBean getAllSceneByPage(Integer page, Integer size){
+    public R getAllSceneByPage(Integer page, Integer size){
         PageHelper.startPage(page, size);
         List<Scene> scenes = sceneService.getAllScene();
         if (Func.isNull(scenes)){
-            return RespBean.error(SystemConstant.SYSTEM_FAILURE);
+            return R.fail(SystemConstant.SYSTEM_FAILURE);
         }
         PageInfo<Scene> scenePageInfo = new PageInfo<>(scenes);
-        return RespBean.ok(SystemConstant.GET_SUCCESS, scenePageInfo);
+        return R.data(scenePageInfo);
     }
 
     /**
      * 获取主组织树（需为管理员角色）
-     * @return RespBean
+     * @return R
      */
     @ApiOperation(value = "获取主组织树", notes = "已完成")
     @RequestMapping(value = "/mainTree", method = RequestMethod.GET)
-    public RespBean getOrganMainTree(){
-        return RespBean.data(organService.getMainTree());
+    public R getOrganMainTree(){
+        return R.data(organService.getMainTree());
     }
 
     @ApiOperation(value = "添加菜单（表单类型）", notes = "传FormModelInfo实体与sceneId(param);")
@@ -100,18 +100,18 @@ public class ApiController {
 
     @PostMapping(value = "form/add")
     @Transactional
-    public RespBean addResource(@RequestBody FormModelInfo formModelInfo, @RequestParam("sceneId") String sceneId
+    public R addResource(@RequestBody FormModelInfo formModelInfo, @RequestParam("sceneId") String sceneId
             , @RequestParam("groupId")Long groupId) throws CloneNotSupportedException {
         if (Func.hasEmpty(formModelInfo.getApplicationId(), formModelInfo.getFormModelId(), formModelInfo.getFormName()
                 , formModelInfo.getIconCls(), formModelInfo.getGroupId(), formModelInfo.getGroupName(), sceneId)){
-            return RespBean.error("参数错误");
+            return R.fail("参数错误");
         }
         Resource parentResource = resourceService.getResourceByPath(formModelInfo.getApplicationId());
         if (Func.isNull(parentResource)){
-            return RespBean.error("应用不存在");
+            return R.fail("应用不存在");
         }
         if(resourceService.formExists(formModelInfo.getFormName(), sceneId, parentResource.getId())){
-            return RespBean.error("表单名称已被使用，请更换后再试");
+            return R.fail("表单名称已被使用，请更换后再试");
         }
         Resource resource = new Resource();
         //1-应用；2-表单；3-表单操作
@@ -130,7 +130,7 @@ public class ApiController {
         resourceService.save(resource);
         resourceService.addResource4Admin(resource);
         resourceService.addFuncResource(resource);
-        return RespBean.ok(SystemConstant.ADD_SUCCESS);
+        return R.success(SystemConstant.ADD_SUCCESS);
     }
 
     @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;")
@@ -140,10 +140,10 @@ public class ApiController {
     })
     @PostMapping(value = "active")
     @Transactional
-    public RespBean userActivate(@RequestParam String sceneId, @RequestParam String userId) {
+    public R userActivate(@RequestParam String sceneId, @RequestParam String userId) {
         if (userService.getById(userId).getAdmin() == 1){
             //TODO:
-            return RespBean.error("注册为平台管理员的接口还没做");
+            return R.success("注册为平台管理员的接口还没做");
         }
         userService.enableUser(userId);
         //设置平台级权限
@@ -154,7 +154,7 @@ public class ApiController {
         userRole.setRoleId(SystemConstant.DEFAULT_ROLE_ID);
         userRoleService.save(userRole);
         sceneService.enableScene(userId, sceneId);
-        return RespBean.ok("用户审核通过");
+        return R.success("用户审核通过");
     }
 
     @GetMapping("hdu/organization")

@@ -41,8 +41,8 @@ public class MenuController {
 //            @ApiImplicitParam(value = "userId", name = "用户id", required = true, dataTypeClass = java.lang.String.class)
 //    })
 //    @GetMapping("factory/menus")
-//    public RespBean menusInFactory(@RequestParam("userId") String userId){
-//        return RespBean.data(menuService.getFactoryMenus(userId));
+//    public R menusInFactory(@RequestParam("userId") String userId){
+//        return R.data(menuService.getFactoryMenus(userId));
 //    }
 
 //    @GetMapping("list")
@@ -51,12 +51,12 @@ public class MenuController {
 //            @ApiImplicitParam(name = "name", value = "菜单名称", paramType = "query", dataType = "string")
 //    })
 //    @ApiOperation(value = "获取菜单列表", notes = "已完成-管理员访问", tags = "平台级资源")
-//    public RespBean menuList(@RequestParam String code, @RequestParam String name){
+//    public R menuList(@RequestParam String code, @RequestParam String name){
 //        List<Menu> menuList = menuService.menuList(code, name);
 //        if (Func.hasEmpty(code) && Func.hasEmpty(name)){
-//            return RespBean.data(MenuNodeMerger.merge(menuList));
+//            return R.data(MenuNodeMerger.merge(menuList));
 //        }
-//        return RespBean.data(menuList);
+//        return R.data(menuList);
 //    }
 
     /**
@@ -82,7 +82,6 @@ public class MenuController {
     public R<List<MenuVO>> list(@ApiIgnore @RequestParam Map<String, Object> menu) {
         @SuppressWarnings("unchecked")
         List<Menu> list = menuService.list(Condition.getQueryWrapper(menu, Menu.class).lambda()
-                .eq(Menu::getIsDeleted, 0)
                 .orderByAsc(Menu::getSort));
         MenuWrapper menuWrapper = new MenuWrapper(menuService, dictService);
         return R.data(menuWrapper.listNodeVO(list));

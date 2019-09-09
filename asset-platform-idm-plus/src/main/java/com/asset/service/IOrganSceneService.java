@@ -14,6 +14,7 @@ import java.util.List;
  * @since 2019-07-23
  */
 public interface IOrganSceneService extends IService<OrganScene> {
+
     /**
      * （场景中）批量删除部门节点
      * @param nodeIds
@@ -29,4 +30,12 @@ public interface IOrganSceneService extends IService<OrganScene> {
      * @return boolean
      */
     boolean batchRemoveMembers(List<String> userIds, String sceneId);
+
+    /**
+     * 新增组织部门
+     * @param treeIds
+     * @param sceneId
+     * @return
+     */
+    boolean addNodes(String treeIds, String sceneId);
 }
