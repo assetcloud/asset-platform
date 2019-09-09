@@ -1,6 +1,5 @@
 package com.asset.controller;
 
-import com.asset.bean.RespBean;
 import com.asset.bean.User;
 import com.asset.bean.UserRole;
 import com.asset.bean.UserScene;
@@ -50,15 +49,15 @@ public class SystemUserController {
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
     @GetMapping("users/noScene")
-    public RespBean getUsersWithoutScene(@RequestParam String accountName, @RequestParam String realName
+    public R getUsersWithoutScene(@RequestParam String accountName, @RequestParam String realName
             , @RequestParam String email, @RequestParam String sceneId){
         if (Func.hasEmpty(sceneId)){
-            return RespBean.paramError();
+            return R.fail("参数错误");
         }
         accountName = accountName == null ? "" : accountName;
         realName = realName == null ? "" : realName;
         email = email == null ? "" : email;
-        return RespBean.data(userService.getUsersWithoutScene(accountName, realName, email, sceneId));
+        return R.data(userService.getUsersWithoutScene(accountName, realName, email, sceneId));
     }
 
     @ApiOperation(value = "获取所有用户（兼模糊搜索）", notes = "已完成")
@@ -68,28 +67,28 @@ public class SystemUserController {
             @ApiImplicitParam(name = "userPageParam", value = "UserPageParam", required = true, dataTypeClass = UserPageParam.class)
     })
     @PostMapping("list")
-    public RespBean userList(@RequestParam Integer page, @RequestParam Integer size, @RequestBody UserPageParam userPageParam){
+    public R userList(@RequestParam Integer page, @RequestParam Integer size, @RequestBody UserPageParam userPageParam){
         PageHelper.startPage(page, size);
-        return RespBean.data(new PageInfo<>(userService.allUsers(userPageParam)));
+        return R.data(new PageInfo<>(userService.allUsers(userPageParam)));
     }
 
     @ApiOperation(value = "管理控制台，添加用户"
             , notes = "（已完成）必填项：accountName用户名;realName真实姓名;pwd密码;phoneNumber手机号;userEmail用户邮箱")
     @PostMapping("add")
-    public RespBean addUser(@RequestBody User user){
+    public R addUser(@RequestBody User user){
         if (Func.hasEmpty(user.getAccountName(), user.getRealName(), user.getPwd(), user.getPhoneNumber()
                 , user.getUserEmail(), user.getStatus(), user.getAdmin())){
-            return RespBean.paramError();
+            return R.fail("参数错误");
         }
-        return RespBean.status(userService.saveUser(user));
+        return R.status(userService.saveUser(user));
     }
 
     @ApiOperation(value = "控制台中删除用户", notes = "（已完成，不对外开放）用户id集合")
     @ApiImplicitParam(value = "ids", required = true, dataTypeClass = String.class)
     @PostMapping("delete")
-    public RespBean removeUser(@RequestParam String ids){
+    public R removeUser(@RequestParam String ids){
         if (Func.hasEmpty(ids)){
-            return RespBean.paramError();
+            return R.fail("参数错误");
         }
         List<String> strings = Func.toStrList(",", ids);
         LinkedList<User> users = new LinkedList<>();
@@ -102,24 +101,24 @@ public class SystemUserController {
             user.setStage(0);
             users.add(user);
         });
-        return RespBean.status(userService.updateBatchById(users));
+        return R.status(userService.updateBatchById(users));
     }
 
     @ApiOperation(value = "控制台中，获取单个用户信息", notes = "（已完成，不对外开放）")
     @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
     @GetMapping("detail")
-    public RespBean getUser(@RequestParam String userId){
-        return RespBean.data(userService.getById(userId));
+    public R getUser(@RequestParam String userId){
+        return R.data(userService.getById(userId));
     }
 
     @ApiOperation(value = "控制台编辑用户信息", notes = "（已完成，不对外开放）accountName")
     @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
     @PutMapping("edit")
-    public RespBean editUser(@RequestBody User user){
+    public R editUser(@RequestBody User user){
         if (Func.hasEmpty(user.getId())){
-            return RespBean.paramError();
+            return R.fail("参数错误");
         }
-        return RespBean.status(userService.updateById(user));
+        return R.status(userService.updateById(user));
     }
 
     @ApiOperation(value = "注册用户激活", notes = "（已完成）sceneId场景ID;userId用户ID;组织管理员审核时sceneId置null或\"\"")
@@ -129,9 +128,9 @@ public class SystemUserController {
     })
     @PostMapping(value = "active")
     @Transactional
-    public RespBean userActivate(@RequestParam String sceneId, @RequestParam String userId) {
+    public R userActivate(@RequestParam String sceneId, @RequestParam String userId) {
         if (userService.getById(userId).getAdmin() == 1){
-            return RespBean.error("注册为平台管理员的接口还没做");
+            return R.fail("注册为平台管理员的接口还没做");
         }
         userService.enableUser(userId);
         //设置平台级权限
@@ -142,14 +141,14 @@ public class SystemUserController {
         userRole.setRoleId(SystemConstant.DEFAULT_ROLE_ID);
         userRoleService.save(userRole);
         sceneService.enableScene(userId, sceneId);
-        return RespBean.ok("用户审核通过");
+        return R.success("用户审核通过");
     }
 
     @ApiOperation(value = "重置用户密码", notes = "已完成，不对外开放")
     @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
     @PutMapping("pwd/reset")
-    public RespBean passwordReset(String userId){
-        return RespBean.status(userService.resetPassword(userId));
+    public R passwordReset(String userId){
+        return R.status(userService.resetPassword(userId));
     }
 
     @GetMapping("signify")

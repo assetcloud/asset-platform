@@ -61,7 +61,7 @@ public interface SceneRoleMapper extends BaseMapper<SceneRole> {
      * @param roleId
      * @return
      */
-    List<User> getUsersByRole(@Param("roleId") Long roleId);
+    List<User> getUsersByRole(Long roleId, String userName);
 
     /**
      * 获取用户已经拥有的角色

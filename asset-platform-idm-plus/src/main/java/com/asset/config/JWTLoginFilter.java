@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springblade.core.tool.api.R;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -80,11 +81,10 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         res.setContentType("application/json;charset=utf-8");
         map.put("Authorization", "Bearer " + token);
         map.put("Expire", new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000)));
-        RespBean respBean = RespBean.ok("登录成功!", map);
         ObjectMapper om = new ObjectMapper();
         PrintWriter out = res.getWriter();
         res.addHeader("Authorization", "Bearer " + token);
-        out.write(om.writeValueAsString(respBean));
+        out.write(om.writeValueAsString(R.data(map)));
         out.flush();
         out.close();
     }

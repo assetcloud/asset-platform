@@ -64,12 +64,12 @@ public class ResourceController {
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
     @Transactional
-    public RespBean addResource(@RequestBody Application application, @RequestParam("sceneId")String sceneId){
+    public R addResource(@RequestBody Application application, @RequestParam("sceneId")String sceneId){
         if (Func.hasEmpty(application.getId(), application.getApplicationName(), application.getIconCls())){
-            return RespBean.error("参数错误");
+            return R.fail("参数错误");
         }
         if(resourceService.appExists(application.getApplicationName(), sceneId)){
-            return RespBean.error("应用名称已被占用，请更换后重试");
+            return R.fail("应用名称已被占用，请更换后重试");
         }
         Resource resource = new Resource();
         resource.setCode(SystemConstant.CODE_APP);
@@ -85,7 +85,7 @@ public class ResourceController {
         resource.setSceneId(sceneId);
         resourceService.save(resource);
         resourceService.addResource4Admin(resource);
-        return RespBean.ok("添加成功");
+        return R.success("添加成功");
     }
 
     @ApiOperation(value = "添加表单资源", notes = "（已完成）传FormModelInfo实体与sceneId(param);")
@@ -139,15 +139,15 @@ public class ResourceController {
     })
     @RequestMapping(value = "/form/scene/bind", method = RequestMethod.PUT)
     @Transactional
-    public RespBean formEnvBind(@RequestParam("formModelId") String formModelId, @RequestParam("sceneId") String sceneId){
+    public R formEnvBind(@RequestParam("formModelId") String formModelId, @RequestParam("sceneId") String sceneId){
         if(Func.hasEmpty(formModelId, sceneId)){
-            return RespBean.error("参数错误");
+            return R.fail("参数错误");
         }
         if (!resourceService.formExists(formModelId)){
-            return RespBean.error("表单资源不存在");
+            return R.fail("表单资源不存在");
         }
         resourceService.updateFormInfo(formModelId, sceneId);
-        return RespBean.data(resourceService.updateFuncInfo(formModelId, sceneId));
+        return R.data(resourceService.updateFuncInfo(formModelId, sceneId));
     }
 
     @ApiOperation(value = "根据场景id获取资源列表", notes = "已完成")
@@ -165,11 +165,11 @@ public class ResourceController {
             @ApiImplicitParam(name = "sceneId", value = "场景id(param)", required = true, dataType = "String"),
     })
     @GetMapping(value = "byUser/list")
-    public RespBean getMenusByCurrentUser(@RequestParam("userId") String userId, @RequestParam("sceneId")String sceneId){
+    public R getMenusByCurrentUser(@RequestParam("userId") String userId, @RequestParam("sceneId")String sceneId){
         if (Func.hasEmpty(userId, sceneId)){
-            return RespBean.error("参数错误");
+            return R.fail("参数错误");
         }
-        return RespBean.data(resourceService.getResourcesByCurrentUser(userId, sceneId));
+        return R.data(resourceService.getResourcesByCurrentUser(userId, sceneId));
     }
 
     @ApiOperation(value = "通过角色获取资源keys", notes = "（已完成）通过角色获取资源(用于终端管理员的权限管理界面)")
@@ -183,11 +183,11 @@ public class ResourceController {
 
     @ApiOperation(value = "获取应用资源", notes = "（已完成）通过当前用户角色获取应用资源，主要用于首页内容展现")
     @RequestMapping(value = "/app/byUser", method = RequestMethod.GET)
-    public RespBean getAppMenusByUser(@RequestParam("userId") String userId, @RequestParam("sceneId") String sceneId){
+    public R getAppMenusByUser(@RequestParam("userId") String userId, @RequestParam("sceneId") String sceneId){
         if (Func.hasEmpty(userId, sceneId)){
-            return RespBean.error("参数错误");
+            return R.fail("参数错误");
         }
-        return RespBean.data(resourceService.getAppResourcesByUser(userId, sceneId));
+        return R.data(resourceService.getAppResourcesByUser(userId, sceneId));
     }
 
     @ApiOperation(value = "获取表单资源", notes = "通过点击应用，展现可访问的表单资源")
@@ -197,13 +197,13 @@ public class ResourceController {
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
     @RequestMapping(value = "form/byUser", method = RequestMethod.GET)
-    public RespBean getFormMenusByApp(@RequestParam("userId")String userId
+    public R getFormMenusByApp(@RequestParam("userId")String userId
             , @RequestParam("appResourceId") Long appResourceId
             , @RequestParam("sceneId") String sceneId){
         if (Func.hasEmpty(userId, appResourceId, sceneId)){
-            return RespBean.error("参数错误");
+            return R.fail("参数错误");
         }
-        return RespBean.data(resourceService.getFormResourcesByApp(userId, appResourceId, sceneId));
+        return R.data(resourceService.getFormResourcesByApp(userId, appResourceId, sceneId));
     }
 
 
@@ -233,12 +233,12 @@ public class ResourceController {
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
     @ApiOperation(value = "获取操作型资源", notes = "（已完成）通过点击应用，展现可访问的操作型资源")
-    public RespBean getFuncByForm(@RequestParam("userId")String userId, @RequestParam("formResourceId") Long formResourceId
+    public R getFuncByForm(@RequestParam("userId")String userId, @RequestParam("formResourceId") Long formResourceId
             , @RequestParam("sceneId") String sceneId){
         if (Func.hasEmpty(userId, formResourceId, sceneId)){
-            return RespBean.error("参数错误");
+            return R.fail("参数错误");
         }
-        return RespBean.data(resourceService.getFuncResourcesByForm(userId, formResourceId, sceneId));
+        return R.data(resourceService.getFuncResourcesByForm(userId, formResourceId, sceneId));
     }
 
     @ApiOperation(value = "获取应用资源", notes = "已完成")

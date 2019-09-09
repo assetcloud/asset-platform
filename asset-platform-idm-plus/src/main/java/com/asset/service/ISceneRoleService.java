@@ -129,7 +129,7 @@ public interface ISceneRoleService extends IService<SceneRole> {
      * @param roleId
      * @return
      */
-    List<User> getUsersByRole(Long roleId);
+    List<User> getUsersByRole(Long roleId, String userName);
 
     /**
      * 根据角色list获取用户

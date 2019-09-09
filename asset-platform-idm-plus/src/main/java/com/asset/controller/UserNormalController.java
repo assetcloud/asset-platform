@@ -1,6 +1,5 @@
 package com.asset.controller;
 
-import com.asset.bean.RespBean;
 import com.asset.bean.User;
 import com.asset.common.SystemConstant;
 import com.asset.service.ISceneService;
@@ -11,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import org.springblade.core.tool.api.R;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
@@ -37,18 +37,18 @@ public class UserNormalController {
     /**
      * 用户登录
      *
-     * @return RespBean
+     * @return R
      */
     @RequestMapping("/login_p")
-    public RespBean login() {
-        return RespBean.error("尚未登录，请登录!");
+    public R login() {
+        return R.fail("尚未登录，请登录!");
     }
 
     /**
      * 用户注册
      *
      * @param user
-     * @return RespBean
+     * @return R
      */
 //    @RequestMapping(value = "/userReg", method = RequestMethod.POST)
 //    @ApiOperation(value = "用户注册"
@@ -63,31 +63,31 @@ public class UserNormalController {
 //            @ApiImplicitParam(name = "nodeId", value = "节点id的数组", required = true, dataTypeClass = java.lang.String.class)
 //    })
 //    @Transactional
-//    public RespBean userReg(@RequestBody User user
+//    public R userReg(@RequestBody User user
 //            , @RequestParam(value = "sceneId") String sceneId
 //            , @RequestParam(value = "sceneName") String sceneName
 //            , @RequestParam(value = "nodeId") String nodeIds){
 //        Map<String, String> jsonMap = new HashMap<>();
 //        jsonMap.put("sceneId", "");
 //        if (Func.isNull(nodeIds)){
-//            return RespBean.paramError();
+//            return R.paramError();
 //        }
 //        if (Func.hasEmpty(sceneId)){
 //            if (userService.userExists(user.getAccountName())){
-//                return RespBean.error("用户名已被占用，请更换后重试");
+//                return R.error("用户名已被占用，请更换后重试");
 //            }
 //            //用户设置并新增
 //            userService.insertUser(user);
 //            jsonMap.put("userId", user.getId());
 //            if (sceneService.getSceneByName(sceneName).size() > 0){
 //                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                return RespBean.error("场景名称已被占用，请更换后重试");
+//                return R.error("场景名称已被占用，请更换后重试");
 //            }
 //            Scene scene = new Scene();
 //            scene.setSceneName(sceneName);
 //            if (Func.hasEmpty(nodeIds)){
 //                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                return RespBean.error("至少选择一个组织节点");
+//                return R.error("至少选择一个组织节点");
 //            }
 //            sceneService.addScene4Reg(scene, Func.toStrList(",", nodeIds));
 //            jsonMap.put("sceneId", scene.getId());
@@ -117,11 +117,11 @@ public class UserNormalController {
 //        } else {
 //            jsonMap.put("sceneId", sceneId);
 //            if (!sceneService.sceneAvailable(sceneId)){
-//                return RespBean.error("目标场景不存在");
+//                return R.error("目标场景不存在");
 //            }
 //            if (userService.userExists(user.getAccountName())){
 //                TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-//                return RespBean.error("用户名已被占用，请更换后重试");
+//                return R.error("用户名已被占用，请更换后重试");
 //            }
 //            //用户设置并新增
 //            user.setStage(1);
@@ -136,7 +136,7 @@ public class UserNormalController {
 //            sceneRelationService.save(new SceneRelation(user.getId(), sceneRole.getId()));
 //        }
 //
-//        return RespBean.data(jsonMap);
+//        return R.data(jsonMap);
 //    }
     @RequestMapping(value = "/userReg", method = RequestMethod.POST)
     @ApiOperation(value = "用户注册"
@@ -149,14 +149,14 @@ public class UserNormalController {
             @ApiImplicitParam(name = "admin", value = "是否为总管理员", required = true, dataType = "Integer")
     })
     @Transactional
-    public RespBean userReg(@RequestBody User user, @RequestParam(value = "sceneId") String sceneIds) {
+    public R userReg(@RequestBody User user, @RequestParam(value = "sceneId") String sceneIds) {
         Map<String, String> jsonMap = new HashMap<>();
         if (Func.hasEmpty(sceneIds)) {
-            return RespBean.paramError();
+            return R.fail("参数错误");
         }
         if (userService.userExists(user.getAccountName())){
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-            return RespBean.error("用户名已被占用，请更换后重试");
+            return R.fail("用户名已被占用，请更换后重试");
         }
         //用户设置并新增
         user.setStage(1);
@@ -168,7 +168,7 @@ public class UserNormalController {
         sceneService.userSceneBind(Func.toStrList(",", sceneIds), user.getId());
         jsonMap.put("userId", user.getId());
         jsonMap.put("sceneIds", sceneIds);
-        return RespBean.data(jsonMap);
+        return R.data(jsonMap);
     }
 
     @ApiOperation(value = "获取用户", notes = "根据角色获取用户")

@@ -142,8 +142,8 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
                 .eq(SceneRole::getStatus, 1));
     }
 
-    public List<User> getUsersByRole(Long roleId){
-        return sceneRoleMapper.getUsersByRole(roleId);
+    public List<User> getUsersByRole(Long roleId, String userName){
+        return sceneRoleMapper.getUsersByRole(roleId, userName);
     }
 
     @Override
