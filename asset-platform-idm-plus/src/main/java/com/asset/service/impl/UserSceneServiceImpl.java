@@ -41,7 +41,7 @@ public class UserSceneServiceImpl extends ServiceImpl<UserSceneMapper, UserScene
     }
 
     @Override
-    public List<User> getNodeUsers(String sceneId, String nodeId, String memberName) {
+    public List<UserVO> getNodeUsers(String sceneId, String nodeId, String memberName) {
         return userSceneMapper.getUsers(sceneId, nodeId, memberName);
     }
 

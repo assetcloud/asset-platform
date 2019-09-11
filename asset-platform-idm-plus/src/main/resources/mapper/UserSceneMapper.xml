@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.asset.mapper.UserSceneMapper">
 
-    <resultMap id="userVOMap" type="com.asset.bean.User">
+    <resultMap id="userVOMap" type="com.asset.vo.UserVO">
         <result column="id" property="id"/>
         <result column="real_name" property="realName"/>
         <result column="phone_number" property="phoneNumber"/>
         <result column="user_email" property="userEmail"/>
-        <result column="status" property="status"/>
+        <result column="node_principal" property="nodePrincipal"/>
     </resultMap>
-    <resultMap id="loadSceneRoles" type="com.asset.bean.User" extends="userVOMap">
+    <resultMap id="loadSceneRoles" type="com.asset.vo.UserVO" extends="userVOMap">
         <collection property="sceneRoles" ofType="com.asset.bean.SceneRole"
                     select="com.asset.mapper.UserSceneMapper.getRoles" column="{userId=id,sceneId=sceneId}">
         </collection>
@@ -31,10 +31,20 @@
         WHERE scene_id = #{param1} AND node_id = #{param2} AND status = 1 AND node_principal = 1
     </update>
     <select id="getUsers" resultMap="loadSceneRoles">
-        select id, real_name, user_email, phone_number, status, #{param1} as sceneId from as_user
-        where as_user.id IN (
-            SELECT user_id from as_user_scene WHERE scene_id = #{param1} AND node_id = #{param2} AND status = 1
-        )
+        SELECT
+            u.id,
+            u.real_name,
+            u.user_email,
+            u.phone_number,
+            u.STATUS,
+            #{param1} AS sceneId,
+            us.node_principal as node_principal
+        FROM
+            as_user u
+        LEFT JOIN as_user_scene us ON u.id = us.user_id
+        WHERE
+            u.id IN ( SELECT us.user_id FROM as_user_scene us WHERE scene_id = #{param1} AND node_id = #{param2} AND STATUS = 1 )
+        AND us.`status` = 1
         <if test="param3 != null and param3 != ''">
             AND real_name LIKE CONCAT('%',#{param3},'%')
         </if>

@@ -7,6 +7,7 @@ import com.asset.service.*;
 import com.asset.utils.CommonUtils;
 import com.asset.utils.Email;
 import com.asset.utils.Func;
+import com.asset.vo.UserVO;
 import com.asset.wrapper.SceneWrapper;
 import com.asset.wrapper.UserWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -218,20 +219,20 @@ public class SceneController {
             , @RequestParam("sceneId") String sceneId, @RequestParam("nodeId") String nodeId
             , @RequestParam("memberName") String memberName){
         PageHelper.startPage(page, size);
-        List<User> nodeUsers = userSceneService.getNodeUsers(sceneId, nodeId, memberName);
-        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
-        return R.data(new PageInfo<>(userWrapper.listNodeVO(nodeUsers)));
+        List<UserVO> nodeUsers = userSceneService.getNodeUsers(sceneId, nodeId, memberName);
+//        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
+        return R.data(new PageInfo<>(nodeUsers));
     }
 
-    @ApiOperation(value = "场景中通过组织部门获取所属用户（无分页）", notes = "已完成")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataTypeClass = String.class),
-            @ApiImplicitParam(name = "nodeId", value = "部门id", required = true, dataTypeClass = String.class)
-    })
-    @GetMapping("node/members")
-    public R getUsersByNode2(@RequestParam("sceneId") String sceneId, @RequestParam("nodeId") String nodeId){
-        return R.data(userSceneService.getNodeUsers(sceneId, nodeId, ""));
-    }
+//    @ApiOperation(value = "场景中通过组织部门获取所属用户（无分页）", notes = "已完成")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataTypeClass = String.class),
+//            @ApiImplicitParam(name = "nodeId", value = "部门id", required = true, dataTypeClass = String.class)
+//    })
+//    @GetMapping("node/members")
+//    public R getUsersByNode2(@RequestParam("sceneId") String sceneId, @RequestParam("nodeId") String nodeId){
+//        return R.data(userSceneService.getNodeUsers(sceneId, nodeId, ""));
+//    }
 
     @ApiOperation(value = "检索场景中的组织部门", notes = "已完成")
     @ApiImplicitParams({

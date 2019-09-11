@@ -32,7 +32,7 @@ public interface IUserSceneService extends IService<UserScene> {
      * @param nodeId
      * @return
      */
-    List<User> getNodeUsers(String sceneId, String nodeId, String memberName);
+    List<UserVO> getNodeUsers(String sceneId, String nodeId, String memberName);
 
     /**
      * 获取用户在场景中的已有角色

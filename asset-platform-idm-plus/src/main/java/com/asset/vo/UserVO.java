@@ -35,6 +35,11 @@ public class UserVO{
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * id
+	 */
+	private String id;
+
+	/**
 	 * 真实姓名
 	 */
 	private String realName;

@@ -57,7 +57,7 @@ public interface UserSceneMapper extends BaseMapper<UserScene> {
      * @param nodeId
      * @return
      */
-    List<User> getUsers(String sceneId, String nodeId, String memberName);
+    List<UserVO> getUsers(String sceneId, String nodeId, String memberName);
 
     /**
      * 获取场景中用户的角色列表
