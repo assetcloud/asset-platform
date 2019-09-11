@@ -57,8 +57,8 @@ public class TreeNodeManager {
      */
     public OrganTree getRoot() {
         for (OrganTree treeNode : list) {
-            if (treeNode.getParentId().equals(""))
-                return treeNode;
+            if (treeNode.getId().equals("top"))
+            return treeNode;
         }
         return null;
     }

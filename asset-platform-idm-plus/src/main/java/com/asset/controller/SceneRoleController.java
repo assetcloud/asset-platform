@@ -286,7 +286,7 @@ public class SceneRoleController {
     @ApiOperation(value = "场景中设置用户角色", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = String.class),
-            @ApiImplicitParam(name = "roleIds", value = "角色id的数组", required = true, dataTypeClass = String.class)
+            @ApiImplicitParam(name = "rids", value = "角色id的数组", required = true, dataTypeClass = String.class)
     })
     public R setAuthority(@RequestParam String userId, @RequestParam String rids){
         return R.status(sceneRoleService.setAuthority(userId, Func.toLongList(",", rids)));

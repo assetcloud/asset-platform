@@ -5,6 +5,7 @@ import com.asset.common.SystemConstant;
 import com.asset.config.WebLog;
 import com.asset.service.*;
 import com.asset.utils.Func;
+import com.asset.vo.UserVO;
 import com.asset.wrapper.UserWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -166,9 +167,9 @@ public class ApiController {
 
     @GetMapping("hdu/node/user/list")
     public R getUsersByNode(@RequestParam("sceneId") String sceneId, @RequestParam("nodeId") String nodeId){
-        List<User> nodeUsers = userSceneService.getNodeUsers(sceneId, nodeId, "");
-        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
-        return R.data(userWrapper.listNodeVO(nodeUsers));
+        List<UserVO> nodeUsers = userSceneService.getNodeUsers(sceneId, nodeId, "");
+//        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
+        return R.data(nodeUsers);
     }
 
     @ApiOperation(value = "批量添加组织树节点", notes = "已完成")

@@ -45,11 +45,11 @@ public class OrganSceneServiceImpl extends ServiceImpl<OrganSceneMapper, OrganSc
 
     @Override
     public boolean addNodes(String treeIds, String sceneId) {
-        List<String> nodeIds = Func.toStrList(",", treeIds);
         // 删除已有节点
-        this.remove(Wrappers.<OrganScene>query().lambda().in(OrganScene::getNodeId, nodeIds)
-                .eq(OrganScene::getSceneId, sceneId));
-        List<OrganTree> treeList = organTreeMapper.selectBatchIds(nodeIds);
+//        this.remove(Wrappers.<OrganScene>query().lambda().in(OrganScene::getNodeId, nodeIds)
+//                .eq(OrganScene::getSceneId, sceneId));
+        this.remove(Wrappers.<OrganScene>query().lambda().eq(OrganScene::getSceneId, sceneId));
+        List<OrganTree> treeList = organTreeMapper.selectBatchIds(Func.toStrList(",", treeIds));
         ArrayList<OrganScene> organScenes = new ArrayList<>();
         for (OrganTree treeNode : treeList) {
             OrganScene node = CommonUtils.NodeTransformer(treeNode);
