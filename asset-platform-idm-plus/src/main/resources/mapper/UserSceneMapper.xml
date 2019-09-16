@@ -31,7 +31,7 @@
         WHERE scene_id = #{param1} AND node_id = #{param2} AND status = 1 AND node_principal = 1
     </update>
     <select id="getUsers" resultMap="loadSceneRoles">
-        SELECT
+        SELECT DISTINCT
             u.id,
             u.real_name,
             u.user_email,
