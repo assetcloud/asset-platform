@@ -282,14 +282,14 @@ public class SceneRoleController {
         return R.data(resMap);
     }
 
-    @PostMapping("set/authority")
+    @PostMapping("set-roles")
     @ApiOperation(value = "场景中设置用户角色", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "rids", value = "角色id的数组", required = true, dataTypeClass = String.class)
     })
-    public R setAuthority(@RequestParam String userId, @RequestParam String rids){
-        return R.status(sceneRoleService.setAuthority(userId, Func.toLongList(",", rids)));
+    public R setAuthority(@RequestParam String sceneId, @RequestParam String userId, @RequestParam String rids){
+        return R.status(sceneRoleService.setAuthority(sceneId, userId, Func.toLongList(",", rids)));
     }
 
     @GetMapping("groups")
@@ -300,5 +300,4 @@ public class SceneRoleController {
                 .eq(RoleGroup::getSceneCode, sceneId));
         return R.data(list);
     }
-
 }

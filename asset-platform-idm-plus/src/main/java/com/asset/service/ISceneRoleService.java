@@ -152,7 +152,7 @@ public interface ISceneRoleService extends IService<SceneRole> {
      * @param roleIds
      * @return
      */
-    boolean setAuthority(@NotEmpty String userId, @NotEmpty List<Long> roleIds);
+    boolean setAuthority(String sceneId, @NotEmpty String userId, @NotEmpty List<Long> roleIds);
 
     /**
      * 获取场景中所有有效的角色

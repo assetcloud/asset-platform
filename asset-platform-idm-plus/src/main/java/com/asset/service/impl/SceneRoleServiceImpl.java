@@ -6,6 +6,7 @@ import com.asset.mapper.SceneRoleMapper;
 import com.asset.service.*;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,24 +15,22 @@ import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by hjhu on 2018/05/28.
  */
 @Service
 @Transactional
+@AllArgsConstructor
 public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole> implements ISceneRoleService {
 
-    @Autowired
     private SceneRoleMapper sceneRoleMapper;
 
-    @Autowired
     private IRoleGroupService roleGroupService;
 
-    @Autowired
     private ISceneRelationService sceneRelationService;
 
-    @Autowired
     private IResourceRoleService resourceRoleService;
 
     public List<RoleGroup> rolesWithGroup(String sceneId) {
@@ -173,9 +172,12 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
 
     @Override
     @Transactional
-    public boolean setAuthority(@NotEmpty String userId, @NotEmpty List<Long> roleIds) {
+    public boolean setAuthority(@NotEmpty String sceneId, @NotEmpty String userId, @NotEmpty List<Long> roleIds) {
+        List<SceneRole> sceneRoles = sceneRoleMapper.selectList(Wrappers.<SceneRole>lambdaQuery().eq(SceneRole::getSceneCode, sceneId));
+
+        List<Long> ids = sceneRoles.stream().map(SceneRole::getId).collect(Collectors.toList());
         sceneRelationService.remove(Wrappers.<SceneRelation>update().lambda()
-                .in(SceneRelation::getRid, roleIds)
+                .in(SceneRelation::getRid, ids)
                 .eq(SceneRelation::getUid, userId));
         List<SceneRelation> relations = new ArrayList<>();
         roleIds.forEach(roleId -> {

@@ -168,7 +168,7 @@
         FROM
         as_user u
         LEFT JOIN as_scene_relation ur ON u.id = ur.uid
-        WHERE ur.rid = #{param1} AND status = 1 AND stage = 2
+        WHERE ur.rid = #{param1} AND ur.is_deleted = 0 AND  u.status = 1 AND u.stage = 2
         <if test="userName != '' and userName != null">
             AND u.real_name LIKE CONCAT('%',#{param2},'%')
         </if>
