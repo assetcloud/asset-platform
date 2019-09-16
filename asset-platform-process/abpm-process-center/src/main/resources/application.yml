@@ -51,3 +51,4 @@ mybatis-plus:
   global-config:
     db-config:
       table-prefix: as_
+      db-type: MYSQL

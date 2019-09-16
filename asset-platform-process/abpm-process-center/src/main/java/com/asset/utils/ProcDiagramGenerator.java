@@ -64,8 +64,26 @@ public class ProcDiagramGenerator {
         ProcessEngineConfiguration engconf = engine.getProcessEngineConfiguration();
 
         ProcessDiagramGenerator diagramGenerator = engconf.getProcessDiagramGenerator();
-        InputStream in = diagramGenerator.generateDiagram(bpmnModel, "bmp", highLightedActivities, flows, engconf.getActivityFontName(),
-                engconf.getLabelFontName(), engconf.getAnnotationFontName(), engconf.getClassLoader(), 1.0, true);
+//        InputStream in = diagramGenerator.generateDiagram(bpmnModel,
+//                "bmp",
+//                highLightedActivities,
+//                flows,
+//                engconf.getActivityFontName(),
+//                engconf.getLabelFontName(),
+//                engconf.getAnnotationFontName(),
+//                engconf.getClassLoader(),
+//                1.0,
+//                true);
+        InputStream in = diagramGenerator.generateDiagram(bpmnModel,
+                "PNG",
+                highLightedActivities,
+                flows,
+                "宋体",
+                "宋体",
+                "宋体",
+                engconf.getClassLoader(),
+                1.0,
+                false);
         return in;
     }
 
