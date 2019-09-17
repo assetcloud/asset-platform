@@ -10,16 +10,20 @@ import com.asset.mapper.UserMapper;
 import com.asset.mapper.UuidIdGenerator;
 import com.asset.service.IOrganService;
 import com.asset.utils.CommonUtils;
+import com.asset.utils.MyNodeMerger;
 import com.asset.utils.TreeNodeMerger;
+import com.asset.vo.OrganTreeVO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by hjhu on 2019/6/3.
@@ -139,10 +143,17 @@ public class OrganServiceImpl extends ServiceImpl<OrganTreeMapper, OrganTree> im
         return TreeNodeMerger.merge(items);
     }
 
-    public OrganTree getTreeByScene(String sceneId){
+    public OrganTree getTreeByScene2(String sceneId){
         List<OrganScene> list = organTreeMapper.getTreeByScene(sceneId);
         List<OrganTree> organTrees = CommonUtils.NodeTransformer(list);
         return TreeNodeMerger.merge(organTrees);
+    }
+
+    public List<OrganTreeVO> getTreeByScene(String sceneId){
+        List<OrganScene> list = organTreeMapper.getTreeByScene(sceneId);
+        // 数据VO化
+        List<OrganTreeVO> voList = CommonUtils.nodeTransform(list);
+        return MyNodeMerger.merge(voList);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.asset.utils;
 
 import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
+import com.asset.vo.OrganTreeVO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,24 @@ public class CommonUtils implements BaseUtils{
         ArrayList<OrganTree> organTrees = new ArrayList<>();
         for (OrganScene organScene : organScenes) {
             OrganTree node = new OrganTree();
+            node.setId(organScene.getNodeId());
+            node.setParentId(organScene.getParentId());
+            node.setUnitName(organScene.getUnitName());
+            organTrees.add(node);
+        }
+        return organTrees;
+    }
+
+
+    /**
+     * 组织节点转化为单据（组织与场景关联）
+     * @param organScenes
+     * @return OrganScene
+     */
+    public static List<OrganTreeVO> nodeTransform(List<OrganScene> organScenes){
+        ArrayList<OrganTreeVO> organTrees = new ArrayList<>();
+        for (OrganScene organScene : organScenes) {
+            OrganTreeVO node = new OrganTreeVO();
             node.setId(organScene.getNodeId());
             node.setParentId(organScene.getParentId());
             node.setUnitName(organScene.getUnitName());

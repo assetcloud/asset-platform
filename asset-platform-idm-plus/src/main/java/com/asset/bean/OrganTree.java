@@ -21,6 +21,7 @@ public class OrganTree implements Serializable {
     @TableId(type = IdType.UUID)
     @ApiModelProperty(value = "部门id", name = "id", required = true)
     private String id;
+
     @NotBlank(message = "组织名称不能为空")
     @NotNull(message = "组织名称不能为空")
     @ApiModelProperty(value = "组织名称", name = "unitName", required = true)
@@ -103,6 +104,7 @@ public class OrganTree implements Serializable {
     //表示该属性不为数据库表字段，但又是必须使用的
     @TableField(exist = false)
     private List<OrganTree> children = new ArrayList<>();
+
     //编辑场景中组织时，用于判断该节点是否在场景中
     @TableField(exist = false)
     private Integer checked = 0;
