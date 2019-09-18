@@ -76,6 +76,8 @@ public interface Constants {
     Integer PROC_INST_SUSPENDED = 1;  //被挂起
     Integer PROC_INST_DELETED = 2;  //被删除
     Integer PROC_INST_FINISHED = 3;   // 已完成
+    Integer PROC_INST_REJECTED = 4;   // 被拒绝
+
 
     /**
      * --------------------------------------------------------------------任务-----------------------------------------------------------------

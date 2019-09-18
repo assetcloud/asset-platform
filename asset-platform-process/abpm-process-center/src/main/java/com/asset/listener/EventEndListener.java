@@ -1,6 +1,7 @@
 package com.asset.listener;
 
 import com.asset.service.FlowableService;
+import com.asset.service.FormInstService;
 import com.asset.service.ProcInstService;
 import com.asset.utils.Constants;
 import com.asset.utils.ProcUtils;
@@ -16,7 +17,9 @@ import org.flowable.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.flowable.engine.impl.util.CommandContextUtil;
 import org.flowable.engine.impl.util.ProcessDefinitionUtil;
 import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
+import org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.spring5.context.SpringContextUtils;
@@ -31,12 +34,14 @@ import java.util.List;
  * @create: 2019-05-04 20:51
  **/
 @Component
-public class ProcessEndListener implements FlowableEventListener {
+public class EventEndListener implements FlowableEventListener {
 
     @Autowired
     FlowableService flowableService;
     @Autowired
     ProcInstService procInstService;
+    @Autowired
+    FormInstService formInstService;
 
     @Override
     public void onEvent(FlowableEvent event) {
@@ -46,19 +51,29 @@ public class ProcessEndListener implements FlowableEventListener {
         String curActId = flowableService.getNodeId(taskId);
         String procDefId = ProcUtils.getProcessDefinitionByTaskId(taskEntity.getId()).getId();
         String procInstId = flowableService.getProcInstId(taskId);
-        Process process = ProcessDefinitionUtil.getProcess(procDefId);
-        //遍历整个process,找到endEventId是什么，与当前taskId作对比
-        List<FlowElement> flowElements = (List<FlowElement>) process.getFlowElements();
-        for (FlowElement flowElement : flowElements) {
-            if (flowElement instanceof SequenceFlow) {
-                SequenceFlow flow = (SequenceFlow) flowElement;
-                FlowElement sourceFlowElement = flow.getSourceFlowElement();
-                FlowElement targetFlowElement = flow.getTargetFlowElement();
-                //如果当前边的下一个节点是endEvent，那么获取当前边
-                if(targetFlowElement instanceof EndEvent && sourceFlowElement.getId().equals(curActId))
-                {
-                    int flag = procInstService.updateProcStatus(procInstId,Constants.PROC_INST_FINISHED);
-                    System.out.println("下一个是结束节点！！"+flag);
+
+        //对当前执行完的task进行判断，看是否是审批节点任务，同时被拒绝了的话就设定流程状态
+        if(formInstService.isRejected(taskId))
+        {
+            //如果是 拒绝审批，不完成接下来的节点（这里需要在获取流程实例那里进行处理，只获取处于运行状态的流程）
+            procInstService.updateProcStatus(procInstId,Constants.PROC_INST_REJECTED);
+//            ProcUtils.completeInst(procInstId);
+            return;
+        }
+        else{
+            Process process = ProcessDefinitionUtil.getProcess(procDefId);
+            //遍历整个process,找到endEventId是什么，与当前taskId作对比
+            List<FlowElement> flowElements = (List<FlowElement>) process.getFlowElements();
+            for (FlowElement flowElement : flowElements) {
+                if (flowElement instanceof SequenceFlow) {
+                    SequenceFlow flow = (SequenceFlow) flowElement;
+                    FlowElement sourceFlowElement = flow.getSourceFlowElement();
+                    FlowElement targetFlowElement = flow.getTargetFlowElement();
+                    //如果当前边的下一个节点是endEvent，那么获取当前边
+                    if(targetFlowElement instanceof EndEvent && sourceFlowElement.getId().equals(curActId))
+                    {
+                        int flag = procInstService.updateProcStatus(procInstId,Constants.PROC_INST_FINISHED);
+                    }
                 }
             }
         }

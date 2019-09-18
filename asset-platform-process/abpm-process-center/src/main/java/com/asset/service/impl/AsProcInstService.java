@@ -42,6 +42,7 @@ public class AsProcInstService extends ServiceImpl<AsProcInstMapper, AsProcInst>
     FlowableService flowableService;
     AsProcInstMapper asProcInstMapper;
     FormModelService formModelService;
+    ProcDiagramGenerator procDiagramGenerator;
 
 
     public List<AdminProcInstVO> listAdminProcInstInfo(QueryWrapper<AsProcInst> queryWrapper){
@@ -78,7 +79,7 @@ public class AsProcInstService extends ServiceImpl<AsProcInstMapper, AsProcInst>
     }
 
     public void getProcDiagram(HttpServletResponse httpServletResponse, String procInstId) {
-        InputStream in = ProcDiagramGenerator.genProcessDiagramInputStream(httpServletResponse, procInstId);
+        InputStream in = procDiagramGenerator.genProcessDiagramInputStream(httpServletResponse, procInstId);
         OutputStream out = null;
         byte[] buf = new byte[1024];
         int legth = 0;

@@ -263,7 +263,26 @@ public class ProcUtils {
     /**
      * 审批节点点击“不同意”，导致实例结束
      */
-    public static void completeProcInstForRejected(String procInstId) throws FlowableException{
+    public static void completeProcInstForRejected(String taskId) throws FlowableException{
+//        ProcessInstance instance = runtimeService.createProcessInstanceQuery()
+//                .processInstanceId(procInstId) // 使用流程实例ID查询
+//                .singleResult();
+//
+//        for (int i = 0; i < Integer.MAX_VALUE; i++) {
+//            List<Task> tasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
+//
+//            if (tasks.size() == 0)
+//                break;
+//
+//            //遍历，然后完成
+//            for (Task task : tasks) {
+                    taskService.complete(taskId);
+//            }
+//        }
+
+    }
+
+    public static void completeInst(String procInstId){
         ProcessInstance instance = runtimeService.createProcessInstanceQuery()
                 .processInstanceId(procInstId) // 使用流程实例ID查询
                 .singleResult();
@@ -276,10 +295,9 @@ public class ProcUtils {
 
             //遍历，然后完成
             for (Task task : tasks) {
-                    taskService.complete(task.getId());
+        taskService.complete(task.getId());
             }
         }
-
     }
 
 

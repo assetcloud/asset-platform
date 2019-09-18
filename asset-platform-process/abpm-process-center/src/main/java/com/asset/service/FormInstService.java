@@ -394,8 +394,9 @@ public class FormInstService {
         // 这里现在的思路是在回滚前把当前流程实例的其他任务节点状态统一设成 已被回滚，同时回滚之后还要把新生成的form_inst加入数据库
         else if(dto.getApprove_result() == Constants.APPROVE_DISAGREE)
         {
-            ProcUtils.completeProcInstForRejected(procInstID);
-
+            ProcUtils.completeProcInstForRejected(dto.getTask_id());
+            String[] strings = {""};
+            return strings;
 //            String lastApplyNode = getLastApplyNode(getProcInstId(dto.getTask_id()));
 //            if(lastApplyNode.equals(""))
 //                throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
@@ -877,5 +878,31 @@ public class FormInstService {
                 .eq(AsFormInst::getProcInstId,procInstId);
         List<AsFormInst> formInstDOs = asFormInstMapper.selectList(queryWrapper);
         return formInstDOs;
+    }
+
+    /**
+     * 判断某一个实例所属的taskId是不是被正常执行了，还是这个实例被终止了，导致这个task_id在as_form_inst表中没有得到记录
+     * @return
+     */
+    public boolean isFormInstExecuted(String taskId) {
+        QueryWrapper<AsFormInst> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(AsFormInst::getTaskId,taskId);
+        List<AsFormInst> formInstDOs = asFormInstMapper.selectList(queryWrapper);
+        return formInstDOs.size()!=0;
+    }
+
+    /**
+     * 这里传入的task如果是被拒绝的，返回true；其他情况都是false，
+     * @param taskId
+     * @return
+     */
+    public boolean isRejected(String taskId) {
+        QueryWrapper<AsFormInst> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(AsFormInst::getTaskId,taskId)
+                .eq(AsFormInst::getApproveResult,Constants.APPROVE_DISAGREE);
+        List<AsFormInst> formInstDOs = asFormInstMapper.selectList(queryWrapper);
+        return formInstDOs.size()!=0;
     }
 }
