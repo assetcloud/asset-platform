@@ -110,7 +110,7 @@ public class FormInstService {
     public String commitFormInst(FormInstRecCreate dto) throws DocumentException, DatabaseException {
         //1、先获取与表单模型唯一绑定的流程模型ID
         String procModelID = formModelService.getProcModelID(dto.getForm_model_id());
-        //直接由流程模型后台创建流程实例(还没持久化)
+        //直接由流程模型后台创建流程实例
         HashMap<String,Object> map = procInstService.createProcInstance(procModelID);
 
         ProcessInstance procInst = (ProcessInstance) map.get("inst");
@@ -241,23 +241,42 @@ public class FormInstService {
         ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
         for(int i = 0;i<filtrate3.size();i++){
             FormInstBO boo = filtrate3.get(i);
-            String committer = procInstService.getCommitter(filtrate3.get(i).getTaskId());
+//            String committer = procInstService.getCommitter(filtrate3.get(i).getTaskId());
             String formInstValue = procInstService.getFormInstAllValue(boo.getProcInstId());
-            Date commitTime = procInstService.getCommitTime(boo.getProcInstId());
+            Date commitTime = procInstService.getCommitTime(boo.getProcInstId());   // 这个指的是流程实例发起的时间
             FormInstVO voo = new FormInstVO.Builder()
                     .commitTime(commitTime.getTime())
-                    .title(committer+"发起的表单").build();
+                    .title(formModelService.getFormName(boo.getFormModelId()))   //title应该是对应的表单模型的名称
+                    .build();
             BeanUtils.copyProperties(boo,voo);
             voo.setFormInstValue(formInstValue);
 
-            if(boo.getNodeType() == Constants.AS_NODE_APPLY)
-                voo.setContent("经办节点");
-            else if(boo.getNodeType() == Constants.AS_NODE_APPROVE)
-                voo.setContent("审批节点");
-            else if(boo.getNodeType() == Constants.AS_NODE_CC)
-                voo.setContent("抄送节点");
+            //content那一项内容应该是 根据需求显示表单模板中的一些字段信息（这个字段信息的动态设置应该是放在as_form_model表中），如果没有对这个进行设置的话，就显示这个任务的类型
+            //现在暂时写死
+            String zichanyijiaoFormModelId = "660d7d6f-d83f-11e9-a9e8-0242ac120006";
+            if(boo.getFormModelId().equals(zichanyijiaoFormModelId)){
+                JSONObject jsonObject = JSON.parseObject(formInstValue);
+                String assetName = (String) jsonObject.get("input_1566366027958");
+                String assetNum = (String) jsonObject.get("input_1566366061170");
+//                String committerForContent = (String) jsonObject.get("input_1568450723142");
+                String committerForContent = "金伟刚";
+//                String committerSection = (String) jsonObject.get("input_1568450690311");
+                String committerSection = (String) jsonObject.get("input_1568450690311");
+                String taker = (String) jsonObject.get("input_1566958355545");
+                String takerSection = (String) jsonObject.get("input_1566960206187");
+                voo.setContent("资产名称："+assetName+" 数量："+assetNum+" 申请人："+committerForContent+" 所在部门："+committerSection+" 接收人："+taker+" 所在部门："+takerSection);
+            }
             else
-                voo.setContent("其他节点");
+            {
+                if(boo.getNodeType() == Constants.AS_NODE_APPLY)
+                    voo.setContent("经办节点");
+                else if(boo.getNodeType() == Constants.AS_NODE_APPROVE)
+                    voo.setContent("审批节点");
+                else if(boo.getNodeType() == Constants.AS_NODE_CC)
+                    voo.setContent("抄送节点");
+                else
+                    voo.setContent("其他节点");
+            }
 
 //            FormInstVO voo = filtrate3.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
             formInstVOs.add(voo);
@@ -375,8 +394,9 @@ public class FormInstService {
         // 这里现在的思路是在回滚前把当前流程实例的其他任务节点状态统一设成 已被回滚，同时回滚之后还要把新生成的form_inst加入数据库
         else if(dto.getApprove_result() == Constants.APPROVE_DISAGREE)
         {
-            ProcUtils.completeProcInstForRejected(procInstID);
-
+            ProcUtils.completeProcInstForRejected(dto.getTask_id());
+            String[] strings = {""};
+            return strings;
 //            String lastApplyNode = getLastApplyNode(getProcInstId(dto.getTask_id()));
 //            if(lastApplyNode.equals(""))
 //                throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
@@ -858,5 +878,31 @@ public class FormInstService {
                 .eq(AsFormInst::getProcInstId,procInstId);
         List<AsFormInst> formInstDOs = asFormInstMapper.selectList(queryWrapper);
         return formInstDOs;
+    }
+
+    /**
+     * 判断某一个实例所属的taskId是不是被正常执行了，还是这个实例被终止了，导致这个task_id在as_form_inst表中没有得到记录
+     * @return
+     */
+    public boolean isFormInstExecuted(String taskId) {
+        QueryWrapper<AsFormInst> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(AsFormInst::getTaskId,taskId);
+        List<AsFormInst> formInstDOs = asFormInstMapper.selectList(queryWrapper);
+        return formInstDOs.size()!=0;
+    }
+
+    /**
+     * 这里传入的task如果是被拒绝的，返回true；其他情况都是false，
+     * @param taskId
+     * @return
+     */
+    public boolean isRejected(String taskId) {
+        QueryWrapper<AsFormInst> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(AsFormInst::getTaskId,taskId)
+                .eq(AsFormInst::getApproveResult,Constants.APPROVE_DISAGREE);
+        List<AsFormInst> formInstDOs = asFormInstMapper.selectList(queryWrapper);
+        return formInstDOs.size()!=0;
     }
 }

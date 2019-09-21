@@ -1,6 +1,6 @@
 package com.asset.config;
 
-import com.asset.listener.ProcessEndListener;
+import com.asset.listener.EventEndListener;
 import com.google.common.collect.Maps;
 import org.flowable.common.engine.api.delegate.event.FlowableEventListener;
 import org.flowable.spring.SpringProcessEngineConfiguration;
@@ -30,11 +30,11 @@ public class FlowableListenerConfig {
     /**
      * 任务节点前置监听
      */
-    private final ProcessEndListener taskBeforeListener;
+    private final EventEndListener taskBeforeListener;
 
 
     @Autowired
-    public FlowableListenerConfig(ProcessEndListener taskBeforeListener) {
+    public FlowableListenerConfig(EventEndListener taskBeforeListener) {
         this.taskBeforeListener = taskBeforeListener;
     }
 
@@ -64,7 +64,7 @@ public class FlowableListenerConfig {
         return listenerMap;
     }
 
-    public ProcessEndListener getTaskBeforeListener() {
+    public EventEndListener getTaskBeforeListener() {
         return taskBeforeListener;
     }
 }

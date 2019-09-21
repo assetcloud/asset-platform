@@ -106,7 +106,7 @@ public class FormModelController {
                                               @RequestParam(value = "group_id") int groupId,
                                               @ApiParam(value = "0——所有表单模型,1——未绑定流程模型,2——已绑定流程模型，且其他的内容也都已经添加(不对分支条件进行筛选)",
                                                       required = true, allowableValues = "0,1,2")
-                                              @RequestParam(value = "form_status") int formStatus
+        @RequestParam(value = "form_status") int formStatus
     ) {
 //        List<FormModelBO> formModelDOS = formModelService.getFormModelBOs(appId, groupId, formStatus);
         List<FormModelBO> formModelDOS = asFormModelService.listFormModelBOs(appId, groupId, formStatus);
