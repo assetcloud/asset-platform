@@ -126,6 +126,7 @@ public interface Constants {
     String SCENE_SELECT_PROC_NODE_2 = "task2";
     //流程模型中常量
     String CANDIDATE_GROUP_CUR_SECTION = "CANDIDATE_GROUP_CUR_SECTION";  //这一项表示当前申请人的所在部门
+    String CANDIDATE_INITIATOR = "CANDIDATE_INITIATOR";  //这一项表示发起人（也就是申请人）
 
 
     /**

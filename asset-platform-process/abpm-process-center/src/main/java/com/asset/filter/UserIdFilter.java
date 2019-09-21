@@ -24,6 +24,11 @@ public class UserIdFilter{
             String[] candidateUser = formInstBO.getCandidateUser();
             if(candidateUser!=null)
                 for (int i = 0; i < candidateUser.length; i++) {
+                    if(candidateUser[i].equals(Constants.CANDIDATE_INITIATOR)
+                            && formInstBO.getCommitter().equals(formInstBO.getCurUserId())){
+                        //找到当前实例的committer，和当前用户进行判断，如果相等，那么说明当前用户就是当初的那个发起者，可以获取当前任务
+                        continue type1;
+                    }
                     if (candidateUser[i].equals(formInstBO.getCurUserId()))
                         continue type1;
                 }
