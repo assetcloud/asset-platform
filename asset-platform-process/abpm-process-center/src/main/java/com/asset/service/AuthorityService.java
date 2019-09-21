@@ -51,7 +51,7 @@ public class AuthorityService {
      *
      * @param curAuthority 第j个表单项当前的权限应该是什么（在调用该方法前已经指定好了）
      */
-    public void handleItemAuthority(FormItem curItem, Integer curAuthority) {
+    public FormItem handleItemAuthority(FormItem curItem, Integer curAuthority) {
         switch (curAuthority){
             //必填，获取list中json对象的rules属性，进行修改,
             //diable:false;required:true+rule
@@ -76,7 +76,7 @@ public class AuthorityService {
                         boolean isContain = rules.get(i).containsKey("required");
                         //表示当前包含"required"这个字段了,没必要添加新的 必填 rule
                         if(isContain)
-                            return;
+                            return curItem;
                     }
                     //上面都遍历了还没有找到"required"这个字段，说明的确是没有这个字段，现在
                     //要添加新的 必填 rule
@@ -103,6 +103,7 @@ public class AuthorityService {
                 curItem.setOptions(optionsBase1);
                 break;
         }
+        return curItem;
     }
 
     public FormInstDO handleFormSheetAuthority(FormInstDO formInstDO) throws FormException {

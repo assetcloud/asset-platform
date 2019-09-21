@@ -10,6 +10,7 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import com.jayway.jsonpath.spi.json.JacksonJsonNodeJsonProvider;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
+import lombok.Data;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.engine.*;
@@ -137,6 +138,21 @@ public class TempTest {
 //            }
 
 //        }
+    }
+
+    @Test
+    public void testArray(){
+        Students students = new Students();
+        ArrayList<Student> s = students.getStudents();
+        s.remove(0);
+        System.out.println("size+"+students.getStudents().size());
+
+        Student s1 = s.get(0);
+        s1.setI(2121);
+
+
+
+
     }
 
 
