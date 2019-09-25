@@ -43,8 +43,9 @@
             as_user u
         LEFT JOIN as_user_scene us ON u.id = us.user_id
         WHERE
-            u.id IN ( SELECT us.user_id FROM as_user_scene us WHERE scene_id = #{param1} AND node_id = #{param2} AND STATUS = 1 )
+            u.id IN ( SELECT DISTINCT us.user_id FROM as_user_scene us WHERE scene_id = #{param1} AND node_id = #{param2} AND STATUS = 1 )
         AND us.`status` = 1
+        AND us.scene_id = #{param1}
         <if test="param3 != null and param3 != ''">
             AND real_name LIKE CONCAT('%',#{param3},'%')
         </if>

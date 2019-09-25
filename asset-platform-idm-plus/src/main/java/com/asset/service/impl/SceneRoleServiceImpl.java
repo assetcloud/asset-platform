@@ -72,7 +72,9 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
         roleAdmin.setStatus(true);
         roleAdmin.setCreatedTime(new Date());
         roleAdmin.setEnableTime(new Date());
+        roleAdmin.setRoleType(SystemConstant.ROLE_TYPE_ADMIN);
         roleDefault.setGroupId(roleGroup.getId());
+        roleDefault.setRoleType(SystemConstant.DEFAULT_ROLE_ID);
         roleDefault.setStatus(true);
         roleDefault.setRoleDefault(1);
         roleDefault.setCreatedTime(new Date());
@@ -158,7 +160,6 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     @Transactional
     public boolean grant(@NotEmpty Long roleId, @NotEmpty List<Long> resourceIds) {
         resourceRoleService.remove(Wrappers.<ResourceRole>update().lambda()
-                .in(ResourceRole::getMenuId, resourceIds)
                 .eq(ResourceRole::getRoleId, roleId));
         List<ResourceRole> resourceRoles = new ArrayList<>();
         resourceIds.forEach(resourceId -> {
@@ -173,8 +174,8 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     @Override
     @Transactional
     public boolean setAuthority(@NotEmpty String sceneId, @NotEmpty String userId, @NotEmpty List<Long> roleIds) {
-        List<SceneRole> sceneRoles = sceneRoleMapper.selectList(Wrappers.<SceneRole>lambdaQuery().eq(SceneRole::getSceneCode, sceneId));
 
+        List<SceneRole> sceneRoles = sceneRoleMapper.selectList(Wrappers.<SceneRole>lambdaQuery().eq(SceneRole::getSceneCode, sceneId));
         List<Long> ids = sceneRoles.stream().map(SceneRole::getId).collect(Collectors.toList());
         sceneRelationService.remove(Wrappers.<SceneRelation>update().lambda()
                 .in(SceneRelation::getRid, ids)
