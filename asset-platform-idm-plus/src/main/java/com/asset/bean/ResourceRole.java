@@ -33,8 +33,10 @@ public class ResourceRole extends Model<ResourceRole> implements Cloneable{
     @TableField("id")
     @TableId(type = IdType.AUTO)
     private Long id;
+
     @TableField("menu_id")
     private Long menuId;
+
     @TableField("role_id")
     private Long roleId;
 

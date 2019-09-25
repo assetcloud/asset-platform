@@ -1,6 +1,7 @@
 package com.asset.utils;
 
 import com.asset.bean.OrganTree;
+import com.asset.vo.OrganTreeVO;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,9 +24,12 @@ public class TreeNodeManager {
     }
 
     public TreeNodeManager(List<OrganTree> items) {
-        list = new ArrayList<>();
-        list.addAll(items);
+        this.list = items;
     }
+
+//    public TreeNodeManager(List<OrganTreeVO> items) {
+//        this.treeVOList = items;
+//    }
 
     public List<OrganTree> getList() {
         return list;

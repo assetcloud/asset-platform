@@ -250,6 +250,6 @@ public class OrganController {
         if (Func.isNull(id)){
             return R.fail("参数错误");
         }
-        return R.data(organService.getTreeByScene(id));
+        return R.data(organService.getTreeByScene2(id));
     }
 }

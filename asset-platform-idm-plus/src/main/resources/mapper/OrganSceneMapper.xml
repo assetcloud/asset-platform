@@ -14,7 +14,7 @@
         </foreach>
     </update>
     <update id="batchDeleteByUserId">
-        update as_organ_scene set status = 0 where status = 1 and scene_id = #{param2} and user_id IN
+        update as_user_scene set status = 0 where status = 1 and scene_id = #{param2} and user_id IN
         <foreach collection="param1" index="index" item="item" open="(" separator="," close=")">
             #{item}
         </foreach>

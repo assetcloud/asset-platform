@@ -3,6 +3,7 @@ package com.asset.service;
 import com.asset.bean.OrganScene;
 import com.asset.bean.OrganTree;
 import com.asset.bean.User;
+import com.asset.vo.OrganTreeVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -48,7 +49,15 @@ public interface IOrganService extends IService<OrganTree> {
      * @param sceneId
      * @return
      */
-    OrganTree getTreeByScene(String sceneId);
+    OrganTree getTreeByScene2(String sceneId);
+
+    /**
+     * 通过场景获取组织结构树（不包含顶级节点）
+     * @param sceneId
+     * @return
+     */
+    List<OrganTreeVO> getTreeByScene(String sceneId);
+
 
     /**
      * 通过场景获取组织结构树中的特定节点（不包含顶级节点）

@@ -112,7 +112,7 @@ public class SceneController {
             @ApiImplicitParam(name = "userIds", value = "用户id的集合", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataTypeClass = String.class)
     })
-    @DeleteMapping("members")
+    @PostMapping("members/remove")
     public R removeMembers(@RequestParam String userIds, @RequestParam String sceneId){
         if (Func.hasEmpty(userIds, sceneId)){
             return R.fail("参数错误");
