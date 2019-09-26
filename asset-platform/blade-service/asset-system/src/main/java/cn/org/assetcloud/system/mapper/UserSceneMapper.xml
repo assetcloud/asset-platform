@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.assetcloud.system.mapper.UserSceneMapper">
+
+    <resultMap id="userVOMap" type="cn.org.assetcloud.system.vo.UserVO">
+        <result column="id" property="id"/>
+        <result column="real_name" property="realName"/>
+        <result column="phone_number" property="phoneNumber"/>
+        <result column="user_email" property="userEmail"/>
+        <result column="node_principal" property="nodePrincipal"/>
+    </resultMap>
+    <resultMap id="loadSceneRoles" type="cn.org.assetcloud.system.vo.UserVO" extends="userVOMap">
+        <collection property="sceneRoles" ofType="cn.org.assetcloud.system.entity.SceneRole"
+                    select="com.asset.mapper.UserSceneMapper.getRoles" column="{userId=id,sceneId=sceneId}">
+        </collection>
+    </resultMap>
+    <select id="hasScene" resultType="cn.org.assetcloud.system.entity.UserScene">
+        select * from as_user_scene where user_id = #{param1} and scene_id = #{param2} and status =1
+    </select>
+    <update id="updateByUserAndScene">
+        update as_user_scene set status = 1 where user_id = #{param1} and scene_id = #{param2} and status = 0
+    </update>
+    <update id="updateNodeIdByUserId">
+        UPDATE as_user_scene SET node_id = #{param3} WHERE status = 1 AND user_id = #{param1} AND scene_id = #{param2}
+    </update>
+    <select id="getUser4Principal" resultType="cn.org.assetcloud.system.entity.UserScene">
+        SELECT * FROM as_user_scene WHERE status = 1 AND user_id = #{param1} AND scene_id = #{param2} AND node_id = #{param3}
+    </select>
+    <update id="cancelPrincipal">
+        UPDATE as_user_scene SET node_principal = 0
+        WHERE scene_id = #{param1} AND node_id = #{param2} AND status = 1 AND node_principal = 1
+    </update>
+    <select id="getUsers" resultMap="loadSceneRoles">
+        SELECT DISTINCT
+            u.id,
+            u.real_name,
+            u.user_email,
+            u.phone_number,
+            u.STATUS,
+            #{param1} AS sceneId,
+            us.node_principal as node_principal
+        FROM
+            as_user u
+        LEFT JOIN as_user_scene us ON u.id = us.user_id
+        WHERE
+            u.id IN ( SELECT DISTINCT us.user_id FROM as_user_scene us WHERE scene_id = #{param1} AND node_id = #{param2} AND STATUS = 1 )
+        AND us.`status` = 1
+        AND us.scene_id = #{param1}
+        <if test="param3 != null and param3 != ''">
+            AND real_name LIKE CONCAT('%',#{param3},'%')
+        </if>
+    </select>
+    <select id="getRoles" resultType="cn.org.assetcloud.system.entity.SceneRole">
+        SELECT * FROM as_scene_role WHERE scene_code = #{sceneId} AND status = 1 AND id IN (
+            SELECT rid FROM as_scene_relation sr WHERE sr.uid = #{userId} AND is_deleted = 0
+        )
+    </select>
+</mapper>
