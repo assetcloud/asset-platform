@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.assetcloud.system.mapper.AppTemplateMapper">
+  <resultMap id="BaseResultMap" type="cn.org.assetcloud.system.entity.AppTemplate">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="application_id" jdbcType="VARCHAR" property="applicationId" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="publish_time" jdbcType="TIMESTAMP" property="publishTime" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="publish_account" jdbcType="VARCHAR" property="publishAccount" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, application_id, status, publish_time, disable_time, publish_account
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from as_app_template
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from as_app_template
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.org.assetcloud.system.entity.AppTemplate">
+    insert into as_app_template (id, application_id, status,
+      publish_time, disable_time, publish_account
+      )
+    values (#{id,jdbcType=VARCHAR}, #{applicationId,jdbcType=VARCHAR}, #{status,jdbcType=BIT},
+      #{publishTime,jdbcType=TIMESTAMP}, #{disableTime,jdbcType=TIMESTAMP}, #{publishAccount,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="cn.org.assetcloud.system.entity.AppTemplate">
+    insert into as_app_template
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="applicationId != null">
+        application_id,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="publishTime != null">
+        publish_time,
+      </if>
+      <if test="disableTime != null">
+        disable_time,
+      </if>
+      <if test="publishAccount != null">
+        publish_account,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="applicationId != null">
+        #{applicationId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="publishTime != null">
+        #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="disableTime != null">
+        #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishAccount != null">
+        #{publishAccount,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.org.assetcloud.system.entity.AppTemplate">
+    update as_app_template
+    <set>
+      <if test="applicationId != null">
+        application_id = #{applicationId,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="publishTime != null">
+        publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="disableTime != null">
+        disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="publishAccount != null">
+        publish_account = #{publishAccount,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.org.assetcloud.system.entity.AppTemplate">
+    update as_app_template
+    set application_id = #{applicationId,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      publish_time = #{publishTime,jdbcType=TIMESTAMP},
+      disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      publish_account = #{publishAccount,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

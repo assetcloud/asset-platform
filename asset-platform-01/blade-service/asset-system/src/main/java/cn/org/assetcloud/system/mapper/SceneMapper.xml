@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.assetcloud.system.mapper.SceneMapper">
+  <resultMap id="BaseResultMap" type="cn.org.assetcloud.system.entity.Scene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="scene_name" jdbcType="VARCHAR" property="sceneName" />
+    <result column="img" jdbcType="VARCHAR" property="img"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_deleted" jdbcType="TINYINT" property="isDeleted" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+  </resultMap>
+  <resultMap id="OrganSceneMap" type="cn.org.assetcloud.system.entity.OrganScene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="node_id" jdbcType="VARCHAR" property="nodeId"/>
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="scene_id" jdbcType="TINYINT" property="sceneId" />
+    <result column="status" jdbcType="TINYINT" property="status" />
+  </resultMap>
+  <resultMap id="countMap" type="java.lang.Integer">
+    <result column="cnt" jdbcType="INTEGER"/>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, scene_name, is_deleted, add_time, remark, img
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from as_scene
+    where id = #{id,jdbcType=VARCHAR}
+    AND is_deleted = 0
+  </select>
+  <insert id="addNode" parameterType="cn.org.assetcloud.system.entity.OrganScene">
+    insert into as_organ_scene(node_id, parent_id, unit_name, scene_id, status)
+    values (#{nodeId}, #{parentId}, #{unitName}, #{sceneId}, #{status})
+  </insert>
+  <select id="getSceneNodes" parameterType="java.lang.String" resultMap="countMap">
+    select
+        count(*) as cnt
+    from
+        as_organ_scene
+    where
+        scene_id = #{sceneId}
+    and
+        status = 1
+  </select>
+  <select id="getScenesByUser" resultMap="BaseResultMap">
+    SELECT
+        *
+    FROM
+        as_scene s
+    WHERE
+        s.id IN ( SELECT us.scene_id FROM as_user_scene us WHERE us.user_id = #{userId} and us.status = 1 )
+        AND s.is_deleted = 0
+  </select>
+  <select id="getAvailableScene" resultMap="BaseResultMap">
+    select * from as_scene where id = #{sceneId} and is_deleted = 0
+  </select>
+  <select id="getSceneInvert" resultType="cn.org.assetcloud.system.entity.Scene">
+    SELECT * FROM as_scene WHERE is_deleted = 0
+    AND id NOT IN (SELECT scene_id FROM as_user_scene WHERE user_id = #{param1} AND STATUS = 1)
+    <if test="param2 != null">
+      AND as_scene.scene_name LIKE CONCAT('%', #{param2}, '%')
+    </if>
+  </select>
+  <select id="getNameAlike" resultMap="OrganSceneMap">
+    select * from as_organ_scene where unit_name like concat('%',#{param1},'%')
+    and status = 1 and scene_id = #{param2} and parent_id != ''
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from as_scene
+    where is_deleted = 0 order by add_time ASC
+  </select>
+  <select id="selectByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from as_scene
+    where is_deleted = 0
+    and scene_name = #{sceneName}
+  </select>
+  <select id="selectByNameAlike" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+        <include refid="Base_Column_List" />
+    from
+        as_scene
+    where
+        is_deleted = 0 and scene_name like CONCAT('%', #{sceneName}, '%')
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from as_scene
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.org.assetcloud.system.entity.Scene">
+    insert into as_scene (id, scene_name, is_deleted,
+      add_time,remark, img)
+    values (#{id,jdbcType=VARCHAR}, #{sceneName,jdbcType=VARCHAR}, #{isDeleted,jdbcType=TINYINT},
+      #{addTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR})
+  </insert>
+  <insert id="userSceneBind">
+    insert into
+        as_user_scene(scene_id, user_id, role_id, status)
+    values
+        (#{sceneId}, #{userId}, #{roleId}, 1)
+  </insert>
+  <insert id="insertSelective" parameterType="cn.org.assetcloud.system.entity.Scene">
+    insert into as_scene
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="sceneName != null">
+        scene_name,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
+
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="img != null">
+        img,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="sceneName != null">
+        #{sceneName,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=TINYINT},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null">
+        #{img,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.org.assetcloud.system.entity.Scene">
+    update as_scene
+    <set>
+      <if test="sceneName != null">
+        scene1_name = #{sceneName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="img != null">
+        remark = #{img,jdbcType=VARCHAR},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=TINYINT},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="deleteScene" parameterType="java.lang.String">
+    update as_scene
+    <set>
+      is_deleted = 1
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateSceneName">
+    update as_scene
+    <set>
+      scene_name = #{sceneName}
+    </set>
+    where id = #{id}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.org.assetcloud.system.entity.Scene">
+    update as_scene
+    set scene_name = #{sceneName,jdbcType=VARCHAR},
+    img = #{img,jdbcType=VARCHAR},
+        remark = #{remark,jdbcType=VARCHAR},
+      is_deleted = #{isDeleted,jdbcType=TINYINT},
+      add_time = #{addTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

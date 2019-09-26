@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.assetcloud.system.mapper.OrganSceneMapper">
+
+    <!-- 开启二级缓存 -->
+<!--    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>-->
+    <select id="getRootNode" resultType="cn.org.assetcloud.system.entity.OrganScene">
+        select * FROM as_organ_scene where parent_id = 'top' and scene_id = #{sceneId} and status = 1
+    </select>
+    <update id="batchDeleteByNodeId">
+        update as_organ_scene set status = 0 where status = 1 and scene_id = #{param2} and node_id IN
+        <foreach collection="param1" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+    <update id="batchDeleteByUserId">
+        update as_user_scene set status = 0 where status = 1 and scene_id = #{param2} and user_id IN
+        <foreach collection="param1" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </update>
+</mapper>
