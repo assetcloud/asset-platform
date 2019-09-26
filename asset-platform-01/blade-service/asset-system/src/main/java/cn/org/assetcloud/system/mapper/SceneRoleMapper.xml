@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.assetcloud.system.mapper.SceneRoleMapper">
+
+    <resultMap id="GroupRolesMap" type="cn.org.assetcloud.system.entity.RoleGroup">
+        <id column="groupId" jdbcType="INTEGER" property="id" />
+        <result column="role_group_name" jdbcType="VARCHAR" property="roleGroupName" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+        <result column="scene_code" jdbcType="VARCHAR" property="sceneCode"/>
+        <collection property="sceneRoles" ofType="cn.org.assetcloud.system.entity.SceneRole">
+            <id column="id" jdbcType="INTEGER" property="id" />
+            <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+            <result column="role_name_zh" jdbcType="VARCHAR" property="roleNameZh" />
+            <result column="role_description" jdbcType="VARCHAR" property="roleDescription" />
+            <result column="role_default" jdbcType="INTEGER" property="roleDefault" />
+            <result column="status" jdbcType="BIT" property="status" />
+            <result column="applicable_unit_level" jdbcType="VARCHAR" property="applicableUnitLevel" />
+            <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+            <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+            <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+            <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+            <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+            <result column="group_id" jdbcType="INTEGER" property="groupId" />
+            <result column="scene_code" jdbcType="INTEGER" property="sceneCode" />
+        </collection>
+    </resultMap>
+
+    <resultMap id="GroupMap" type="cn.org.assetcloud.system.entity.RoleGroup">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="role_group_name" jdbcType="VARCHAR" property="roleGroupName" />
+        <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+        <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    </resultMap>
+
+    <resultMap id="BaseResultMap" type="cn.org.assetcloud.system.entity.SceneRole">
+        <id column="id" jdbcType="INTEGER" property="id" />
+        <result column="role_name" jdbcType="VARCHAR" property="roleName" />
+        <result column="role_name_zh" jdbcType="VARCHAR" property="roleNameZh" />
+        <result column="role_description" jdbcType="VARCHAR" property="roleDescription" />
+        <result column="role_default" jdbcType="INTEGER" property="roleDefault" />
+        <result column="status" jdbcType="BIT" property="status" />
+        <result column="applicable_unit_level" jdbcType="VARCHAR" property="applicableUnitLevel" />
+        <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+        <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+        <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+        <result column="group_id" jdbcType="INTEGER" property="groupId" />
+        <result column="scene_code" jdbcType="INTEGER" property="sceneCode" />
+    </resultMap>
+
+    <resultMap id="UserResultMap" type="cn.org.assetcloud.system.user.entity.User">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="staff_id" jdbcType="VARCHAR" property="staffId" />
+        <result column="real_name" jdbcType="VARCHAR" property="realName" />
+        <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+        <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+        <result column="gender" jdbcType="INTEGER" property="gender" />
+        <result column="user_birthday" jdbcType="TIMESTAMP" property="userBirthday" />
+        <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+        <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+        <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
+        <result column="certificate_number" jdbcType="VARCHAR" property="certificateNumber" />
+        <!--    <result column="pwd" jdbcType="VARCHAR" property="pwd" />-->
+        <result column="authentication_method" jdbcType="INTEGER" property="authenticationMethod" />
+        <result column="account_picture" jdbcType="VARCHAR" property="accountPicture" />
+        <result column="admin" jdbcType="INTEGER" property="admin" />
+        <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+        <result column="user_photo" jdbcType="VARCHAR" property="userPhoto" />
+        <result column="status" jdbcType="BIT" property="status" />
+        <result column="user_type" jdbcType="INTEGER" property="userType" />
+        <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+        <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+        <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+        <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    </resultMap>
+    <resultMap extends="UserResultMap" id="ResultMapWithBLOBs" type="cn.org.assetcloud.system.user.entity.User">
+        <result column="user_remark" jdbcType="LONGVARCHAR" property="userRemark" />
+    </resultMap>
+
+    <select id="roles" resultType="cn.org.assetcloud.system.entity.SceneRole">
+        SELECT
+            *
+        FROM
+            as_scene_role
+        WHERE
+            status = 1
+    </select>
+
+    <select id="groupRoles" resultMap="GroupRolesMap">
+        SELECT
+            r.*,
+            rg.role_group_name,
+            rg.id as groupId,
+            rg.add_time as addTime
+        FROM
+            as_scene_role r
+            LEFT JOIN as_role_group rg ON r.group_id = rg.id
+        WHERE
+            rg.is_deleted = 0 AND r.scene_code = #{sceneId}
+  </select>
+    <select id="listAll" resultMap="BaseResultMap" parameterType="cn.org.assetcloud.system.entity.SceneRole">
+        SELECT
+            r.*,
+            rg.role_group_name,
+            rg.id as groupId,
+            rg.add_time as addTime
+        FROM
+            as_scene_role r
+            LEFT JOIN as_role_group rg ON r.group_id = rg.id
+        WHERE
+            rg.is_deleted = 0
+        <if test="roleNameZh != null">
+            AND r.role_name_zh LIKE CONCAT('%',#{roleNameZh},'%')
+        </if>
+        <if test="roleName != null">
+            AND r.role_name LIKE CONCAT('%',#{roleName},'%')
+        </if>
+        <if test="sceneCode != null">
+            AND r.scene_code LIKE CONCAT('%',#{sceneCode},'%')
+        </if>
+        <if test="status != null">
+            AND r.status = #{status}
+        </if>
+    </select>
+    <select id="roleExist" resultType="cn.org.assetcloud.system.entity.SceneRole">
+        SELECT * FROM as_scene_role WHERE role_name_zh = #{param1} and scene_code = #{param2} and status = 1
+    </select>
+    <select id="getDefaultRole" resultType="cn.org.assetcloud.system.entity.SceneRole">
+        select * from as_scene_role where role_default = 1 and status = 1 and scene_code = #{sceneId}
+    </select>
+    <select id="roleGroupExist" resultType="cn.org.assetcloud.system.entity.RoleGroup">
+        SELECT * FROM as_role_group WHERE role_group_name = #{param1} and scene_code = #{param2} and is_deleted = 0
+    </select>
+    <select id="rolesInGroup" resultType="cn.org.assetcloud.system.entity.SceneRole">
+        SELECT sr.*
+        FROM as_role_group rg, as_scene_role sr
+        WHERE rg.scene_code = sr.scene_code AND sr.group_id = rg.id AND rg.is_deleted = 0 and sr.`status` = 1 AND rg.id = #{groupId}
+    </select>
+    <select id="getRolesByScene" resultMap="BaseResultMap">
+        select * from as_scene_role where status = 0 and scene_code = #{sceneId}
+    </select>
+    <select id="getAllByScene" resultType="cn.org.assetcloud.system.entity.SceneRole">
+        select * from as_scene_role where status = 1 and scene_code = #{sceneId}
+    </select>
+    <insert id="addRoleGroup" parameterType="cn.org.assetcloud.system.entity.RoleGroup">
+    insert into as_role_group (role_group_name, is_deleted, add_time)
+    values (#{roleGroupName,jdbcType=VARCHAR}, 0, #{addTime,jdbcType=TIMESTAMP})
+  </insert>
+    <select id="getGroupByName" resultMap="GroupMap">
+    select * from as_role_group
+    where role_group_name = #{groupName,jdbcType=VARCHAR} and is_deleted = 0
+  </select>
+    <update id="deleteGroup" parameterType="java.lang.Long">
+    update as_role_group
+    set is_deleted = 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <update id="modifyGroup" parameterType="java.lang.Long">
+    update as_role_group
+    set role_group_name = #{groupName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+    <select id="getUsersByRole" resultMap="UserResultMap">
+        SELECT
+        *
+        FROM
+        as_user u
+        LEFT JOIN as_scene_relation ur ON u.id = ur.uid
+        WHERE ur.rid = #{param1} AND ur.is_deleted = 0 AND  u.status = 1 AND u.stage = 2
+        <if test="userName != '' and userName != null">
+            AND u.real_name LIKE CONCAT('%',#{param2},'%')
+        </if>
+  </select>
+    <select id="getRolesOwned" resultType="cn.org.assetcloud.system.entity.SceneRole">
+        SELECT * FROM as_scene_role WHERE id IN (SELECT rid FROM as_scene_relation WHERE uid = #{param1})
+        AND scene_code = #{param2} AND status = 1
+    </select>
+</mapper>

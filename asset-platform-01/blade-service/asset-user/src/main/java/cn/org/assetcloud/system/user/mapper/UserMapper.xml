@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.assetcloud.system.user.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="cn.org.assetcloud.system.user.entity.User">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="staff_id" jdbcType="VARCHAR" property="staffId" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
+    <result column="user_birthday" jdbcType="TIMESTAMP" property="userBirthday" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
+    <result column="certificate_number" jdbcType="VARCHAR" property="certificateNumber" />
+    <result column="authentication_method" jdbcType="INTEGER" property="authenticationMethod" />
+    <result column="account_picture" jdbcType="VARCHAR" property="accountPicture" />
+    <result column="admin" jdbcType="INTEGER" property="admin" />
+    <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+    <result column="user_photo" jdbcType="VARCHAR" property="userPhoto" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="user_type" jdbcType="INTEGER" property="userType" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
+    <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+  </resultMap>
+  <resultMap id="BaseMap" type="cn.org.assetcloud.system.user.entity.User">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="real_name" jdbcType="VARCHAR" property="realName" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="nickname" jdbcType="VARCHAR" property="nickname" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
+    <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="account_picture" jdbcType="VARCHAR" property="accountPicture" />
+    <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="cn.org.assetcloud.system.user.entity.User">
+    <result column="user_remark" jdbcType="LONGVARCHAR" property="userRemark" />
+  </resultMap>
+  <resultMap id="lazyLoadRoles" type="cn.org.assetcloud.system.user.entity.User" extends="BaseResultMap">
+    <collection property="roles" ofType="cn.org.assetcloud.system.user.entity.Role" select="getRolesByUserId"
+                column="id"></collection>
+  </resultMap>
+  <resultMap id="eagerLoadRoles" type="cn.org.assetcloud.system.user.entity.User" extends="BaseResultMap">
+    <collection property="roles" ofType="cn.org.assetcloud.system.user.entity.Role">
+      <id column="id" property="id"/>
+      <result column="role_name" property="roleName"/>
+      <result column="role_name_zh" property="roleNameZh"/>
+    </collection>
+  </resultMap>
+  <select id="loadUserByUsername" resultMap="lazyLoadRoles">
+    select account_name, pwd, id, real_name, account_name, nickname, gender, user_birthday, user_email,
+    phone_number, certificate_type, certificate_number, authentication_method, account_picture,
+    user_address, user_photo, status, user_type, admin from as_user WHERE account_name = #{accountName} and status = 1 and stage = 2;
+  </select>
+    <select id="getUser" resultMap="lazyLoadRoles">
+        select * from as_user where account_name = #{param1} and pwd = #{param2} and status = 1 and stage = 2
+    </select>
+  <select id="findUserByUsername" resultMap="lazyLoadRoles">
+    select * from as_user where account_name = #{username} and stage = 2 and status = 1;
+  </select>
+  <select id="userExists" resultMap="BaseResultMap">
+    select status, stage from as_user where account_name = #{accountName} and stage > 0
+  </select>
+  <select id="usersWithoutScene" resultMap="BaseMap">
+    select account_name, id, real_name, account_name, user_email, phone_number, account_picture, user_address, status
+    from as_user
+    where 1 = 1
+        <if test="param1!=''">and account_name like CONCAT(CONCAT('%',#{param1}),'%')</if>
+        <if test="param2!=''">and real_name like CONCAT(CONCAT('%',#{param2}),'%')</if>
+        <if test="param3!=''">and user_email like CONCAT(CONCAT('%',#{param3}),'%')</if>
+    and stage = 2 and status = 1 and account_name != 'admin'
+    AND id NOT IN (SELECT us.user_id from as_user_scene us where status = 1 and scene_id = #{param4})
+  </select>
+  <select id="users" resultMap="BaseMap" parameterType="cn.org.assetcloud.system.user.entity.UserPageParam">
+    SELECT * FROM as_user u WHERE 1 = 1
+    <if test='accountName!=null and accountName!=""'>
+      AND account_name like CONCAT('%',#{accountName},'%')
+    </if>
+    <if test='realName!=null and realName!=""'>
+      AND real_name like CONCAT('%',#{realName},'%')
+    </if>
+    <if test='userEmail!=null and userEmail!=""'>
+      AND user_email like CONCAT('%',#{userEmail},'%')
+    </if>
+    <if test='phoneNumber!=null and phoneNumber!=""'>
+      AND phone_number=#{phoneNumber}
+    </if>
+    <if test='status!=null and status!=""'>
+      AND STATUS = #{status}
+    </if>
+  </select>
+  <select id="getRolesByUserId" resultType="cn.org.assetcloud.system.user.entity.SceneRole">
+      SELECT
+        r.id as id,
+        r.role_name as roleName,
+        r.role_name_zh as roleNameZh,
+        r.is_deleted as isDeleted
+      FROM as_user_role ur,as_role r where ur.role_id=r.id AND ur.uid=#{id}
+  </select>
+  <sql id="Base_Column_List">
+    id, staff_id, real_name, account_name, nickname, gender, user_birthday, user_email,
+    phone_number, certificate_type, certificate_number, authentication_method, account_picture,
+    admin, user_address, user_photo, status, user_type, created_time
+  </sql>
+  <sql id="Blob_Column_List">
+    user_remark
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from as_user
+    where id = #{id,jdbcType=VARCHAR} AND status = 1
+  </select>
+  <select id="getAllUser" resultMap="BaseResultMap">
+    select * from as_user
+    <if test="currentId!=null">
+      WHERE id !=#{currentId}
+    </if>
+  </select>
+  <select id="getUsersByRole" resultMap="BaseResultMap" parameterType="java.lang.Long">
+	SELECT
+	u.id AS id,
+	u.staff_id,
+	u.real_name,
+	u.account_name,
+	u.nickname,
+	u.gender,
+	u.user_birthday,
+	u.user_email,
+	u.phone_number,
+	u.admin,
+	u.user_address,
+	u.`status`,
+	u.created_time,
+	u.user_photo
+    FROM
+        as_user u
+    WHERE
+        u.id IN ( SELECT ur.uid FROM as_user_role ur WHERE role_id = #{roleId} AND ur.`status` = 1 )
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from as_user
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="userReg">
+        INSERT INTO as_user set account_name=#{accountName},pwd=#{pwd}
+   </insert>
+  <insert id="insert" parameterType="cn.org.assetcloud.system.user.entity.User">
+    insert into as_user (id, staff_id, real_name,
+      account_name, nickname, gender,
+      user_birthday, user_email, phone_number,
+      certificate_type, certificate_number, pwd,
+      authentication_method, account_picture, admin, stage,
+      user_address, user_photo, status,
+      user_type, disable_time, enable_time,
+      updated_time, remove_time, created_time,
+      user_remark)
+    values (#{id,jdbcType=INTEGER}, #{staffId,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},
+      #{accountName,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER},
+      #{userBirthday,jdbcType=TIMESTAMP}, #{userEmail,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR},
+      #{certificateType,jdbcType=INTEGER}, #{certificateNumber,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
+      #{authenticationMethod,jdbcType=INTEGER}, #{accountPicture,jdbcType=VARCHAR}, #{admin,jdbcType=INTEGER},#{stage,jdbcType=INTEGER},
+      #{userAddress,jdbcType=VARCHAR}, #{userPhoto,jdbcType=VARCHAR}, #{status,jdbcType=BIT},
+      #{userType,jdbcType=INTEGER}, #{disableTime,jdbcType=TIMESTAMP}, #{enableTime,jdbcType=TIMESTAMP},
+      #{updatedTime,jdbcType=TIMESTAMP}, #{removeTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP},
+      #{userRemark,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.org.assetcloud.system.user.entity.User">
+    insert into as_user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="staffId != null">
+        staff_id,
+      </if>
+      <if test="realName != null">
+        real_name,
+      </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
+      <if test="nickname != null">
+        nickname,
+      </if>
+      <if test="gender != null">
+        gender,
+      </if>
+      <if test="userBirthday != null">
+        user_birthday,
+      </if>
+      <if test="userEmail != null">
+        user_email,
+      </if>
+      <if test="phoneNumber != null">
+        phone_number,
+      </if>
+      <if test="certificateType != null">
+        certificate_type,
+      </if>
+      <if test="certificateNumber != null">
+        certificate_number,
+      </if>
+      <if test="pwd != null">
+        pwd,
+      </if>
+      <if test="authenticationMethod != null">
+        authentication_method,
+      </if>
+      <if test="accountPicture != null">
+        account_picture,
+      </if>
+      <if test="admin != null">
+        admin,
+      </if>
+      <if test="stage != null">
+        stage,
+      </if>
+      <if test="userAddress != null">
+        user_address,
+      </if>
+      <if test="userPhoto != null">
+        user_photo,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="userType != null">
+        user_type,
+      </if>
+      <if test="disableTime != null">
+        disable_time,
+      </if>
+      <if test="enableTime != null">
+        enable_time,
+      </if>
+      <if test="updatedTime != null">
+        updated_time,
+      </if>
+      <if test="removeTime != null">
+        remove_time,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="userRemark != null">
+        user_remark,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="staffId != null">
+        #{staffId,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="userBirthday != null">
+        #{userBirthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userEmail != null">
+        #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateType != null">
+        #{certificateType,jdbcType=INTEGER},
+      </if>
+      <if test="certificateNumber != null">
+        #{certificateNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="authenticationMethod != null">
+        #{authenticationMethod,jdbcType=INTEGER},
+      </if>
+      <if test="accountPicture != null">
+        #{accountPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="admin != null">
+        #{admin,jdbcType=INTEGER},
+      </if>
+      <if test="stage != null">
+        #{stage, jdbcType=INTEGER},
+      </if>
+      <if test="userAddress != null">
+        #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhoto != null">
+        #{userPhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="userType != null">
+        #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="disableTime != null">
+        #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enableTime != null">
+        #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="removeTime != null">
+        #{removeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userRemark != null">
+        #{userRemark,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.org.assetcloud.system.user.entity.User">
+    update as_user
+    <set>
+      <if test="staffId != null">
+        staff_id = #{staffId,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null">
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="nickname != null">
+        nickname = #{nickname,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null">
+        gender = #{gender,jdbcType=INTEGER},
+      </if>
+      <if test="userBirthday != null">
+        user_birthday = #{userBirthday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userEmail != null">
+        user_email = #{userEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="certificateType != null">
+        certificate_type = #{certificateType,jdbcType=INTEGER},
+      </if>
+      <if test="certificateNumber != null">
+        certificate_number = #{certificateNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="pwd != null">
+        pwd = #{pwd,jdbcType=VARCHAR},
+      </if>
+      <if test="authenticationMethod != null">
+        authentication_method = #{authenticationMethod,jdbcType=INTEGER},
+      </if>
+      <if test="accountPicture != null">
+        account_picture = #{accountPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="admin != null">
+        admin = #{admin,jdbcType=INTEGER},
+      </if>
+      <if test="stage != null">
+        stage = #{stage,jdbcType=INTEGER},
+      </if>
+      <if test="userAddress != null">
+        user_address = #{userAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="userPhoto != null">
+        user_photo = #{userPhoto,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="userType != null">
+        user_type = #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="disableTime != null">
+        disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enableTime != null">
+        enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatedTime != null">
+        updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="removeTime != null">
+        remove_time = #{removeTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userRemark != null">
+        user_remark = #{userRemark,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.org.assetcloud.system.user.entity.User">
+    update as_user
+    set staff_id = #{staffId,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=INTEGER},
+      user_birthday = #{userBirthday,jdbcType=TIMESTAMP},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      certificate_type = #{certificateType,jdbcType=INTEGER},
+      certificate_number = #{certificateNumber,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      authentication_method = #{authenticationMethod,jdbcType=INTEGER},
+      account_picture = #{accountPicture,jdbcType=VARCHAR},
+      admin = #{admin,jdbcType=INTEGER},
+      stage = #{stage,jdbcType=INTEGER},
+      user_address = #{userAddress,jdbcType=VARCHAR},
+      user_photo = #{userPhoto,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      user_type = #{userType,jdbcType=INTEGER},
+      disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      remove_time = #{removeTime,jdbcType=TIMESTAMP},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      user_remark = #{userRemark,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.org.assetcloud.system.user.entity.User">
+    update as_user
+    set staff_id = #{staffId,jdbcType=INTEGER},
+      real_name = #{realName,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      nickname = #{nickname,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=INTEGER},
+      user_birthday = #{userBirthday,jdbcType=TIMESTAMP},
+      user_email = #{userEmail,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      certificate_type = #{certificateType,jdbcType=INTEGER},
+      certificate_number = #{certificateNumber,jdbcType=VARCHAR},
+      pwd = #{pwd,jdbcType=VARCHAR},
+      authentication_method = #{authenticationMethod,jdbcType=INTEGER},
+      account_picture = #{accountPicture,jdbcType=VARCHAR},
+      admin = #{admin,jdbcType=INTEGER},
+      stage = #{stage,jdbcType=INTEGER},
+      user_address = #{userAddress,jdbcType=VARCHAR},
+      user_photo = #{userPhoto,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      user_type = #{userType,jdbcType=INTEGER},
+      disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      updated_time = #{updatedTime,jdbcType=TIMESTAMP},
+      remove_time = #{removeTime,jdbcType=TIMESTAMP},
+      created_time = #{createdTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="getUsersByScene" resultMap="BaseResultMap">
+    SELECT
+        *
+    FROM
+        as_user u
+    WHERE
+        u.id IN (
+          SELECT us.user_id
+          FROM as_user_scene us
+          WHERE us.scene_id = #{sceneId} AND us.`status` = 1
+        )
+  </select>
+</mapper>

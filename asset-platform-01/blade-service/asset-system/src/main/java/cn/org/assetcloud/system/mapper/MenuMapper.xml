@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.assetcloud.system.mapper.MenuMapper">
+  <resultMap id="menuResultMap" type="cn.org.assetcloud.system.entity.Menu">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="parent_id" jdbcType="BIGINT" property="parentId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="alias" jdbcType="VARCHAR" property="alias" />
+    <result column="path" jdbcType="VARCHAR" property="path" />
+    <result column="source" jdbcType="VARCHAR" property="source" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="category" jdbcType="INTEGER" property="category" />
+    <result column="action" jdbcType="INTEGER" property="action" />
+    <result column="is_open" jdbcType="INTEGER" property="isOpen" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+  </resultMap>
+    <resultMap id="treeNodeResultMap" type="org.springblade.core.tool.node.TreeNode">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="title" property="title"/>
+        <result column="value" property="value"/>
+        <result column="key" property="key"/>
+    </resultMap>
+    <sql id="baseColumnList">
+        select
+            id, code, parent_id, name, alias, path, source, sort, category, action, is_open, remark, is_deleted
+    </sql>
+  <select id="selectAll" resultMap="menuResultMap">
+    select
+        *
+    from
+        as_plat_menu
+    where
+        is_deleted = 0
+  </select>
+  <select id="selectAll4SAdmin" resultMap="menuResultMap">
+    select
+        *
+    from
+        as_plat_menu
+    where
+        is_deleted = 0
+    and
+        code in ('home', 'application', 'factory', 'organization', 'authority')
+  </select>
+  <select id="getMenusByRoles" resultMap="menuResultMap" parameterType="java.util.Map">
+    SELECT
+        *
+    FROM
+        as_menu pm
+    WHERE
+        is_deleted = 0
+        AND pm.id IN ( SELECT pmr.menu_id FROM as_menu_role pmr where pmr.role_id IN
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item.roleId}
+    </foreach>
+        )
+  </select>
+  <insert id="batchAddMenuRole" parameterType="java.util.List">
+    insert into
+        as_plat_menu_role(menu_id, role_id, scene_code)
+    values
+      <foreach collection="list" separator="," item="item">
+        (#{item.menuId}, #{item.roleId}, #{item.sceneCode})
+      </foreach>
+  </insert>
+    <select id="selectMenuPage" resultMap="menuResultMap">
+        select * from as_menu where is_deleted = 0
+    </select>
+
+    <select id="tree" resultMap="treeNodeResultMap">
+        select id, parent_id, name as title, id as 'value', id as 'key' from as_menu where is_deleted = 0 and category = 1
+    </select>
+
+    <select id="allMenu" resultMap="menuResultMap">
+        select * from as_menu where is_deleted = 0 and category = 1
+    </select>
+
+    <select id="roleMenu" resultMap="menuResultMap">
+        select * from as_menu where is_deleted = 0 and id IN ( SELECT menu_id FROM blade_role_menu WHERE role_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach> )
+    </select>
+
+    <select id="routes" resultMap="menuResultMap">
+        SELECT
+        *
+        FROM
+        as_menu
+        WHERE
+        is_deleted = 0 and category = 1
+        and id IN ( SELECT menu_id FROM blade_role_menu WHERE role_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach> )
+    </select>
+
+    <select id="buttons" resultMap="menuResultMap">
+        SELECT
+        id,
+        parent_id,
+        `code`,
+        `name`,
+        alias,
+        path,
+        source,
+        action,
+        sort
+        FROM
+        as_menu
+        WHERE
+        is_deleted = 0 and id IN (
+        SELECT parent_id FROM as_menu
+        WHERE ( category = 2 AND id IN ( SELECT menu_id FROM blade_role_menu WHERE role_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        ) ) )
+
+        UNION ALL
+
+        SELECT
+        id,
+        parent_id,
+        `code`,
+        `name`,
+        alias,
+        path,
+        source,
+        action,
+        sort
+        FROM
+        as_menu
+        WHERE
+        is_deleted = 0 and  category = 2 AND id IN ( SELECT menu_id FROM blade_role_menu WHERE role_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>)
+    </select>
+
+    <select id="grantTree" resultMap="treeNodeResultMap">
+        select id, parent_id, name as title, id as 'value', id as 'key' from as_menu where is_deleted = 0
+    </select>
+
+    <select id="grantTreeByRole" resultMap="treeNodeResultMap">
+        select id, parent_id, name as title, id as 'value', id as 'key' from as_menu where is_deleted = 0
+        and id in ( select menu_id from blade_role_menu where role_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach> )
+        or id in (
+        select parent_id from as_menu where is_deleted = 0
+        and id in ( select menu_id from blade_role_menu where role_id in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach> )
+        )
+    </select>
+
+    <select id="authRoutes" resultType="cn.org.assetcloud.system.dto.MenuDTO">
+        SELECT
+        GROUP_CONCAT(r.role_alias) as alias,
+        m.path
+        FROM
+        blade_role_menu rm
+        LEFT JOIN as_menu m ON rm.menu_id = m.id
+        LEFT JOIN blade_role r ON rm.role_id = r.id
+        WHERE
+        rm.role_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+        AND m.path IS NOT NULL and m.is_deleted = 0
+        GROUP BY m.path
+    </select>
+</mapper>

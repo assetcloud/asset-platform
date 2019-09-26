@@ -1,0 +1,1650 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.org.assetcloud.system.mapper.OrganTreeMapper">
+  <resultMap id="BaseResultMap" type="cn.org.assetcloud.system.entity.OrganTree">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="unit_name_en" jdbcType="VARCHAR" property="unitNameEn" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="organization_form" jdbcType="INTEGER" property="organizationForm" />
+    <result column="unit_type" jdbcType="INTEGER" property="unitType" />
+    <result column="parent_node_name" jdbcType="VARCHAR" property="parentNodeName" />
+    <result column="charge_section_id" jdbcType="INTEGER" property="chargeSectionId" />
+    <result column="charge_section_name" jdbcType="VARCHAR" property="chargeSectionName" />
+    <result column="local_financial_code" jdbcType="VARCHAR" property="localFinancialCode" />
+    <result column="local_financial_name" jdbcType="VARCHAR" property="localFinancialName" />
+    <result column="office_administration_code" jdbcType="VARCHAR" property="officeAdministrationCode" />
+    <result column="office_administration_name" jdbcType="VARCHAR" property="officeAdministrationName" />
+    <result column="administration_division_code" jdbcType="VARCHAR" property="administrationDivisionCode" />
+    <result column="administration_division_name" jdbcType="VARCHAR" property="administrationDivisionName" />
+    <result column="budget_code" jdbcType="INTEGER" property="budgetCode" />
+    <result column="college_code" jdbcType="VARCHAR" property="collegeCode" />
+    <result column="organization_code" jdbcType="VARCHAR" property="organizationCode" />
+    <result column="unit_type_code" jdbcType="INTEGER" property="unitTypeCode" />
+    <result column="unit_type_name" jdbcType="INTEGER" property="unitTypeName" />
+    <result column="unit_basic_property" jdbcType="INTEGER" property="unitBasicProperty" />
+    <result column="social_credit_code" jdbcType="VARCHAR" property="socialCreditCode" />
+    <result column="budget_unit_name" jdbcType="VARCHAR" property="budgetUnitName" />
+    <result column="budget_unit_code" jdbcType="VARCHAR" property="budgetUnitCode" />
+    <result column="budget_management_level" jdbcType="INTEGER" property="budgetManagementLevel" />
+    <result column="firm_name" jdbcType="VARCHAR" property="firmName" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="telephone_number" jdbcType="VARCHAR" property="telephoneNumber" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="fax_number" jdbcType="VARCHAR" property="faxNumber" />
+    <result column="email_address" jdbcType="VARCHAR" property="emailAddress" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="street_address" jdbcType="VARCHAR" property="streetAddress" />
+    <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
+    <result column="fund_supply_mode_name" jdbcType="INTEGER" property="fundSupplyModeName" />
+    <result column="fund_supply_mode_code" jdbcType="INTEGER" property="fundSupplyModeCode" />
+    <result column="administration_level_name" jdbcType="INTEGER" property="administrationLevelName" />
+    <result column="administration_level_type" jdbcType="INTEGER" property="administrationLevelType" />
+    <result column="department_category_name" jdbcType="INTEGER" property="departmentCategoryName" />
+    <result column="business_department_classification_code" jdbcType="INTEGER" property="businessDepartmentClassificationCode" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
+    <result column="economic_type" jdbcType="INTEGER" property="economicType" />
+    <result column="financial_affiliation" jdbcType="VARCHAR" property="financialAffiliation" />
+    <result column="is_financial_unit" jdbcType="BIT" property="financialUnit" />
+    <result column="is_vertical_unit" jdbcType="BIT" property="verticalUnit" />
+    <result column="is_virtual_unit" jdbcType="BIT" property="virtualUnit" />
+    <result column="accounting_system" jdbcType="INTEGER" property="accountingSystem" />
+    <result column="corporate_tag" jdbcType="VARCHAR" property="corporateTag" />
+    <result column="maintainer_mark" jdbcType="VARCHAR" property="maintainerMark" />
+    <result column="supplier_mark" jdbcType="VARCHAR" property="supplierMark" />
+    <result column="manufacture_mark" jdbcType="VARCHAR" property="manufactureMark" />
+    <result column="asset_disposal_agency_tag" jdbcType="VARCHAR" property="assetDisposalAgencyTag" />
+    <result column="state_asset_management_company" jdbcType="VARCHAR" property="stateAssetManagementCompany" />
+    <result column="authorized_number" jdbcType="INTEGER" property="authorizedNumber" />
+    <result column="administration_authority" jdbcType="VARCHAR" property="administrationAuthority" />
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="seal_time" jdbcType="TIMESTAMP" property="sealTime" />
+    <result column="unit_remark" jdbcType="VARCHAR" property="unitRemark" />
+    <result column="asset_download_status" jdbcType="VARCHAR" property="assetDownloadStatus" />
+    <result column="latitude_and_longitude" jdbcType="VARCHAR" property="latitudeAndLongitude" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+  </resultMap>
+  <resultMap id="BaseMap" type="cn.org.assetcloud.system.entity.OrganTree">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="unit_name_en" jdbcType="VARCHAR" property="unitNameEn" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="organization_form" jdbcType="INTEGER" property="organizationForm" />
+    <result column="unit_type" jdbcType="INTEGER" property="unitType" />
+    <result column="parent_node_name" jdbcType="VARCHAR" property="parentNodeName" />
+    <result column="charge_section_id" jdbcType="INTEGER" property="chargeSectionId" />
+    <result column="charge_section_name" jdbcType="VARCHAR" property="chargeSectionName" />
+    <result column="local_financial_code" jdbcType="VARCHAR" property="localFinancialCode" />
+    <result column="local_financial_name" jdbcType="VARCHAR" property="localFinancialName" />
+    <result column="office_administration_code" jdbcType="VARCHAR" property="officeAdministrationCode" />
+    <result column="office_administration_name" jdbcType="VARCHAR" property="officeAdministrationName" />
+    <result column="administration_division_code" jdbcType="VARCHAR" property="administrationDivisionCode" />
+    <result column="administration_division_name" jdbcType="VARCHAR" property="administrationDivisionName" />
+    <result column="budget_code" jdbcType="INTEGER" property="budgetCode" />
+    <result column="college_code" jdbcType="VARCHAR" property="collegeCode" />
+    <result column="organization_code" jdbcType="VARCHAR" property="organizationCode" />
+    <result column="unit_type_code" jdbcType="INTEGER" property="unitTypeCode" />
+    <result column="unit_type_name" jdbcType="INTEGER" property="unitTypeName" />
+    <result column="unit_basic_property" jdbcType="INTEGER" property="unitBasicProperty" />
+    <result column="social_credit_code" jdbcType="VARCHAR" property="socialCreditCode" />
+    <result column="budget_unit_name" jdbcType="VARCHAR" property="budgetUnitName" />
+    <result column="budget_unit_code" jdbcType="VARCHAR" property="budgetUnitCode" />
+    <result column="budget_management_level" jdbcType="INTEGER" property="budgetManagementLevel" />
+    <result column="firm_name" jdbcType="VARCHAR" property="firmName" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="telephone_number" jdbcType="VARCHAR" property="telephoneNumber" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="fax_number" jdbcType="VARCHAR" property="faxNumber" />
+    <result column="email_address" jdbcType="VARCHAR" property="emailAddress" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="street_address" jdbcType="VARCHAR" property="streetAddress" />
+    <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
+    <result column="fund_supply_mode_name" jdbcType="INTEGER" property="fundSupplyModeName" />
+    <result column="fund_supply_mode_code" jdbcType="INTEGER" property="fundSupplyModeCode" />
+    <result column="administration_level_name" jdbcType="INTEGER" property="administrationLevelName" />
+    <result column="administration_level_type" jdbcType="INTEGER" property="administrationLevelType" />
+    <result column="department_category_name" jdbcType="INTEGER" property="departmentCategoryName" />
+    <result column="business_department_classification_code" jdbcType="INTEGER" property="businessDepartmentClassificationCode" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
+    <result column="economic_type" jdbcType="INTEGER" property="economicType" />
+    <result column="financial_affiliation" jdbcType="VARCHAR" property="financialAffiliation" />
+    <result column="is_financial_unit" jdbcType="BIT" property="financialUnit" />
+    <result column="is_vertical_unit" jdbcType="BIT" property="verticalUnit" />
+    <result column="is_virtual_unit" jdbcType="BIT" property="virtualUnit" />
+    <result column="accounting_system" jdbcType="INTEGER" property="accountingSystem" />
+    <result column="corporate_tag" jdbcType="VARCHAR" property="corporateTag" />
+    <result column="maintainer_mark" jdbcType="VARCHAR" property="maintainerMark" />
+    <result column="supplier_mark" jdbcType="VARCHAR" property="supplierMark" />
+    <result column="manufacture_mark" jdbcType="VARCHAR" property="manufactureMark" />
+    <result column="asset_disposal_agency_tag" jdbcType="VARCHAR" property="assetDisposalAgencyTag" />
+    <result column="state_asset_management_company" jdbcType="VARCHAR" property="stateAssetManagementCompany" />
+    <result column="authorized_number" jdbcType="INTEGER" property="authorizedNumber" />
+    <result column="administration_authority" jdbcType="VARCHAR" property="administrationAuthority" />
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="seal_time" jdbcType="TIMESTAMP" property="sealTime" />
+    <result column="unit_remark" jdbcType="VARCHAR" property="unitRemark" />
+    <result column="asset_download_status" jdbcType="VARCHAR" property="assetDownloadStatus" />
+    <result column="latitude_and_longitude" jdbcType="VARCHAR" property="latitudeAndLongitude" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+    <collection property="children" javaType="java.util.List" ofType="cn.org.assetcloud.system.entity.OrganTree"
+                column="id" select="recursiveSelect" >
+    </collection>
+  </resultMap>
+
+  <resultMap id="RecursiveMap" type="cn.org.assetcloud.system.entity.OrganTree">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="unit_name_en" jdbcType="VARCHAR" property="unitNameEn" />
+    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
+    <result column="organization_form" jdbcType="INTEGER" property="organizationForm" />
+    <result column="unit_type" jdbcType="INTEGER" property="unitType" />
+    <result column="parent_node_name" jdbcType="VARCHAR" property="parentNodeName" />
+    <result column="charge_section_id" jdbcType="INTEGER" property="chargeSectionId" />
+    <result column="charge_section_name" jdbcType="VARCHAR" property="chargeSectionName" />
+    <result column="local_financial_code" jdbcType="VARCHAR" property="localFinancialCode" />
+    <result column="local_financial_name" jdbcType="VARCHAR" property="localFinancialName" />
+    <result column="office_administration_code" jdbcType="VARCHAR" property="officeAdministrationCode" />
+    <result column="office_administration_name" jdbcType="VARCHAR" property="officeAdministrationName" />
+    <result column="administration_division_code" jdbcType="VARCHAR" property="administrationDivisionCode" />
+    <result column="administration_division_name" jdbcType="VARCHAR" property="administrationDivisionName" />
+    <result column="budget_code" jdbcType="INTEGER" property="budgetCode" />
+    <result column="college_code" jdbcType="VARCHAR" property="collegeCode" />
+    <result column="organization_code" jdbcType="VARCHAR" property="organizationCode" />
+    <result column="unit_type_code" jdbcType="INTEGER" property="unitTypeCode" />
+    <result column="unit_type_name" jdbcType="INTEGER" property="unitTypeName" />
+    <result column="unit_basic_property" jdbcType="INTEGER" property="unitBasicProperty" />
+    <result column="social_credit_code" jdbcType="VARCHAR" property="socialCreditCode" />
+    <result column="budget_unit_name" jdbcType="VARCHAR" property="budgetUnitName" />
+    <result column="budget_unit_code" jdbcType="VARCHAR" property="budgetUnitCode" />
+    <result column="budget_management_level" jdbcType="INTEGER" property="budgetManagementLevel" />
+    <result column="firm_name" jdbcType="VARCHAR" property="firmName" />
+    <result column="firm_code" jdbcType="VARCHAR" property="firmCode" />
+    <result column="telephone_number" jdbcType="VARCHAR" property="telephoneNumber" />
+    <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
+    <result column="fax_number" jdbcType="VARCHAR" property="faxNumber" />
+    <result column="email_address" jdbcType="VARCHAR" property="emailAddress" />
+    <result column="province" jdbcType="VARCHAR" property="province" />
+    <result column="city" jdbcType="VARCHAR" property="city" />
+    <result column="county" jdbcType="VARCHAR" property="county" />
+    <result column="street_address" jdbcType="VARCHAR" property="streetAddress" />
+    <result column="postal_code" jdbcType="VARCHAR" property="postalCode" />
+    <result column="fund_supply_mode_name" jdbcType="INTEGER" property="fundSupplyModeName" />
+    <result column="fund_supply_mode_code" jdbcType="INTEGER" property="fundSupplyModeCode" />
+    <result column="administration_level_name" jdbcType="INTEGER" property="administrationLevelName" />
+    <result column="administration_level_type" jdbcType="INTEGER" property="administrationLevelType" />
+    <result column="department_category_name" jdbcType="INTEGER" property="departmentCategoryName" />
+    <result column="business_department_classification_code" jdbcType="INTEGER" property="businessDepartmentClassificationCode" />
+    <result column="principal" jdbcType="VARCHAR" property="principal" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
+    <result column="economic_type" jdbcType="INTEGER" property="economicType" />
+    <result column="financial_affiliation" jdbcType="VARCHAR" property="financialAffiliation" />
+    <result column="is_financial_unit" jdbcType="BIT" property="financialUnit" />
+    <result column="is_vertical_unit" jdbcType="BIT" property="verticalUnit" />
+    <result column="is_virtual_unit" jdbcType="BIT" property="virtualUnit" />
+    <result column="accounting_system" jdbcType="INTEGER" property="accountingSystem" />
+    <result column="corporate_tag" jdbcType="VARCHAR" property="corporateTag" />
+    <result column="maintainer_mark" jdbcType="VARCHAR" property="maintainerMark" />
+    <result column="supplier_mark" jdbcType="VARCHAR" property="supplierMark" />
+    <result column="manufacture_mark" jdbcType="VARCHAR" property="manufactureMark" />
+    <result column="asset_disposal_agency_tag" jdbcType="VARCHAR" property="assetDisposalAgencyTag" />
+    <result column="state_asset_management_company" jdbcType="VARCHAR" property="stateAssetManagementCompany" />
+    <result column="authorized_number" jdbcType="INTEGER" property="authorizedNumber" />
+    <result column="administration_authority" jdbcType="VARCHAR" property="administrationAuthority" />
+    <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
+    <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
+    <result column="seal_time" jdbcType="TIMESTAMP" property="sealTime" />
+    <result column="unit_remark" jdbcType="VARCHAR" property="unitRemark" />
+    <result column="asset_download_status" jdbcType="VARCHAR" property="assetDownloadStatus" />
+    <result column="latitude_and_longitude" jdbcType="VARCHAR" property="latitudeAndLongitude" />
+    <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
+    <result column="is_deleted" jdbcType="INTEGER" property="isDeleted" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="tenant_code" jdbcType="VARCHAR" property="tenantCode" />
+    <collection property="children" ofType="cn.org.assetcloud.system.entity.OrganTree" javaType="java.util.ArrayList"
+                column="id" select="recursiveSelect">
+    </collection>
+  </resultMap>
+
+  <!--<resultMap id="ResultMapByScene" type="cn.org.assetcloud.system.entity.OrganScene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="label" property="label"/>
+    <result column="parent_id" property="parentId" />
+    <collection property="children" javaType="java.util.List" ofType="cn.org.assetcloud.system.entity.OrganScene"
+                column="parent_id" select="recursiveSelectWithScene" >
+    </collection>
+  </resultMap>
+  <resultMap id="RecursiveMapByScene" type="cn.org.assetcloud.system.entity.OrganScene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="label" property="label"/>
+    <result column="parent_id" property="parentId" />
+    <collection property="children" ofType="cn.org.assetcloud.system.entity.OrganScene" javaType="java.util.ArrayList"
+                column="parent_id" select="recursiveSelectWithScene">
+    </collection>
+  </resultMap>-->
+
+  <resultMap id="ResultMapByScene" type="cn.org.assetcloud.system.entity.OrganScene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" property="unitName"/>
+    <result column="parent_id" property="parentId" />
+    <result column="scene_id" property="sceneId" />
+    <result column="node_id" property="nodeId" />
+    <collection property="children" javaType="java.util.List" ofType="cn.org.assetcloud.system.entity.OrganScene"
+                column="{parentId=node_id,sceneId=scene_id}" select="recursiveSelectWithScene" >
+    </collection>
+  </resultMap>
+  <resultMap id="RecursiveMapByScene" type="cn.org.assetcloud.system.entity.OrganScene">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="unit_name" property="unitName"/>
+    <result column="parent_id" property="parentId" />
+    <result column="scene_id" property="sceneId" />
+    <result column="node_id" property="nodeId" />
+    <collection property="children" ofType="cn.org.assetcloud.system.entity.OrganScene" javaType="java.util.ArrayList"
+                column="{parentId=node_id,sceneId=scene_id}" select="recursiveSelectWithScene">
+    </collection>
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, unit_name, unit_name_en, parent_id, organization_form, unit_type, parent_node_name,
+    charge_section_id, charge_section_name, local_financial_code, local_financial_name,
+    office_administration_code, office_administration_name, administration_division_code,
+    administration_division_name, budget_code, college_code, organization_code, unit_type_code,
+    unit_type_name, unit_basic_property, social_credit_code, budget_unit_name, budget_unit_code,
+    budget_management_level, firm_name, firm_code, telephone_number, phone_number, fax_number,
+    email_address, province, city, county, street_address, postal_code, fund_supply_mode_name,
+    fund_supply_mode_code, administration_level_name, administration_level_type, department_category_name,
+    business_department_classification_code, principal, contact, corporate_representative,
+    economic_type, financial_affiliation, financial_unit, vertical_unit, virtual_unit,
+    accounting_system, corporate_tag, maintainer_mark, supplier_mark, manufacture_mark,
+    asset_disposal_agency_tag, state_asset_management_company, authorized_number, administration_authority,
+    enable_time, disable_time, seal_time, unit_remark, asset_download_status, latitude_and_longitude,
+    created_time, is_deleted, status, sort, tenant_code
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from as_organ_tree
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="getNodeByName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select * from  as_organ_tree where unit_name = #{unitName} and status = 1
+  </select>
+  <select id="getMainTree" resultMap="BaseMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  as_organ_tree
+    WHERE status != 0
+    ORDER BY sort ASC
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM  as_organ_tree
+    WHERE status != 0
+    ORDER BY sort ASC
+  </select>
+  <select id="recursiveSelect" resultMap="RecursiveMap" parameterType="java.lang.String">
+    SELECT
+     *
+    FROM  as_organ_tree ot
+    WHERE ot.parent_id = #{id}
+    AND ot.`status` != 0
+    ORDER BY sort ASC
+  </select>
+  <select id="getTreeByScene" resultMap="ResultMapByScene">
+    SELECT
+	*
+    FROM
+        as_organ_scene os
+    WHERE
+        os.`status` != 0
+        AND os.scene_id = #{id}
+    ORDER BY
+        os.id ASC
+  </select>
+  <select id="getNodeByScene" resultMap="ResultMapByScene">
+    SELECT
+	*
+    FROM
+        as_organ_scene os
+    WHERE
+        os.`status` = 1
+        AND os.scene_id = #{id} AND os.node_id = #{nodeId}
+    ORDER BY
+        os.id ASC
+  </select>
+  <select id="searchNode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    SELECT * FROM as_organ_tree WHERE unit_name LIKE CONCAT('%', #{unitName}, '%') AND status != 0 AND is_deleted = 0
+  </select>
+  <select id="recursiveSelectWithScene" resultMap="RecursiveMapByScene" parameterType="java.util.Map">
+    SELECT
+     *
+    FROM  as_organ_scene os
+    WHERE os.parent_id = #{parentId}
+    AND os.`status` != 0
+    AND os.scene_id = #{sceneId}
+    ORDER BY os.id ASC
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from as_organ_tree
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.org.assetcloud.system.entity.OrganTree">
+    insert into as_organ_tree (id, unit_name, unit_name_en,
+      parent_id, organization_form, unit_type,
+      parent_node_name, charge_section_id, charge_section_name,
+      local_financial_code, local_financial_name,
+      office_administration_code, office_administration_name,
+      administration_division_code, administration_division_name,
+      budget_code, college_code, organization_code,
+      unit_type_code, unit_type_name, unit_basic_property,
+      social_credit_code, budget_unit_name, budget_unit_code,
+      budget_management_level, firm_name, firm_code,
+      telephone_number, phone_number, fax_number,
+      email_address, province, city,
+      county, street_address, postal_code,
+      fund_supply_mode_name, fund_supply_mode_code,
+      administration_level_name, administration_level_type,
+      department_category_name, business_department_classification_code,
+      principal, contact, corporate_representative,
+      economic_type, financial_affiliation, financial_unit,
+      vertical_unit, virtual_unit, accounting_system,
+      corporate_tag, maintainer_mark, supplier_mark,
+      manufacture_mark, asset_disposal_agency_tag,
+      state_asset_management_company, authorized_number,
+      administration_authority, enable_time,
+      disable_time, seal_time, unit_remark,
+      asset_download_status, latitude_and_longitude,
+      created_time, is_deleted, status,
+      sort, tenant_code)
+    values (#{id,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{unitNameEn,jdbcType=VARCHAR},
+      #{parentId,jdbcType=VARCHAR}, #{organizationForm,jdbcType=INTEGER}, #{unitType,jdbcType=INTEGER},
+      #{parentNodeName,jdbcType=VARCHAR}, #{chargeSectionId,jdbcType=INTEGER}, #{chargeSectionName,jdbcType=VARCHAR},
+      #{localFinancialCode,jdbcType=VARCHAR}, #{localFinancialName,jdbcType=VARCHAR},
+      #{officeAdministrationCode,jdbcType=VARCHAR}, #{officeAdministrationName,jdbcType=VARCHAR},
+      #{administrationDivisionCode,jdbcType=VARCHAR}, #{administrationDivisionName,jdbcType=VARCHAR},
+      #{budgetCode,jdbcType=INTEGER}, #{collegeCode,jdbcType=VARCHAR}, #{organizationCode,jdbcType=VARCHAR},
+      #{unitTypeCode,jdbcType=INTEGER}, #{unitTypeName,jdbcType=INTEGER}, #{unitBasicProperty,jdbcType=INTEGER},
+      #{socialCreditCode,jdbcType=VARCHAR}, #{budgetUnitName,jdbcType=VARCHAR}, #{budgetUnitCode,jdbcType=VARCHAR},
+      #{budgetManagementLevel,jdbcType=INTEGER}, #{firmName,jdbcType=VARCHAR}, #{firmCode,jdbcType=VARCHAR},
+      #{telephoneNumber,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, #{faxNumber,jdbcType=VARCHAR},
+      #{emailAddress,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR},
+      #{county,jdbcType=VARCHAR}, #{streetAddress,jdbcType=VARCHAR}, #{postalCode,jdbcType=VARCHAR},
+      #{fundSupplyModeName,jdbcType=INTEGER}, #{fundSupplyModeCode,jdbcType=INTEGER},
+      #{administrationLevelName,jdbcType=INTEGER}, #{administrationLevelType,jdbcType=INTEGER},
+      #{departmentCategoryName,jdbcType=INTEGER}, #{businessDepartmentClassificationCode,jdbcType=INTEGER},
+      #{principal,jdbcType=VARCHAR}, #{contact,jdbcType=VARCHAR}, #{corporateRepresentative,jdbcType=VARCHAR},
+      #{economicType,jdbcType=INTEGER}, #{financialAffiliation,jdbcType=VARCHAR}, #{financialUnit,jdbcType=BIT},
+      #{verticalUnit,jdbcType=BIT}, #{virtualUnit,jdbcType=BIT}, #{accountingSystem,jdbcType=INTEGER},
+      #{corporateTag,jdbcType=VARCHAR}, #{maintainerMark,jdbcType=VARCHAR}, #{supplierMark,jdbcType=VARCHAR},
+      #{manufactureMark,jdbcType=VARCHAR}, #{assetDisposalAgencyTag,jdbcType=VARCHAR},
+      #{stateAssetManagementCompany,jdbcType=VARCHAR}, #{authorizedNumber,jdbcType=INTEGER},
+      #{administrationAuthority,jdbcType=VARCHAR}, #{enableTime,jdbcType=TIMESTAMP},
+      #{disableTime,jdbcType=TIMESTAMP}, #{sealTime,jdbcType=TIMESTAMP}, #{unitRemark,jdbcType=VARCHAR},
+      #{assetDownloadStatus,jdbcType=VARCHAR}, #{latitudeAndLongitude,jdbcType=VARCHAR},
+      #{createdTime,jdbcType=TIMESTAMP}, #{isDeleted,jdbcType=INTEGER}, #{status,jdbcType=BIT},
+      #{sort,jdbcType=INTEGER}, #{tenantCode,jdbcType=VARCHAR})
+  </insert>
+    <insert id="batchInsert" parameterType="java.util.List">
+        insert into as_organ_scene(node_id, parent_id, unit_name, scene_id, status)
+        values
+        <foreach collection="list" separator="," item="item">
+            (#{item.nodeId}, #{item.parentId}, #{item.unitName}, #{item.sceneId}, #{item.status})
+        </foreach>
+    </insert>
+  <insert id="batchInsertNode" parameterType="java.util.List">
+    insert into as_organ_tree (id, unit_name, unit_name_en,
+      parent_id, organization_form, unit_type,
+      parent_node_name, charge_section_id, charge_section_name,
+      local_financial_code, local_financial_name,
+      office_administration_code, office_administration_name,
+      administration_division_code, administration_division_name,
+      budget_code, college_code, organization_code,
+      unit_type_code, unit_type_name, unit_basic_property,
+      social_credit_code, budget_unit_name, budget_unit_code,
+      budget_management_level, firm_name, firm_code,
+      telephone_number, phone_number, fax_number,
+      email_address, province, city,
+      county, street_address, postal_code,
+      fund_supply_mode_name, fund_supply_mode_code,
+      administration_level_name, administration_level_type,
+      department_category_name, business_department_classification_code,
+      principal, contact, corporate_representative,
+      economic_type, financial_affiliation, financial_unit,
+      vertical_unit, virtual_unit, accounting_system,
+      corporate_tag, maintainer_mark, supplier_mark,
+      manufacture_mark, asset_disposal_agency_tag,
+      state_asset_management_company, authorized_number,
+      administration_authority, enable_time,
+      disable_time, seal_time, unit_remark,
+      asset_download_status, latitude_and_longitude,
+      created_time, is_deleted, status,
+      sort, tenant_code)
+    values
+    <foreach collection="list" separator="," item="item">
+      (#{item.id,jdbcType=VARCHAR}, #{item.unitName,jdbcType=VARCHAR}, #{item.unitNameEn,jdbcType=VARCHAR},
+      #{item.parentId,jdbcType=VARCHAR}, #{item.organizationForm,jdbcType=INTEGER}, #{item.unitType,jdbcType=INTEGER},
+      #{item.parentNodeName,jdbcType=VARCHAR}, #{item.chargeSectionId,jdbcType=INTEGER}, #{item.chargeSectionName,jdbcType=VARCHAR},
+      #{item.localFinancialCode,jdbcType=VARCHAR}, #{item.localFinancialName,jdbcType=VARCHAR},
+      #{item.officeAdministrationCode,jdbcType=VARCHAR}, #{item.officeAdministrationName,jdbcType=VARCHAR},
+      #{item.administrationDivisionCode,jdbcType=VARCHAR}, #{item.administrationDivisionName,jdbcType=VARCHAR},
+      #{item.budgetCode,jdbcType=INTEGER}, #{item.collegeCode,jdbcType=VARCHAR}, #{item.organizationCode,jdbcType=VARCHAR},
+      #{item.unitTypeCode,jdbcType=INTEGER}, #{item.unitTypeName,jdbcType=INTEGER}, #{item.unitBasicProperty,jdbcType=INTEGER},
+      #{item.socialCreditCode,jdbcType=VARCHAR}, #{item.budgetUnitName,jdbcType=VARCHAR}, #{item.budgetUnitCode,jdbcType=VARCHAR},
+      #{item.budgetManagementLevel,jdbcType=INTEGER}, #{item.firmName,jdbcType=VARCHAR}, #{item.firmCode,jdbcType=VARCHAR},
+      #{item.telephoneNumber,jdbcType=VARCHAR}, #{item.phoneNumber,jdbcType=VARCHAR}, #{item.faxNumber,jdbcType=VARCHAR},
+      #{item.emailAddress,jdbcType=VARCHAR}, #{item.province,jdbcType=VARCHAR}, #{item.city,jdbcType=VARCHAR},
+      #{item.county,jdbcType=VARCHAR}, #{item.streetAddress,jdbcType=VARCHAR}, #{item.postalCode,jdbcType=VARCHAR},
+      #{item.fundSupplyModeName,jdbcType=INTEGER}, #{item.fundSupplyModeCode,jdbcType=INTEGER},
+      #{item.administrationLevelName,jdbcType=INTEGER}, #{item.administrationLevelType,jdbcType=INTEGER},
+      #{item.departmentCategoryName,jdbcType=INTEGER}, #{item.businessDepartmentClassificationCode,jdbcType=INTEGER},
+      #{item.principal,jdbcType=VARCHAR}, #{item.contact,jdbcType=VARCHAR}, #{item.corporateRepresentative,jdbcType=VARCHAR},
+      #{item.economicType,jdbcType=INTEGER}, #{item.financialAffiliation,jdbcType=VARCHAR}, #{item.financialUnit,jdbcType=BIT},
+      #{item.verticalUnit,jdbcType=BIT}, #{item.virtualUnit,jdbcType=BIT}, #{item.accountingSystem,jdbcType=INTEGER},
+      #{item.corporateTag,jdbcType=VARCHAR}, #{item.maintainerMark,jdbcType=VARCHAR}, #{item.supplierMark,jdbcType=VARCHAR},
+      #{item.manufactureMark,jdbcType=VARCHAR}, #{item.assetDisposalAgencyTag,jdbcType=VARCHAR},
+      #{item.stateAssetManagementCompany,jdbcType=VARCHAR}, #{item.authorizedNumber,jdbcType=INTEGER},
+      #{item.administrationAuthority,jdbcType=VARCHAR}, #{item.enableTime,jdbcType=TIMESTAMP},
+      #{item.disableTime,jdbcType=TIMESTAMP}, #{item.sealTime,jdbcType=TIMESTAMP}, #{item.unitRemark,jdbcType=VARCHAR},
+      #{item.assetDownloadStatus,jdbcType=VARCHAR}, #{item.latitudeAndLongitude,jdbcType=VARCHAR},
+      #{item.createdTime,jdbcType=TIMESTAMP}, #{item.isDeleted,jdbcType=INTEGER}, #{item.status,jdbcType=BIT},
+      #{item.sort,jdbcType=INTEGER}, #{item.tenantCode,jdbcType=VARCHAR})
+    </foreach>
+
+  </insert>
+    <select id="getTopNode" resultMap="BaseResultMap">
+        select * from
+            as_organ_tree
+        where
+            parent_id = '' and  id = 'top' and status = 1 and is_deleted = 0
+    </select>
+  <select id="getByName" resultMap="BaseResultMap">
+    select id from as_organ_tree where unit_name = #{unitName} and status = 1 and is_deleted = 0
+  </select>
+  <!--<insert id="batchInsert1" parameterType="java.util.List">
+    insert into as_organ_tree
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="unitNameEn != null">
+        unit_name_en,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="organizationForm != null">
+        organization_form,
+      </if>
+      <if test="unitType != null">
+        unit_type,
+      </if>
+      <if test="parentNodeName != null">
+        parent_node_name,
+      </if>
+      <if test="chargeSectionId != null">
+        charge_section_id,
+      </if>
+      <if test="chargeSectionName != null">
+        charge_section_name,
+      </if>
+      <if test="localFinancialCode != null">
+        local_financial_code,
+      </if>
+      <if test="localFinancialName != null">
+        local_financial_name,
+      </if>
+      <if test="officeAdministrationCode != null">
+        office_administration_code,
+      </if>
+      <if test="officeAdministrationName != null">
+        office_administration_name,
+      </if>
+      <if test="administrationDivisionCode != null">
+        administration_division_code,
+      </if>
+      <if test="administrationDivisionName != null">
+        administration_division_name,
+      </if>
+      <if test="budgetCode != null">
+        budget_code,
+      </if>
+      <if test="collegeCode != null">
+        college_code,
+      </if>
+      <if test="organizationCode != null">
+        organization_code,
+      </if>
+      <if test="unitTypeCode != null">
+        unit_type_code,
+      </if>
+      <if test="unitTypeName != null">
+        unit_type_name,
+      </if>
+      <if test="unitBasicProperty != null">
+        unit_basic_property,
+      </if>
+      <if test="socialCreditCode != null">
+        social_credit_code,
+      </if>
+      <if test="budgetUnitName != null">
+        budget_unit_name,
+      </if>
+      <if test="budgetUnitCode != null">
+        budget_unit_code,
+      </if>
+      <if test="budgetManagementLevel != null">
+        budget_management_level,
+      </if>
+      <if test="firmName != null">
+        firm_name,
+      </if>
+      <if test="firmCode != null">
+        firm_code,
+      </if>
+      <if test="telephoneNumber != null">
+        telephone_number,
+      </if>
+      <if test="phoneNumber != null">
+        phone_number,
+      </if>
+      <if test="faxNumber != null">
+        fax_number,
+      </if>
+      <if test="emailAddress != null">
+        email_address,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="county != null">
+        county,
+      </if>
+      <if test="streetAddress != null">
+        street_address,
+      </if>
+      <if test="postalCode != null">
+        postal_code,
+      </if>
+      <if test="fundSupplyModeName != null">
+        fund_supply_mode_name,
+      </if>
+      <if test="fundSupplyModeCode != null">
+        fund_supply_mode_code,
+      </if>
+      <if test="administrationLevelName != null">
+        administration_level_name,
+      </if>
+      <if test="administrationLevelType != null">
+        administration_level_type,
+      </if>
+      <if test="departmentCategoryName != null">
+        department_category_name,
+      </if>
+      <if test="businessDepartmentClassificationCode != null">
+        business_department_classification_code,
+      </if>
+      <if test="principal != null">
+        principal,
+      </if>
+      <if test="contact != null">
+        contact,
+      </if>
+      <if test="corporateRepresentative != null">
+        corporate_representative,
+      </if>
+      <if test="economicType != null">
+        economic_type,
+      </if>
+      <if test="financialAffiliation != null">
+        financial_affiliation,
+      </if>
+      <if test="isFinancialUnit != null">
+        is_financial_unit,
+      </if>
+      <if test="isVerticalUnit != null">
+        is_vertical_unit,
+      </if>
+      <if test="isVirtualUnit != null">
+        is_virtual_unit,
+      </if>
+      <if test="accountingSystem != null">
+        accounting_system,
+      </if>
+      <if test="corporateTag != null">
+        corporate_tag,
+      </if>
+      <if test="maintainerMark != null">
+        maintainer_mark,
+      </if>
+      <if test="supplierMark != null">
+        supplier_mark,
+      </if>
+      <if test="manufactureMark != null">
+        manufacture_mark,
+      </if>
+      <if test="assetDisposalAgencyTag != null">
+        asset_disposal_agency_tag,
+      </if>
+      <if test="stateAssetManagementCompany != null">
+        state_asset_management_company,
+      </if>
+      <if test="authorizedNumber != null">
+        authorized_number,
+      </if>
+      <if test="administrationAuthority != null">
+        administration_authority,
+      </if>
+      <if test="enableTime != null">
+        enable_time,
+      </if>
+      <if test="disableTime != null">
+        disable_time,
+      </if>
+      <if test="sealTime != null">
+        seal_time,
+      </if>
+      <if test="unitRemark != null">
+        unit_remark,
+      </if>
+      <if test="assetDownloadStatus != null">
+        asset_download_status,
+      </if>
+      <if test="latitudeAndLongitude != null">
+        latitude_and_longitude,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    values
+    <foreach collection="list" item="item" separator=",">
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="item.id != null">
+        #{item.id,jdbcType=VARCHAR},
+      </if>
+      <if test="item.unitName != null">
+        #{item.unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="item.unitNameEn != null">
+        #{item.unitNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="item.parentId != null">
+        #{item.parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="item.organizationForm != null">
+        #{item.organizationForm,jdbcType=INTEGER},
+      </if>
+      <if test="item.unitType != null">
+        #{item.unitType,jdbcType=INTEGER},
+      </if>
+      <if test="item.parentNodeName != null">
+        #{item.parentNodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="item.chargeSectionId != null">
+        #{item.chargeSectionId,jdbcType=INTEGER},
+      </if>
+      <if test="item.chargeSectionName != null">
+        #{item.chargeSectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="item.localFinancialCode != null">
+        #{item.localFinancialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="item.localFinancialName != null">
+        #{item.localFinancialName,jdbcType=VARCHAR},
+      </if>
+      <if test="item.officeAdministrationCode != null">
+        #{item.officeAdministrationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="item.officeAdministrationName != null">
+        #{item.officeAdministrationName,jdbcType=VARCHAR},
+      </if>
+      <if test="item.administrationDivisionCode != null">
+        #{item.administrationDivisionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="item.administrationDivisionName != null">
+        #{item.administrationDivisionName,jdbcType=VARCHAR},
+      </if>
+      <if test="item.budgetCode != null">
+        #{item.budgetCode,jdbcType=INTEGER},
+      </if>
+      <if test="item.collegeCode != null">
+        #{item.collegeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="item.organizationCode != null">
+        #{item.organizationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="item.unitTypeCode != null">
+        #{item.unitTypeCode,jdbcType=INTEGER},
+      </if>
+      <if test="item.unitTypeName != null">
+        #{item.unitTypeName,jdbcType=INTEGER},
+      </if>
+      <if test="item.unitBasicProperty != null">
+        #{item.unitBasicProperty,jdbcType=INTEGER},
+      </if>
+      <if test="item.socialCreditCode != null">
+        #{item.socialCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="item.budgetUnitName != null">
+        #{item.budgetUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="item.budgetUnitCode != null">
+        #{item.budgetUnitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="item.budgetManagementLevel != null">
+        #{item.budgetManagementLevel,jdbcType=INTEGER},
+      </if>
+      <if test="item.firmName != null">
+        #{item.firmName,jdbcType=VARCHAR},
+      </if>
+      <if test="item.firmCode != null">
+        #{item.firmCode,jdbcType=VARCHAR},
+      </if>
+      <if test="item.telephoneNumber != null">
+        #{item.telephoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="item.phoneNumber != null">
+        #{item.phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="item.faxNumber != null">
+        #{item.faxNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="item.emailAddress != null">
+        #{item.emailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="item.province != null">
+        #{item.province,jdbcType=VARCHAR},
+      </if>
+      <if test="item.city != null">
+        #{item.city,jdbcType=VARCHAR},
+      </if>
+      <if test="item.county != null">
+        #{item.county,jdbcType=VARCHAR},
+      </if>
+      <if test="item.streetAddress != null">
+        #{item.streetAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="item.postalCode != null">
+        #{item.postalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="item.fundSupplyModeName != null">
+        #{item.fundSupplyModeName,jdbcType=INTEGER},
+      </if>
+      <if test="item.fundSupplyModeCode != null">
+        #{item.fundSupplyModeCode,jdbcType=INTEGER},
+      </if>
+      <if test="item.administrationLevelName != null">
+        #{item.administrationLevelName,jdbcType=INTEGER},
+      </if>
+      <if test="item.administrationLevelType != null">
+        #{item.administrationLevelType,jdbcType=INTEGER},
+      </if>
+      <if test="item.departmentCategoryName != null">
+        #{item.departmentCategoryName,jdbcType=INTEGER},
+      </if>
+      <if test="item.businessDepartmentClassificationCode != null">
+        #{item.businessDepartmentClassificationCode,jdbcType=INTEGER},
+      </if>
+      <if test="item.principal != null">
+        #{item.principal,jdbcType=VARCHAR},
+      </if>
+      <if test="item.contact != null">
+        #{item.contact,jdbcType=VARCHAR},
+      </if>
+      <if test="item.corporateRepresentative != null">
+        #{item.corporateRepresentative,jdbcType=VARCHAR},
+      </if>
+      <if test="item.economicType != null">
+        #{item.economicType,jdbcType=INTEGER},
+      </if>
+      <if test="item.financialAffiliation != null">
+        #{item.financialAffiliation,jdbcType=VARCHAR},
+      </if>
+      <if test="item.isFinancialUnit != null">
+        #{item.isFinancialUnit,jdbcType=BIT},
+      </if>
+      <if test="item.isVerticalUnit != null">
+        #{item.isVerticalUnit,jdbcType=BIT},
+      </if>
+      <if test="item.isVirtualUnit != null">
+        #{item.isVirtualUnit,jdbcType=BIT},
+      </if>
+      <if test="item.accountingSystem != null">
+        #{item.accountingSystem,jdbcType=INTEGER},
+      </if>
+      <if test="item.corporateTag != null">
+        #{item.corporateTag,jdbcType=VARCHAR},
+      </if>
+      <if test="item.maintainerMark != null">
+        #{item.maintainerMark,jdbcType=VARCHAR},
+      </if>
+      <if test="item.supplierMark != null">
+        #{item.supplierMark,jdbcType=VARCHAR},
+      </if>
+      <if test="item.manufactureMark != null">
+        #{item.manufactureMark,jdbcType=VARCHAR},
+      </if>
+      <if test="item.assetDisposalAgencyTag != null">
+        #{item.assetDisposalAgencyTag,jdbcType=VARCHAR},
+      </if>
+      <if test="item.stateAssetManagementCompany != null">
+        #{item.stateAssetManagementCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="item.authorizedNumber != null">
+        #{item.authorizedNumber,jdbcType=INTEGER},
+      </if>
+      <if test="item.administrationAuthority != null">
+        #{item.administrationAuthority,jdbcType=VARCHAR},
+      </if>
+      <if test="item.enableTime != null">
+        #{item.enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="item.disableTime != null">
+        #{item.disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="item.sealTime != null">
+        #{item.sealTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="item.unitRemark != null">
+        #{item.unitRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="item.assetDownloadStatus != null">
+        #{item.assetDownloadStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="item.latitudeAndLongitude != null">
+        #{item.latitudeAndLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="item.createdTime != null">
+        #{item.createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="item.isDeleted != null">
+        #{item.isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="item.status != null">
+        #{item.status,jdbcType=BIT},
+      </if>
+      <if test="item.sort != null">
+        #{item.sort,jdbcType=INTEGER},
+      </if>
+      <if test="item.tenantCode != null">
+        #{item.tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+    </foreach>
+  </insert>-->
+  <insert id="insertSelective" parameterType="cn.org.assetcloud.system.entity.OrganTree">
+    insert into as_organ_tree
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="unitName != null">
+        unit_name,
+      </if>
+      <if test="unitNameEn != null">
+        unit_name_en,
+      </if>
+      <if test="parentId != null">
+        parent_id,
+      </if>
+      <if test="organizationForm != null">
+        organization_form,
+      </if>
+      <if test="unitType != null">
+        unit_type,
+      </if>
+      <if test="parentNodeName != null">
+        parent_node_name,
+      </if>
+      <if test="chargeSectionId != null">
+        charge_section_id,
+      </if>
+      <if test="chargeSectionName != null">
+        charge_section_name,
+      </if>
+      <if test="localFinancialCode != null">
+        local_financial_code,
+      </if>
+      <if test="localFinancialName != null">
+        local_financial_name,
+      </if>
+      <if test="officeAdministrationCode != null">
+        office_administration_code,
+      </if>
+      <if test="officeAdministrationName != null">
+        office_administration_name,
+      </if>
+      <if test="administrationDivisionCode != null">
+        administration_division_code,
+      </if>
+      <if test="administrationDivisionName != null">
+        administration_division_name,
+      </if>
+      <if test="budgetCode != null">
+        budget_code,
+      </if>
+      <if test="collegeCode != null">
+        college_code,
+      </if>
+      <if test="organizationCode != null">
+        organization_code,
+      </if>
+      <if test="unitTypeCode != null">
+        unit_type_code,
+      </if>
+      <if test="unitTypeName != null">
+        unit_type_name,
+      </if>
+      <if test="unitBasicProperty != null">
+        unit_basic_property,
+      </if>
+      <if test="socialCreditCode != null">
+        social_credit_code,
+      </if>
+      <if test="budgetUnitName != null">
+        budget_unit_name,
+      </if>
+      <if test="budgetUnitCode != null">
+        budget_unit_code,
+      </if>
+      <if test="budgetManagementLevel != null">
+        budget_management_level,
+      </if>
+      <if test="firmName != null">
+        firm_name,
+      </if>
+      <if test="firmCode != null">
+        firm_code,
+      </if>
+      <if test="telephoneNumber != null">
+        telephone_number,
+      </if>
+      <if test="phoneNumber != null">
+        phone_number,
+      </if>
+      <if test="faxNumber != null">
+        fax_number,
+      </if>
+      <if test="emailAddress != null">
+        email_address,
+      </if>
+      <if test="province != null">
+        province,
+      </if>
+      <if test="city != null">
+        city,
+      </if>
+      <if test="county != null">
+        county,
+      </if>
+      <if test="streetAddress != null">
+        street_address,
+      </if>
+      <if test="postalCode != null">
+        postal_code,
+      </if>
+      <if test="fundSupplyModeName != null">
+        fund_supply_mode_name,
+      </if>
+      <if test="fundSupplyModeCode != null">
+        fund_supply_mode_code,
+      </if>
+      <if test="administrationLevelName != null">
+        administration_level_name,
+      </if>
+      <if test="administrationLevelType != null">
+        administration_level_type,
+      </if>
+      <if test="departmentCategoryName != null">
+        department_category_name,
+      </if>
+      <if test="businessDepartmentClassificationCode != null">
+        business_department_classification_code,
+      </if>
+      <if test="principal != null">
+        principal,
+      </if>
+      <if test="contact != null">
+        contact,
+      </if>
+      <if test="corporateRepresentative != null">
+        corporate_representative,
+      </if>
+      <if test="economicType != null">
+        economic_type,
+      </if>
+      <if test="financialAffiliation != null">
+        financial_affiliation,
+      </if>
+      <if test="isFinancialUnit != null">
+        is_financial_unit,
+      </if>
+      <if test="isVerticalUnit != null">
+        is_vertical_unit,
+      </if>
+      <if test="isVirtualUnit != null">
+        is_virtual_unit,
+      </if>
+      <if test="accountingSystem != null">
+        accounting_system,
+      </if>
+      <if test="corporateTag != null">
+        corporate_tag,
+      </if>
+      <if test="maintainerMark != null">
+        maintainer_mark,
+      </if>
+      <if test="supplierMark != null">
+        supplier_mark,
+      </if>
+      <if test="manufactureMark != null">
+        manufacture_mark,
+      </if>
+      <if test="assetDisposalAgencyTag != null">
+        asset_disposal_agency_tag,
+      </if>
+      <if test="stateAssetManagementCompany != null">
+        state_asset_management_company,
+      </if>
+      <if test="authorizedNumber != null">
+        authorized_number,
+      </if>
+      <if test="administrationAuthority != null">
+        administration_authority,
+      </if>
+      <if test="enableTime != null">
+        enable_time,
+      </if>
+      <if test="disableTime != null">
+        disable_time,
+      </if>
+      <if test="sealTime != null">
+        seal_time,
+      </if>
+      <if test="unitRemark != null">
+        unit_remark,
+      </if>
+      <if test="assetDownloadStatus != null">
+        asset_download_status,
+      </if>
+      <if test="latitudeAndLongitude != null">
+        latitude_and_longitude,
+      </if>
+      <if test="createdTime != null">
+        created_time,
+      </if>
+      <if test="isDeleted != null">
+        is_deleted,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="tenantCode != null">
+        tenant_code,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitNameEn != null">
+        #{unitNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationForm != null">
+        #{organizationForm,jdbcType=INTEGER},
+      </if>
+      <if test="unitType != null">
+        #{unitType,jdbcType=INTEGER},
+      </if>
+      <if test="parentNodeName != null">
+        #{parentNodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeSectionId != null">
+        #{chargeSectionId,jdbcType=INTEGER},
+      </if>
+      <if test="chargeSectionName != null">
+        #{chargeSectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="localFinancialCode != null">
+        #{localFinancialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="localFinancialName != null">
+        #{localFinancialName,jdbcType=VARCHAR},
+      </if>
+      <if test="officeAdministrationCode != null">
+        #{officeAdministrationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="officeAdministrationName != null">
+        #{officeAdministrationName,jdbcType=VARCHAR},
+      </if>
+      <if test="administrationDivisionCode != null">
+        #{administrationDivisionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="administrationDivisionName != null">
+        #{administrationDivisionName,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetCode != null">
+        #{budgetCode,jdbcType=INTEGER},
+      </if>
+      <if test="collegeCode != null">
+        #{collegeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationCode != null">
+        #{organizationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitTypeCode != null">
+        #{unitTypeCode,jdbcType=INTEGER},
+      </if>
+      <if test="unitTypeName != null">
+        #{unitTypeName,jdbcType=INTEGER},
+      </if>
+      <if test="unitBasicProperty != null">
+        #{unitBasicProperty,jdbcType=INTEGER},
+      </if>
+      <if test="socialCreditCode != null">
+        #{socialCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetUnitName != null">
+        #{budgetUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetUnitCode != null">
+        #{budgetUnitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetManagementLevel != null">
+        #{budgetManagementLevel,jdbcType=INTEGER},
+      </if>
+      <if test="firmName != null">
+        #{firmName,jdbcType=VARCHAR},
+      </if>
+      <if test="firmCode != null">
+        #{firmCode,jdbcType=VARCHAR},
+      </if>
+      <if test="telephoneNumber != null">
+        #{telephoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="faxNumber != null">
+        #{faxNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="emailAddress != null">
+        #{emailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="streetAddress != null">
+        #{streetAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        #{postalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fundSupplyModeName != null">
+        #{fundSupplyModeName,jdbcType=INTEGER},
+      </if>
+      <if test="fundSupplyModeCode != null">
+        #{fundSupplyModeCode,jdbcType=INTEGER},
+      </if>
+      <if test="administrationLevelName != null">
+        #{administrationLevelName,jdbcType=INTEGER},
+      </if>
+      <if test="administrationLevelType != null">
+        #{administrationLevelType,jdbcType=INTEGER},
+      </if>
+      <if test="departmentCategoryName != null">
+        #{departmentCategoryName,jdbcType=INTEGER},
+      </if>
+      <if test="businessDepartmentClassificationCode != null">
+        #{businessDepartmentClassificationCode,jdbcType=INTEGER},
+      </if>
+      <if test="principal != null">
+        #{principal,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="corporateRepresentative != null">
+        #{corporateRepresentative,jdbcType=VARCHAR},
+      </if>
+      <if test="economicType != null">
+        #{economicType,jdbcType=INTEGER},
+      </if>
+      <if test="financialAffiliation != null">
+        #{financialAffiliation,jdbcType=VARCHAR},
+      </if>
+      <if test="isFinancialUnit != null">
+        #{isFinancialUnit,jdbcType=BIT},
+      </if>
+      <if test="isVerticalUnit != null">
+        #{isVerticalUnit,jdbcType=BIT},
+      </if>
+      <if test="isVirtualUnit != null">
+        #{isVirtualUnit,jdbcType=BIT},
+      </if>
+      <if test="accountingSystem != null">
+        #{accountingSystem,jdbcType=INTEGER},
+      </if>
+      <if test="corporateTag != null">
+        #{corporateTag,jdbcType=VARCHAR},
+      </if>
+      <if test="maintainerMark != null">
+        #{maintainerMark,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierMark != null">
+        #{supplierMark,jdbcType=VARCHAR},
+      </if>
+      <if test="manufactureMark != null">
+        #{manufactureMark,jdbcType=VARCHAR},
+      </if>
+      <if test="assetDisposalAgencyTag != null">
+        #{assetDisposalAgencyTag,jdbcType=VARCHAR},
+      </if>
+      <if test="stateAssetManagementCompany != null">
+        #{stateAssetManagementCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="authorizedNumber != null">
+        #{authorizedNumber,jdbcType=INTEGER},
+      </if>
+      <if test="administrationAuthority != null">
+        #{administrationAuthority,jdbcType=VARCHAR},
+      </if>
+      <if test="enableTime != null">
+        #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="disableTime != null">
+        #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sealTime != null">
+        #{sealTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="unitRemark != null">
+        #{unitRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="assetDownloadStatus != null">
+        #{assetDownloadStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="latitudeAndLongitude != null">
+        #{latitudeAndLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="tenantCode != null">
+        #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.org.assetcloud.system.entity.OrganTree">
+    update as_organ_tree
+    <set>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="unitNameEn != null">
+        unit_name_en = #{unitNameEn,jdbcType=VARCHAR},
+      </if>
+      <if test="parentId != null">
+        parent_id = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationForm != null">
+        organization_form = #{organizationForm,jdbcType=INTEGER},
+      </if>
+      <if test="unitType != null">
+        unit_type = #{unitType,jdbcType=INTEGER},
+      </if>
+      <if test="parentNodeName != null">
+        parent_node_name = #{parentNodeName,jdbcType=VARCHAR},
+      </if>
+      <if test="chargeSectionId != null">
+        charge_section_id = #{chargeSectionId,jdbcType=INTEGER},
+      </if>
+      <if test="chargeSectionName != null">
+        charge_section_name = #{chargeSectionName,jdbcType=VARCHAR},
+      </if>
+      <if test="localFinancialCode != null">
+        local_financial_code = #{localFinancialCode,jdbcType=VARCHAR},
+      </if>
+      <if test="localFinancialName != null">
+        local_financial_name = #{localFinancialName,jdbcType=VARCHAR},
+      </if>
+      <if test="officeAdministrationCode != null">
+        office_administration_code = #{officeAdministrationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="officeAdministrationName != null">
+        office_administration_name = #{officeAdministrationName,jdbcType=VARCHAR},
+      </if>
+      <if test="administrationDivisionCode != null">
+        administration_division_code = #{administrationDivisionCode,jdbcType=VARCHAR},
+      </if>
+      <if test="administrationDivisionName != null">
+        administration_division_name = #{administrationDivisionName,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetCode != null">
+        budget_code = #{budgetCode,jdbcType=INTEGER},
+      </if>
+      <if test="collegeCode != null">
+        college_code = #{collegeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationCode != null">
+        organization_code = #{organizationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitTypeCode != null">
+        unit_type_code = #{unitTypeCode,jdbcType=INTEGER},
+      </if>
+      <if test="unitTypeName != null">
+        unit_type_name = #{unitTypeName,jdbcType=INTEGER},
+      </if>
+      <if test="unitBasicProperty != null">
+        unit_basic_property = #{unitBasicProperty,jdbcType=INTEGER},
+      </if>
+      <if test="socialCreditCode != null">
+        social_credit_code = #{socialCreditCode,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetUnitName != null">
+        budget_unit_name = #{budgetUnitName,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetUnitCode != null">
+        budget_unit_code = #{budgetUnitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="budgetManagementLevel != null">
+        budget_management_level = #{budgetManagementLevel,jdbcType=INTEGER},
+      </if>
+      <if test="firmName != null">
+        firm_name = #{firmName,jdbcType=VARCHAR},
+      </if>
+      <if test="firmCode != null">
+        firm_code = #{firmCode,jdbcType=VARCHAR},
+      </if>
+      <if test="telephoneNumber != null">
+        telephone_number = #{telephoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="phoneNumber != null">
+        phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="faxNumber != null">
+        fax_number = #{faxNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="emailAddress != null">
+        email_address = #{emailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="province != null">
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null">
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null">
+        county = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="streetAddress != null">
+        street_address = #{streetAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="postalCode != null">
+        postal_code = #{postalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="fundSupplyModeName != null">
+        fund_supply_mode_name = #{fundSupplyModeName,jdbcType=INTEGER},
+      </if>
+      <if test="fundSupplyModeCode != null">
+        fund_supply_mode_code = #{fundSupplyModeCode,jdbcType=INTEGER},
+      </if>
+      <if test="administrationLevelName != null">
+        administration_level_name = #{administrationLevelName,jdbcType=INTEGER},
+      </if>
+      <if test="administrationLevelType != null">
+        administration_level_type = #{administrationLevelType,jdbcType=INTEGER},
+      </if>
+      <if test="departmentCategoryName != null">
+        department_category_name = #{departmentCategoryName,jdbcType=INTEGER},
+      </if>
+      <if test="businessDepartmentClassificationCode != null">
+        business_department_classification_code = #{businessDepartmentClassificationCode,jdbcType=INTEGER},
+      </if>
+      <if test="principal != null">
+        principal = #{principal,jdbcType=VARCHAR},
+      </if>
+      <if test="contact != null">
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="corporateRepresentative != null">
+        corporate_representative = #{corporateRepresentative,jdbcType=VARCHAR},
+      </if>
+      <if test="economicType != null">
+        economic_type = #{economicType,jdbcType=INTEGER},
+      </if>
+      <if test="financialAffiliation != null">
+        financial_affiliation = #{financialAffiliation,jdbcType=VARCHAR},
+      </if>
+      <if test="isFinancialUnit != null">
+        is_financial_unit = #{isFinancialUnit,jdbcType=BIT},
+      </if>
+      <if test="isVerticalUnit != null">
+        is_vertical_unit = #{isVerticalUnit,jdbcType=BIT},
+      </if>
+      <if test="isVirtualUnit != null">
+        is_virtual_unit = #{isVirtualUnit,jdbcType=BIT},
+      </if>
+      <if test="accountingSystem != null">
+        accounting_system = #{accountingSystem,jdbcType=INTEGER},
+      </if>
+      <if test="corporateTag != null">
+        corporate_tag = #{corporateTag,jdbcType=VARCHAR},
+      </if>
+      <if test="maintainerMark != null">
+        maintainer_mark = #{maintainerMark,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierMark != null">
+        supplier_mark = #{supplierMark,jdbcType=VARCHAR},
+      </if>
+      <if test="manufactureMark != null">
+        manufacture_mark = #{manufactureMark,jdbcType=VARCHAR},
+      </if>
+      <if test="assetDisposalAgencyTag != null">
+        asset_disposal_agency_tag = #{assetDisposalAgencyTag,jdbcType=VARCHAR},
+      </if>
+      <if test="stateAssetManagementCompany != null">
+        state_asset_management_company = #{stateAssetManagementCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="authorizedNumber != null">
+        authorized_number = #{authorizedNumber,jdbcType=INTEGER},
+      </if>
+      <if test="administrationAuthority != null">
+        administration_authority = #{administrationAuthority,jdbcType=VARCHAR},
+      </if>
+      <if test="enableTime != null">
+        enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="disableTime != null">
+        disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sealTime != null">
+        seal_time = #{sealTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="unitRemark != null">
+        unit_remark = #{unitRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="assetDownloadStatus != null">
+        asset_download_status = #{assetDownloadStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="latitudeAndLongitude != null">
+        latitude_and_longitude = #{latitudeAndLongitude,jdbcType=VARCHAR},
+      </if>
+      <if test="createdTime != null">
+        created_time = #{createdTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDeleted != null">
+        is_deleted = #{isDeleted,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="tenantCode != null">
+        tenant_code = #{tenantCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.org.assetcloud.system.entity.OrganTree">
+    update as_organ_tree
+    set unit_name = #{unitName,jdbcType=VARCHAR},
+      unit_name_en = #{unitNameEn,jdbcType=VARCHAR},
+      parent_id = #{parentId,jdbcType=VARCHAR},
+      organization_form = #{organizationForm,jdbcType=INTEGER},
+      unit_type = #{unitType,jdbcType=INTEGER},
+      parent_node_name = #{parentNodeName,jdbcType=VARCHAR},
+      charge_section_id = #{chargeSectionId,jdbcType=INTEGER},
+      charge_section_name = #{chargeSectionName,jdbcType=VARCHAR},
+      local_financial_code = #{localFinancialCode,jdbcType=VARCHAR},
+      local_financial_name = #{localFinancialName,jdbcType=VARCHAR},
+      office_administration_code = #{officeAdministrationCode,jdbcType=VARCHAR},
+      office_administration_name = #{officeAdministrationName,jdbcType=VARCHAR},
+      administration_division_code = #{administrationDivisionCode,jdbcType=VARCHAR},
+      administration_division_name = #{administrationDivisionName,jdbcType=VARCHAR},
+      budget_code = #{budgetCode,jdbcType=INTEGER},
+      college_code = #{collegeCode,jdbcType=VARCHAR},
+      organization_code = #{organizationCode,jdbcType=VARCHAR},
+      unit_type_code = #{unitTypeCode,jdbcType=INTEGER},
+      unit_type_name = #{unitTypeName,jdbcType=INTEGER},
+      unit_basic_property = #{unitBasicProperty,jdbcType=INTEGER},
+      social_credit_code = #{socialCreditCode,jdbcType=VARCHAR},
+      budget_unit_name = #{budgetUnitName,jdbcType=VARCHAR},
+      budget_unit_code = #{budgetUnitCode,jdbcType=VARCHAR},
+      budget_management_level = #{budgetManagementLevel,jdbcType=INTEGER},
+      firm_name = #{firmName,jdbcType=VARCHAR},
+      firm_code = #{firmCode,jdbcType=VARCHAR},
+      telephone_number = #{telephoneNumber,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      fax_number = #{faxNumber,jdbcType=VARCHAR},
+      email_address = #{emailAddress,jdbcType=VARCHAR},
+      province = #{province,jdbcType=VARCHAR},
+      city = #{city,jdbcType=VARCHAR},
+      county = #{county,jdbcType=VARCHAR},
+      street_address = #{streetAddress,jdbcType=VARCHAR},
+      postal_code = #{postalCode,jdbcType=VARCHAR},
+      fund_supply_mode_name = #{fundSupplyModeName,jdbcType=INTEGER},
+      fund_supply_mode_code = #{fundSupplyModeCode,jdbcType=INTEGER},
+      administration_level_name = #{administrationLevelName,jdbcType=INTEGER},
+      administration_level_type = #{administrationLevelType,jdbcType=INTEGER},
+      department_category_name = #{departmentCategoryName,jdbcType=INTEGER},
+      business_department_classification_code = #{businessDepartmentClassificationCode,jdbcType=INTEGER},
+      principal = #{principal,jdbcType=VARCHAR},
+      contact = #{contact,jdbcType=VARCHAR},
+      corporate_representative = #{corporateRepresentative,jdbcType=VARCHAR},
+      economic_type = #{economicType,jdbcType=INTEGER},
+      financial_affiliation = #{financialAffiliation,jdbcType=VARCHAR},
+      is_financial_unit = #{isFinancialUnit,jdbcType=BIT},
+      is_vertical_unit = #{isVerticalUnit,jdbcType=BIT},
+      is_virtual_unit = #{isVirtualUnit,jdbcType=BIT},
+      accounting_system = #{accountingSystem,jdbcType=INTEGER},
+      corporate_tag = #{corporateTag,jdbcType=VARCHAR},
+      maintainer_mark = #{maintainerMark,jdbcType=VARCHAR},
+      supplier_mark = #{supplierMark,jdbcType=VARCHAR},
+      manufacture_mark = #{manufactureMark,jdbcType=VARCHAR},
+      asset_disposal_agency_tag = #{assetDisposalAgencyTag,jdbcType=VARCHAR},
+      state_asset_management_company = #{stateAssetManagementCompany,jdbcType=VARCHAR},
+      authorized_number = #{authorizedNumber,jdbcType=INTEGER},
+      administration_authority = #{administrationAuthority,jdbcType=VARCHAR},
+      enable_time = #{enableTime,jdbcType=TIMESTAMP},
+      disable_time = #{disableTime,jdbcType=TIMESTAMP},
+      seal_time = #{sealTime,jdbcType=TIMESTAMP},
+      unit_remark = #{unitRemark,jdbcType=VARCHAR},
+      asset_download_status = #{assetDownloadStatus,jdbcType=VARCHAR},
+      latitude_and_longitude = #{latitudeAndLongitude,jdbcType=VARCHAR},
+      created_time = #{createdTime,jdbcType=TIMESTAMP},
+      is_deleted = #{isDeleted,jdbcType=INTEGER},
+      status = #{status,jdbcType=BIT},
+      sort = #{sort,jdbcType=INTEGER},
+      tenant_code = #{tenantCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="batchUpdate" parameterType="java.util.List">
+    update as_organ_tree
+    <trim prefix="set" suffixOverrides=",">
+      <trim prefix="status =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          when id=#{item.id} then #{item.status}
+        </foreach>
+      </trim>
+      <trim prefix="disable_time =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          when id=#{item.id} then #{item.disableTime}
+        </foreach>
+      </trim>
+      <trim prefix="is_deleted =case" suffix="end,">
+        <foreach collection="list" item="item" index="index">
+          when id=#{item.id} then #{item.isDeleted}
+        </foreach>
+      </trim>
+    </trim>
+    where id in
+    <foreach collection="list" index="index" item="item" separator="," open="(" close=")">
+      #{item.id,jdbcType=VARCHAR}
+    </foreach>
+  </update>
+</mapper>
