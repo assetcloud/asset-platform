@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 /**
- * 由前台传来的json类型表单信息转化而成的表单实体类
+ * 由前台传来的json类型表单信息转化而成的表单实体类,不带栅格布局
  */
 @Data
 public class FormSheet {

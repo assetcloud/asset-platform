@@ -9,6 +9,7 @@ import com.asset.exception.*;
 import com.asset.filter.DuplicateFilter;
 import com.asset.filter.SceneFilter;
 import com.asset.filter.UserIdFilter;
+import com.asset.form.ColumnItem;
 import com.asset.form.FormItem;
 import com.asset.form.FormSheet;
 import com.asset.dto.*;
@@ -32,10 +33,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * 以下对流程实例的执行均只考虑非并行分支的情况
@@ -79,11 +77,20 @@ public class FormInstService {
         List<FormItem> items = sheet.getList();
         for(int j=0;j<items.size();j++)
         {
-            //获取当前Authority
-            Integer curAuthority = authorityService.getCurAuthority(procModelId,firstNodeId,items.get(j).getKey());
-            //添加权限信息
-            authorityService.handleItemAuthority(items.get(j),curAuthority);
+            FormItem cur = items.get(j);
+            //说明是普通的表单项元素，不是栅格元素
+            if(!cur.getType().equals("grid")){
+                //获取当前Authority
+                Integer curAuthority = authorityService.getCurAuthority(procModelId,firstNodeId,cur.getKey());
+                //添加权限信息
+                authorityService.handleItemAuthority(cur,curAuthority);
+            }
+            else {
+                handleGridColumn(cur.getColumns(),procModelId,firstNodeId);
+            }
         }
+
+
 
         formSheetStr = FormConverter.entityToJson(sheet);
 
@@ -91,6 +98,37 @@ public class FormInstService {
         map.put("form_json",formSheetStr);
         JSONObject object = JSON.parseObject(JSON.toJSONString(map));
         return object;
+    }
+
+    private void handleGridColumn(List<JSONObject> columns,String procModelId,String nodeId) {
+        for(int m = 0; m<columns.size();m++)
+        {
+            //这个object就是最外面一层grid中的元素列表
+            JSONObject object = columns.get(m);
+            //从这里由 object 变为 columnItem ，至此之后对columnItem的操作都不会再传导到object对象，需要手动进行传导
+            ColumnItem columnItem = JSON.parseObject(JSON.toJSONString(object), ColumnItem.class);
+            List<FormItem> list = columnItem.getList();
+            for (int n = 0; list.size()!=0 && n < list.size() ; n++){
+                FormItem cur = list.get(n);
+                if(!cur.getType().equals("grid")){
+                    //获取当前Authority
+                    Integer curAuthority = authorityService.getCurAuthority(procModelId,nodeId,cur.getKey());
+                    //添加权限信息
+                    authorityService.handleItemAuthority(cur,curAuthority);
+                }
+                else {
+                    handleGridColumn(cur.getColumns(),procModelId,nodeId);
+                }
+            }
+
+            for(Map.Entry<String, Object> set :object.entrySet()){
+                if(set.getKey().equals("list"))
+                    set.setValue(list);
+            }
+
+        }
+
+
     }
 
     /**
