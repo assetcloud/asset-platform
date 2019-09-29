@@ -22,4 +22,5 @@ public class FormItem {
     String model;
     List<JSONObject> rules;
     List<JSONObject> columns;
+    JSONObject novalid;  //这个属性一般不会出现，只有嵌套在栅格布局中的表单项才会出现这个属性
 }
