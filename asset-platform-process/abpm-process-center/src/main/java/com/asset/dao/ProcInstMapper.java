@@ -1,9 +1,7 @@
 package com.asset.dao;
 
 
-import com.asset.entity.AsProcInst;
 import com.asset.entity.ProcInstDO;
-import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

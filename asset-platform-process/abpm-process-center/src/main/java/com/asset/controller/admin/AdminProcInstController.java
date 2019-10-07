@@ -1,6 +1,6 @@
 package com.asset.controller.admin;
 
-import com.asset.entity.AsProcInst;
+import com.asset.entity.AsProcInstDO;
 import com.asset.javabean.AdminProcInstVO;
 import com.asset.service.impl.AsProcInstService;
 import com.asset.utils.Condition;
@@ -94,7 +94,7 @@ AsProcInstService asProcInstService;
     })
     @GetMapping(value = "/proc_inst/list")
     public R<PageInfo<AdminProcInstVO>> show(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
-        QueryWrapper<AsProcInst> queryWrapper = Condition.getQueryWrapper(role, AsProcInst.class);
+        QueryWrapper<AsProcInstDO> queryWrapper = Condition.getQueryWrapper(role, AsProcInstDO.class);
         PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminProcInstVO> list = new PageInfo<>(asProcInstService.listAdminProcInstInfo(queryWrapper));
         return R.data(list);

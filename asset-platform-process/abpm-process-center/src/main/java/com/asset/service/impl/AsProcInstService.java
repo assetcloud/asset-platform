@@ -1,6 +1,6 @@
 package com.asset.service.impl;
 
-import com.asset.entity.AsProcInst;
+import com.asset.entity.AsProcInstDO;
 import com.asset.dao.AsProcInstMapper;
 import com.asset.exception.ProcException;
 import com.asset.javabean.AdminProcInstVO;
@@ -35,7 +35,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class AsProcInstService extends ServiceImpl<AsProcInstMapper, AsProcInst> implements IAsProcInstService {
+public class AsProcInstService extends ServiceImpl<AsProcInstMapper, AsProcInstDO> implements IAsProcInstService {
 
     static Logger logger = LoggerFactory.getLogger(AsProcInstService.class);
     ProcInstService procInstService;
@@ -45,8 +45,8 @@ public class AsProcInstService extends ServiceImpl<AsProcInstMapper, AsProcInst>
     ProcDiagramGenerator procDiagramGenerator;
 
 
-    public List<AdminProcInstVO> listAdminProcInstInfo(QueryWrapper<AsProcInst> queryWrapper){
-        List<AsProcInst> DOs = asProcInstMapper.selectList(queryWrapper);
+    public List<AdminProcInstVO> listAdminProcInstInfo(QueryWrapper<AsProcInstDO> queryWrapper){
+        List<AsProcInstDO> DOs = asProcInstMapper.selectList(queryWrapper);
         List<AdminProcInstVO> VOs = new ArrayList<>();
 
         for(int i=0;i<DOs.size();i++)
@@ -104,7 +104,7 @@ public class AsProcInstService extends ServiceImpl<AsProcInstMapper, AsProcInst>
         if(procInstService.getStatus(procInstId) == Constants.PROC_INST_SUSPENDED)
         {
             ProcUtils.activateProcInst(procInstId);
-            AsProcInst inst = new AsProcInst.Builder()
+            AsProcInstDO inst = new AsProcInstDO.Builder()
                     .id(procInstId)
                     .status(Constants.PROC_INST_ENABLE).build();
             asProcInstMapper.updateById(inst);
@@ -116,7 +116,7 @@ public class AsProcInstService extends ServiceImpl<AsProcInstMapper, AsProcInst>
     public void suspendProcInst(String procInstId) throws Exception {
         if(procInstService.getStatus(procInstId) == Constants.PROC_INST_ENABLE){
             ProcUtils.suspendProcInst(procInstId);
-            AsProcInst inst = new AsProcInst.Builder()
+            AsProcInstDO inst = new AsProcInstDO.Builder()
                     .id(procInstId)
                     .status(Constants.PROC_INST_SUSPENDED).build();
             asProcInstMapper.updateById(inst);
@@ -131,7 +131,7 @@ public class AsProcInstService extends ServiceImpl<AsProcInstMapper, AsProcInst>
      */
     public void deleteProcInst(String procInstId) {
         ProcUtils.deleteProcInst(procInstId);
-        AsProcInst inst = new AsProcInst.Builder()
+        AsProcInstDO inst = new AsProcInstDO.Builder()
                 .id(procInstId)
                 .status(Constants.PROC_INST_DELETED).build();
         asProcInstMapper.updateById(inst);

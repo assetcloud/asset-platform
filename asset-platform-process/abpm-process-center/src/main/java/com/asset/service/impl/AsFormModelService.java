@@ -1,8 +1,7 @@
 package com.asset.service.impl;
 
-import com.asset.entity.AsFormModel;
+import com.asset.entity.AsFormModelDO;
 import com.asset.dao.AsFormModelMapper;
-import com.asset.entity.FormModelDO;
 import com.asset.javabean.AdminFormModelVO;
 import com.asset.javabean.FormModelBO;
 import com.asset.service.*;
@@ -24,7 +23,7 @@ import java.util.List;
  * @since 2019-08-03
  */
 @Service
-public class AsFormModelService extends ServiceImpl<AsFormModelMapper, AsFormModel> implements IAsFormModelService {
+public class AsFormModelService extends ServiceImpl<AsFormModelMapper, AsFormModelDO> implements IAsFormModelService {
 
     @Autowired
     AsFormModelMapper modelMapper;
@@ -38,8 +37,8 @@ public class AsFormModelService extends ServiceImpl<AsFormModelMapper, AsFormMod
     FormInstService formInstService;
 
 
-    public List<AdminFormModelVO> listAdminFormModelInfo(QueryWrapper<AsFormModel> queryWrapper) {
-        List<AsFormModel> DOs = modelMapper.selectList(queryWrapper);
+    public List<AdminFormModelVO> listAdminFormModelInfo(QueryWrapper<AsFormModelDO> queryWrapper) {
+        List<AsFormModelDO> DOs = modelMapper.selectList(queryWrapper);
         List<AdminFormModelVO> VOs = new ArrayList<>();
 
         for (int i = 0; i < DOs.size(); i++) {
@@ -67,11 +66,11 @@ public class AsFormModelService extends ServiceImpl<AsFormModelMapper, AsFormMod
     @Override
     public List<FormModelBO> listFormModelBOs(String appId, int groupId, int formStatus) {
         //根据formStatus采取不同的取值策略
-        QueryWrapper<AsFormModel> queryWrapper = new QueryWrapper<>();
+        QueryWrapper<AsFormModelDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
-                .eq(AsFormModel::getGroupId, groupId)
-                .eq(AsFormModel::getAppId, appId);
-        List<AsFormModel> formModelDOs = null;
+                .eq(AsFormModelDO::getGroupId, groupId)
+                .eq(AsFormModelDO::getAppId, appId);
+        List<AsFormModelDO> formModelDOs = null;
         switch (formStatus) {
             //取所有表单模型
             case 0:
@@ -80,15 +79,15 @@ public class AsFormModelService extends ServiceImpl<AsFormModelMapper, AsFormMod
             //取未绑定流程模型
             case 1:
                 queryWrapper.lambda()
-                        .eq(AsFormModel::getIsBinded, 0);
+                        .eq(AsFormModelDO::getIsBinded, 0);
                 formModelDOs = modelMapper.selectList(queryWrapper);
                 break;
             //取可以被发起的表单模型
             case 2:
                 queryWrapper.lambda()
-                        .eq(AsFormModel::getIsBinded, 1)
-                        .eq(AsFormModel::getIsBindAuthority, 1)
-                        .eq(AsFormModel::getIsAddNodeInfo, 1);
+                        .eq(AsFormModelDO::getIsBinded, 1)
+                        .eq(AsFormModelDO::getIsBindAuthority, 1)
+                        .eq(AsFormModelDO::getIsAddNodeInfo, 1);
                 formModelDOs = modelMapper.selectList(queryWrapper);
                 break;
         }

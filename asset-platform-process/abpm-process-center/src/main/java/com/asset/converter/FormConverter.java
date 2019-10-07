@@ -1,7 +1,7 @@
 package com.asset.converter;
 
 import com.alibaba.fastjson.JSON;
-import com.asset.form.FormSheet;
+import com.asset.javabean.form.FormSheet;
 
 /**
  * 前台传来的json类型表单信息与表单实体类相互转化

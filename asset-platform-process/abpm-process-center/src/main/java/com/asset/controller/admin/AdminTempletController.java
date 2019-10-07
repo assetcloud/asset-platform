@@ -1,8 +1,6 @@
 package com.asset.controller.admin;
 
-import com.asset.entity.AsProcInst;
 import com.asset.entity.AsTempletDO;
-import com.asset.javabean.AdminProcInstVO;
 import com.asset.javabean.AdminTempletVO;
 import com.asset.service.impl.AsTempletFormModelServiceImpl;
 import com.asset.service.impl.AsTempletServiceImpl;

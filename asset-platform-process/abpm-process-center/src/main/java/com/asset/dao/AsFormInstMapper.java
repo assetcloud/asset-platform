@@ -1,6 +1,6 @@
 package com.asset.dao;
 
-import com.asset.entity.AsFormInst;
+import com.asset.entity.AsFormInstDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -13,6 +13,6 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2019-08-04
  */
 @Mapper
-public interface AsFormInstMapper extends BaseMapper<AsFormInst> {
+public interface AsFormInstMapper extends BaseMapper<AsFormInstDO> {
 
 }

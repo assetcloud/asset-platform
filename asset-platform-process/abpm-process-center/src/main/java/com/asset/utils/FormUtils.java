@@ -2,9 +2,8 @@ package com.asset.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.asset.entity.OptionsBase;
-import com.asset.form.FormItem;
-import com.asset.form.ItemRuleRequired;
+import com.asset.javabean.form.FormItem;
+import com.asset.javabean.form.ItemRuleRequired;
 
 import java.util.List;
 

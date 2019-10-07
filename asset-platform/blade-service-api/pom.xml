@@ -22,6 +22,7 @@
         <module>asset-system-api</module>
         <module>asset-user-api</module>
         <module>asset-unit-api</module>
+        <module>blade-demo-api</module>
     </modules>
 
     <dependencies>

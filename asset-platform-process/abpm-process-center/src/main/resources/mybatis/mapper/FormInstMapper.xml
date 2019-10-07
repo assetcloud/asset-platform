@@ -77,7 +77,7 @@
             <if test="taskId != null">
                 task_id,
             </if>
-            <if test="executor != null">
+            <if test="executeTime != null">
                 execute_time,
             </if>
             <if test="executor != null">
@@ -112,9 +112,9 @@
             <if test="taskId != null">
                 #{taskId,jdbcType=VARCHAR},
             </if>
-            <!--<if test="executeTime != null">-->
+            <if test="executeTime != null">
             now(),
-            <!--</if>-->
+            </if>
             <if test="executor != null">
                 #{executor,jdbcType=VARCHAR},
             </if>
@@ -219,11 +219,13 @@
 
     <update id="approveFormInst" parameterType="com.asset.entity.FormInstDO">
         UPDATE
-                as_form_inst
+              as_form_inst
         SET executor       = #{executor,jdbcType=VARCHAR},
             execute_time   = now(),
             approve_result = #{approveResult,jdbcType=INTEGER}
-        WHERE id = #{id,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=VARCHAR} AND
+              executor is NULL AND
+              execute_time is NULL
     </update>
 
     <update id="handleFormInst" parameterType="com.asset.entity.FormInstDO">
@@ -233,15 +235,19 @@
             executor        = #{executor,jdbcType=VARCHAR},
             execute_time    = now(),
             form_inst_value = #{formInstValue,jdbcType=VARCHAR}
-        WHERE id = #{id,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=VARCHAR} AND
+              executor is NULL AND
+              execute_time is NULL
     </update>
 
     <update id="readFormInst" parameterType="com.asset.entity.FormInstDO">
         UPDATE
-                as_form_inst
+            as_form_inst
         SET executor     = #{executor,jdbcType=VARCHAR},
             execute_time = now()
-        WHERE id = #{id,jdbcType=VARCHAR}
+        WHERE id = #{id,jdbcType=VARCHAR} AND
+              executor is NULL AND
+              execute_time is NULL
     </update>
 
     <select id="getTaskId" parameterType="java.lang.String" resultType="java.lang.String">
