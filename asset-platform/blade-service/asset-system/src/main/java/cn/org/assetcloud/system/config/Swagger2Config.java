@@ -30,6 +30,9 @@ public class Swagger2Config extends SwaggerAutoConfiguration {
 	private static final String DEFAULT_EXCLUDE_PATH = "/error";
 	private static final String BASE_PATH = "/**";
 
+	public Swagger2Config() {
+	}
+
 	@Override
 	@ConditionalOnMissingBean
 	public SwaggerProperties swaggerProperties() {
