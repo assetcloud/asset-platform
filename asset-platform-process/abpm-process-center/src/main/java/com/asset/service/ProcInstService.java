@@ -9,14 +9,13 @@ import com.asset.dto.*;
 import com.asset.entity.*;
 import com.asset.exception.DatabaseException;
 import com.asset.exception.ProcException;
-import com.asset.form.FormSheet;
+import com.asset.javabean.form.FormSheet;
 import com.asset.javabean.AdminProcInstVO;
 import com.asset.service.impl.AsProcModelService;
+import com.asset.utils.CommonUtils;
 import com.asset.utils.Constants;
 import com.asset.utils.ProcUtils;
 import com.asset.utils.JsonUtils;
-import com.jayway.jsonpath.JsonPath;
-import com.jayway.jsonpath.ReadContext;
 import org.dom4j.*;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
@@ -89,11 +88,18 @@ public class ProcInstService {
         FormSheet originalFormSheet = formModelService.getModelSheet(formModelId);
         //获取当前执行到的任务节点
         String[] taskIDs = ProcUtils.getTaskIDs(procInstId);
+
+        String[] hasAddedNodeId = new String[taskIDs.length];
+        int c = 0;
+
+
         //如果下面还有任务节点要处理，就在as_proc_inst中新建这个表单实例字段（每一个TaskId对应一个新的表单实例）
         for (int i = 0; i < taskIDs.length; i++) {
             boolean isNotContain = formInstMapper.getTaskId(taskIDs[i]) == null ? true : false;
+            String curNodeId = flowableService.getNodeId(taskIDs[i]);
+
             //当前要存的taskID不能是已经有的的，否则重复保存了
-            if (isNotContain) {
+            if (isNotContain && !CommonUtils.isStringArrayContain(hasAddedNodeId,curNodeId)) {
                 String formInstAllValue = getFormInstAllValue(procInstId);
                 FormInstDO formInst = formInstService.createFormInst(originalFormSheet,
                         procInstId,
@@ -106,6 +112,9 @@ public class ProcInstService {
                 //在存进去之前，就必须要求这个节点的节点类型是确定的
                 formInst.setNodeType(procNodeService.getNodeType(procModelId, nodeId));
                 formInstService.saveUnCompleteFormInst(formInst);
+
+                hasAddedNodeId[c] = curNodeId;
+                c++;
             }
         }
     }
@@ -541,11 +550,11 @@ public class ProcInstService {
             else
                 vo.setProcInstName(flowableService.getModelName(procModelId));
 
-            if(ProcUtils.isFinished(vo.getProcInstId()))
-                vo.setStatus(Constants.PROC_INST_FINISHED);
-            else{
-                vo.setStatus(DOs.get(i).getStatus());
-            }
+//            if(ProcUtils.isFinished(vo.getProcInstId()))
+//                vo.setStatus(Constants.PROC_INST_FINISHED);
+//            else{
+            vo.setStatus(DOs.get(i).getStatus());
+//            }
             vo.setBindFormModelId(formModelService.getFormModelId(procModelId));
 
             VOs.add(vo);

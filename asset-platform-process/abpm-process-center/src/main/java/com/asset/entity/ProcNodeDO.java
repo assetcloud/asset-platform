@@ -4,35 +4,59 @@ import com.alibaba.fastjson.JSON;
 import com.asset.dto.ProcNodeDTO;
 import com.asset.javabean.IDGenerator;
 import com.asset.javabean.UuidIdGenerator;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class ProcNodeDO {
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@TableName("as_proc_node")
+public class ProcNodeDO implements Serializable {
+    private static final long serialVersionUID = 1L;
+
+    @TableId(type = IdType.UUID)
     private String id;
 
+    @TableField(value = "proc_model_id")
     private String procModelId;
 
+    @TableField(value = "node_id")
     private String nodeId;
 
+    @TableField(value = "node_type")
     private Integer nodeType;
 
+    @TableField(value = "candidate_user")
     private String candidateUser;
 
+    @TableField(value = "candidate_group")
     private String candidateGroup;
 
+    @TableField(value = "limit_time")
     private Date limitTime;
 
+    @TableField(value = "overtime_strategy")
     private Integer overtimeStrategy;
 
+    @TableField(value = "sign_strategy")
     private String signStrategy;
 
+    @TableField(value = "todo_strategy")
     private String todoStrategy;
 
+    @TableField(value = "if_joint_sign")
     private Integer ifJointSign;
 
     public ProcNodeDO() {
+
     }
 
     public ProcNodeDO(String procModelId, String nodeId, Integer nodeType) {

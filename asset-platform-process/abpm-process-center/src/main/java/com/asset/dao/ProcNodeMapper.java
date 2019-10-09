@@ -3,13 +3,14 @@ package com.asset.dao;
 import com.asset.entity.AsTempletProcNodeDO;
 import com.asset.entity.ProcNodeDO;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ProcNodeMapper {
+public interface ProcNodeMapper extends BaseMapper<ProcNodeDO> {
 
     int insert(ProcNodeDO record);
 
@@ -31,4 +32,6 @@ public interface ProcNodeMapper {
     int updateSelective(ProcNodeDO nodeDO);
 
     List<ProcNodeDO> selectNodes(String procModelId);
+
+
 }

@@ -9,6 +9,7 @@ import com.asset.entity.ProcNodeDO;
 import com.asset.exception.DatabaseException;
 import com.asset.javabean.UnBindFormModelVO;
 import com.asset.utils.Constants;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.ui.modeler.serviceapi.ModelService;
@@ -101,8 +102,16 @@ public class ProcNodeService {
         return procNodeMapper.getNodeType(procModelId,nodeId);
     }
 
-    public Integer[] checkIsContainJointSign(String procModelId) {
-        return procNodeMapper.getIfJointSign(procModelId);
+    public boolean ifJointSign(String procModelId,String nodeId) {
+        QueryWrapper<ProcNodeDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(ProcNodeDO::getProcModelId, procModelId)
+                .eq(ProcNodeDO::getNodeId, nodeId);
+        ProcNodeDO nodeDO = procNodeMapper.selectOne(queryWrapper);
+        if(nodeDO.getIfJointSign() == Constants.AS_NODE_JOINT_DISABLE)
+            return false;
+        else
+            return true;
     }
 
     public List<ProcNodeDO> getNodeDOList(String procModelId) {

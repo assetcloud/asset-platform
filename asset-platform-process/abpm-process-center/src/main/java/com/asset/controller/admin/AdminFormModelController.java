@@ -1,6 +1,6 @@
 package com.asset.controller.admin;
 
-import com.asset.entity.AsFormModel;
+import com.asset.entity.AsFormModelDO;
 import com.asset.javabean.AdminFormModelVO;
 import com.asset.service.AdminFormModelService;
 import com.asset.service.impl.AsFormModelService;
@@ -51,7 +51,7 @@ public class AdminFormModelController {
             @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10",required = true , paramType = "query", dataType = "integer")
     })
     public R<PageInfo<AdminFormModelVO>> getFormModelListPlus(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
-        QueryWrapper<AsFormModel> queryWrapper = Condition.getQueryWrapper(role, AsFormModel.class);
+        QueryWrapper<AsFormModelDO> queryWrapper = Condition.getQueryWrapper(role, AsFormModelDO.class);
         PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminFormModelVO> list = new PageInfo<>(asFormModelService.listAdminFormModelInfo(queryWrapper));
         return R.data(list);

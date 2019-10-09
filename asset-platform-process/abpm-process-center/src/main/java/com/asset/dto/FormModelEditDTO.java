@@ -1,6 +1,6 @@
 package com.asset.dto;
 
-import com.asset.form.FormSheet;
+import com.asset.javabean.form.FormSheet;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

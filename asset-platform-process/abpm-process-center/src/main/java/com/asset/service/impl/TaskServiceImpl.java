@@ -1,6 +1,6 @@
 package com.asset.service.impl;
 
-import com.asset.entity.AsFormInst;
+import com.asset.entity.AsFormInstDO;
 import com.asset.dao.AsFormInstMapper;
 import com.asset.javabean.AdminTaskVO;
 import com.asset.service.FormModelService;
@@ -24,7 +24,7 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class TaskServiceImpl extends ServiceImpl<AsFormInstMapper, AsFormInst> implements ITaskService {
+public class TaskServiceImpl extends ServiceImpl<AsFormInstMapper, AsFormInstDO> implements ITaskService {
 
     AsFormInstMapper formInstMapper;
     FormModelService formModelService;
@@ -33,8 +33,8 @@ public class TaskServiceImpl extends ServiceImpl<AsFormInstMapper, AsFormInst> i
      *
      * @return
      */
-    public List<AdminTaskVO> listAdminProcTaskInfo(QueryWrapper<AsFormInst> queryWrapper) {
-        List<AsFormInst> formInstDOs = formInstMapper.selectList(queryWrapper);
+    public List<AdminTaskVO> listAdminProcTaskInfo(QueryWrapper<AsFormInstDO> queryWrapper) {
+        List<AsFormInstDO> formInstDOs = formInstMapper.selectList(queryWrapper);
         List<AdminTaskVO> VOs = new ArrayList<>();
         for (int i = 0; i < formInstDOs.size(); i++) {
             AdminTaskVO vo = new AdminTaskVO();

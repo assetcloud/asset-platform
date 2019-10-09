@@ -14,6 +14,11 @@ public interface CommonConstant {
 	 */
 	String APPLICATION_USER_NAME = ApplConstant.APPLICATION_NAME_PREFIX + "user";
 
+	/**
+	 * User模块名称
+	 */
+	String APPLICATION_DEMO_NAME = ApplConstant.APPLICATION_NAME_PREFIX + "demo";
+
 	String APPLICATION_IDM_NAME = "asset-idm";
 
 	String NACOS_IP = "10.1.18.178";

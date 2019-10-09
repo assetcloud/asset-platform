@@ -56,15 +56,12 @@ public class ProcUtils {
 
                 //遍历，然后完成
                 for (Task task : tasks) {
-                    try {
-                        taskService.complete(task.getId());
-                    } catch (FlowableException e) {
-                        System.out.println("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss  " + task.getId());
-                    }
+                    taskService.complete(task.getId());
                 }
             }
         }
     }
+
 
     /**
      * 获取当前流程实例的正在运行的任务节点ID
@@ -263,7 +260,7 @@ public class ProcUtils {
     /**
      * 审批节点点击“不同意”，导致实例结束
      */
-    public static void completeProcInstForRejected(String taskId) throws FlowableException{
+    public static void completeProcInstForRejected(String taskId) throws FlowableException {
 //        ProcessInstance instance = runtimeService.createProcessInstanceQuery()
 //                .processInstanceId(procInstId) // 使用流程实例ID查询
 //                .singleResult();
@@ -276,13 +273,13 @@ public class ProcUtils {
 //
 //            //遍历，然后完成
 //            for (Task task : tasks) {
-                    taskService.complete(taskId);
+        taskService.complete(taskId);
 //            }
 //        }
 
     }
 
-    public static void completeInst(String procInstId){
+    public static void completeInst(String procInstId) {
         ProcessInstance instance = runtimeService.createProcessInstanceQuery()
                 .processInstanceId(procInstId) // 使用流程实例ID查询
                 .singleResult();
@@ -295,7 +292,7 @@ public class ProcUtils {
 
             //遍历，然后完成
             for (Task task : tasks) {
-        taskService.complete(task.getId());
+                taskService.complete(task.getId());
             }
         }
     }

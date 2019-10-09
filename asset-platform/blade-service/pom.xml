@@ -23,6 +23,8 @@
         <module>asset-system</module>
         <module>asset-user</module>
         <module>asset-unit</module>
+        <module>blade-demo</module>
+        <module>blade-test</module>
     </modules>
 
     <dependencies>

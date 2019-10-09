@@ -1,10 +1,9 @@
 package com.asset.service;
 
-import com.asset.entity.AsFormModel;
+import com.asset.entity.AsFormModelDO;
 import com.asset.javabean.AdminFormModelVO;
 import com.asset.javabean.FormModelBO;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -17,9 +16,9 @@ import java.util.List;
  * @author YBY
  * @since 2019-08-03
  */
-public interface IAsFormModelService extends IService<AsFormModel> {
+public interface IAsFormModelService extends IService<AsFormModelDO> {
 
-    public List<AdminFormModelVO> listAdminFormModelInfo(QueryWrapper<AsFormModel> queryWrapper);
+    public List<AdminFormModelVO> listAdminFormModelInfo(QueryWrapper<AsFormModelDO> queryWrapper);
 
 
     List<FormModelBO> listFormModelBOs(String appId, int groupId, int formStatus);
