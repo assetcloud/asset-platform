@@ -550,11 +550,11 @@ public class ProcInstService {
             else
                 vo.setProcInstName(flowableService.getModelName(procModelId));
 
-            if(ProcUtils.isFinished(vo.getProcInstId()))
-                vo.setStatus(Constants.PROC_INST_FINISHED);
-            else{
-                vo.setStatus(DOs.get(i).getStatus());
-            }
+//            if(ProcUtils.isFinished(vo.getProcInstId()))
+//                vo.setStatus(Constants.PROC_INST_FINISHED);
+//            else{
+            vo.setStatus(DOs.get(i).getStatus());
+//            }
             vo.setBindFormModelId(formModelService.getFormModelId(procModelId));
 
             VOs.add(vo);
