@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 控制器
+ * 控制器   haijie
  *
  * @author hjhu
  */
@@ -129,7 +129,6 @@ public class DataSourceController {
             entity = new HttpEntity<>(dataSource.getParams(), headers);
             responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, JSONObject.class);
         }
-
         if (responseEntity.getStatusCodeValue() != 200){
             return R.fail("接口验证失败");
         }
