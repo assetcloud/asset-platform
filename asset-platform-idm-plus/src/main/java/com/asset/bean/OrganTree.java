@@ -3,6 +3,7 @@ package com.asset.bean;
 import com.baomidou.mybatisplus.annotation.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Builder;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -22,13 +23,13 @@ public class OrganTree implements Serializable {
     @ApiModelProperty(value = "部门id", name = "id", required = true)
     private String id;
 
-    @NotBlank(message = "组织名称不能为空")
-    @NotNull(message = "组织名称不能为空")
+//    @NotBlank(message = "组织名称不能为空")
+//    @NotNull(message = "组织名称不能为空")
     @ApiModelProperty(value = "组织名称", name = "unitName", required = true)
     private String unitName;
     private String unitNameEn;
-    @NotNull(message = "父节点不能为空")
-    @NotBlank(message = "父节点不能为空")
+//    @NotNull(message = "父节点不能为空")
+//    @NotBlank(message = "父节点不能为空")
     @ApiModelProperty(value = "父节点id", name = "parentId", required = true)
     private String parentId;
     private Integer organizationForm;

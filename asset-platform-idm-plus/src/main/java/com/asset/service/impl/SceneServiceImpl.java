@@ -175,8 +175,9 @@ public class SceneServiceImpl extends ServiceImpl<SceneMapper, Scene> implements
      */
     @Override
     public boolean hasScene(String userId, String sceneId) {
-        UserScene userScene = userSceneMapper.hasScene(userId, sceneId);
-        return null != userScene;
+        List<UserScene> list = userSceneMapper.selectList(Wrappers.<UserScene>query().lambda().eq(UserScene::getUserId, userId)
+                .eq(UserScene::getSceneId, sceneId));
+        return list.size() > 0;
     }
 
     public boolean userSceneBind(String sceneId, String userId){

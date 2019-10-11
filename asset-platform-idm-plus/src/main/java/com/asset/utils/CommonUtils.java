@@ -25,7 +25,6 @@ public class CommonUtils implements BaseUtils{
 
     /**
      * 组织节点转化为单据（组织与场景关联）
-     * @param organScenes
      * @return OrganScene
      */
     public static List<OrganTree> NodeTransformer(List<OrganScene> organScenes){
