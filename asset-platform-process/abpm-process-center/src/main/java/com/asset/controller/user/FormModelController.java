@@ -13,6 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -39,7 +41,9 @@ public class FormModelController {
      */
     @ApiOperation(value = "表单模型创建", notes = "", httpMethod = "POST")
     @RequestMapping(value = "/form_model/save", method = RequestMethod.POST)
-    public R<FormModelBO> createFormModel(@ApiParam(value = "表单模型创建实体类", required = true) @RequestBody FormModelCreateDTO modelCreate) {
+    public R<FormModelBO> createFormModel(@ApiParam(value = "表单模型创建实体类", required = true)
+                                          @Valid
+                                          @RequestBody FormModelCreateDTO modelCreate) {
         FormModelBO formModelBO = null;
         try {
             formModelBO = formModelService.createFormModel(modelCreate);
@@ -61,13 +65,16 @@ public class FormModelController {
      */
     @ApiOperation(value = "表单模型修改", notes = "", httpMethod = "PATCH")
     @RequestMapping(value = "/form_model/update", method = RequestMethod.PATCH)
-    public R updateFormModel(@ApiParam(value = "表单模型修改实体类") @RequestBody FormModelEditDTO dto) {
+    public R updateFormModel(@ApiParam(value = "表单模型修改实体类")
+                             @Valid
+                             @RequestBody FormModelEditDTO dto) {
         try {
             formModelService.updateFormModel(dto);
         } catch (DatabaseException databaseException) {
             databaseException.printStackTrace();
             return R.fail(databaseException.getMessage());
         }
+
 
         return R.success("修改成功");
     }
@@ -78,7 +85,8 @@ public class FormModelController {
      */
     @ApiOperation(value = "表单模型与流程模型绑定", notes = "", httpMethod = "PATCH")
     @RequestMapping(value = "/form_model/bind", method = RequestMethod.PATCH)
-    public R bindFormModel(@ApiParam(value = "表单模型Id", required = true) @RequestParam(value = "form_model_id") String formModelId,
+    public R bindFormModel(@ApiParam(value = "表单模型Id", required = true)
+                           @RequestParam(value = "form_model_id") String formModelId,
                            @ApiParam(value = "要绑定的流程模型Id", required = true) @RequestParam(value = "proc_model_id") String procModelId) {
         try {
             formModelService.bindFormAndProcModel(formModelId, procModelId);
@@ -106,7 +114,7 @@ public class FormModelController {
                                               @RequestParam(value = "group_id") int groupId,
                                               @ApiParam(value = "0——所有表单模型,1——未绑定流程模型,2——已绑定流程模型，且其他的内容也都已经添加(不对分支条件进行筛选)",
                                                       required = true, allowableValues = "0,1,2")
-        @RequestParam(value = "form_status") int formStatus
+                                              @RequestParam(value = "form_status") int formStatus
     ) {
 //        List<FormModelBO> formModelDOS = formModelService.getFormModelBOs(appId, groupId, formStatus);
         List<FormModelBO> formModelDOS = asFormModelService.listFormModelBOs(appId, groupId, formStatus);
