@@ -105,10 +105,13 @@ public class ProcModelController extends ServiceImpl<AsProcModelMapper, AsProcMo
     /**
      * 流程模型与表单模型绑定分离，可以在流程模型设计阶段选择未绑定流程模型的表单模型
      * 这里是获取未绑定流程模型的表单模型
+     * 2019/10/16  流程实例创建时的表单筛选
      */
     @GetMapping(value = "/unbind_form_model")
-    public R<List<UnBindFormModelVO>> getUnbindFormModels() {
-        List<UnBindFormModelVO> unbindFormModels = procNodeService.getUnbindFormModels();
+    public R<List<UnBindFormModelVO>> getUnbindFormModels(
+            @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
+            @RequestParam("sceneId") String sceneId) {
+        List<UnBindFormModelVO> unbindFormModels = procNodeService.getUnbindFormModels(sceneId);
         return R.data(unbindFormModels);
     }
 

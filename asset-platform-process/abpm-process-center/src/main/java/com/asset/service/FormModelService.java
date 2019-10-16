@@ -237,8 +237,8 @@ public class FormModelService {
         return formModelMapper.getFormModelId(procModelId);
     }
 
-    public List<FormModelDO> getUnbindFormModels() {
-        return formModelMapper.selectUnBindAll();
+    public List<FormModelDO> getUnbindFormModels(String sceneId) {
+        return formModelMapper.selectUnBindAll(sceneId);
     }
 
     public String getBindFormSheet(String procModelId) {

@@ -234,13 +234,14 @@
         as_form_model
     </select>
 
-    <select id="selectUnBindAll" resultMap="BaseResultMap">
+    <select id="selectUnBindAll" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT
         <include refid="Blob_Column_List"/>
         FROM
-        as_form_model
+        as_form_model as asform
         WHERE
-        proc_model_id is null
+            proc_model_id is null
+        and asform.scene_id = #{sceneId}
     </select>
 
 

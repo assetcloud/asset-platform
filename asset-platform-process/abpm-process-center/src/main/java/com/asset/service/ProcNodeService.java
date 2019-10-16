@@ -122,8 +122,8 @@ public class ProcNodeService {
         return procNodeMapper.getNodeDO(procModelId,curNodeId);
     }
 
-    public  List<UnBindFormModelVO> getUnbindFormModels() {
-        List<FormModelDO> formModels = formModelService.getUnbindFormModels();
+    public  List<UnBindFormModelVO> getUnbindFormModels(String sceneId) {
+        List<FormModelDO> formModels = formModelService.getUnbindFormModels(sceneId);
         List<UnBindFormModelVO> unBindFormModelVOs = new ArrayList<>();
 
         for(int i = 0;i<formModels.size();i++){

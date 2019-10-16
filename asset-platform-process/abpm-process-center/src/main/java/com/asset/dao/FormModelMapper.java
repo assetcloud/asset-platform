@@ -83,7 +83,7 @@ public interface FormModelMapper {
 
     List<FormModelDO> selectAll();
 
-    List<FormModelDO> selectUnBindAll();
+    List<FormModelDO> selectUnBindAll(String sceneId);
 
     List<FormModelDO> listFormModelsByModelId(@Param("formModelIDs")List<String> formModelIds);
 
