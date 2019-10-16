@@ -8,6 +8,12 @@
         <result column="PROC_INST_ID_" jdbcType="VARCHAR" property="procInstId"/>
     </resultMap>
 
+    <resultMap id="BaseResultMap1" type="com.asset.entity.CommitFormInstDO">
+        <result column="committer" jdbcType="VARCHAR" property="userID"/>
+        <result column="scene_id" jdbcType="VARCHAR" property="sceneID"/>
+        <result column="proc_inst_id" jdbcType="VARCHAR" property="procinstID"/>
+    </resultMap>
+
 
     <!--取出AsFormInst对象中的taskId值去 act_hi_actinst表中找到对应的ACT_ID_字段的值，用于去别的表找这个ACT是什么类型的
      * @param List<FormInstDO> formInstDOS
@@ -50,6 +56,19 @@
           and asproc.id = actinst.PROC_INST_ID_
     </select>
 
+    <!--nfq  2019/10/11   -->
+    <select id="listComFormInst1" parameterType="java.lang.String" resultMap="BaseResultMap1">
+        select
+                asproc.id
+        from
+                as_proc_inst AS asproc,
+                as_form_model AS asform
+        where
+                asproc.proc_model_id = asform.proc_model_id
+            and asproc.committer = #{userID,jdbcType=VARCHAR}
+            and asform.scene_id = #{curSelectSceneId,jdbcType=VARCHAR}
+    </select>
+
     <select id="getNodeId" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT ACT_ID_
         from ACT_HI_ACTINST
@@ -90,4 +109,6 @@
         SET model_editor_json = #{newModelEditorJson,jdbcType=LONGVARCHAR}
         WHERE id = #{procModelId,jdbcType=VARCHAR}
     </update>
+
+
 </mapper>

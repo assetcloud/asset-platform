@@ -90,6 +90,8 @@ public interface Constants {
     public static final int TASK_TOBE_READ = 1;     //待阅任务
     public static final int TASK_ALL = 2;           //全部任务
 
+    public static final int COMMIT_TASK = 3;    // 发起任务(nfq)
+
 
     /**
      * --------------------------------------------------------------------模板：模板状态-----------------------------------------------------------------
