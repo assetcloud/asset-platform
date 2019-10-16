@@ -167,4 +167,11 @@ public interface ISceneRoleService extends IService<SceneRole> {
      * @return
      */
     List<SceneRole> getRolesOwned(String userId, String sceneId);
+
+    /**
+     * 获取不在当前
+     * @param roleId
+     * @return
+     */
+    List<User> getUsersNotExist(Long roleId);
 }

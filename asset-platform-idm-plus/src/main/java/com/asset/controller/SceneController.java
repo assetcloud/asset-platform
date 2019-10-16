@@ -101,6 +101,7 @@ public class SceneController {
             return R.fail("参数错误");
         }
         List<String> ids = Func.toStrList(",", userIds);
+        userSceneService.remove(Wrappers.<UserScene>lambdaUpdate().eq(UserScene::getSceneId, sceneId));
         //获取该场景下的默认角色
         SceneRole defaultRole = sceneRoleService.getDefaultRole(sceneId);
         sceneRelationService.saveBatch(defaultRole.getId(), ids);

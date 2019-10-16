@@ -46,13 +46,13 @@
     <collection property="roles" ofType="com.asset.bean.Role" select="getRolesByUserId"
                 column="id"></collection>
   </resultMap>
-  <resultMap id="eagerLoadRoles" type="com.asset.bean.User" extends="BaseResultMap">
-    <collection property="roles" ofType="com.asset.bean.Role">
-      <id column="id" property="id"/>
-      <result column="role_name" property="roleName"/>
-      <result column="role_name_zh" property="roleNameZh"/>
-    </collection>
-  </resultMap>
+<!--  <resultMap id="eagerLoadRoles" type="com.asset.bean.User" extends="BaseResultMap">-->
+<!--    <collection property="roles" ofType="com.asset.bean.Role">-->
+<!--      <id column="id" property="id"/>-->
+<!--      <result column="role_name" property="roleName"/>-->
+<!--      <result column="role_name_zh" property="roleNameZh"/>-->
+<!--    </collection>-->
+<!--  </resultMap>-->
   <select id="loadUserByUsername" resultMap="lazyLoadRoles">
     select account_name, pwd, id, real_name, account_name, nickname, gender, user_birthday, user_email,
     phone_number, certificate_type, certificate_number, authentication_method, account_picture,

@@ -300,4 +300,11 @@ public class SceneRoleController {
                 .eq(RoleGroup::getSceneCode, sceneId));
         return R.data(list);
     }
+
+    @GetMapping("")
+    @ApiOperation(value = "获取不属于当前角色的成员", notes = "已完成")
+    public R getUsersNotExist(@RequestParam Long roleId){
+//        sceneRoleService
+        return R.data("");
+    }
 }
