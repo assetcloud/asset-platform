@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 配置数据库信息，配置数据库的和日志的信息可以写在这儿，也可以写在spring配置文件里-->
+        <properties resource="db.properties" />
+    <!-- 配置日志信息，如果不配置默认是sl4j...有个顺序，在这可以直接写死，直接用log4j-->
+        <settings>
+            <setting name="logImpl" value="LOG4J"/>
+        </settings>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC" />
+            <!-- 配置数据库连接信息 -->
+            <dataSource type="POOLED">
+                <property name="driver"
+                          value="oracle.jdbc.OracleDriver" />
+                <property name="url"
+                          value="jdbc:oracle:thin:@127.0.0.1:1521:XE" />
+                <property name="username" value="system" />
+                <property name="password" value="sa" />
+            </dataSource>
+        </environment>
+    </environments>
+    <!-- 在配置文件（conf.xml）中注册SQL映射文件（studentMapper.xml）-->
+    <mappers>
+        <mapper resource="org/lanqiao/entity/studentMapper.xml" />
+    </mappers>
+</configuration>

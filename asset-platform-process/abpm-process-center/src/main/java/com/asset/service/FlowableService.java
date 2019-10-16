@@ -1,6 +1,7 @@
 package com.asset.service;
 
 import com.asset.dao.FlowableMapper;
+import com.asset.entity.CommitFormInstDO;
 import com.asset.entity.FlowableTaskDO;
 import com.asset.utils.ProcDiagramGenerator;
 import com.asset.utils.ProcUtils;
@@ -54,6 +55,13 @@ public class FlowableService {
 
     public int updateModelEditorJson(String procModelId,String newModelEditorJson) {
         return flowableMapper.updateModelEditorJson(procModelId,newModelEditorJson);
+    }
+
+
+
+    //nfq:2019/10/11
+    public List<CommitFormInstDO> listComFormInst1(String userID, String curSelectSceneId){
+        return flowableMapper.listComFormInst1(userID,curSelectSceneId);
     }
 }
 

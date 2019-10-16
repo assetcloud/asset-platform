@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 专门用于协作的一个controller,负责对外提供接口
  */
-@Api(tags = "对外开放协作API列表")
-@RequestMapping(value = "/coop")
-@RestController
-public class CooperationController {
+    @Api(tags = "对外开放协作API列表")
+    @RequestMapping(value = "/coop")
+    @RestController
+    public class CooperationController {
 
-    @Autowired
-    CooperationService cooperationService;
+        @Autowired
+        CooperationService cooperationService;
 
     @ApiOperation(value = "调用表单流程引擎",notes = "用于第三方调用业务中台的表单流程引擎")
     @PostMapping(value = "/form_proc/commit")
