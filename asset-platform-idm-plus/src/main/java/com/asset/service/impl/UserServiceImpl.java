@@ -53,7 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         //待审核状态
         user.setStage(1);
-        user.setStatus(false);
+        user.setStatus(0);
         user.setCreatedTime(new Date());
         //密码加密
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -74,7 +74,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean enableUser(String userId){
         User user = userMapper.selectById(userId);
         user.setId(userId);
-        user.setStatus(true);
+        user.setStatus(1);
         user.setStage(2);
         user.setRoleId(SystemConstant.DEFAULT_ROLE_ID);
         return userMapper.updateById(user) > 0;
@@ -99,9 +99,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public boolean saveUser(User record) {
-        if (null == record.getId()){
-            record.setId(idGenerator.generateId());
-        }
         record.setCreatedTime(new Date());
         record.setStage(2);
         record.setEnableTime(new Date());
@@ -112,7 +109,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public boolean removeUser(String userId) {
         User user = userMapper.selectByPrimaryKey(userId);
-        user.setStatus(false);
+        user.setStatus(0);
         user.setDisableTime(new Date());
         return userMapper.updateById(user) > 0;
     }

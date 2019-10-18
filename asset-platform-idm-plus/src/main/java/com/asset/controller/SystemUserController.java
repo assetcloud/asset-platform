@@ -4,12 +4,10 @@ import com.asset.bean.User;
 import com.asset.bean.UserRole;
 import com.asset.bean.UserScene;
 import com.asset.common.SystemConstant;
-import com.asset.common.model.UserPageParam;
-import com.asset.service.ISceneService;
-import com.asset.service.IUserRoleService;
-import com.asset.service.IUserSceneService;
-import com.asset.service.IUserService;
+import com.asset.service.*;
+import com.asset.utils.Condition;
 import com.asset.utils.Func;
+import com.asset.wrapper.UserWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -18,18 +16,22 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.tool.api.R;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * 系统用户控制器
  */
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("sys/user")
@@ -43,6 +45,10 @@ public class SystemUserController {
     IUserService userService;
 
     IUserSceneService userSceneService;
+
+    IDictService dictService;
+
+    IRoleService roleService;
 
     @ApiOperation(value = "获取不在某一场景下的用户", notes = "已完成")
     @ApiImplicitParams({
@@ -62,19 +68,24 @@ public class SystemUserController {
 
     @ApiOperation(value = "获取所有用户（兼模糊搜索）", notes = "已完成")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true, dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "size", value = "每页数据量", defaultValue = "10", required = true, dataTypeClass = Integer.class),
-            @ApiImplicitParam(name = "userPageParam", value = "UserPageParam", required = true, dataTypeClass = UserPageParam.class)
+            @ApiImplicitParam(name = "page", value = "起始页", defaultValue = "1", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "size", value = "每页数据量", defaultValue = "10", required = true, dataType = "int"),
+            @ApiImplicitParam(name = "realName", value = "真实姓名", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "phoneNumber", value = "真实姓名", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "status", value = "状态", required = true, dataType = "int")
     })
-    @PostMapping("list")
-    public R userList(@RequestParam Integer page, @RequestParam Integer size, @RequestBody UserPageParam userPageParam){
+    @GetMapping("list")
+    public R userList(@RequestParam Integer page, @RequestParam Integer size, @ApiIgnore @RequestParam Map<String, Object> user){
         PageHelper.startPage(page, size);
-        return R.data(new PageInfo<>(userService.allUsers(userPageParam)));
+        List<User> list = userService.list(Condition.getQueryWrapper(user, User.class).lambda().orderByAsc(User::getCreatedTime));
+        log.info(list.toString());
+        UserWrapper userWrapper = new UserWrapper();
+        return R.data(new PageInfo<>(userWrapper.listNodeVO(list)));
     }
 
     @ApiOperation(value = "管理控制台，添加用户"
             , notes = "（已完成）必填项：accountName用户名;realName真实姓名;pwd密码;phoneNumber手机号;userEmail用户邮箱")
-    @PostMapping("add")
+    @PostMapping("save")
     public R addUser(@RequestBody User user){
         if (Func.hasEmpty(user.getAccountName(), user.getRealName(), user.getPwd(), user.getPhoneNumber()
                 , user.getUserEmail(), user.getStatus(), user.getAdmin())){
@@ -85,7 +96,7 @@ public class SystemUserController {
 
     @ApiOperation(value = "控制台中删除用户", notes = "（已完成，不对外开放）用户id集合")
     @ApiImplicitParam(value = "ids", required = true, dataTypeClass = String.class)
-    @PostMapping("delete")
+    @PostMapping("remove")
     public R removeUser(@RequestParam String ids){
         if (Func.hasEmpty(ids)){
             return R.fail("参数错误");
@@ -97,8 +108,7 @@ public class SystemUserController {
             user.setId(id);
             user.setRemoveTime(new Date());
             user.setDisableTime(new Date());
-            user.setStatus(false);
-            user.setStage(0);
+            user.setStatus(0);
             users.add(user);
         });
         return R.status(userService.updateBatchById(users));
@@ -108,12 +118,13 @@ public class SystemUserController {
     @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
     @GetMapping("detail")
     public R getUser(@RequestParam String userId){
-        return R.data(userService.getById(userId));
+        User user = userService.getById(userId);
+        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
+        return R.data(userWrapper.entityVO(user));
     }
 
     @ApiOperation(value = "控制台编辑用户信息", notes = "（已完成，不对外开放）accountName")
-    @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
-    @PutMapping("edit")
+    @PostMapping("edit")
     public R editUser(@RequestBody User user){
         if (Func.hasEmpty(user.getId())){
             return R.fail("参数错误");
@@ -146,7 +157,7 @@ public class SystemUserController {
 
     @ApiOperation(value = "重置用户密码", notes = "已完成，不对外开放")
     @ApiImplicitParam(value = "userId", required = true, dataTypeClass = String.class)
-    @PutMapping("pwd/reset")
+    @PostMapping("pwd/reset")
     public R passwordReset(String userId){
         return R.status(userService.resetPassword(userId));
     }

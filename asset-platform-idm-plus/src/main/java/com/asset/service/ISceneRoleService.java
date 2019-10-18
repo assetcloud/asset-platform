@@ -173,5 +173,5 @@ public interface ISceneRoleService extends IService<SceneRole> {
      * @param roleId
      * @return
      */
-    List<User> getUsersNotExist(Long roleId);
+    List<User> getUsersByRoleInvert(String sceneId, Long roleId);
 }

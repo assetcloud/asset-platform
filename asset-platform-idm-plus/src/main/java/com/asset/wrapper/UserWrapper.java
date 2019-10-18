@@ -50,7 +50,7 @@ public class UserWrapper{
 		String roleName = roleService.getRoleName(user.getRoleId()).getRoleNameZh();
 		userVO.setRoleNameZh(roleName);
 		String gender = dictService.getValue("sex", Func.toInt(user.getGender()));
-		if (Func.hasEmpty(gender)) {
+		if (Func.isNotEmpty(gender)) {
 			userVO.setSexName(gender);
 		}
 		return userVO;

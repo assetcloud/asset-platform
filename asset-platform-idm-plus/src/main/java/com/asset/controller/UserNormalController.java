@@ -160,7 +160,7 @@ public class UserNormalController {
         }
         //用户设置并新增
         user.setStage(1);
-        user.setStatus(false);
+        user.setStatus(0);
         user.setRoleId(SystemConstant.DEFAULT_ROLE_ID);
         user.setCreatedTime(new Date());
         userService.insertUser(user);
