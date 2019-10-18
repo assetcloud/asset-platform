@@ -102,11 +102,11 @@ public class CommonUtils implements BaseUtils{
             user.setId(info.getUserCode());
             switch (info.getStatus()){
                 case 1:
-                    user.setStatus(true);
+                    user.setStatus(1);
                 case 2:
-                    user.setStatus(false);
+                    user.setStatus(0);
                 default:
-                    user.setStatus(true);
+                    user.setStatus(1);
             }
             userList.add(user);
         }

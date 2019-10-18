@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress ALL -->
 <mapper namespace="com.asset.mapper.SceneRoleMapper">
 
     <resultMap id="GroupRolesMap" type="com.asset.bean.RoleGroup">
@@ -53,26 +54,13 @@
         <id column="id" jdbcType="VARCHAR" property="id" />
         <result column="staff_id" jdbcType="VARCHAR" property="staffId" />
         <result column="real_name" jdbcType="VARCHAR" property="realName" />
-        <result column="account_name" jdbcType="VARCHAR" property="accountName" />
         <result column="nickname" jdbcType="VARCHAR" property="nickname" />
         <result column="gender" jdbcType="INTEGER" property="gender" />
         <result column="user_birthday" jdbcType="TIMESTAMP" property="userBirthday" />
         <result column="user_email" jdbcType="VARCHAR" property="userEmail" />
         <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber" />
-        <result column="certificate_type" jdbcType="INTEGER" property="certificateType" />
-        <result column="certificate_number" jdbcType="VARCHAR" property="certificateNumber" />
-        <!--    <result column="pwd" jdbcType="VARCHAR" property="pwd" />-->
-        <result column="authentication_method" jdbcType="INTEGER" property="authenticationMethod" />
-        <result column="account_picture" jdbcType="VARCHAR" property="accountPicture" />
-        <result column="admin" jdbcType="INTEGER" property="admin" />
         <result column="user_address" jdbcType="VARCHAR" property="userAddress" />
-        <result column="user_photo" jdbcType="VARCHAR" property="userPhoto" />
         <result column="status" jdbcType="BIT" property="status" />
-        <result column="user_type" jdbcType="INTEGER" property="userType" />
-        <result column="disable_time" jdbcType="TIMESTAMP" property="disableTime" />
-        <result column="enable_time" jdbcType="TIMESTAMP" property="enableTime" />
-        <result column="updated_time" jdbcType="TIMESTAMP" property="updatedTime" />
-        <result column="remove_time" jdbcType="TIMESTAMP" property="removeTime" />
         <result column="created_time" jdbcType="TIMESTAMP" property="createdTime" />
     </resultMap>
     <resultMap extends="UserResultMap" id="ResultMapWithBLOBs" type="com.asset.bean.User">
@@ -87,18 +75,20 @@
         WHERE
             status = 1
     </select>
-
     <select id="groupRoles" resultMap="GroupRolesMap">
         SELECT
-            r.*,
+            rg.id AS groupId,
             rg.role_group_name,
-            rg.id as groupId,
-            rg.add_time as addTime
+            r.id as id,
+            r.role_name,
+            r.role_name_zh,
+            r.group_id as group_id
         FROM
-            as_scene_role r
-            LEFT JOIN as_role_group rg ON r.group_id = rg.id
+            as_role_group rg
+            LEFT JOIN  as_scene_role r ON r.group_id = rg.id
         WHERE
-            rg.is_deleted = 0 AND r.scene_code = #{sceneId}
+            rg.is_deleted = 0
+            AND rg.scene_code = #{sceneId}
   </select>
     <select id="listAll" resultMap="BaseResultMap" parameterType="com.asset.bean.SceneRole">
         SELECT
@@ -163,12 +153,16 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
     <select id="getUsersByRole" resultMap="UserResultMap">
-        SELECT
-        *
+        SELECT DISTINCT
+            u.id, u.real_name, u.created_time, u.user_email, u.user_address, u.phone_number, u.status
         FROM
-        as_user u
+            as_user u
         LEFT JOIN as_scene_relation ur ON u.id = ur.uid
-        WHERE ur.rid = #{param1} AND ur.is_deleted = 0 AND  u.status = 1 AND u.stage = 2
+        WHERE
+        ur.rid = #{param1}
+        AND ur.is_deleted = 0
+        AND u.STATUS = 1
+        AND u.stage = 2
         <if test="userName != '' and userName != null">
             AND u.real_name LIKE CONCAT('%',#{param2},'%')
         </if>
@@ -176,5 +170,24 @@
     <select id="getRolesOwned" resultType="com.asset.bean.SceneRole">
         SELECT * FROM as_scene_role WHERE id IN (SELECT rid FROM as_scene_relation WHERE uid = #{param1})
         AND scene_code = #{param2} AND status = 1
+    </select>
+    <select id="getUsersByRoleInvert" resultType="com.asset.bean.User">
+        SELECT
+            U.id,
+            U.real_name,
+            U.`status`
+        FROM
+            as_user U
+        WHERE
+            U.id IN (
+            SELECT
+                id
+            FROM
+                ( SELECT DISTINCT US.user_id AS id FROM as_user_scene US WHERE US.scene_id = #{param1} AND US.`status` = 1 ) AS t1
+                LEFT JOIN ( SELECT SR.uid AS id FROM as_scene_relation SR WHERE SR.rid = #{param2} AND SR.is_deleted = 0 ) AS t2 USING ( id )
+            WHERE
+                t2.id IS NULL
+        )
+        AND U.`status` = 1
     </select>
 </mapper>

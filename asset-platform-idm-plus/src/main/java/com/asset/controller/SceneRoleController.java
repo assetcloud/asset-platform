@@ -6,7 +6,9 @@ import com.asset.common.model.Query;
 import com.asset.service.*;
 import com.asset.utils.Condition;
 import com.asset.utils.Func;
+import com.asset.vo.UserVO;
 import com.asset.wrapper.SceneRoleWrapper;
+import com.asset.wrapper.UserWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -108,14 +110,17 @@ public class SceneRoleController {
     @ApiOperation(value = "获取一个场景下的所有角色", notes = "已完成，根据角色组获取角色（树型结构）")
     @GetMapping(value = "list-by-scene")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "页码", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "size", value = "每页数据量", required = true, dataType = "String"),
             @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "String")
     })
-    public R rolesWithGroup(@RequestParam String sceneId, Query query){
-        PageHelper.startPage(query.getPage(), query.getSize());
-        return R.data(new PageInfo<>(sceneRoleService.rolesWithGroup(sceneId)));
+        public R rolesWithGroup(@RequestParam String sceneId, Query query){
+        return R.data(sceneRoleService.rolesWithGroup(sceneId));
     }
+//    public R rolesWithGroup(@RequestParam String sceneId, Query query){
+//        PageHelper.startPage(query.getPage(), query.getSize());
+//        return R.data(new PageInfo<>(sceneRoleService.rolesWithGroup(sceneId)));
+//    }
+
+
 
     @GetMapping("admin/get")
     @ApiOperation(value = "获取场景中的管理员用户", notes = "已完成")
@@ -301,10 +306,15 @@ public class SceneRoleController {
         return R.data(list);
     }
 
-    @GetMapping("")
+    @GetMapping("members/invert")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataType = "long")
+    })
     @ApiOperation(value = "获取不属于当前角色的成员", notes = "已完成")
-    public R getUsersNotExist(@RequestParam Long roleId){
-//        sceneRoleService
-        return R.data("");
+    public R<List<UserVO>> getUsersByRoleInvert(@RequestParam String sceneId, @RequestParam Long roleId){
+        List<User> users = sceneRoleService.getUsersByRoleInvert(sceneId, roleId);
+        UserWrapper userWrapper = new UserWrapper();
+        return R.data(userWrapper.listNodeVO(users));
     }
 }

@@ -63,7 +63,13 @@ public class SceneController {
     @PostMapping("remove")
     @ApiOperation(value = "删除场景", notes = "已完成")
     public R removeScene(@ApiParam(value = "sceneId", required = true) @RequestParam String sceneId){
-        return R.status(sceneService.removeScene(sceneId));
+        return R.status(sceneService.removeById(sceneId));
+    }
+
+    @PostMapping("edit")
+    @ApiOperation(value = "编辑场景名称", notes = "已完成")
+    public R edit(@ApiParam(value = "sceneId", required = true, name = "场景id") @RequestBody Scene scene){
+        return R.status(sceneService.updateById(scene));
     }
 
     @ApiOperation(value = "获取用户尚未拥有的场景", notes = "已完成")

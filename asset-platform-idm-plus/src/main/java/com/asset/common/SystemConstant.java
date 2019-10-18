@@ -146,7 +146,7 @@ public interface SystemConstant {
 
     String DEFAULT_GROUP_NAME = "默认分组";
 
-    String DEFAULT_PASSWORD = "123456";
+    String DEFAULT_PASSWORD = "123";
 
     /**
      * 分割符

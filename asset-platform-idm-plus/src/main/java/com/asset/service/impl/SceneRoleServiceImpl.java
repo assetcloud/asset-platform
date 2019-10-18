@@ -203,8 +203,7 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     }
 
     @Override
-    public List<User> getUsersNotExist(Long roleId) {
-//        sceneRoleMapper.getUsersByRole();
-        return null;
+    public List<User> getUsersByRoleInvert(String sceneId, Long roleId) {
+        return sceneRoleMapper.getUsersByRoleInvert(sceneId, roleId);
     }
 }
