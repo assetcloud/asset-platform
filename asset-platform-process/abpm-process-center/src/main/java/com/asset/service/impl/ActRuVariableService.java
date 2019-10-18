@@ -3,8 +3,10 @@ package com.asset.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.ActRuVariableDO;
 import com.asset.dao.ActRuVariableMapper;
+import com.asset.exception.DatabaseException;
 import com.asset.javabean.ActRuVariableBO;
 import com.asset.service.IActRuVariableService;
+import com.asset.utils.Constants;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -35,7 +37,7 @@ public class ActRuVariableService extends ServiceImpl<ActRuVariableMapper, ActRu
      * 当前的处理结果是所有都是string类型
      */
     @Override
-    public void saveRunVariable(ActRuVariableBO boo) {
+    public void saveRunVariable(ActRuVariableBO boo) throws DatabaseException{
         String formValue = boo.getForm_inst_value();
         JSONObject JSON = JSONObject.parseObject(formValue);
         for(String key:JSON.keySet()){
@@ -48,21 +50,27 @@ public class ActRuVariableService extends ServiceImpl<ActRuVariableMapper, ActRu
 
             //这边需要判断相同EXECUTION、PROC_INST_ID的情况下应该是更新对应的TEXT值，而不是插入
             if(!ifContain(doo))
-                actRuVariableMapper.insert(doo);
+            {
+                int flag = actRuVariableMapper.insert(doo);
+                if(flag == Constants.DATABASE_FAILED)
+                    throw new DatabaseException("无法写入表单项数据到act_ru_variable表");
+            }
             else {
-                updateSelective(doo);
+                int flag = updateSelective(doo);
+                if(flag == Constants.DATABASE_FAILED)
+                    throw new DatabaseException("无法更新表单项数据到act_ru_variable表");
             }
 
         }
     }
 
 
-    public void updateSelective(ActRuVariableDO doo){
-        update(Wrappers.<ActRuVariableDO>update().lambda()
+    public int updateSelective(ActRuVariableDO doo){
+        return update(Wrappers.<ActRuVariableDO>update().lambda()
                 .set(ActRuVariableDO::getText,doo.getText())
                 .eq(ActRuVariableDO::getProcInstId, doo.getProcInstId())
                 .eq(ActRuVariableDO::getExecutionId, doo.getExecutionId())
-                .eq(ActRuVariableDO::getName,doo.getName()));
+                .eq(ActRuVariableDO::getName,doo.getName()))  == true?Constants.DATABASE_SUCCESS:Constants.DATABASE_FAILED;
     }
 
     //是否包含当前要存入的这个运行值信息？

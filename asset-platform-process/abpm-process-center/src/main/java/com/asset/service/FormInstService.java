@@ -134,7 +134,7 @@ public class FormInstService {
      * @param dto
      * @return
      */
-    public String[] commitNewFormInst(FormInstRecCreate dto) throws DocumentException, FlowableException {
+    public String[] commitNewFormInst(FormInstRecCreate dto) throws DocumentException, FlowableException,DatabaseException,InterruptedException{
         String procInst = commitFormInst(dto);
 
         //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
@@ -142,7 +142,7 @@ public class FormInstService {
     }
 
     //发起实例
-    public String commitFormInst(FormInstRecCreate dto) throws DocumentException, DatabaseException {
+    public String commitFormInst(FormInstRecCreate dto) throws DocumentException, DatabaseException, InterruptedException {
         //1、先获取与表单模型唯一绑定的流程模型ID
         String procModelID = formModelService.getProcModelID(dto.getForm_model_id());
         //直接由流程模型后台创建流程实例
@@ -205,6 +205,7 @@ public class FormInstService {
                 .form_inst_value(dto.getForm_inst_value()).build();
         actRuVariableService.saveRunVariable(boo);
         //至此，相当于把第一个任务节点要填的表单内容存进数据库了，而且绑定的流程实例也存进了数据库，当前流程应当流转到下个任务节点上了
+        Thread.sleep(1000);
         ProcUtils.completeTask(taskIDs[0]);
 
         //在as_form_inst表中创建下一个还没被执行的任务节点的TASK条目

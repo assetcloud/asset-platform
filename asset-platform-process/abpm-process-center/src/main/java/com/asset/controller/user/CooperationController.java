@@ -23,13 +23,16 @@ public class CooperationController {
 
     @ApiOperation(value = "调用表单流程引擎",notes = "用于第三方调用业务中台的表单流程引擎")
     @PostMapping(value = "/form_proc/commit")
-    public R commitFormProc(@RequestBody CoopCommitFormProcDTO dto){
+    public R commitFormProc(@RequestBody CoopCommitFormProcDTO dto) {
         String procInstId = null;
         try {
             procInstId = cooperationService.commitFormProc(dto);
         } catch (DocumentException e) {
             e.printStackTrace();
-            R.fail(e.getMessage());
+            return R.fail(e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return R.fail(e.getMessage());
         }
         return R.data(procInstId);
     }
