@@ -201,4 +201,9 @@ public class SceneRoleServiceImpl extends ServiceImpl<SceneRoleMapper, SceneRole
     public List<SceneRole> getRolesOwned(String userId, String sceneId) {
         return sceneRoleMapper.getRolesOwned(userId, sceneId);
     }
+
+    @Override
+    public List<User> getUsersByRoleInvert(String sceneId, Long roleId) {
+        return sceneRoleMapper.getUsersByRoleInvert(sceneId, roleId);
+    }
 }

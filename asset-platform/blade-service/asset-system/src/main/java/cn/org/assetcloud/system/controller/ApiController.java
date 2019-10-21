@@ -12,16 +12,23 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
+import org.json.simple.JSONObject;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.feign.IDictClient;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 // TODO 待修改
@@ -49,6 +56,8 @@ public class ApiController {
 
     IDictClient dictClient;
 
+    RestTemplate restTemplate;
+
     /*@ApiOperation(value = "获取所有场景信息", notes = "获取所有场景信息",tags = "组织", httpMethod = "GET")
     @RequestMapping(value = "rest/scenes", method = RequestMethod.GET)
     public R getAllScene(@ApiParam(value = "page", defaultValue = "1",required = true) @RequestParam(defaultValue = "1") Integer page
@@ -62,8 +71,6 @@ public class ApiController {
 
     /**
      * 分页获取场景信息
-     * @param page
-     * @param size
      * @return R
      */
 //    @GetMapping("rest/scenes")
@@ -213,4 +220,33 @@ public class ApiController {
         }
         return R.data(organService.batchAddNodes(organTrees));
     }
+
+    @GetMapping("testGet")
+	public R getJson(){
+		String url = "http://120.77.179.239:9000/form_model/models?app_id=cc3323cc-dab5-11e9-9b1b-0242ac120006&form_status=0&group_id=-1";
+		ResponseEntity<JSONObject> responseEntity = restTemplate.exchange(url, HttpMethod.GET, null, JSONObject.class);
+		System.out.println(responseEntity.toString());
+		return R.data(responseEntity.getBody());
+	}
+
+	@GetMapping("testGet2")
+	public R getJson2(){
+
+//		String url = "http://120.77.179.239:9000/form_model/models?app_id=cc3323cc-dab5-11e9-9b1b-0242ac120006&form_status=0&group_id=-1";
+		String url = "http://120.77.179.239:8083/scene/role/group/add";
+		HttpHeaders headers = new HttpHeaders();
+		HashMap<String, String> hashMap = new HashMap<>();
+		JSONObject jsonObject = new JSONObject();
+		HttpEntity<JSONObject> objectHttpEntity = new HttpEntity<>(jsonObject, headers);
+
+
+		RoleGroup roleGroup = new RoleGroup();
+		roleGroup.setRoleGroupName("测试分组");
+		roleGroup.setSceneCode("89371977-b1b4-11e9-8d9b-005056c00001");
+//		hashMap.put("roleGroupName ", "测试分组");
+//		hashMap.put("sceneCode", "89371977-b1b4-11e9-8d9b-005056c00001");
+		ResponseEntity<JSONObject> responseEntity = restTemplate.postForEntity(url, roleGroup, JSONObject.class);
+		System.out.println(responseEntity.toString());
+		return R.data(responseEntity.getBody());
+	}
 }

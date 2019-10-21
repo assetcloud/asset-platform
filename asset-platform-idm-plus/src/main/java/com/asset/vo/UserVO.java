@@ -75,6 +75,11 @@ public class UserVO{
 	private Integer nodePrincipal;
 
 	/**
+	 * 是否可用
+	 */
+	private Integer status;
+
+	/**
 	 * 用户所属业务角色
 	 */
 	private List<SceneRole> sceneRoles;

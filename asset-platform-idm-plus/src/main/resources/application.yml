@@ -3,11 +3,10 @@ spring:
     active: dev
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-#    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-#    url: jdbc:mysql://10.89.1.100:31937/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-    url: jdbc:mysql://120.77.179.239:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-#    url: jdbc:mysql://10.89.1.100:31937/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
 #    url: jdbc:mysql://127.0.0.1:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    url: jdbc:mysql://120.77.179.239:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    url: jdbc:mysql://10.89.1.100:31937/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
     username: root
 #    password: Hdu123456
     password: root
@@ -64,8 +63,14 @@ application:
     url: assetcloud.org.cn
 
 ---
-spring:
-  profiles: dev
+#spring:
+#  profiles: dev
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+#        url: jdbc:mysql://10.1.18.178:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+##    url: jdbc:mysql://120.77.179.239:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    username: root
+#    password: root
 server:
   port: 8083
   path: http://localhost:8083/
@@ -73,12 +78,17 @@ server:
 spring:
   profiles: test
 server:
-  port: 8082
-  path: http://localhost:8082/
+  port: 8083
+  path: http://localhost:8083/
 ---
-spring:
-  profiles: prod
+#spring:
+#  profiles: prod
+#  datasource:
+#    type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://120.77.179.239:3306/asset-platform-idm?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+#    username: root
+#    password: root
 server:
-  port: 8084
-  path: http://localhost:8084/
+  port: 8083
+  path: http://localhost:8083/
 

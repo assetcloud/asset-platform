@@ -1,10 +1,11 @@
 # FROM java
+#FROM java:8-jre
 FROM hub.c.163.com/library/java:8-jre
 MAINTAINER hjhu
-RUN mkdir -p /platform/idm
-WORKDIR /platform/idm
+#RUN mkdir -p /platform/idm
+#WORKDIR /platform/idm
 EXPOSE 8083
-VOLUME /docker
+#VOLUME /docker
 ADD target/*.jar app.jar
 ENTRYPOINT ["java","-Dfile.encoding=utf-8","-jar","app.jar"]
 CMD ["--spring.profiles.active=dev"]

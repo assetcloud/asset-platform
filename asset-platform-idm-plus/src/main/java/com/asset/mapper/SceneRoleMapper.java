@@ -65,9 +65,17 @@ public interface SceneRoleMapper extends BaseMapper<SceneRole> {
 
     /**
      * 获取用户已经拥有的角色
-     * @param userId
-     * @param sceneId
-     * @return
+     * @param userId 用户id
+     * @param sceneId 场景id
+     * @return List<SceneRole>
      */
     List<SceneRole> getRolesOwned(String userId, String sceneId);
+
+    /**
+     * 一个场景下，获取不属于目标角色的用户
+     * @param sceneId 场景id
+     * @param roleId 角色id
+     * @return List<User>
+     */
+    List<User> getUsersByRoleInvert(String sceneId, Long roleId);
 }

@@ -40,7 +40,7 @@ import java.util.*;
  */
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
-public class FormInstService {
+public class FormInstService implements IFormInstService {
     Logger logger = LoggerFactory.getLogger(FormInstService.class);
 
     @Autowired
@@ -215,7 +215,24 @@ public class FormInstService {
 
         return procInst.getProcessInstanceId();
     }
+   /*
+   * nfq:2019/10/11
+   * 这个方法的目的就是把获取的真正的表单实例放到一个集合里
+   * */
+   @Override
+   public  List<CommitFormInstDO> listComFormInst(String userID,
+                                           Integer taskType,
+                                           String curSelectSceneId,
+                                           String sectionId)throws InfoException, ProcException, FormException{
 
+       List<CommitFormInstDO> tasks = flowableService.listComFormInst1(userID,curSelectSceneId);
+      // ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
+       //formInstVOs.add(tasks);
+       //return formInstVOs;
+       return  tasks;
+
+
+   }
 
     /**
      * 业务入口
@@ -234,6 +251,8 @@ public class FormInstService {
                                          Integer taskType,
                                          String curSelectSceneId,
                                          String sectionId) throws InfoException, ProcException, FormException {
+        /*nfq1010:首先是获取流转用户的taskID  （是通过用户的ID来获取流转到该用户的task    这里是获取了多个 说明一个用户可能有多个task）？？？
+        * */
         //1、先获取流转到该用户对应的FlowableTaskDO
         List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
         if (tasks.size() == 0)
@@ -582,8 +601,8 @@ public class FormInstService {
 //                Constants.TASK_TOBE_READ,
 //                sceneId,
 //                sectionId);
-        TaskCount toDoCount;
-        TaskCount toReadCount;
+        TaskCount toDoCount;    //nfq:这个是统计待办的
+        TaskCount toReadCount;   //nfq:这个是统计待阅的
         try {
             toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(userID, Constants.TASK_TO_DO, sceneId, sectionId).size());
         } catch (SizeNullException e) {
@@ -601,7 +620,19 @@ public class FormInstService {
         taskCounts.add(toReadCount);
         return taskCounts;
     }
-
+    /*nfq:2019/10/11
+    * */
+    public List<TaskCount> getcommitFormCounts(String userID, String sceneId, String sectionId ) throws Exception{
+        TaskCount comformCount; // 统计提交表单数量
+        try {
+            comformCount = new TaskCount(Constants.COMMIT_TASK,listComFormInst(userID, Constants.COMMIT_TASK, sceneId, sectionId).size());
+        } catch (SizeNullException e){
+           comformCount = new TaskCount(Constants.COMMIT_TASK, 0);
+        }
+        List<TaskCount> taskCounts1 = new ArrayList<>();
+        taskCounts1.add(comformCount);
+        return taskCounts1;
+    }
     /**
      * 入口方法
      * 点击外链之后,显示当前待执行节点的表单sheet
@@ -785,7 +816,7 @@ public class FormInstService {
 
             if (procModelId.equals(Constants.REGISTER_PROC_ID) ||
                     procModelId.equals(Constants.SCENE_SELECT_PROC_ID)) {
-                nodeType = Constants.AS_NODE_APPROVE;
+                nodeType = Constants.AS_NODE_APPROVE;  // 节点设置为审批节点
             } else {
                 nodeType = procNodeService.getNodeType(procModelId, cur.getActId());
                 if (nodeType == null) {

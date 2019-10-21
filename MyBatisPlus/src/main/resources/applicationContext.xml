@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+    <bean  id="oracleKeyGenerator" class="com.baomidou.mybatisplus.extension.incrementer.OracleKeyGenerator"></bean>
+
+    <context:property-placeholder  location="classpath:db.properties"></context:property-placeholder>
+    <!--数据源c3p0 -->/>
+
+    <bean  id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"></property>
+        <property name="jdbcUrl" value="${jdbc.url}"></property>
+        <property name="user" value="${jdbc.username}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+    <!--事务管理器-->
+    <bean id="dataSourceTransactionManger"  class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" ></property>
+    </bean>
+    <tx:annotation-driven  transaction-manager="dataSourceTransactionManger" />
+    <!-- SqlSessionFactoryBean: Mybatis-->
+    <!--这个是使用mybatis用的-->
+<!--    <bean id="SqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">-->
+        <bean id="SqlSessionFactoryBean" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"></property>
+        <property name="configLocation" value="classpath:mybatis.xml"></property>
+        <property name="typeAliasesPackage" value="com.nfq.entity"></property>
+    </bean>
+
+    <!--mybatis只写接口，不写实现类：com.nfq.mapper.StudentMapper-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.nfq.mapper"></property>
+        <!-- 这个配完后，com.nfq.mapper都是映射文件了直接用studentmapper  是首字母小写-->
+    </bean>
+
+    <!--思路：最终是要获取xxx.Mapper,通过XXXMapper去调接口
+    xxxMapper是通过SQLSessionFactoryBean获取的
+    要获取SqlSessionFactroy得先获取DataSource
+    要DataSource ——>placeholder又得先写db.propertise
+    -->
+</beans>

@@ -84,9 +84,9 @@ public class FormInstController {
 
     /**
      * 用户登录系统之后，根据传进来的任务类型不同，前台显示待办（包含审批、经办）/待阅/全部的表单信息
-     * 这里的全部节点信息还包含了历史的处理信息，这里先不考虑
-     *
-     * @param userID
+     *      * 这里的全部节点信息还包含了历史的处理信息，这里先不考虑
+     *      *
+     *      * @param userID
      * @param taskType
      * @return
      */
@@ -136,6 +136,27 @@ public class FormInstController {
         return R.data(taskCounts);
     }
 
+    /*  nfq:2019/10/11
+    *    返回当前用户的发起申请数目
+    * */
+     @ApiOperation(value="统计用户发起表单",notes="在首页展示当前用户的发起申请",httpMethod = "GET")
+     @GetMapping(value= "/form_inst/commit_proc_inst/count")
+     public R <List<TaskCount>> commitFormCount(
+             @ApiParam(value = "当前用户Id", required = true)
+             @RequestParam(value = "user_id") String userID,
+             @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
+             @RequestParam(value = "scene_id") String sceneId,
+             @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
+             @RequestParam(value = "section_id") String sectionId){
+         List<TaskCount> taskCounts1 = null;
+         try {
+             taskCounts1 = formInstService.getcommitFormCounts(userID, sceneId, sectionId);
+         } catch (Exception e) {
+             e.printStackTrace();
+             return R.fail(e.getMessage());
+         }
+         return R.data(taskCounts1);
+     }
     /**
      * 用户登录系统，对审批节点进行处理，点击 同意 或 拒绝
      * 同时还可以对表单内容进行填写
