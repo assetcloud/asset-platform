@@ -88,8 +88,10 @@ public class ProcUtils {
 
 
     public static void rollback(String executionId, String rollbackActID, String procInstID) {
-        runtimeService.createChangeActivityStateBuilder().processInstanceId(procInstID)
-                .moveExecutionToActivityId(executionId, rollbackActID).changeState();
+        runtimeService.createChangeActivityStateBuilder().
+                processInstanceId(procInstID)
+                .moveExecutionToActivityId(executionId, rollbackActID).
+                changeState();
     }
 
     public static ProcessInstance createProcInstByXml(String fileName) {

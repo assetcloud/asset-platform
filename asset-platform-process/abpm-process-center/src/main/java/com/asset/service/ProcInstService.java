@@ -316,7 +316,8 @@ public class ProcInstService {
                     child.addAttribute("isSequential", "false");
 
                 Element grandChild = child.addElement("loopCardinality");
-                grandChild.addText(calculateJointNum(nodeDO));
+                //这里可以根据signStrategy指定需要loop的次数
+                grandChild.addText(getJointNum(nodeDO));
             }
         }
 
@@ -326,13 +327,31 @@ public class ProcInstService {
     /**
      * 如果一个节点被标记为有会签功能，需要知道这个会签节点多少人进行处理之后会结束当前节点
      * 这里可以设计多种复杂规则，这里暂时根据人员（candidateUser）有多少个，就设置该循环值是多少
+     * 现在一个会签的通过数目，默认是从SignStrategy中获取，要求前台设置默认值是两个人,也就是默认是获取值为2
+     *
+     *
      *
      * @return
      */
-    private String calculateJointNum(ProcNodeDO nodeDO) {
+    private String getJointNum(ProcNodeDO nodeDO) {
+        String signStrategy = nodeDO.getSignStrategy();
+        if(signStrategy.equals("null"))
+            return String.valueOf(1);
+
+        SignStrategyDTO signStrategyDTO = JSON.parseObject(signStrategy,SignStrategyDTO.class);
+        int strategyNum = signStrategyDTO.getAgree_rule().getRule().getNum();
+
         String candidateusers = nodeDO.getCandidateUser();
         String[] users = candidateusers.split("\\|");
-        return String.valueOf(users.length);
+
+
+        if(strategyNum > users.length)
+            return String.valueOf(users.length);
+        else
+            return String.valueOf(strategyNum);
+
+
+//        return String.valueOf(users.length);
     }
 
     /**

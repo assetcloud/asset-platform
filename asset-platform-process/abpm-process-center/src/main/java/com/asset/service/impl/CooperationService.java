@@ -37,7 +37,7 @@ public class CooperationService implements ICooperationService {
      * @return
      */
     @Override
-    public String commitFormProc(CoopCommitFormProcDTO dto) throws DocumentException, FlowableException, InfoException {
+    public String commitFormProc(CoopCommitFormProcDTO dto) throws DocumentException, FlowableException, InfoException ,InterruptedException{
         //是部门内资产移交,原来的方案是如果代表资产间移交，就把接收部门改成 “本部门”，因为现在的逻辑是：如果接收部门是计算机学院那么就是在本部门之间进行流转
         //所以我们对condition这个条件其实不要也好
 //        if(dto.getCondition()==1)

@@ -74,6 +74,10 @@ public class FormInstController {
         {
             e.printStackTrace();
             return R.fail(e.getMessage() );
+        }catch (InterruptedException e)
+        {
+            e.printStackTrace();
+            return R.fail(e.getMessage() );
         }
         return R.data(urls);
     }

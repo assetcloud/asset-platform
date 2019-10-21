@@ -37,6 +37,16 @@ spring:
     content-type: text/html
     encoding: UTF-8
     mode: LEGACYHTML5
+  redis:
+    host: 10.1.18.178
+    port: 6379
+    jedis:
+      pool:
+        max-wait: 30000ms
+        max-active: 100
+        max-idle: 20
+        min-idle: 0
+    timeout: 3000ms
 synchronize: true
 
 
@@ -52,3 +62,5 @@ mybatis-plus:
     db-config:
       table-prefix: as_
       db-type: MYSQL
+
+

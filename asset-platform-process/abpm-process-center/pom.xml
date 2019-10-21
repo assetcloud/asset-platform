@@ -89,6 +89,13 @@
             <version>1.6.1</version>
         </dependency>
 
+        <!--springboot中的redis依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-redis</artifactId>
+        </dependency>
+        <!--springboot中的redis依赖-->
+
         <!-- flowable -->
         <dependency>
             <groupId>org.flowable</groupId>

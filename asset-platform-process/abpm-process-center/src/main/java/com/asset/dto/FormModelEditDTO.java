@@ -5,12 +5,15 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 对表单模型进行修改
  */
 @Data
 @ApiModel
 public class FormModelEditDTO {
+    @NotNull(message = "表单模型Id不能为空")
     @ApiModelProperty(value = "要修改的表单模型Id",required = true)
     String form_model_id;
     @ApiModelProperty(value = "修改后的表单名称")
