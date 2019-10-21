@@ -20,6 +20,7 @@ import com.asset.javabean.TaskBO;
 import com.asset.service.impl.ActRuVariableService;
 import com.asset.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.flowable.common.engine.api.FlowableException;
@@ -134,7 +135,7 @@ public class FormInstService implements IFormInstService {
      * @param dto
      * @return
      */
-    public String[] commitNewFormInst(FormInstRecCreate dto) throws DocumentException, FlowableException,DatabaseException,InterruptedException{
+    public String[] commitNewFormInst(FormInstRecCreate dto) throws DocumentException, FlowableException, DatabaseException, InterruptedException {
         String procInst = commitFormInst(dto);
 
         //生成一个或多个外链，当前待办的任务节点的执行人会受到这个URL，执行人点击这个URL就会跳转到相应的页面进行登录
@@ -215,24 +216,25 @@ public class FormInstService implements IFormInstService {
 
         return procInst.getProcessInstanceId();
     }
-   /*
-   * nfq:2019/10/11
-   * 这个方法的目的就是把获取的真正的表单实例放到一个集合里
-   * */
-   @Override
-   public  List<CommitFormInstDO> listComFormInst(String userID,
-                                           Integer taskType,
-                                           String curSelectSceneId,
-                                           String sectionId)throws InfoException, ProcException, FormException{
 
-       List<CommitFormInstDO> tasks = flowableService.listComFormInst1(userID,curSelectSceneId);
-      // ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
-       //formInstVOs.add(tasks);
-       //return formInstVOs;
-       return  tasks;
+    /*
+     * nfq:2019/10/11
+     * 这个方法的目的就是把获取的真正的表单实例放到一个集合里
+     * */
+    @Override
+    public List<CommitFormInstDO> listComFormInst(String userID,
+                                                  Integer taskType,
+                                                  String curSelectSceneId,
+                                                  String sectionId) throws InfoException, ProcException, FormException {
+
+        List<CommitFormInstDO> tasks = flowableService.listComFormInst1(userID, curSelectSceneId);
+        // ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
+        //formInstVOs.add(tasks);
+        //return formInstVOs;
+        return tasks;
 
 
-   }
+    }
 
     /**
      * 业务入口
@@ -252,7 +254,7 @@ public class FormInstService implements IFormInstService {
                                          String curSelectSceneId,
                                          String sectionId) throws InfoException, ProcException, FormException {
         /*nfq1010:首先是获取流转用户的taskID  （是通过用户的ID来获取流转到该用户的task    这里是获取了多个 说明一个用户可能有多个task）？？？
-        * */
+         * */
         //1、先获取流转到该用户对应的FlowableTaskDO
         List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
         if (tasks.size() == 0)
@@ -457,39 +459,75 @@ public class FormInstService implements IFormInstService {
             procInstService.saveUnCompleteTask(
                     procInstID,
                     dto.getForm_model_id());
-        }
-        // 当前审批节点拒绝申请，应当是当前流程被强行结束
-        // 那么就是直接回滚到上个申请节点（如果前一个是审批节点，前前一个是申请节点，那么就是回滚到前前节点的位置）
-        // 回滚流程
-        // 1、找到上一个经办节点
-        // 2、回滚
-        // 3、在form_inst表中把晚于这个节点执行时间且相同procInstId的项目的状态置为 已被回滚
-        // 这里现在还有一个问题就是如果存在多个分支同时执行的话，另一个分支上的execution是没有回滚的！
-        // 这里现在的思路是在回滚前把当前流程实例的其他任务节点状态统一设成 已被回滚，同时回滚之后还要把新生成的form_inst加入数据库
-        else if (dto.getApprove_result() == Constants.APPROVE_DISAGREE) {
-            ProcUtils.completeProcInstForRejected(dto.getTask_id());
-            String[] strings = {""};
+        } else if (dto.getApprove_result() == Constants.APPROVE_DISAGREE) {
+            String[] strings = null;
+
+            Integer approveType = procNodeService.getNodeDO(formModelService.getProcModelID(dto.getForm_model_id()), flowableService.getNodeId(dto.getTask_id())).getApprove_type();
+            if (approveType == null)
+                approveType = Constants.NODE_APPROVE_CANCEL;
+
+            switch (approveType) {
+                //直接结束
+                case Constants.NODE_APPROVE_CANCEL:
+                    ProcUtils.completeProcInstForRejected(dto.getTask_id());
+                    break;
+                //回滚到上一个经办节点处
+                case Constants.NODE_APPROVE_ROLLBACK:
+                    //先判断当前实例中是否包含并行分支，包含并行分支的暂时无法处理，只能对该实例强行停止
+                    if (dto.containParallel()) {
+                        ProcUtils.completeProcInstForRejected(dto.getTask_id());
+                    }
+                    //不包含并行分支，直接进行回滚
+                    else {
+                        //获取上一个经办节点
+                        String lastApplyNode = getLastApplyNodeActId(getProcInstId(dto.getTask_id()));
+                        if (lastApplyNode.equals(""))
+                            throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
+
+                        //回滚之后，需获取当前任务到上一个经办节点之间的那些任务实例formInst，将其状态值修改为“已回滚”(这一步操作应该在回滚发生前)
+                        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActs(procInstID);
+                        for (int i = 0; i < historicActs.size(); i++) {
+                            if (historicActs.get(i).getActivityId().equals(lastApplyNode))
+                                break;
+
+                            AsFormInstDO updateDO = new AsFormInstDO.Builder()
+                                    .status(Constants.FORM_INST_ROLLED)
+                                    .build();
+
+                            UpdateWrapper<AsFormInstDO> updateWrapper = new UpdateWrapper<>();
+                            updateWrapper.lambda()
+                                    .eq(AsFormInstDO::getTaskId, historicActs.get(i).getTaskId());
+
+                            int update = asFormInstMapper.update(updateDO, updateWrapper);
+                            if (update == Constants.DATABASE_FAILED)
+                                throw new DatabaseException("更新任务状态值失败！");
+                        }
+
+                        //回滚
+                        procInstService.rollback(procInstID, lastApplyNode, executionId);
+                        // 回滚后，该实例下会生成新的任务节点信息（在act_hi_actinst表中可以找到，相同inst_id且END_time为空的条目）
+                        // 新的任务节点信息将其封装在as_form_inst表中，这里先不用saveRollbackTask()，saveUnCompleteTask()应该就可以满足要求了
+//                        saveRollbackTask(procInstID, dto.getForm_model_id());
+                        procInstService.saveUnCompleteTask(
+                                procInstID,
+                                dto.getForm_model_id());
+                        String[] taskIDs = ProcUtils.getTaskIDs(procInstID);
+                        strings = taskIDs;
+                    }
+
+                    break;
+
+                //高级回滚，可以指定回滚到任意经办节点，暂时不做
+                case Constants.NODE_APPROVE_ROLLBACK_PLUS:
+                    break;
+            }
             return strings;
-//            String lastApplyNode = getLastApplyNode(getProcInstId(dto.getTask_id()));
-//            if(lastApplyNode.equals(""))
-//                throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
-//            procInstService.rollback(procInstID,lastApplyNode);
-            // 上面这段注释代码是对的，这里暂时先把审批拒绝的逻辑改为当前流程被抛弃
-            // 1、这里在流程回滚之后会生成新的任务节点，需要也存入数据库
-            // 2、表单内容也要重置
-            // 3、
-            //在act_hi_actinst表中读取相同inst_id且END_time为空的条目，将其封装存入as_form_inst表中
-            //在as_form_inst表中创建下一个还没被执行的任务节点的TASK条目
-//            saveRollbackTask(procInstID, dto.getForm_model_id());
-//
-//            saveRollbackTask();
-//            saveUnCompleteFormInst();
-//            updateFormInstAfterRollback(dto.getTask_id(),lastApplyNode);
         }
         return generateUrls(procInstID);
     }
 
-//    public void saveRollbackTask(String procInstId,String formModelId){
+
+//    public void saveRollbackTask(String procInstId, String formModelId) {
 //        FormSheet originalFormSheet = formModelService.getModelSheet(formModelId);
 //        //获取当前执行到的任务节点
 //        String[] taskIDs = ProcUtils.getTaskIDs(procInstId);
@@ -620,19 +658,21 @@ public class FormInstService implements IFormInstService {
         taskCounts.add(toReadCount);
         return taskCounts;
     }
+
     /*nfq:2019/10/11
-    * */
-    public List<TaskCount> getcommitFormCounts(String userID, String sceneId, String sectionId ) throws Exception{
+     * */
+    public List<TaskCount> getcommitFormCounts(String userID, String sceneId, String sectionId) throws Exception {
         TaskCount comformCount; // 统计提交表单数量
         try {
-            comformCount = new TaskCount(Constants.COMMIT_TASK,listComFormInst(userID, Constants.COMMIT_TASK, sceneId, sectionId).size());
-        } catch (SizeNullException e){
-           comformCount = new TaskCount(Constants.COMMIT_TASK, 0);
+            comformCount = new TaskCount(Constants.COMMIT_TASK, listComFormInst(userID, Constants.COMMIT_TASK, sceneId, sectionId).size());
+        } catch (SizeNullException e) {
+            comformCount = new TaskCount(Constants.COMMIT_TASK, 0);
         }
         List<TaskCount> taskCounts1 = new ArrayList<>();
         taskCounts1.add(comformCount);
         return taskCounts1;
     }
+
     /**
      * 入口方法
      * 点击外链之后,显示当前待执行节点的表单sheet
@@ -903,7 +943,7 @@ public class FormInstService implements IFormInstService {
      * @param procInstId 当前待执行的Task所属的流程实例Id
      * @return
      */
-    public String getLastApplyNode(String procInstId) {
+    public String getLastApplyNodeActId(String procInstId) {
         List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActs(procInstId);
         String procModelId = procInstService.getProcModelId(procInstId);
         for (HistoricActivityInstance instance : historicActs) {

@@ -28,4 +28,12 @@ public class FormInstRecApprove extends FormInstRecBase {
     String form_inst_value; //填写的表单数据信息
     @ApiModelProperty(value = "对应的实例Id",required = true)
     String proc_inst_id;
+
+    //找到的对应的流程模型内容
+    String modelEditorJson;
+
+    //当前构造的实例对象中是否包含并行分支
+    public boolean containParallel(){
+        return modelEditorJson.contains("\"stencil\":{\"id\":\"ParallelGateway\"}");
+    }
 }

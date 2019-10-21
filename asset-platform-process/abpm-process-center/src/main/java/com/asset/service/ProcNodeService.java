@@ -119,7 +119,13 @@ public class ProcNodeService {
     }
 
     public ProcNodeDO getNodeDO(String procModelId,String curNodeId) {
-        return procNodeMapper.getNodeDO(procModelId,curNodeId);
+        QueryWrapper<ProcNodeDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(ProcNodeDO::getProcModelId, procModelId)
+                .eq(ProcNodeDO::getNodeId, curNodeId);
+        return procNodeMapper.selectOne(queryWrapper);
+
+//        return procNodeMapper.getNodeDO(procModelId,curNodeId);
     }
 
     public  List<UnBindFormModelVO> getUnbindFormModels() {

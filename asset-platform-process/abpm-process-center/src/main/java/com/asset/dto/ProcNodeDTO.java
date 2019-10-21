@@ -15,6 +15,7 @@ public class ProcNodeDTO {
     SignStrategyDTO sign_strategy;
     String todo_strategy;
     Integer if_joint_sign;
+    Integer approve_type;
 
     public ProcNodeDTO() {
     }

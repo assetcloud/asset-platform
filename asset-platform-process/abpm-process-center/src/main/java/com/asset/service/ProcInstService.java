@@ -151,8 +151,7 @@ public class ProcInstService {
      * @param procInstID
      * @param rollbackActID 上一个申请节点的ActivityID
      */
-    public void rollback(String procInstID, String rollbackActID) {
-        String executionId = getExecutionId(procInstID);
+    public void rollback(String procInstID, String rollbackActID ,String executionId) {
         ProcUtils.rollback(executionId, rollbackActID, procInstID);
     }
 

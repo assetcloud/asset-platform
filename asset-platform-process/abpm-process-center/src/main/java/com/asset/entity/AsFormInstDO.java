@@ -68,4 +68,102 @@ public class AsFormInstDO implements Serializable {
 
     public AsFormInstDO() {
     }
+
+    private AsFormInstDO(Builder builder) {
+        setId(builder.id);
+        setFormModelId(builder.formModelId);
+        setProcInstId(builder.procInstId);
+        setExecutionId(builder.executionId);
+        setTaskId(builder.taskId);
+        setExecutor(builder.executor);
+        setExecuteTime(builder.executeTime);
+        setFormInstSheet(builder.formInstSheet);
+        setFormInstValue(builder.formInstValue);
+        setStatus(builder.status);
+        setNodeType(builder.nodeType);
+        setApproveResult(builder.approveResult);
+    }
+
+
+    public static final class Builder {
+        private String id;
+        private String formModelId;
+        private String procInstId;
+        private String executionId;
+        private String taskId;
+        private String executor;
+        private Date executeTime;
+        private String formInstSheet;
+        private String formInstValue;
+        private Integer status;
+        private Integer nodeType;
+        private Integer approveResult;
+
+        public Builder() {
+        }
+
+        public Builder id(String val) {
+            id = val;
+            return this;
+        }
+
+        public Builder formModelId(String val) {
+            formModelId = val;
+            return this;
+        }
+
+        public Builder procInstId(String val) {
+            procInstId = val;
+            return this;
+        }
+
+        public Builder executionId(String val) {
+            executionId = val;
+            return this;
+        }
+
+        public Builder taskId(String val) {
+            taskId = val;
+            return this;
+        }
+
+        public Builder executor(String val) {
+            executor = val;
+            return this;
+        }
+
+        public Builder executeTime(Date val) {
+            executeTime = val;
+            return this;
+        }
+
+        public Builder formInstSheet(String val) {
+            formInstSheet = val;
+            return this;
+        }
+
+        public Builder formInstValue(String val) {
+            formInstValue = val;
+            return this;
+        }
+
+        public Builder status(Integer val) {
+            status = val;
+            return this;
+        }
+
+        public Builder nodeType(Integer val) {
+            nodeType = val;
+            return this;
+        }
+
+        public Builder approveResult(Integer val) {
+            approveResult = val;
+            return this;
+        }
+
+        public AsFormInstDO build() {
+            return new AsFormInstDO(this);
+        }
+    }
 }

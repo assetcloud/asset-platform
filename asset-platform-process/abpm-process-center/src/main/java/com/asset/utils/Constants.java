@@ -61,6 +61,10 @@ public interface Constants {
     public static final int AS_NODE_JOINT_DISABLE = 0;     //该节点不包含会签功能
     public static final int AS_NODE_JOINT_SERIAL = 1;     //该节点包含 串行会签功能
     public static final int AS_NODE_JOINT_PARRAL = 2;    //该节点包含 并行会签功能
+    //节点属性：在当前节点是审批节点的情况下，该属性表示在这个审批节点上点击“不同意”执行的策略：
+    public static final int NODE_APPROVE_CANCEL = 0;     //当前实例被结束(默认项)
+    public static final int NODE_APPROVE_ROLLBACK = 1;     //回滚到上一个经办节点
+    public static final int NODE_APPROVE_ROLLBACK_PLUS = 2;     //由审批人选择回滚到任意一个经办节点
 
 
     /**
