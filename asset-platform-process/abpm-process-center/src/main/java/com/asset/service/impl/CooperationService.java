@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CooperationService implements ICooperationService {
@@ -40,31 +41,41 @@ public class CooperationService implements ICooperationService {
     public String commitFormProc(CoopCommitFormProcDTO dto) throws DocumentException, FlowableException, InfoException ,InterruptedException{
         //是部门内资产移交,原来的方案是如果代表资产间移交，就把接收部门改成 “本部门”，因为现在的逻辑是：如果接收部门是计算机学院那么就是在本部门之间进行流转
         //所以我们对condition这个条件其实不要也好
-//        if(dto.getCondition()==1)
-//        {
-//            String values = dto.getForm_value();
-//            JSONObject jsonObject = JSON.parseObject(values);
-//            for(Map.Entry<String,Object> map:jsonObject.entrySet()){
-//                if(map.getKey().equals("input_1566960206187")){
-//                    map.setValue("本部门");
-//                    break;
-//                }
-//            }
-//            dto.setForm_value(jsonObject.toJSONString());
-//        }
+        if(dto.getCondition()==1)
+        {
+            String values = dto.getForm_value();
+            JSONObject jsonObject = JSON.parseObject(values);
+            for(Map.Entry<String,Object> map:jsonObject.entrySet()){
+                if(map.getKey().equals("radio_1571659906791")){
+                    map.setValue("否");
+                    break;
+                }
+            }
+            dto.setForm_value(jsonObject.toJSONString());
+        } else {
+            String values = dto.getForm_value();
+            JSONObject jsonObject = JSON.parseObject(values);
+            for(Map.Entry<String,Object> map:jsonObject.entrySet()){
+                if(map.getKey().equals("radio_1571659906791")){
+                    map.setValue("是");
+                    break;
+                }
+            }
+            dto.setForm_value(jsonObject.toJSONString());
+        }
 
-
-        //申请人和申请人所在部门都是固定的暂时
-        String committer = "金伟刚";
-        String committerSection = "计算机学院";
-
-        JSONObject jsonObject = JSON.parseObject(dto.getForm_value());
-        //申请人姓名
-        jsonObject.put("input_1568450723142",committer);
-        //申请人所在部门
-        jsonObject.put("input_1568450690311",committerSection);
-
-        dto.setForm_value(JSON.toJSONString(jsonObject));
+        //现在可以动态指定
+//        //申请人和申请人所在部门都是固定的暂时
+//        String committer = "金伟刚";
+//        String committerSection = "计算机学院";
+//
+//        JSONObject jsonObject = JSON.parseObject(dto.getForm_value());
+//        //申请人姓名
+//        jsonObject.put("input_1568450723142",committer);
+//        //申请人所在部门
+//        jsonObject.put("input_1568450690311",committerSection);
+//
+//        dto.setForm_value(JSON.toJSONString(jsonObject));
 
 
         //以下省略导入模板的步骤
