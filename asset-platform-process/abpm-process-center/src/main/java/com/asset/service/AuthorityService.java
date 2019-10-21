@@ -6,6 +6,7 @@ import com.asset.dao.FormAuthorityMapper;
 import com.asset.entity.FormAuthorityDO;
 import com.asset.entity.AsTempletFormAuthorityDO;
 import com.asset.entity.FormInstDO;
+import com.asset.exception.ProcException;
 import com.asset.javabean.form.OptionsBase;
 import com.asset.exception.DatabaseException;
 import com.asset.exception.FormException;
@@ -105,7 +106,7 @@ public class AuthorityService {
         return curItem;
     }
 
-    public FormInstDO handleFormSheetAuthority(FormInstDO formInstDO) throws FormException {
+    public FormInstDO handleFormSheetAuthority(FormInstDO formInstDO) throws FormException ,ProcException{
         //注意这里从表单实例中获取到的sheet是为null的，需要从对应的model中去获取
         String formModelId = formInstDO.getFormModelId();
         String modelSheetStr = formModelService.getModelSheetStr(formModelId);
@@ -132,6 +133,8 @@ public class AuthorityService {
             Integer curAuthority = getCurAuthority(procModelId,
                     curNode,
                     items.get(i).getKey());
+            if(curAuthority==null)
+                throw new ProcException("当前流程模型："+procModelId+" 表单项权限信息丢失！");
             //添加权限信息
             handleItemAuthority(items.get(i),curAuthority);
         }
