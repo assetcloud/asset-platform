@@ -250,7 +250,8 @@ public class FormInstService implements IFormInstService {
     public List<FormInstVO> listFormInst(String userID,
                                          Integer taskType,
                                          String curSelectSceneId,
-                                         String sectionId) throws InfoException, ProcException, FormException {
+                                         String sectionId,
+                                         String curSectionUsers) throws InfoException, ProcException, FormException {
         /*nfq1010:首先是获取流转用户的taskID  （是通过用户的ID来获取流转到该用户的task    这里是获取了多个 说明一个用户可能有多个task）？？？
         * */
         //1、先获取流转到该用户对应的FlowableTaskDO
@@ -305,7 +306,7 @@ public class FormInstService implements IFormInstService {
         DuplicateFilter duplicateFilter = new DuplicateFilter();
         SceneFilter sceneFilter = new SceneFilter();
         //对不属于当前用户的表单任务进行筛选
-        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs, sectionId);
+        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs, sectionId,curSectionUsers);
         //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
         ArrayList<FormInstBO> filtrate2 = duplicateFilter.filtrate(filtrate1);
         //过滤工作场景
@@ -592,7 +593,7 @@ public class FormInstService implements IFormInstService {
      * @param userID
      * @return
      */
-    public List<TaskCount> getFormInstsCounts(String userID, String sceneId, String sectionId) throws Exception {
+    public List<TaskCount> getFormInstsCounts(String userID, String sceneId, String sectionId,String curSectionUsers) throws Exception {
 //        TaskCount toDoCount = getCount(userID,
 //                Constants.TASK_TO_DO,
 //                sceneId,
@@ -604,13 +605,13 @@ public class FormInstService implements IFormInstService {
         TaskCount toDoCount;    //nfq:这个是统计待办的
         TaskCount toReadCount;   //nfq:这个是统计待阅的
         try {
-            toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(userID, Constants.TASK_TO_DO, sceneId, sectionId).size());
+            toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(userID, Constants.TASK_TO_DO, sceneId, sectionId,curSectionUsers).size());
         } catch (SizeNullException e) {
             toDoCount = new TaskCount(Constants.TASK_TO_DO, 0);
         }
 
         try {
-            toReadCount = new TaskCount(Constants.TASK_TOBE_READ, listFormInst(userID, Constants.TASK_TOBE_READ, sceneId, sectionId).size());
+            toReadCount = new TaskCount(Constants.TASK_TOBE_READ, listFormInst(userID, Constants.TASK_TOBE_READ, sceneId, sectionId,curSectionUsers).size());
         } catch (SizeNullException e) {
             toReadCount = new TaskCount(Constants.TASK_TOBE_READ, 0);
         }

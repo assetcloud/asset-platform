@@ -10,6 +10,7 @@ import com.asset.exception.DatabaseException;
 import com.asset.javabean.UnBindFormModelVO;
 import com.asset.utils.Constants;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.ui.modeler.serviceapi.ModelService;
@@ -150,7 +151,20 @@ public class ProcNodeService {
         }
     }
 
-    public List<ProcNodeDO> selectNodes(String procModelId) {
+    public List<ProcNodeDO> selectNodes(String procModelId) throws Exception{
         return procNodeMapper.selectNodes(procModelId);
+    }
+
+    public void updateCandidateGroup(String procModelId, String nodeId, String candiadteGroupIds) {
+        ProcNodeDO procNodeDO = new ProcNodeDO.Builder()
+                .candidateGroup(candiadteGroupIds)
+                .build();
+        UpdateWrapper<ProcNodeDO> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.lambda().eq(ProcNodeDO::getProcModelId,procModelId)
+                .eq(ProcNodeDO::getNodeId,nodeId);
+
+        int flag = procNodeMapper.update(procNodeDO,updateWrapper);
+        if(flag ==Constants.DATABASE_FAILED)
+            throw new DatabaseException("更新候选人信息失败！");
     }
 }

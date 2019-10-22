@@ -59,7 +59,7 @@ public class TmpletController {
 
         try {
             asAppTempletService.createTemplet(userId,formModelId,templetName,iconCls);
-        }catch (RuntimeException e)
+        }catch (Exception e)
         {
             return R.fail(e.getMessage());
         }

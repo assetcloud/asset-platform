@@ -3,6 +3,7 @@ package com.asset.filter;
 import com.asset.exception.FormException;
 import com.asset.javabean.FormInstBO;
 import com.asset.utils.Constants;
+import com.asset.utils.Func;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public class UserIdFilter{
 
-    public ArrayList<FormInstBO> filtrate(List<FormInstBO> formInstBOList,String sectionId) {
+    public ArrayList<FormInstBO> filtrate(List<FormInstBO> formInstBOList,String sectionId,String curSectionUsers) {
         type1:
         for (int m = 0; m < formInstBOList.size(); m++) {
             FormInstBO formInstBO = formInstBOList.get(m);
@@ -42,8 +43,12 @@ public class UserIdFilter{
                     //如果候选组是“当前部门”，需要动态去获取当前遍历到的流程的申请人是谁，然后去组织架构模块获取当前申请人所处的部门Id
                     if(candidateGroup[i].equals(Constants.CANDIDATE_GROUP_CUR_SECTION))
                     {
-                        if(committerSectionId.equals(sectionId))
+                        List<String> strings = Func.toStrList(curSectionUsers);
+                        if(strings.contains(formInstBO.getCommitter()))
                             continue type1;
+
+//                        if(committerSectionId.equals(sectionId))
+//                            continue type1;
                     }
                     else {
                         if (candidateGroup[i].equals(sectionId))

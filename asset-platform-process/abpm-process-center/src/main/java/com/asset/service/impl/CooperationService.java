@@ -10,6 +10,7 @@ import com.asset.javabean.form.FormSheet;
 import com.asset.service.FormInstService;
 import com.asset.service.FormModelService;
 import com.asset.service.ICooperationService;
+import com.asset.service.ProcNodeService;
 import com.asset.utils.Constants;
 import com.asset.utils.ProcUtils;
 import org.dom4j.DocumentException;
@@ -26,6 +27,8 @@ public class CooperationService implements ICooperationService {
     FormInstService formInstService;
     @Autowired
     FormModelService formModelService;
+    @Autowired
+    ProcNodeService procNodeService;
 
 
 
@@ -45,23 +48,22 @@ public class CooperationService implements ICooperationService {
         {
             String values = dto.getForm_value();
             JSONObject jsonObject = JSON.parseObject(values);
-            for(Map.Entry<String,Object> map:jsonObject.entrySet()){
-                if(map.getKey().equals("radio_1571659906791")){
-                    map.setValue("否");
-                    break;
-                }
-            }
+            jsonObject.put("radio_1571659906791","否");
             dto.setForm_value(jsonObject.toJSONString());
-        } else {
+        }
+        //跨部门移交资产，需要对接收部门审批节点的经办人属性进行设置
+        else {
             String values = dto.getForm_value();
             JSONObject jsonObject = JSON.parseObject(values);
-            for(Map.Entry<String,Object> map:jsonObject.entrySet()){
-                if(map.getKey().equals("radio_1571659906791")){
-                    map.setValue("是");
-                    break;
-                }
-            }
+            jsonObject.put("radio_1571659906791","是");
             dto.setForm_value(jsonObject.toJSONString());
+
+            //对接收部门审批节点的经办人属性进行设置
+            String procModelId = "0aa1f0f8-f48a-11e9-90e4-0242ac120006";
+            String nodeId = "sid-B962013F-849B-4F9A-A1FB-7ABD284DEE31";
+            String candiadteGroupIds = dto.getReceiving_section_id();
+            procNodeService.updateCandidateGroup(procModelId,nodeId,candiadteGroupIds);
+
         }
 
         //现在可以动态指定
@@ -83,7 +85,7 @@ public class CooperationService implements ICooperationService {
         //导入模板，生成对应的表单流程模型，这里先直接指定
         String formModelId = "";
         if(dto.getForm_proc_uid().equals("201908281106"))
-            formModelId = "660d7d6f-d83f-11e9-a9e8-0242ac120006";
+            formModelId = "87836a96-f492-11e9-90e4-0242ac120006";
 
         //由导入的表单流程模型创建相应的实例
         String firstNodeFormSheetStr = formInstService.showNewFormSheet(formModelId).getString("form_json");
