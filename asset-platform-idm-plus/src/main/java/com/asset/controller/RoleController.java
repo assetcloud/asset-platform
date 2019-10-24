@@ -68,7 +68,7 @@ public class RoleController {
     @PostMapping("remove")
     @ApiOperation(value = "删除", notes = "（已完成）传入ids")
     public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-        return R.status(roleService.batchDelete(org.springblade.core.tool.utils.Func.toIntList(",", ids)));
+        return R.status(roleService.removeByIds(org.springblade.core.tool.utils.Func.toIntList(",", ids)));
     }
 
     @PostMapping("grant")
@@ -80,6 +80,4 @@ public class RoleController {
     public R grant(@RequestParam Integer roleId, @RequestParam String menuIds){
         return R.status(roleService.grant(roleId, Func.toLongList(",", menuIds)));
     }
-
-
 }

@@ -7,8 +7,10 @@ import com.asset.common.SystemConstant;
 import com.asset.service.*;
 import com.asset.utils.Condition;
 import com.asset.utils.Func;
+import com.asset.vo.UserVO;
 import com.asset.wrapper.UserWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -76,11 +78,13 @@ public class SystemUserController {
     })
     @GetMapping("list")
     public R userList(@RequestParam Integer page, @RequestParam Integer size, @ApiIgnore @RequestParam Map<String, Object> user){
-        PageHelper.startPage(page, size);
+        Page pages = PageHelper.startPage(page, size);
         List<User> list = userService.list(Condition.getQueryWrapper(user, User.class).lambda().orderByAsc(User::getCreatedTime));
-        log.info(list.toString());
-        UserWrapper userWrapper = new UserWrapper();
-        return R.data(new PageInfo<>(userWrapper.listNodeVO(list)));
+        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
+        List<UserVO> userVOList = userWrapper.listNodeVO(list);
+        PageInfo pageInfo = new PageInfo(userVOList);
+        pageInfo.setTotal(pages.getTotal());
+        return R.data(pageInfo);
     }
 
     @ApiOperation(value = "管理控制台，添加用户"

@@ -1,10 +1,17 @@
 package com.asset.controller;
 
 import com.asset.bean.User;
+import com.asset.bean.UserScene;
 import com.asset.common.SystemConstant;
 import com.asset.service.ISceneService;
+import com.asset.service.IUserSceneService;
 import com.asset.service.IUserService;
 import com.asset.utils.Func;
+import com.asset.vo.UserVO;
+import com.asset.wrapper.UserWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -15,10 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by hjhu on 2019/5/27.
@@ -26,6 +30,7 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/basic/user")
 @Api(value = "终端用户管理", tags = "终端用户")
 public class UserNormalController {
 
@@ -33,6 +38,7 @@ public class UserNormalController {
 
     private ISceneService sceneService;
 
+    private IUserSceneService userSceneService;
 
     /**
      * 用户登录
@@ -178,5 +184,25 @@ public class UserNormalController {
     @RequestMapping(value = "/users/{roleId}", method = RequestMethod.GET)
     public List<User> userAudit(@PathVariable("roleId") Integer roleId){
         return userService.getUsersByRole(roleId);
+    }
+
+    @ApiOperation(value = "场景中通过组织部门获取所属用户", notes = "已完成")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataType = "string"),
+    })
+    @GetMapping("/v1/scene/node/members")
+    public R getUsersByNode(@RequestParam String sceneId, @RequestParam String userId){
+        List<UserScene> targets = userSceneService.list(Wrappers.<UserScene>lambdaQuery().eq(UserScene::getSceneId, sceneId).eq(UserScene::getUserId, userId));
+        UserScene userScene = new UserScene();
+        if (targets.size() >= 1){
+            userScene = targets.get(0);
+        } else {
+            return R.fail("找不到目标部门");
+        }
+        List<UserScene> list = userSceneService.list(Wrappers.<UserScene>lambdaQuery().eq(UserScene::getSceneId, sceneId).eq(UserScene::getNodeId, userScene.getNodeId()));
+        LinkedList<String> userIds = new LinkedList<>();
+        list.forEach(map -> userIds.add(map.getUserId()));
+        return R.data(userIds);
     }
 }
