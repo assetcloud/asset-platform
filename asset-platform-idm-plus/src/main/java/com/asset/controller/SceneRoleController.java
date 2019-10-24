@@ -6,6 +6,7 @@ import com.asset.common.model.Query;
 import com.asset.service.*;
 import com.asset.utils.Condition;
 import com.asset.utils.Func;
+import com.asset.vo.SceneRoleVO;
 import com.asset.vo.UserVO;
 import com.asset.wrapper.SceneRoleWrapper;
 import com.asset.wrapper.UserWrapper;
@@ -54,12 +55,14 @@ public class SceneRoleController {
             @ApiImplicitParam(value = "sceneCode", dataTypeClass = String.class)
     })
     public R listAll(Query query, @ApiIgnore @RequestParam Map<String, Object> sceneRole){
-        PageHelper.startPage(query.getPage(), query.getSize());
+        Page page = PageHelper.startPage(query.getPage(), query.getSize());
         List<SceneRole> roles = sceneRoleService.list(Condition.getQueryWrapper(sceneRole, SceneRole.class)
                 .lambda().eq(SceneRole::getStatus, 1)
                 .orderByDesc(SceneRole::getCreatedTime));
         SceneRoleWrapper sceneRoleWrapper = new SceneRoleWrapper(sceneRoleService, roleGroupService, sceneService, dictService);
-        return R.data(new PageInfo<>(sceneRoleWrapper.listNodeVO(roles)));
+        PageInfo<SceneRoleVO> pageInfo = new PageInfo<>(sceneRoleWrapper.listNodeVO(roles));
+        pageInfo.setTotal(page.getTotal());
+        return R.data(pageInfo);
     }
 
     @GetMapping("detail")
@@ -222,7 +225,7 @@ public class SceneRoleController {
             @ApiImplicitParam(name = "roleId", value = "角色id", required = true),
             @ApiImplicitParam(name = "userIds", value = "用户id数组，逗号隔开", required = true)
     })
-    @RequestMapping(value = "member/add",method = RequestMethod.POST)
+    @RequestMapping(value = "member/save",method = RequestMethod.POST)
     public R users2Role(@RequestParam Long roleId, @RequestParam String userIds){
         return R.data(sceneRoleService.addUsers2Role(roleId, Func.toStrList(",", userIds)));
     }
@@ -242,7 +245,7 @@ public class SceneRoleController {
             @ApiImplicitParam(name = "userIds", value = "用户id数组", required = true, dataTypeClass = String.class),
             @ApiImplicitParam(name = "roleId", value = "角色id", required = true, dataTypeClass = Long.class)
     })
-    @RequestMapping(value = "member/remove",method = RequestMethod.DELETE)
+    @RequestMapping(value = "member/remove",method = RequestMethod.POST)
     public R removeRoleMember(@NotEmpty @RequestParam String userIds, @NotEmpty @RequestParam Long roleId){
         return R.status(sceneRelationService.removeBatch(roleId, Func.toStrList(",", userIds)));
     }

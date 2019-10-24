@@ -42,7 +42,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     @Override
     public boolean grant(@NotEmpty Integer roleId, @NotEmpty List<Long> menuIds) {
         menuRoleService.remove(Wrappers.<MenuRole>update().lambda()
-                .in(MenuRole::getMenuId, menuIds)
                 .eq(MenuRole::getRoleId, roleId));
         List<MenuRole> menuRoles = new ArrayList<>();
         menuIds.forEach(menuId -> {

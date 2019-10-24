@@ -154,7 +154,7 @@ public class MenuController {
      */
     @GetMapping("/role-tree-keys")
     @ApiOperation(value = "角色所分配的树", notes = "已完成")
-    public R<List<String>> roleTreeKeys(String roleIds) {
+    public R<List<String>> roleTreeKeys(@RequestParam(value = "roleIds") String roleIds) {
         return R.data(menuService.roleTreeKeys(roleIds));
     }
 

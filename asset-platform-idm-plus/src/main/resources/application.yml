@@ -12,7 +12,7 @@ spring:
     password: root
   redis:
     database: 0
-    host: 10.1.18.178
+    host: 120.77.179.239
     port: 6379
     password: 123456
     lettuce:

@@ -1,6 +1,6 @@
 # FROM java
-#FROM java:8-jre
-FROM hub.c.163.com/library/java:8-jre
+FROM java:8-jre
+#FROM hub.c.163.com/library/java:8-jre
 MAINTAINER hjhu
 #RUN mkdir -p /platform/idm
 #WORKDIR /platform/idm

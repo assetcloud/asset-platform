@@ -13,6 +13,7 @@ import com.asset.wrapper.ResourceGroupWrapper;
 import com.asset.wrapper.ResourceWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
@@ -251,12 +252,14 @@ public class ResourceController {
             @ApiImplicitParam(name = "sceneId", value = "场景id", paramType = "query", dataType = "string")
     })
     public R list(Query query, @ApiIgnore @RequestParam Map<String, Object> resource){
-        PageHelper.startPage(query.getPage(), query.getSize());
+        Page page = PageHelper.startPage(query.getPage(), query.getSize());
         List<Resource> list = resourceService.list(Condition.getQueryWrapper(resource, Resource.class).lambda()
                 .eq(Resource::getIsDeleted, 0)
                 .orderByAsc(Resource::getSort));
         ResourceWrapper resourceWrapper = new ResourceWrapper(resourceService, dictService, sceneService, resourceGroupService);
-        return R.data(new PageInfo<>(resourceWrapper.listNodeVO(list)));
+        PageInfo<ResourceVO> pageInfo = new PageInfo<>(resourceWrapper.listNodeVO(list));
+        pageInfo.setTotal(page.getTotal());
+        return R.data(pageInfo);
     }
 
     @GetMapping("detail")
