@@ -45,7 +45,8 @@ public interface FlowableMapper {
     Integer updateModelEditorJson(@Param("procModelId") String procModelId,
                                @Param("newModelEditorJson") String newModelEditorJson);
 
-    List<CommitFormInstDO> listComFormInst1(String userID, String curSelectSceneId);
+    List<CommitFormInstDO> listComFormInst1(@Param("userID") String userID,
+                                            @Param("curSelectSceneId") String curSelectSceneId);
 
 //    /**
 //     * 找到在taskId之前 相同执行链（executionId）上按时间排序所有被执行的流程节点
