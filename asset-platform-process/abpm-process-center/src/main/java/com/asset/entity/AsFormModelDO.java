@@ -44,10 +44,10 @@ public class AsFormModelDO implements Serializable {
     private String modelSheet;
     private String sceneId;
     private String appId;
-    private Integer isBinded = 0;  //表单模型是否绑定流程模型，0否，1是
-    private Integer isBindAuthority = 0;   //表单项权限数据是否添加，0否，1是
-    private Integer isAddNodeInfo = 0;   //是否正确增加节点信息，0否，1是
-    private Integer isAddSeqCondition = 0;   //是否增加seqCondition，0否，1是
+    private Integer isBinded;  //表单模型是否绑定流程模型，0否，1是
+    private Integer isBindAuthority;   //表单项权限数据是否添加，0否，1是
+    private Integer isAddNodeInfo;   //是否正确增加节点信息，0否，1是
+    private Integer isAddSeqCondition;   //是否增加seqCondition，0否，1是
 
     public AsFormModelDO() {
     }

@@ -8,6 +8,7 @@ import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.asset.utils.R;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -52,9 +53,11 @@ public class AdminTaskController {
     })
     @GetMapping(value = "/task/list")
     public R<PageInfo<AdminTaskVO>> showTasks(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
+        Page page = PageHelper.startPage(query.getPage(), query.getSize());
         QueryWrapper<AsFormInstDO> queryWrapper = Condition.getQueryWrapper(role, AsFormInstDO.class);
-        PageHelper.startPage(query.getPage(),query.getSize());
+//        PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminTaskVO> list = new PageInfo<>(asFormInstService.listAdminProcTaskInfo(queryWrapper));
+        list.setTotal(page.getTotal());
         return R.data(list);
     }
 

@@ -7,6 +7,7 @@ import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.asset.utils.R;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
@@ -93,10 +94,12 @@ AsProcInstService asProcInstService;
             @ApiImplicitParam(name = "size", value = "数据量大小", defaultValue = "10",required = true , paramType = "query", dataType = "integer")
     })
     @GetMapping(value = "/proc_inst/list")
-    public R<PageInfo<AdminProcInstVO>> show(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
+    public R show(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
+        Page page = PageHelper.startPage(query.getPage(), query.getSize());
         QueryWrapper<AsProcInstDO> queryWrapper = Condition.getQueryWrapper(role, AsProcInstDO.class);
-        PageHelper.startPage(query.getPage(),query.getSize());
+//        PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminProcInstVO> list = new PageInfo<>(asProcInstService.listAdminProcInstInfo(queryWrapper));
+        list.setTotal(page.getTotal());
         return R.data(list);
     }
 
