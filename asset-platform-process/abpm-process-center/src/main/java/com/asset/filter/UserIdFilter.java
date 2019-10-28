@@ -41,11 +41,14 @@ public class UserIdFilter{
             if (candidateGroup != null)
                 for (int i = 0; i < candidateGroup.length; i++) {
                     //如果候选组是“当前部门”，需要动态去获取当前遍历到的流程的申请人是谁，然后去组织架构模块获取当前申请人所处的部门Id
+                    //这个CUR_SECTION指的是发起人所在的部门
                     if(candidateGroup[i].equals(Constants.CANDIDATE_GROUP_CUR_SECTION))
                     {
-                        List<String> strings = Func.toStrList(curSectionUsers);
-                        //当前登录用户不是发起人，同时当前登录用户的部门包含发起人（即两者同属一个部门）
-                        if(strings.contains(formInstBO.getCommitter())&& !formInstBO.getCommitter().equals(formInstBO.getCurUserId()))
+                        List<String> curSectionUserss = Func.toStrList(curSectionUsers);
+                        //当前登录用户属于该部门（该部门人员列表中包含当前用户的Id）
+                        //当前任务的发起人不能和当前登录用户
+                        // 当前登录用户不能是发起人，同时当前登录用户的部门包含发起人（即两者同属一个部门）
+                        if(curSectionUserss.contains(formInstBO.getCommitter()) && !formInstBO.getCommitter().equals(formInstBO.getCurUserId()))
                             continue type1;
 
 //                        if(committerSectionId.equals(sectionId))

@@ -63,7 +63,6 @@ public class CooperationService implements ICooperationService {
             String nodeId = "sid-B962013F-849B-4F9A-A1FB-7ABD284DEE31";
             String candiadteGroupIds = dto.getReceiving_section_id();
             procNodeService.updateCandidateGroup(procModelId,nodeId,candiadteGroupIds);
-
         }
 
         //现在可以动态指定
