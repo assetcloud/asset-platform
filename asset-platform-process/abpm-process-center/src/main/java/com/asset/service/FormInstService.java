@@ -462,18 +462,20 @@ public class FormInstService implements IFormInstService {
         } else if (dto.getApprove_result() == Constants.APPROVE_DISAGREE) {
             String[] strings = null;
 
-            Integer approveType = procNodeService.getNodeDO(formModelService.getProcModelID(dto.getForm_model_id()), flowableService.getNodeId(dto.getTask_id())).getApprove_type();
+            ProcNodeDO nodeDO = procNodeService.getNodeDO(formModelService.getProcModelID(dto.getForm_model_id()), flowableService.getNodeId(dto.getTask_id()));
+            Integer approveType = nodeDO.getApprove_type();
+            //默认的驳回操作是 结束整个流程
             if (approveType == null)
                 approveType = Constants.NODE_APPROVE_CANCEL;
 
             switch (approveType) {
-                //直接结束
+                //直接结束整个流程
                 case Constants.NODE_APPROVE_CANCEL:
                     ProcUtils.completeProcInstForRejected(dto.getTask_id());
                     break;
                 //回滚到上一个经办节点处
                 case Constants.NODE_APPROVE_ROLLBACK:
-                    //先判断当前实例中是否包含并行分支，包含并行分支的暂时无法处理，只能对该实例强行停止
+                    //先判断当前实例中是否包含并行分支，如果是包含并行分支的，需要找到当前任务节点的位置
                     if (dto.containParallel()) {
                         ProcUtils.completeProcInstForRejected(dto.getTask_id());
                     }
@@ -519,7 +521,7 @@ public class FormInstService implements IFormInstService {
 
                 //高级回滚，可以指定回滚到任意经办节点，暂时不做
                 case Constants.NODE_APPROVE_ROLLBACK_PLUS:
-                    break;
+                    throw  new ProcException("暂时不支持该回滚类型！请检查node："+nodeDO.getNodeId()+" 的属性");
             }
             return strings;
         }
@@ -935,7 +937,7 @@ public class FormInstService implements IFormInstService {
 
 
     /**
-     * 获取流程实例中的上一个申请节点
+     * 获取流程实例中的上一个经办节点,注意这里不能获取并行网关中的经办节点！因为流程回滚不能回滚到并行网关中的经办节点处
      * 1、用comingflow那个操作获取上一个节点
      * 2、查看它的node——type是不是经办节点类型
      * 3、如果不是，回到1；如果是，返回该节点
