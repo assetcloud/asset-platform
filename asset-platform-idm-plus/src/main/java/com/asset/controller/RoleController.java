@@ -1,6 +1,8 @@
 
 package com.asset.controller;
 
+import com.asset.wrapper.RoleWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springblade.core.tool.api.R;
 import com.asset.bean.Role;
 import com.asset.common.model.Query;
@@ -16,6 +18,7 @@ import org.springblade.core.tool.api.R;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -41,6 +44,14 @@ public class RoleController {
         PageHelper.startPage(query.getPage(), query.getSize());
         QueryWrapper<Role> queryWrapper = Condition.getQueryWrapper(role, Role.class);
         return R.data(new PageInfo<>(roleService.list(queryWrapper)));
+    }
+
+    @GetMapping("list-scroll")
+    @ApiOperation(value = "平台角色list", notes = "已完成")
+    public R roleList(){
+        List<Role> list = roleService.getAllRolesSelective();
+        RoleWrapper roleWrapper = new RoleWrapper();
+        return R.data(roleWrapper.listNodeVO(list));
     }
 
     @GetMapping("detail")

@@ -35,7 +35,6 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     @Override
     public List<Role> getAll() {
         return baseMapper.selectList(Wrappers.<Role>query().lambda()
-                .eq(Role::getIsDeleted, 0)
                 .orderByAsc(Role::getSort));
     }
 
@@ -75,5 +74,11 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
     @Override
     public Role getRoleName(Integer roleId) {
         return baseMapper.selectById(roleId);
+    }
+
+    @Override
+    public List<Role> getAllRolesSelective() {
+        return this.list(Wrappers.<Role>lambdaQuery().select(Role::getId, Role::getRoleNameZh, Role::getRoleName, Role::getIsDeleted)
+                .orderByAsc(Role::getSort));
     }
 }

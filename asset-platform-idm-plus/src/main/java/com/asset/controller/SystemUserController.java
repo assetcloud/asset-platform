@@ -1,5 +1,6 @@
 package com.asset.controller;
 
+import com.asset.bean.Role;
 import com.asset.bean.User;
 import com.asset.bean.UserRole;
 import com.asset.bean.UserScene;
@@ -8,6 +9,7 @@ import com.asset.service.*;
 import com.asset.utils.Condition;
 import com.asset.utils.Func;
 import com.asset.vo.UserVO;
+import com.asset.wrapper.RoleWrapper;
 import com.asset.wrapper.UserWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
@@ -24,10 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -92,7 +91,7 @@ public class SystemUserController {
     @PostMapping("save")
     public R addUser(@RequestBody User user){
         if (Func.hasEmpty(user.getAccountName(), user.getRealName(), user.getPwd(), user.getPhoneNumber()
-                , user.getUserEmail(), user.getStatus(), user.getAdmin())){
+                , user.getUserEmail(), user.getStatus(), user.getRoleId())){
             return R.fail("参数错误");
         }
         return R.status(userService.saveUser(user));
@@ -123,15 +122,22 @@ public class SystemUserController {
     @GetMapping("detail")
     public R getUser(@RequestParam String userId){
         User user = userService.getById(userId);
+        RoleWrapper roleWrapper = new RoleWrapper();
+        user.setRoles(Collections.singletonList(roleService.getById(user.getRoleId())));
         UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
         return R.data(userWrapper.entityVO(user));
     }
 
-    @ApiOperation(value = "控制台编辑用户信息", notes = "（已完成，不对外开放）accountName")
+    @ApiOperation(value = "控制台编辑用户信息", notes = "（已完成）")
     @PostMapping("edit")
     public R editUser(@RequestBody User user){
         if (Func.hasEmpty(user.getId())){
             return R.fail("参数错误");
+        }
+        if (user.getRoleId() == 1){
+            user.setAdmin(1);
+        } else {
+            user.setAdmin(0);
         }
         return R.status(userService.updateById(user));
     }

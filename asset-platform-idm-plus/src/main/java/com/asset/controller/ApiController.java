@@ -6,13 +6,11 @@ import com.asset.config.WebLog;
 import com.asset.service.*;
 import com.asset.utils.Func;
 import com.asset.vo.UserVO;
-import com.asset.wrapper.UserWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 

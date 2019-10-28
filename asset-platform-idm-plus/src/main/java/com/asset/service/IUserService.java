@@ -13,7 +13,7 @@ public interface IUserService extends IService<User> {
      * @param user
      * @return int
      */
-    int insertUser(User user) ;
+    boolean insertUser(User user) ;
 
     List<User> getUsersByRole(Integer roleId);
 

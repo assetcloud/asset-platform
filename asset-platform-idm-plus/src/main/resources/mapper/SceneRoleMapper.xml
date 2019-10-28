@@ -175,7 +175,8 @@
         SELECT
             U.id,
             U.real_name,
-            U.`status`
+            U.`status`,
+            U.role_id
         FROM
             as_user U
         WHERE

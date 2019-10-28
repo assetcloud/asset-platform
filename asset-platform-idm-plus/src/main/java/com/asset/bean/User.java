@@ -1,5 +1,6 @@
 package com.asset.bean;
 
+import com.asset.vo.RoleVO;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -34,6 +35,7 @@ public class User implements UserDetails, Serializable {
 
     private String staffId;
 
+    @TableField("role_id")
     private Integer roleId;
 
     @ApiModelProperty(value = "真实姓名")

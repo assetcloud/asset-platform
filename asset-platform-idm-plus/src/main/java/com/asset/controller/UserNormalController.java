@@ -205,4 +205,38 @@ public class UserNormalController {
         list.forEach(map -> userIds.add(map.getUserId()));
         return R.data(userIds);
     }
+
+    @ApiOperation(value = "通过组织部门获取不属于其的用户", notes = "已完成")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataType = "string"),
+            @ApiImplicitParam(name = "nodeId", value = "部门id", required = true, dataType = "string"),
+    })
+    @GetMapping("/v1/scene/node/members-invert")
+    public R getUsersByNodeInvert(@RequestParam String sceneId, @RequestParam String nodeId){
+        List<UserScene> existingUsers = userSceneService.list(Wrappers.<UserScene>lambdaQuery().eq(UserScene::getSceneId, sceneId)
+                .eq(UserScene::getNodeId, nodeId));
+        List<UserScene> allUsers = userSceneService.list(Wrappers.<UserScene>lambdaQuery().eq(UserScene::getSceneId, sceneId));
+//        LinkedList<String> existingUserIds = new LinkedList<>();
+//        LinkedList<String> allUserIds = new LinkedList<>();
+//        existingUsers.forEach(map -> existingUserIds.add(map.getUserId()));
+//        allUsers.forEach(map -> allUserIds.add(map.getUserId()));
+        LinkedList<String> userIds = new LinkedList<>();
+//        for (String userId : allUserIds) {
+//            if (!existingUserIds.contains(userId)){
+//                userIds.add(userId);
+//            }
+//        }
+
+        for (UserScene record : allUsers) {
+            if (!existingUsers.contains(record)){
+                userIds.add(record.getUserId());
+            }
+        }
+        if (userIds.size() < 1){
+            return R.data("");
+        }
+        List<User> list = userService.list(Wrappers.<User>lambdaQuery().select(User::getId, User::getRealName, User::getStatus)
+                .in(User::getId, userIds));
+        return R.data(list);
+    }
 }
