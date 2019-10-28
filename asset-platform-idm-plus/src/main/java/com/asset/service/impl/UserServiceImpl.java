@@ -1,10 +1,13 @@
 package com.asset.service.impl;
 
 import com.asset.bean.User;
+import com.asset.bean.UserRole;
 import com.asset.common.SystemConstant;
 import com.asset.common.model.UserPageParam;
 import com.asset.mapper.UserMapper;
 import com.asset.mapper.UuidIdGenerator;
+import com.asset.service.IRoleService;
+import com.asset.service.IUserRoleService;
 import com.asset.service.IUserService;
 import com.asset.utils.Func;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -33,6 +36,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     UuidIdGenerator idGenerator;
 
+    IUserRoleService userRoleService;
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userMapper.loadUserByUsername(s);
@@ -47,7 +52,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
      * @param user
      * @return int
      */
-    public int insertUser(User user) {
+    public boolean insertUser(User user) {
         if(user.getId() == null){
             user.setId(idGenerator.generateId());
         }
@@ -59,7 +64,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String encode = encoder.encode(user.getPassword());
         user.setPwd(encode);
-        return userMapper.insertSelective(user);
+        UserRole userRole = new UserRole();
+        userMapper.insert(user);
+        userRole.setUid(user.getId());
+        userRole.setCreatedTime(new Date());
+        userRole.setRoleId(user.getRoleId());
+        return userRoleService.save(userRole);
     }
 
     public List<User> getUsersByRole(Integer roleId){
@@ -103,7 +113,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         record.setStage(2);
         record.setEnableTime(new Date());
         record.setPwd(new BCryptPasswordEncoder().encode(record.getPwd()));
-        return userMapper.insert(record) > 0;
+        UserRole userRole = new UserRole();
+        if (record.getRoleId() == 1){
+            record.setAdmin(1);
+        } else {
+            record.setAdmin(0);
+        }
+        userMapper.insert(record);
+        userRole.setUid(record.getId());
+        userRole.setCreatedTime(new Date());
+        userRole.setRoleId(record.getRoleId());
+        return userRoleService.save(userRole);
     }
 
     @Override

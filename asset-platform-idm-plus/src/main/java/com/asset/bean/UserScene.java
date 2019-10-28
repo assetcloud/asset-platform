@@ -22,6 +22,7 @@ public class UserScene {
 
     @TableField("node_id")
     private String nodeId;
+
     @TableField("node_principal")
     private Integer nodePrincipal;
 

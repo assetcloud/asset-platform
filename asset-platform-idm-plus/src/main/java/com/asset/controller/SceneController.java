@@ -1,33 +1,29 @@
 package com.asset.controller;
 
-import com.asset.bean.*;
+import com.asset.bean.OrganScene;
+import com.asset.bean.Scene;
+import com.asset.bean.SceneRole;
+import com.asset.bean.UserScene;
 import com.asset.common.GlobalConstant;
-import com.asset.common.SystemConstant;
 import com.asset.service.*;
-import com.asset.utils.CommonUtils;
-import com.asset.utils.Email;
 import com.asset.utils.Func;
 import com.asset.vo.UserVO;
 import com.asset.wrapper.SceneWrapper;
-import com.asset.wrapper.UserWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.google.common.collect.Lists;
 import io.swagger.annotations.*;
-import io.swagger.models.auth.In;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.tool.api.R;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Wrapper;
 import java.util.*;
 
 @RestController
 @AllArgsConstructor
+@Slf4j
 @RequestMapping("scene")
 @Api(value = "场景管理", tags = "场景管理")
 public class SceneController {
@@ -141,6 +137,25 @@ public class SceneController {
         return R.status(userSceneService.updateNodeIdByUserId(userId, sceneId, nodeId));
     }
 
+    @ApiOperation(value = "场景中批量设置用户主部门", notes = "已完成")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "userIds", value = "用户id数组", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "sceneId", value = "场景id", required = true, dataTypeClass = String.class),
+            @ApiImplicitParam(name = "nodeId", value = "部门id", required = true, dataTypeClass = String.class)
+    })
+    @PostMapping("node/batch-set")
+    public R batchSetMainNode(@RequestParam String userIds, @RequestParam String sceneId, @RequestParam String nodeId){
+//        List<UserScene> list = userSceneService.list(Wrappers.<UserScene>lambdaQuery().eq(UserScene::getSceneId, sceneId)
+//                .in(UserScene::getUserId, Func.toStrList(",", userIds)));
+//        list.forEach(map -> {
+//            map.setNodeId(nodeId);
+//            map.setNodePrincipal(0);
+//        });
+//        return R.status(userSceneService.updateBatchById(list));
+        return R.status(userSceneService.update(Wrappers.<UserScene>lambdaUpdate().set(UserScene::getNodeId, nodeId).set(UserScene::getNodePrincipal, 0)
+                .eq(UserScene::getSceneId, sceneId).in(UserScene::getUserId, Func.toStrList(",", userIds))));
+    }
+
     @ApiOperation(value = "场景中设置部门负责人", notes = "已完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "userId", value = "用户id", required = true, dataTypeClass = String.class),
@@ -227,7 +242,6 @@ public class SceneController {
             , @RequestParam("memberName") String memberName){
         PageHelper.startPage(page, size);
         List<UserVO> nodeUsers = userSceneService.getNodeUsers(sceneId, nodeId, memberName);
-//        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
         return R.data(new PageInfo<>(nodeUsers));
     }
 

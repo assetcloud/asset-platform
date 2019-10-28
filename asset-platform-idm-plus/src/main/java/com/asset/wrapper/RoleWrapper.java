@@ -16,11 +16,8 @@
 package com.asset.wrapper;
 
 import com.asset.bean.Role;
-import com.asset.service.IRoleService;
 import com.asset.vo.RoleVO;
 import lombok.AllArgsConstructor;
-import org.springblade.core.tool.node.ForestNodeMerger;
-import org.springblade.core.tool.node.INode;
 import org.springblade.core.tool.utils.BeanUtil;
 
 import java.util.List;
@@ -29,31 +26,19 @@ import java.util.stream.Collectors;
 /**
  * 包装类,返回视图层所需的字段
  *
- * @author Chill
+ * @author hjhu
  */
-@AllArgsConstructor
 public class RoleWrapper{
-
-	private IRoleService roleService;
 
 	public RoleWrapper() {
 	}
 
 	public RoleVO entityVO(Role role) {
-		RoleVO roleVO = BeanUtil.copy(role, RoleVO.class);
-//		if (Func.equals(role.getParentId(), CommonConstant.TOP_PARENT_ID)) {
-//			roleVO.setParentName(CommonConstant.TOP_PARENT_NAME);
-//		} else {
-//			Role parent = roleService.getById(role.getParentId());
-//			roleVO.setParentName(parent.getRoleName());
-//		}
-		return roleVO;
+		return BeanUtil.copy(role, RoleVO.class);
 	}
 
-
-	public List<INode> listNodeVO(List<Role> list) {
-		List<INode> collect = list.stream().map(this::entityVO).collect(Collectors.toList());
-		return ForestNodeMerger.merge(collect);
+	public List<RoleVO> listNodeVO(List<Role> list) {
+		return list.stream().map(this::entityVO).collect(Collectors.toList());
 	}
 
 }

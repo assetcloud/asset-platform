@@ -1,6 +1,9 @@
 package com.asset.controller;
 
-import com.asset.bean.*;
+import com.asset.bean.RoleGroup;
+import com.asset.bean.SceneRelation;
+import com.asset.bean.SceneRole;
+import com.asset.bean.User;
 import com.asset.common.SystemConstant;
 import com.asset.common.model.Query;
 import com.asset.service.*;
@@ -16,11 +19,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import org.checkerframework.checker.units.qual.A;
-import org.springblade.core.tool.api.IResultCode;
 import org.springblade.core.tool.api.R;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -45,6 +44,10 @@ public class SceneRoleController {
     ISceneService sceneService;
 
     IDictService dictService;
+
+    IUserService userService;
+
+    IRoleService roleService;
 
     @RequestMapping(value = "list/all",method = RequestMethod.GET)
     @ApiOperation(value = "获取所有业务角色", notes = "已完成")
@@ -317,7 +320,7 @@ public class SceneRoleController {
     @ApiOperation(value = "获取不属于当前角色的成员", notes = "已完成")
     public R<List<UserVO>> getUsersByRoleInvert(@RequestParam String sceneId, @RequestParam Long roleId){
         List<User> users = sceneRoleService.getUsersByRoleInvert(sceneId, roleId);
-        UserWrapper userWrapper = new UserWrapper();
+        UserWrapper userWrapper = new UserWrapper(userService, dictService, roleService);
         return R.data(userWrapper.listNodeVO(users));
     }
 }

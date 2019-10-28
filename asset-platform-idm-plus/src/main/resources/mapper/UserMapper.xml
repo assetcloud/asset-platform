@@ -150,26 +150,26 @@
   <insert id="userReg">
         INSERT INTO as_user set account_name=#{accountName},pwd=#{pwd}
    </insert>
-  <insert id="insert" parameterType="com.asset.bean.User">
-    insert into as_user (id, staff_id, real_name,
-      account_name, nickname, gender,
-      user_birthday, user_email, phone_number,
-      certificate_type, certificate_number, pwd,
-      authentication_method, account_picture, admin, stage,
-      user_address, user_photo, status,
-      user_type, disable_time, enable_time,
-      updated_time, remove_time, created_time,
-      user_remark)
-    values (#{id,jdbcType=INTEGER}, #{staffId,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},
-      #{accountName,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER},
-      #{userBirthday,jdbcType=TIMESTAMP}, #{userEmail,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR},
-      #{certificateType,jdbcType=INTEGER}, #{certificateNumber,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},
-      #{authenticationMethod,jdbcType=INTEGER}, #{accountPicture,jdbcType=VARCHAR}, #{admin,jdbcType=INTEGER},#{stage,jdbcType=INTEGER},
-      #{userAddress,jdbcType=VARCHAR}, #{userPhoto,jdbcType=VARCHAR}, #{status,jdbcType=BIT},
-      #{userType,jdbcType=INTEGER}, #{disableTime,jdbcType=TIMESTAMP}, #{enableTime,jdbcType=TIMESTAMP},
-      #{updatedTime,jdbcType=TIMESTAMP}, #{removeTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP},
-      #{userRemark,jdbcType=LONGVARCHAR})
-  </insert>
+<!--  <insert id="insert" parameterType="com.asset.bean.User">-->
+<!--    insert into as_user (id, staff_id, real_name,-->
+<!--      account_name, nickname, gender,-->
+<!--      user_birthday, user_email, phone_number,-->
+<!--      certificate_type, certificate_number, pwd,-->
+<!--      authentication_method, account_picture, admin, stage,-->
+<!--      user_address, user_photo, status,-->
+<!--      user_type, disable_time, enable_time,-->
+<!--      updated_time, remove_time, created_time,-->
+<!--      user_remark)-->
+<!--    values (#{id,jdbcType=INTEGER}, #{staffId,jdbcType=VARCHAR}, #{realName,jdbcType=VARCHAR},-->
+<!--      #{accountName,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{gender,jdbcType=INTEGER},-->
+<!--      #{userBirthday,jdbcType=TIMESTAMP}, #{userEmail,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR},-->
+<!--      #{certificateType,jdbcType=INTEGER}, #{certificateNumber,jdbcType=VARCHAR}, #{pwd,jdbcType=VARCHAR},-->
+<!--      #{authenticationMethod,jdbcType=INTEGER}, #{accountPicture,jdbcType=VARCHAR}, #{admin,jdbcType=INTEGER},#{stage,jdbcType=INTEGER},-->
+<!--      #{userAddress,jdbcType=VARCHAR}, #{userPhoto,jdbcType=VARCHAR}, #{status,jdbcType=BIT},-->
+<!--      #{userType,jdbcType=INTEGER}, #{disableTime,jdbcType=TIMESTAMP}, #{enableTime,jdbcType=TIMESTAMP},-->
+<!--      #{updatedTime,jdbcType=TIMESTAMP}, #{removeTime,jdbcType=TIMESTAMP}, #{createdTime,jdbcType=TIMESTAMP},-->
+<!--      #{userRemark,jdbcType=LONGVARCHAR})-->
+<!--  </insert>-->
   <insert id="insertSelective" parameterType="com.asset.bean.User">
     insert into as_user
     <trim prefix="(" suffix=")" suffixOverrides=",">

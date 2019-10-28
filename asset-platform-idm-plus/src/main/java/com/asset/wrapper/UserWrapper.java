@@ -22,8 +22,10 @@ import com.asset.service.IUserService;
 import com.asset.vo.SceneRoleVO;
 import com.asset.vo.UserVO;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.ObjectUtil;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
  * @author Chill
  */
 @AllArgsConstructor
+@Slf4j
 public class UserWrapper{
 
 	IUserService userService;
@@ -47,8 +50,10 @@ public class UserWrapper{
 
 	public UserVO entityVO(User user) {
 		UserVO userVO = BeanUtil.copy(user, UserVO.class);
-		String roleName = roleService.getRoleName(user.getRoleId()).getRoleNameZh();
-		userVO.setRoleNameZh(roleName);
+		if (ObjectUtil.isNotEmpty(user.getRoleId())){
+			String roleName = roleService.getRoleName(user.getRoleId()).getRoleNameZh();
+			userVO.setRoleNameZh(roleName);
+		}
 		String gender = dictService.getValue("sex", Func.toInt(user.getGender()));
 		if (Func.isNotEmpty(gender)) {
 			userVO.setSexName(gender);
@@ -57,7 +62,7 @@ public class UserWrapper{
 	}
 
 	public List<UserVO> listNodeVO(List<User> list) {
-		return list.stream().map(user -> BeanUtil.copy(user, UserVO.class)).collect(Collectors.toList());
+		return list.stream().map(this::entityVO).collect(Collectors.toList());
 	}
 //
 //	public List<UserVO> listNodeVOWithSceneRoles(List<User> list) {

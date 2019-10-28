@@ -51,4 +51,10 @@ public interface IRoleService extends IService<Role> {
      * @return
      */
     Role getRoleName(Integer roleId);
+
+    /**
+     * 获取所有角色（部分字段）
+     * @return
+     */
+    List<Role> getAllRolesSelective();
 }

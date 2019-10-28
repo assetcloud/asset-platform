@@ -15,12 +15,14 @@
  */
 package com.asset.vo;
 
+import com.asset.bean.Role;
 import com.asset.bean.SceneRole;
 import com.asset.bean.User;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -30,7 +32,7 @@ import java.util.List;
  */
 @Data
 @ApiModel(value = "UserVO对象", description = "UserVO对象")
-public class UserVO{
+public class UserVO {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,6 +45,10 @@ public class UserVO{
 	 * 真实姓名
 	 */
 	private String realName;
+	/**
+	 * 账号
+	 */
+	private String accountName;
 
 	/**
 	 * 角色名
@@ -83,4 +89,20 @@ public class UserVO{
 	 * 用户所属业务角色
 	 */
 	private List<SceneRole> sceneRoles;
+	/**
+	 * 用户所属业务角色
+	 */
+	private List<Role> roles;
+	/**
+	 * 创建时间
+	 */
+	private Date createdTime;
+	/**
+	 * 用户性别
+	 */
+	private Integer gender;
+	/**
+	 * 是否是管理员
+	 */
+	private Integer admin;
 }
