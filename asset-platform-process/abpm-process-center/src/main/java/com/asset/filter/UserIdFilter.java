@@ -44,7 +44,8 @@ public class UserIdFilter{
                     if(candidateGroup[i].equals(Constants.CANDIDATE_GROUP_CUR_SECTION))
                     {
                         List<String> strings = Func.toStrList(curSectionUsers);
-                        if(strings.contains(formInstBO.getCommitter()))
+                        //当前登录用户不是发起人，同时当前登录用户的部门包含发起人（即两者同属一个部门）
+                        if(strings.contains(formInstBO.getCommitter())&& !formInstBO.getCommitter().equals(formInstBO.getCurUserId()))
                             continue type1;
 
 //                        if(committerSectionId.equals(sectionId))
