@@ -4,10 +4,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -48,6 +45,8 @@ public class AsFormModelDO implements Serializable {
     private Integer isBindAuthority;   //表单项权限数据是否添加，0否，1是
     private Integer isAddNodeInfo;   //是否正确增加节点信息，0否，1是
     private Integer isAddSeqCondition;   //是否增加seqCondition，0否，1是
+    @TableLogic(value = "0",delval = "1")
+    private Integer isDeleted;
 
     public AsFormModelDO() {
     }

@@ -2,8 +2,9 @@
 From hub.c.163.com/library/java:8-jre
 
 COPY abpm-process-center/simsun.ttc /usr/share/fonts/simsun.ttc
-ADD abpm-process-center/target/10222009abpm-process-center-1.0-SNAPSHOT.jar app.jar
+ADD abpm-process-center/target/10281644abpm-process-center-1.0-SNAPSHOT.jar app.jar
 
 EXPOSE 9000
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
