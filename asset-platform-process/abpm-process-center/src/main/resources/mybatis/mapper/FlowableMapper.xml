@@ -54,6 +54,7 @@
           and actinst.END_TIME_ is NULL
           and asproc.status = 0
           and asproc.id = actinst.PROC_INST_ID_
+        ORDER BY START_TIME_ DESC
     </select>
 
     <!--nfq  2019/10/11   -->

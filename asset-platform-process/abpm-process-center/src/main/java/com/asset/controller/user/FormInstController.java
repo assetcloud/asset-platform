@@ -4,20 +4,31 @@ import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.*;
 import com.asset.exception.DatabaseException;
 import com.asset.exception.ProcException;
+import com.asset.javabean.AdminTaskVO;
 import com.asset.javabean.FormInstVO;
 import com.asset.dto.*;
 import com.asset.service.*;
+import com.asset.utils.Condition;
 import com.asset.utils.Func;
+import com.asset.utils.Query;
 import com.asset.utils.R;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
+import org.apache.ibatis.annotations.Param;
 import org.dom4j.DocumentException;
 import org.flowable.common.engine.api.FlowableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 表单实例的创建、修改，表单项值在流程引擎中的使用
@@ -102,10 +113,12 @@ public class FormInstController {
             @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
             @RequestParam(value = "section_id") String sectionId,
             @ApiParam(value = "当前用户在当前工作场景下所属的部门中的所有用户Id，用于在任务节点指定当前部门时的筛选", required = true)
-            @RequestParam(value = "curSectionUsers") String curSectionUsers) {
+            @RequestParam(value = "curSectionUsers") String curSectionUsers,
+            @ApiParam(value = "筛选出的任务节点数目")
+            @RequestParam(value = "num", defaultValue = "-1") Integer num) {
         List<FormInstVO> formInstVOs = null;
         try {
-            formInstVOs = formInstService.listFormInst(userID, taskType, sceneId, sectionId,curSectionUsers);
+            formInstVOs = formInstService.listFormInst(userID, taskType, sceneId, sectionId, curSectionUsers, num);
         } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
@@ -133,7 +146,7 @@ public class FormInstController {
     ) {
         List<TaskCount> taskCounts = null;
         try {
-            taskCounts = formInstService.getFormInstsCounts(userID, sceneId, sectionId,curSectionUsers);
+            taskCounts = formInstService.getFormInstsCounts(userID, sceneId, sectionId, curSectionUsers);
         } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
@@ -251,6 +264,20 @@ public class FormInstController {
             return R.fail(e.getMessage());
         }
         return R.data(shareLinkTask);
+    }
+
+
+    /**
+     * 获取某个实例的历史执行数据
+     *
+     * @return
+     */
+    @ApiOperation(value = "获取某个实例的历史执行数据")
+    @GetMapping(value = "/task/list")
+    public R showTasks(@ApiParam(value = "实例Id", required = true)
+                       @RequestParam(value = "procInstId") String procInstId) {
+        ArrayList<AdminTaskVO> list = formInstService.listTaskInfo(procInstId);
+        return R.data(list);
     }
 
 
