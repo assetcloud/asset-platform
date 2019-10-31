@@ -1,15 +1,16 @@
 package com.asset.utils;
 
+import com.asset.entity.AsFormInstDO;
+import com.asset.entity.ProcNodeDO;
 import com.asset.exception.ProcException;
+import com.asset.javabean.ProcExecution;
+import com.asset.javabean.ProcNode;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
-import org.flowable.engine.history.HistoricProcessInstance;
-import org.flowable.engine.impl.RepositoryServiceImpl;
-import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.DeploymentBuilder;
 import org.flowable.engine.repository.ProcessDefinition;
@@ -19,10 +20,9 @@ import org.flowable.task.api.Task;
 import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 与具体业务无关，用来处理Flowable流程
@@ -185,15 +185,30 @@ public class ProcUtils {
 
     /**
      * @param procInstanceID
-     * @return 这个方法是返回当前执行的流程实例中影响域最前端的前面一个节点的信息
+     * @return 这个方法是返回当前执行的流程实例中影响域最前端的前面一个节点的信息，降序排列，即从后往前
      */
-    public static List<HistoricActivityInstance> getHistoricActs(String procInstanceID) {
+    public static List<HistoricActivityInstance> getHistoricActsDesc(String procInstanceID) {
 
         List<HistoricActivityInstance> historicActivityInstanceList = historyService
                 .createHistoricActivityInstanceQuery()
                 .processInstanceId(procInstanceID)
                 .finished()//已经结束的活动节点
                 .orderByHistoricActivityInstanceEndTime().desc().list();
+
+        return historicActivityInstanceList;
+    }
+
+    /**
+     * @param procInstanceID
+     * @return 这个方法是返回当前执行的流程实例中影响域最前端的前面一个节点的信息，升序排列，即从开始节点往后
+     */
+    public static List<HistoricActivityInstance> getHistoricActsAsc(String procInstanceID) {
+
+        List<HistoricActivityInstance> historicActivityInstanceList = historyService
+                .createHistoricActivityInstanceQuery()
+                .processInstanceId(procInstanceID)
+                .finished()//已经结束的活动节点
+                .orderByHistoricActivityInstanceEndTime().asc().list();
 
         return historicActivityInstanceList;
     }
@@ -298,6 +313,18 @@ public class ProcUtils {
             }
         }
     }
+
+
+    public static Collection<FlowElement> getFlowElements(String procModelId)
+    {
+        org.flowable.ui.modeler.domain.Model modelData = modelService.getModel(procModelId);
+        BpmnModel bpmnModel = modelService.getBpmnModel(modelData);
+        Process process = bpmnModel.getProcesses().get(0);
+        Collection<FlowElement> flowElements = process.getFlowElements();
+        return flowElements;
+    }
+
+
 
 
 //    /**

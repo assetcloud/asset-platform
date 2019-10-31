@@ -7,6 +7,7 @@ import com.asset.entity.AsTempletProcNodeDO;
 import com.asset.entity.FormModelDO;
 import com.asset.entity.ProcNodeDO;
 import com.asset.exception.DatabaseException;
+import com.asset.exception.ProcException;
 import com.asset.javabean.UnBindFormModelVO;
 import com.asset.utils.Constants;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -98,8 +99,11 @@ public class ProcNodeService {
         return firstUserTaskId;
     }
 
-    public Integer getNodeType(String procModelId, String nodeId) {
-        return procNodeMapper.getNodeType(procModelId,nodeId);
+    public Integer getNodeType(String procModelId, String nodeId) throws ProcException{
+        Integer nodeType = procNodeMapper.getNodeType(procModelId, nodeId);
+        if(nodeType == null)
+            throw new ProcException("procModelId:"+procModelId + "  nodeId:"+nodeId +"无法找到对应的节点类型！");
+        return nodeType;
     }
 
     public boolean ifJointSign(String procModelId,String nodeId) {

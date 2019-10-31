@@ -1,42 +1,25 @@
 package com.asset.controller.test;
 
 import com.asset.FlowableApplication;
-import com.asset.utils.Constants;
+import com.asset.service.FormInstService;
 import com.asset.utils.ProcUtils;
-import org.checkerframework.checker.units.qual.A;
-import org.flowable.common.engine.impl.history.HistoryLevel;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
-import org.flowable.engine.history.HistoricProcessInstance;
-import org.flowable.engine.impl.test.HistoryTestHelper;
-import org.flowable.engine.runtime.Execution;
-import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.engine.test.Deployment;
-import org.flowable.task.api.Task;
-import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.ui.modeler.serviceapi.ModelService;
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = FlowableApplication.class)
 public class AdminProcInstController {
+    @Autowired
+    FormInstService service;
+
 
     @Autowired
     static ModelService modelService;
@@ -57,8 +40,17 @@ public class AdminProcInstController {
     @Test
     public void test1(){
         String procInstId = "9a807348-f92b-11e9-96df-00155df5d0a2";
-        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActs(procInstId);
+        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstId);
 
+    }
+
+
+    @Test
+    public void test2() throws Exception {
+        String procInstId  = "";
+        String procModelId = "";
+
+        service.getRollbackPosInParallelProc(procInstId,procModelId);
     }
 
 //    @Test

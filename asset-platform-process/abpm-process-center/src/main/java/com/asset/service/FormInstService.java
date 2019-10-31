@@ -9,20 +9,19 @@ import com.asset.exception.*;
 import com.asset.filter.DuplicateFilter;
 import com.asset.filter.SceneFilter;
 import com.asset.filter.UserIdFilter;
+import com.asset.javabean.*;
 import com.asset.javabean.form.ColumnItem;
 import com.asset.javabean.form.FormItem;
 import com.asset.javabean.form.FormSheet;
 import com.asset.dto.*;
-import com.asset.javabean.ActRuVariableBO;
-import com.asset.javabean.FormInstBO;
-import com.asset.javabean.FormInstVO;
-import com.asset.javabean.TaskBO;
 import com.asset.service.impl.ActRuVariableService;
 import com.asset.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.google.common.graph.Graph;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
+import org.flowable.bpmn.model.*;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -423,10 +422,11 @@ public class FormInstService implements IFormInstService {
      *
      * @param dto
      */
-    public String[] approveNode(FormInstRecApprove dto) throws ProcException, FlowableException {
+    public String[] approveNode(FormInstRecApprove dto) throws Exception {
         //找到当前传入的表单实例对应的流程实例的ID，注意和TaskID进行区分！！一次执行中，TaskId会一直变化，但是流程实例ID是不会变的
 //        String procInstID = formInstMapper.getProcInstID(dto.getForm_inst_id());
         String procInstID = dto.getProc_inst_id();
+        String procModelId = formModelService.getProcModelID(dto.getForm_model_id());
 
         //审批节点还可以对表单内容进行修改,这里的代码在updateFormInst方法里面写了
         //当前填写表单数据 对数据库进行更新
@@ -475,9 +475,12 @@ public class FormInstService implements IFormInstService {
                     break;
                 //回滚到上一个经办节点处
                 case Constants.NODE_APPROVE_ROLLBACK:
-                    //先判断当前实例中是否包含并行分支，如果是包含并行分支的，需要找到当前任务节点的位置
+                    //先判断当前实例中是否包含并行分支，如果是包含并行分支的，需要根据当前任务节点的位置，选择正确的回滚点位置
                     if (dto.containParallel()) {
-                        ProcUtils.completeProcInstForRejected(dto.getTask_id());
+                        String lastApplyNode = getRollbackPosInParallelProc(procInstID, procModelId);
+                        //回滚
+                        procInstService.rollback(procInstID, lastApplyNode, executionId);
+//                        ProcUtils.completeProcInstForRejected(dto.getTask_id());
                     }
                     //不包含并行分支，直接进行回滚
                     else {
@@ -487,7 +490,7 @@ public class FormInstService implements IFormInstService {
                             throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
 
                         //回滚之后，需获取当前任务到上一个经办节点之间的那些任务实例formInst，将其状态值修改为“已回滚”(这一步操作应该在回滚发生前)
-                        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActs(procInstID);
+                        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstID);
                         for (int i = 0; i < historicActs.size(); i++) {
                             if (historicActs.get(i).getActivityId().equals(lastApplyNode))
                                 break;
@@ -521,11 +524,167 @@ public class FormInstService implements IFormInstService {
 
                 //高级回滚，可以指定回滚到任意经办节点，暂时不做
                 case Constants.NODE_APPROVE_ROLLBACK_PLUS:
-                    throw  new ProcException("暂时不支持该回滚类型！请检查node："+nodeDO.getNodeId()+" 的属性");
+                    throw new ProcException("暂时不支持该回滚类型！请检查node：" + nodeDO.getNodeId() + " 的属性");
             }
             return strings;
         }
         return generateUrls(procInstID);
+    }
+
+
+    /*
+    在包含并行分支的流程执行序列中找到正确的回滚点位置，方案设计如下：
+    从头开始遍历执行序列，遇到并行网关，如果出度有多个分支，那么代表是开始 发散了，需要构建一条新的executionId;
+            如果出度只有一个出口，那么代表的是结束；
+         遇到普通userTask，出度是一个的，加入之前创建的多条executionId表
+ */
+    public String getRollbackPosInParallelProc(String procInstID, String procModelId) throws Exception {
+        List<HistoricActivityInstance> historicActsAsc = ProcUtils.getHistoricActsAsc(procInstID);
+        ArrayList<FlowElement> flowElements = (ArrayList<FlowElement>) ProcUtils.getFlowElements(procModelId);
+        HashMap<String, ProcExecution> runningExecutions = new HashMap<>();
+        HashMap<String, Boolean> isVisited = new HashMap<>();
+        HashMap<String, String[]> nodeContainsIn = new HashMap<>();
+
+
+        ProcExecution mainExecution = new ProcExecution("main");
+        String startEventExecutionId = historicActsAsc.get(0).getExecutionId();
+        mainExecution.setExecutionId(startEventExecutionId);
+        runningExecutions.put(startEventExecutionId, mainExecution);
+
+        //构建executions
+        selectRollbackNode(historicActsAsc, flowElements, runningExecutions, mainExecution, 0, procModelId, isVisited, nodeContainsIn);
+
+        //对executions
+
+        return "";
+    }
+
+    /**
+     * //构建executions
+     *
+     * @param historicActsAsc
+     * @param modelFlowMents
+     * @param runnningExecutions
+     * @param i
+     * @return
+     */
+    public void selectRollbackNode(List<HistoricActivityInstance> historicActsAsc,
+                                   ArrayList<FlowElement> modelFlowMents,
+                                   HashMap<String, ProcExecution> runnningExecutions,
+                                   ProcExecution curExecution,
+                                   int i,
+                                   String procModelId,
+                                   HashMap<String, Boolean> isVisited,
+                                   HashMap<String, String[]> nodeContainsIn) throws Exception {
+        //先从头遍历，构建多条执行序列
+        for (; i < modelFlowMents.size(); i++) {
+            FlowElement flowElement = modelFlowMents.get(i);
+            String curNodeExecutionId = getExecutionId(flowElement.getId(), historicActsAsc);
+            //这边认为模型与实例是一一对应好的，不存在模型与实例元素不匹配的情况
+            //当前模型中遍历的元素在执行序列中没有记录，可以认为当前元素没有被执行过，所以跳过
+            //如果这个元素已经被访问过了，也不能够继续被访问
+            if (curNodeExecutionId == null || isVisited.get(flowElement.getId())) {
+                continue;
+//                throw new ProcException("流程执行序列出错，实例:"+historicActsAsc.get(0).getProcessInstanceId()+"与对应模型中元素："+flowElement.getId()+" 无法匹配，当前审批任务无法完成回滚！");
+            }
+
+
+            //接着判断当前元素是不是属于当前的执行序列，如果不是，需要找到对应的执行序列，添加进去
+            boolean isMatch = curExecution.match(curNodeExecutionId);
+            //当前遍历的元素不在当前执行序列上，先去执行序列表中找是否有这么一条序列，如果有的话，切换到这条序列上；如果没有，创建新的序列，增加该元素
+            if (!isMatch) {
+                //获取正确的执行序列
+                ProcExecution execution = runnningExecutions.get(curNodeExecutionId);
+//                ProcExecution execution = getExecution(curNodeExecutionId, runnningExecutions);
+                //找不到，说明该执行序列没有添加到执行序列表中，需要新建，元素不是在这个时候加，需要先判断类型
+                if (execution == null) {
+                    ProcExecution newExecution = new ProcExecution(curNodeExecutionId);
+                    newExecution.setExecutionId(curNodeExecutionId);
+                    runnningExecutions.put(curNodeExecutionId, newExecution);
+                    curExecution = newExecution;
+                } else {
+                    curExecution = execution;
+                }
+            }
+
+            //看是否需要新增一条executions
+            if (flowElement instanceof StartEvent) {
+                curExecution.add(new ProcNode(flowElement.getId(), Constants.AS_NODE_START, curNodeExecutionId));
+            } else if (flowElement instanceof UserTask) {
+                Integer nodeTyep = procNodeService.getNodeType(procModelId, flowElement.getId());
+                curExecution.add(new ProcNode(flowElement.getId(), nodeTyep, curNodeExecutionId));
+            } else if (flowElement instanceof ParallelGateway) {
+                ParallelGateway gateway = (ParallelGateway) flowElement;
+                List<SequenceFlow> outgoingFlows = gateway.getOutgoingFlows();
+                List<SequenceFlow> incomingFlows = gateway.getIncomingFlows();
+                //出度为1，那么就是join，即end
+                if (outgoingFlows.size() == 1)
+                    curExecution.add(new ProcNode(flowElement.getId(), Constants.AS_NODE_PARALLEL_end, curNodeExecutionId));
+                else {
+                    curExecution.add(new ProcNode(flowElement.getId(), Constants.AS_NODE_PARALLEL_start, curNodeExecutionId));
+
+                    //所有的出度，每一个出度建立一个execution,然后把原有的代替掉
+                    for (int n = 0; n < outgoingFlows.size(); n++) {
+                        SequenceFlow curSequence = outgoingFlows.get(n);
+                        UserTask userTask = (UserTask) curSequence.getTargetFlowElement();
+                        String matchExecutionId = getExecutionId(userTask.getId(), historicActsAsc);
+
+                        if (runnningExecutions.get(matchExecutionId) == null) {
+                            ProcExecution newExecution = new ProcExecution();
+                            BeanUtils.copyProperties(newExecution, curExecution);
+                            newExecution.setExecutionId(matchExecutionId);
+                            runnningExecutions.put(matchExecutionId, newExecution);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public ArrayList<String> getLastNode(FlowElement flowElement) {
+        ArrayList<String> lastNodes = new ArrayList<>();
+        if (flowElement instanceof UserTask) {
+            List<SequenceFlow> incomingFlows = ((UserTask) flowElement).getIncomingFlows();
+            for (SequenceFlow sequenceFlow : incomingFlows) {
+                lastNodes.add(sequenceFlow.getSourceRef());
+            }
+
+        } else if (flowElement instanceof ParallelGateway) {
+
+        }
+    }
+
+    private ProcExecution getExecution(String executionId, ArrayList<ProcExecution> executions) {
+        ProcExecution procExecution = null;
+
+        for (ProcExecution execution : executions) {
+            if (execution.getExecutionId().equals(executionId)) {
+
+                if (procExecution == null) {
+                    procExecution = execution;
+                } else {
+                    if (execution.getProcNodes().size() > procExecution.getProcNodes().size())
+                        procExecution = execution;
+                }
+            }
+        }
+        return procExecution;
+    }
+
+    /**
+     * 根据nodeId获取对应的执行序列中的executionId
+     *
+     * @param nodeId
+     * @param historicActsAsc
+     * @return
+     */
+    private String getExecutionId(String nodeId, List<HistoricActivityInstance> historicActsAsc) {
+        for (HistoricActivityInstance hi : historicActsAsc) {
+            if (hi.getActivityId().equals(nodeId))
+                return hi.getExecutionId();
+        }
+
+        return null;
     }
 
 
@@ -946,7 +1105,7 @@ public class FormInstService implements IFormInstService {
      * @return
      */
     public String getLastApplyNodeActId(String procInstId) {
-        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActs(procInstId);
+        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstId);
         String procModelId = procInstService.getProcModelId(procInstId);
         for (HistoricActivityInstance instance : historicActs) {
             String actId = instance.getActivityId();
