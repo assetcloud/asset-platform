@@ -173,14 +173,10 @@ public class FormInstController {
         String[] urls;
         try {
             urls = formInstService.approveNode(rec);
-        } catch (ProcException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
-        } catch (FlowableException e) {
-            e.printStackTrace();
-            return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
         }
-
         return R.data(urls);
     }
 
