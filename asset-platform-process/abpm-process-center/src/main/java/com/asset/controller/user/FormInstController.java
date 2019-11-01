@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.*;
 import com.asset.exception.DatabaseException;
 import com.asset.exception.ProcException;
+import com.asset.javabean.AdminAppInfoVO;
 import com.asset.javabean.AdminTaskVO;
 import com.asset.javabean.FormInstVO;
 import com.asset.dto.*;
@@ -98,55 +99,48 @@ public class FormInstController {
      * *
      * * @param userID
      *
-     * @param taskType
      * @return
      */
     @ApiOperation(value = "获取分配到的任务信息", notes = "", httpMethod = "GET")
     @RequestMapping(value = "/form_inst/show", method = RequestMethod.GET)
-    public R listFormInst(
-            @ApiParam(value = "当前用户Id", required = true)
-            @RequestParam(value = "user_id") String userID,
-            @ApiParam(value = "当前要查看的任务节点类型,0——待办任务,1——待阅任务,2——全部任务", required = true, allowableValues = "0,1,2")
-            @RequestParam(value = "task_type") Integer taskType,
-            @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
-            @RequestParam(value = "scene_id") String sceneId,
-            @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
-            @RequestParam(value = "section_id") String sectionId,
-            @ApiParam(value = "当前用户在当前工作场景下所属的部门中的所有用户Id，用于在任务节点指定当前部门时的筛选", required = true)
-            @RequestParam(value = "curSectionUsers") String curSectionUsers,
-            @ApiParam(value = "筛选出的任务节点数目")
-            @RequestParam(value = "num", defaultValue = "-1") Integer num) {
-        List<FormInstVO> formInstVOs = null;
+    public R listFormInst(@RequestBody FormInstListDTO dto, Query query) {
+//        Query query = new Query();
+//        query.setPage(dto.getPage());
+//        query.setSize(dto.getSize())
+        PageInfo<FormInstVO> formInstVOs = null;
         try {
-            formInstVOs = formInstService.listFormInst(userID, taskType, sceneId, sectionId, curSectionUsers, num);
+            formInstVOs = new PageInfo<>(formInstService.listFormInst(dto));
         } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
         }
+
+        formInstVOs.setPageNum(query.getPage());
+        formInstVOs.setPageSize(query.getSize());
+        formInstVOs.setStartRow(0);
+        formInstVOs.setSize(query.getSize());
+        formInstVOs.setEndRow(query.getSize()-1);
+
+
+        int max = (query.getPage()-1)*query.getSize()+query.getSize();
+        if(max>formInstVOs.getList().size())
+            max = formInstVOs.getList().size();
+        formInstVOs.setList(formInstVOs.getList().subList((query.getPage()-1)*query.getSize(),max));
+
         return R.data(formInstVOs);
     }
 
     /**
      * 返回当前用户有多少的待办任务，待阅任务
      *
-     * @param userID
      * @return
      */
     @ApiOperation(value = "获取分配到的任务数目", notes = "在首页展示当前当前用户分配到的任务数目", httpMethod = "GET")
     @GetMapping(value = "/form_inst/all/count")
-    public R<List<TaskCount>> formInstsCount(
-            @ApiParam(value = "当前用户Id", required = true)
-            @RequestParam(value = "user_id") String userID,
-            @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
-            @RequestParam(value = "scene_id") String sceneId,
-            @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
-            @RequestParam(value = "section_id") String sectionId,
-            @ApiParam(value = "当前用户在当前工作场景下所属的部门中的所有用户Id，用于在任务节点指定当前部门时的筛选", required = true)
-            @RequestParam(value = "curSectionUsers") String curSectionUsers
-    ) {
+    public R<List<TaskCount>> formInstsCount(@RequestBody FormInstCountDTO dto) {
         List<TaskCount> taskCounts = null;
         try {
-            taskCounts = formInstService.getFormInstsCounts(userID, sceneId, sectionId, curSectionUsers);
+            taskCounts = formInstService.getFormInstsCounts(dto);
         } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
