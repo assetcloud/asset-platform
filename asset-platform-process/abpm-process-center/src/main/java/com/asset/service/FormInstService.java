@@ -9,17 +9,15 @@ import com.asset.exception.*;
 import com.asset.filter.DuplicateFilter;
 import com.asset.filter.SceneFilter;
 import com.asset.filter.UserIdFilter;
+import com.asset.javabean.*;
 import com.asset.javabean.form.ColumnItem;
 import com.asset.javabean.form.FormItem;
 import com.asset.javabean.form.FormSheet;
 import com.asset.dto.*;
-import com.asset.javabean.ActRuVariableBO;
-import com.asset.javabean.FormInstBO;
-import com.asset.javabean.FormInstVO;
-import com.asset.javabean.TaskBO;
 import com.asset.service.impl.ActRuVariableService;
 import com.asset.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.PageInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.flowable.common.engine.api.FlowableException;
@@ -234,36 +232,53 @@ public class FormInstService implements IFormInstService {
 
    }
 
+
+
+    @Override
+    public ArrayList<AdminTaskVO> listTaskInfo(String procInstId) {
+       QueryWrapper<AsFormInstDO> queryWrapper = new QueryWrapper();
+       queryWrapper.lambda().eq(AsFormInstDO::getProcInstId,procInstId);
+
+        List<AsFormInstDO> formInstDOs = asFormInstMapper.selectList(queryWrapper);
+        ArrayList<AdminTaskVO> VOs = new ArrayList<>();
+        for (int i = 0; i < formInstDOs.size(); i++) {
+            AdminTaskVO vo = new AdminTaskVO();
+            BeanUtils.copyProperties(formInstDOs.get(i), vo);
+
+            //手动赋值
+            vo.setFormInstId(formInstDOs.get(i).getId());
+            if (formInstDOs.get(i).getExecuteTime() != null)
+                vo.setExecutorTime(formInstDOs.get(i).getExecuteTime().getTime());
+            vo.setInstName(formModelService.getFormName(formInstDOs.get(i).getFormModelId()));
+
+            VOs.add(vo);
+        }
+        return VOs;
+    }
+
     /**
      * 业务入口
      * 用户登录系统之后，根据传进来的任务类型不同，前台显示待办（包含审批、经办）/待阅/全部的表单信息
      *
-     * @param userID
-     * @param taskType
-     * @param curSelectSceneId 当前用户选择的工作场景Id
-     * @param sectionId
      * @return
      * @throws InfoException
      * @throws ProcException
      * @throws FormException
      */
-    public List<FormInstVO> listFormInst(String userID,
-                                         Integer taskType,
-                                         String curSelectSceneId,
-                                         String sectionId) throws InfoException, ProcException, FormException {
+    public List<FormInstVO> listFormInst(FormInstListDTO dto) throws InfoException, ProcException, FormException {
         /*nfq1010:首先是获取流转用户的taskID  （是通过用户的ID来获取流转到该用户的task    这里是获取了多个 说明一个用户可能有多个task）？？？
         * */
         //1、先获取流转到该用户对应的FlowableTaskDO
-        List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
+        List<FlowableTaskDO> tasks = flowableService.listCurTasks(dto.getUserId());
         if (tasks.size() == 0)
-            throw new SizeNullException("表单实例为空");
+            return new ArrayList<>();
 
         List<TaskBO> taskBOs = constructTaskBO(tasks);
 
         //2、对上面集合进行遍历，从as_proc_node中取出ActType进行比对，确定节点类型，与输入的taskType比对，看是不是要显示的节点
-        taskBOs = dressTaskByType(taskBOs, taskType);
+        taskBOs = dressTaskByType(taskBOs, dto.getTaskType());
         if (taskBOs.size() == 0)
-            throw new SizeNullException("表单实例为空");
+            return new ArrayList<>();
 
         //3、获取真正的表单实例表
         ArrayList<FormInstDO> formInstDOs = (ArrayList<FormInstDO>) getFormInsts(taskBOs);
@@ -276,8 +291,8 @@ public class FormInstService implements IFormInstService {
             ProcNodeDO nodeDO = procNodeService.getNodeDO(procModelId, nodeId);
 
             FormInstBO boo = new FormInstBO.Builder()
-                    .curUserId(userID)
-                    .curTaskType(taskType)
+                    .curUserId(dto.getUserId())
+                    .curTaskType(dto.getTaskType())
                     .procModelId(procModelId)
                     .nodeId(nodeId)
                     .ifJointSign(nodeDO.getIfJointSign())
@@ -305,11 +320,11 @@ public class FormInstService implements IFormInstService {
         DuplicateFilter duplicateFilter = new DuplicateFilter();
         SceneFilter sceneFilter = new SceneFilter();
         //对不属于当前用户的表单任务进行筛选
-        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs, sectionId);
+        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs, dto.getSectionId(),dto.getCurSectionUsers());
         //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
         ArrayList<FormInstBO> filtrate2 = duplicateFilter.filtrate(filtrate1);
         //过滤工作场景
-        ArrayList<FormInstBO> filtrate3 = sceneFilter.filtrate(filtrate2, curSelectSceneId);
+        ArrayList<FormInstBO> filtrate3 = sceneFilter.filtrate(filtrate2, dto.getSceneId());
 
 
         ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
@@ -353,6 +368,11 @@ public class FormInstService implements IFormInstService {
 //            FormInstVO voo = filtrate3.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
             formInstVOs.add(voo);
         }
+
+        //当前端没有传相应的num数据的时候，num值为空，当获取一个用户所有收集到的所有任务时，传进来的num参数是-1
+        int num = dto.getNum();
+        if(dto.getNum()!=-1)
+            formInstVOs.subList(0,--num);
 
         return formInstVOs;
     }
@@ -589,28 +609,27 @@ public class FormInstService implements IFormInstService {
      * 入口方法
      * 统计各个类型的表单实例数目分别是多少
      *
-     * @param userID
      * @return
      */
-    public List<TaskCount> getFormInstsCounts(String userID, String sceneId, String sectionId) throws Exception {
-//        TaskCount toDoCount = getCount(userID,
-//                Constants.TASK_TO_DO,
-//                sceneId,
-//                sectionId);
-//        TaskCount toReadCount = getCount(userID,
-//                Constants.TASK_TOBE_READ,
-//                sceneId,
-//                sectionId);
+    public List<TaskCount> getFormInstsCounts(FormInstCountDTO dto) throws Exception {
         TaskCount toDoCount;    //nfq:这个是统计待办的
         TaskCount toReadCount;   //nfq:这个是统计待阅的
+
+        FormInstListDTO dto2 = new FormInstListDTO();
+        BeanUtils.copyProperties(dto2,dto);
+        dto2.setNum(-1);
+        dto2.setTaskType(Constants.TASK_TO_DO);
+
         try {
-            toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(userID, Constants.TASK_TO_DO, sceneId, sectionId).size());
+            toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(dto2).size());
         } catch (SizeNullException e) {
             toDoCount = new TaskCount(Constants.TASK_TO_DO, 0);
         }
 
+        dto2.setTaskType(Constants.TASK_TOBE_READ);
+
         try {
-            toReadCount = new TaskCount(Constants.TASK_TOBE_READ, listFormInst(userID, Constants.TASK_TOBE_READ, sceneId, sectionId).size());
+            toReadCount = new TaskCount(Constants.TASK_TOBE_READ, listFormInst(dto2).size());
         } catch (SizeNullException e) {
             toReadCount = new TaskCount(Constants.TASK_TOBE_READ, 0);
         }

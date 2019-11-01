@@ -4,19 +4,32 @@ import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.*;
 import com.asset.exception.DatabaseException;
 import com.asset.exception.ProcException;
+import com.asset.javabean.AdminAppInfoVO;
+import com.asset.javabean.AdminTaskVO;
 import com.asset.javabean.FormInstVO;
 import com.asset.dto.*;
 import com.asset.service.*;
+import com.asset.utils.Condition;
+import com.asset.utils.Func;
+import com.asset.utils.Query;
 import com.asset.utils.R;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
+import org.apache.ibatis.annotations.Param;
 import org.dom4j.DocumentException;
 import org.flowable.common.engine.api.FlowableException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 表单实例的创建、修改，表单项值在流程引擎中的使用
@@ -70,65 +83,64 @@ public class FormInstController {
         } catch (FlowableException e) {
             e.printStackTrace();
             return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
-        } catch (DatabaseException e)
-        {
+        } catch (DatabaseException e) {
             e.printStackTrace();
-            return R.fail(e.getMessage() );
-        }catch (InterruptedException e)
-        {
+            return R.fail(e.getMessage());
+        } catch (InterruptedException e) {
             e.printStackTrace();
-            return R.fail(e.getMessage() );
+            return R.fail(e.getMessage());
         }
         return R.data(urls);
     }
 
     /**
      * 用户登录系统之后，根据传进来的任务类型不同，前台显示待办（包含审批、经办）/待阅/全部的表单信息
-     *      * 这里的全部节点信息还包含了历史的处理信息，这里先不考虑
-     *      *
-     *      * @param userID
-     * @param taskType
+     * * 这里的全部节点信息还包含了历史的处理信息，这里先不考虑
+     * *
+     * * @param userID
+     *
      * @return
      */
     @ApiOperation(value = "获取分配到的任务信息", notes = "", httpMethod = "GET")
     @RequestMapping(value = "/form_inst/show", method = RequestMethod.GET)
-    public R listFormInst(
-            @ApiParam(value = "当前用户Id", required = true)
-            @RequestParam(value = "user_id") String userID,
-            @ApiParam(value = "当前要查看的任务节点类型,0——待办任务,1——待阅任务,2——全部任务", required = true, allowableValues = "0,1,2")
-            @RequestParam(value = "task_type") Integer taskType,
-            @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
-            @RequestParam(value = "scene_id") String sceneId,
-            @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
-            @RequestParam(value = "section_id") String sectionId) {
-        List<FormInstVO> formInstVOs = null;
+    public R listFormInst(@RequestBody FormInstListDTO dto, Query query) {
+//        Query query = new Query();
+//        query.setPage(dto.getPage());
+//        query.setSize(dto.getSize())
+        PageInfo<FormInstVO> formInstVOs = null;
         try {
-            formInstVOs = formInstService.listFormInst(userID, taskType, sceneId, sectionId);
+            formInstVOs = new PageInfo<>(formInstService.listFormInst(dto));
         } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
         }
-        return R.data( formInstVOs);
+
+        formInstVOs.setPageNum(query.getPage());
+        formInstVOs.setPageSize(query.getSize());
+        formInstVOs.setStartRow(0);
+        formInstVOs.setSize(query.getSize());
+        formInstVOs.setEndRow(query.getSize()-1);
+
+
+        int max = (query.getPage()-1)*query.getSize()+query.getSize();
+        if(max>formInstVOs.getList().size())
+            max = formInstVOs.getList().size();
+        formInstVOs.setList(formInstVOs.getList().subList((query.getPage()-1)*query.getSize(),max));
+
+        return R.data(formInstVOs);
     }
 
     /**
      * 返回当前用户有多少的待办任务，待阅任务
      *
-     * @param userID
      * @return
      */
     @ApiOperation(value = "获取分配到的任务数目", notes = "在首页展示当前当前用户分配到的任务数目", httpMethod = "GET")
     @GetMapping(value = "/form_inst/all/count")
-    public R<List<TaskCount>> formInstsCount(
-            @ApiParam(value = "当前用户Id", required = true)
-            @RequestParam(value = "user_id") String userID,
-            @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
-            @RequestParam(value = "scene_id") String sceneId,
-            @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
-            @RequestParam(value = "section_id") String sectionId) {
+    public R<List<TaskCount>> formInstsCount(@RequestBody FormInstCountDTO dto) {
         List<TaskCount> taskCounts = null;
         try {
-            taskCounts = formInstService.getFormInstsCounts(userID, sceneId, sectionId);
+            taskCounts = formInstService.getFormInstsCounts(dto);
         } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
@@ -137,26 +149,27 @@ public class FormInstController {
     }
 
     /*  nfq:2019/10/11
-    *    返回当前用户的发起申请数目
-    * */
-     @ApiOperation(value="统计用户发起表单",notes="在首页展示当前用户的发起申请",httpMethod = "GET")
-     @GetMapping(value= "/form_inst/commit_proc_inst/count")
-     public R <List<TaskCount>> commitFormCount(
-             @ApiParam(value = "当前用户Id", required = true)
-             @RequestParam(value = "user_id") String userID,
-             @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
-             @RequestParam(value = "scene_id") String sceneId,
-             @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
-             @RequestParam(value = "section_id") String sectionId){
-         List<TaskCount> taskCounts1 = null;
-         try {
-             taskCounts1 = formInstService.getcommitFormCounts(userID, sceneId, sectionId);
-         } catch (Exception e) {
-             e.printStackTrace();
-             return R.fail(e.getMessage());
-         }
-         return R.data(taskCounts1);
-     }
+     *    返回当前用户的发起申请数目
+     * */
+    @ApiOperation(value = "统计用户发起表单", notes = "在首页展示当前用户的发起申请", httpMethod = "GET")
+    @GetMapping(value = "/form_inst/commit_proc_inst/count")
+    public R<List<TaskCount>> commitFormCount(
+            @ApiParam(value = "当前用户Id", required = true)
+            @RequestParam(value = "user_id") String userID,
+            @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
+            @RequestParam(value = "scene_id") String sceneId,
+            @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
+            @RequestParam(value = "section_id") String sectionId) {
+        List<TaskCount> taskCounts1 = null;
+        try {
+            taskCounts1 = formInstService.getcommitFormCounts(userID, sceneId, sectionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.fail(e.getMessage());
+        }
+        return R.data(taskCounts1);
+    }
+
     /**
      * 用户登录系统，对审批节点进行处理，点击 同意 或 拒绝
      * 同时还可以对表单内容进行填写
@@ -245,6 +258,20 @@ public class FormInstController {
             return R.fail(e.getMessage());
         }
         return R.data(shareLinkTask);
+    }
+
+
+    /**
+     * 获取某个实例的历史执行数据
+     *
+     * @return
+     */
+    @ApiOperation(value = "获取某个实例的历史执行数据")
+    @GetMapping(value = "/task/list")
+    public R showTasks(@ApiParam(value = "实例Id", required = true)
+                       @RequestParam(value = "procInstId") String procInstId) {
+        ArrayList<AdminTaskVO> list = formInstService.listTaskInfo(procInstId);
+        return R.data(list);
     }
 
 

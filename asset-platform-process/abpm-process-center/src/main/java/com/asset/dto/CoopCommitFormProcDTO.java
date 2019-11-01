@@ -39,4 +39,7 @@ public class CoopCommitFormProcDTO {
 
     @ApiModelProperty(value = "用于指示是部门内资产移交还是部门间资产移交,1——部门间移交，0——部门内移交")
     int condition;
+
+    //接收部门Id字段
+    String receiving_section_id;
 }

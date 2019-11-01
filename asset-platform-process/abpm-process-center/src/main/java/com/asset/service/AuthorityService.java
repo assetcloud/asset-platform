@@ -134,7 +134,10 @@ public class AuthorityService {
                     curNode,
                     items.get(i).getKey());
             if(curAuthority==null)
-                throw new ProcException("当前流程模型："+procModelId+" 表单项权限信息丢失！");
+            {
+                curAuthority =  Constants.AUTHORITY_ENABLE;
+                System.out.println("当前流程模型："+procModelId+" 表单项："+items.get(i).getKey()+"的权限信息丢失！");
+            }
             //添加权限信息
             handleItemAuthority(items.get(i),curAuthority);
         }

@@ -3,6 +3,7 @@ package com.asset.filter;
 import com.asset.exception.FormException;
 import com.asset.javabean.FormInstBO;
 import com.asset.utils.Constants;
+import com.asset.utils.Func;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public class UserIdFilter{
 
-    public ArrayList<FormInstBO> filtrate(List<FormInstBO> formInstBOList,String sectionId) {
+    public ArrayList<FormInstBO> filtrate(List<FormInstBO> formInstBOList,String sectionId,String curSectionUsers) {
         type1:
         for (int m = 0; m < formInstBOList.size(); m++) {
             FormInstBO formInstBO = formInstBOList.get(m);
@@ -40,10 +41,18 @@ public class UserIdFilter{
             if (candidateGroup != null)
                 for (int i = 0; i < candidateGroup.length; i++) {
                     //如果候选组是“当前部门”，需要动态去获取当前遍历到的流程的申请人是谁，然后去组织架构模块获取当前申请人所处的部门Id
+                    //这个CUR_SECTION指的是发起人所在的部门
                     if(candidateGroup[i].equals(Constants.CANDIDATE_GROUP_CUR_SECTION))
                     {
-                        if(committerSectionId.equals(sectionId))
+                        List<String> curSectionUserss = Func.toStrList(curSectionUsers);
+                        //当前登录用户属于该部门（该部门人员列表中包含当前用户的Id）
+                        //当前任务的发起人不能和当前登录用户
+                        // 当前登录用户不能是发起人，同时当前登录用户的部门包含发起人（即两者同属一个部门）
+                        if(curSectionUserss.contains(formInstBO.getCommitter()) && !formInstBO.getCommitter().equals(formInstBO.getCurUserId()))
                             continue type1;
+
+//                        if(committerSectionId.equals(sectionId))
+//                            continue type1;
                     }
                     else {
                         if (candidateGroup[i].equals(sectionId))

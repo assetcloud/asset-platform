@@ -117,7 +117,7 @@ public class AsTempletServiceImpl extends ServiceImpl<AsTempletMapper, AsTemplet
     public void createTemplet(String userId,
                               String formModelId,
                               String templetName,
-                              String iconCls) throws RuntimeException{
+                              String iconCls) throws Exception {
         //1、存表单模型资源
         //从as_form_model表中读取
         FormModelDO formModelDO = formModelService.selectFormModelDO(formModelId);

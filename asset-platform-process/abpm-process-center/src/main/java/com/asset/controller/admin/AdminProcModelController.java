@@ -8,6 +8,7 @@ import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.asset.utils.R;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -54,9 +55,11 @@ public class AdminProcModelController {
     })
     @GetMapping("/proc_model/list")
     public R<PageInfo<AdminProcModelVO>> listProcModel(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
+        Page page = PageHelper.startPage(query.getPage(), query.getSize());
         QueryWrapper<ActDeModelDO> queryWrapper = Condition.getQueryWrapper(role, ActDeModelDO.class);
-        PageHelper.startPage(query.getPage(),query.getSize());
+//        PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminProcModelVO> list = new PageInfo<>(actDeModelService.listAdminProcModelInfo(queryWrapper));
+        list.setTotal(page.getTotal());
         return R.data(list);
     }
 }

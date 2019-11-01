@@ -1768,7 +1768,6 @@ CREATE TABLE `ACT_RU_VARIABLE`  (
   INDEX `ACT_FK_VAR_PROCINST`(`PROC_INST_ID_`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_bin ROW_FORMAT = Dynamic;
 
-
 -- ----------------------------
 -- Table structure for as_application
 -- ----------------------------
@@ -1833,10 +1832,14 @@ CREATE TABLE `as_form_model`  (
   `model_sheet` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `group_id` int(11) NOT NULL COMMENT '该表单所属分组（负值代表不属于任一分组）',
   `icon_cls` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '表单显示的vue图标',
-  `status` int(64) NULL DEFAULT NULL COMMENT '表单当前状态（0未绑定流程；1已绑定流程可被发起；2已被删除）',
   `proc_model_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '绑定的流程模型ID',
   `scene_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '当前表单流程模型所属的工作场景',
   `app_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '表单模型在哪个应用下，暂时先放着，不用',
+  `is_binded` int(1) UNSIGNED ZEROFILL NULL DEFAULT NULL COMMENT '表单模型是否绑定流程模型，0否，1是',
+  `is_bind_authority` int(1) NULL DEFAULT NULL COMMENT '表单项权限数据是否添加，0否，1是',
+  `is_add_node_info` int(1) NULL DEFAULT NULL COMMENT '是否正确增加节点信息，0否，1是',
+  `is_add_seq_condition` int(1) NULL DEFAULT NULL COMMENT '是否增加seqCondition，0否，1是',
+  `is_deleted` int(1) NULL DEFAULT 0 COMMENT '是否被删除，0否，1是',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `app_idFK`(`app_id`) USING BTREE,
   CONSTRAINT `as_form_model_ibfk_1` FOREIGN KEY (`app_id`) REFERENCES `as_application` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -1896,7 +1899,8 @@ CREATE TABLE `as_proc_node`  (
   `overtime_strategy` int(64) NULL DEFAULT NULL COMMENT '节点如果超时之后的处理方式：\r\n0：交由系统管理员处理\r\n1：自动到下一节点\r\n',
   `sign_strategy` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '这是设置节点多人审批的策略，用json格式存储实现复杂规则',
   `todo_strategy` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '这是设置节点多人处理经办节点的策略，用json格式存储实现复杂规则',
-  `if_joint_sign` int(64) NULL DEFAULT NULL COMMENT '判断是否是多人会签节点\r\n0：不是会签\r\n1：是会签，串行\r\n2：是会签，并行\r\n\r\n'
+  `if_joint_sign` int(64) NULL DEFAULT NULL COMMENT '判断是否是多人会签节点\r\n0：不是会签\r\n1：是会签，串行\r\n2：是会签，并行\r\n\r\n',
+  `approve_type` int(64) NULL DEFAULT NULL COMMENT '在当前节点是审批节点的情况下，该属性表示在这个审批节点上点击“不同意”执行的策略：\r\n0表示——当前实例被结束（默认情况）\r\n1表示——回滚到上一个经办节点\r\n2表示——由审批人选择回滚到任意一个经办节点\r\n'
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
@@ -1989,6 +1993,5 @@ CREATE TABLE `as_templet_proc_node`  (
   `if_joint_sign` int(64) NULL DEFAULT NULL COMMENT '判断是否是多人会签节点\r\n0：不是会签\r\n1：是会签，串行\r\n2：是会签，并行\r\n\r\n',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
 
 SET FOREIGN_KEY_CHECKS = 1;

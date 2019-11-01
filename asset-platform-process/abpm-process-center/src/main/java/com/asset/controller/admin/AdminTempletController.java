@@ -8,6 +8,7 @@ import com.asset.utils.Condition;
 import com.asset.utils.Query;
 import com.asset.utils.R;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -38,9 +39,11 @@ public class AdminTempletController {
     @GetMapping(value = "/list")
     public R showTempletInfo(@ApiIgnore @RequestParam Map<String, Object> role, Query query)
     {
+        Page page = PageHelper.startPage(query.getPage(), query.getSize());
         QueryWrapper<AsTempletDO> queryWrapper = Condition.getQueryWrapper(role, AsTempletDO.class);
-        PageHelper.startPage(query.getPage(),query.getSize());
+//        PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminTempletVO> list = new PageInfo<>(templetService.selectAdminList(queryWrapper));
+        list.setTotal(page.getTotal());
         return R.data(list);
     }
 

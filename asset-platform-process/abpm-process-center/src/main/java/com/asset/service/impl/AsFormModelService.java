@@ -69,7 +69,8 @@ public class AsFormModelService extends ServiceImpl<AsFormModelMapper, AsFormMod
         QueryWrapper<AsFormModelDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .eq(AsFormModelDO::getGroupId, groupId)
-                .eq(AsFormModelDO::getAppId, appId);
+                .eq(AsFormModelDO::getAppId, appId)
+                .eq(AsFormModelDO::getIsDeleted, 0);
         List<AsFormModelDO> formModelDOs = null;
         switch (formStatus) {
             //取所有表单模型
