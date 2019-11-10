@@ -18,7 +18,6 @@ import com.asset.service.impl.ActRuVariableService;
 import com.asset.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.google.common.graph.Graph;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.flowable.bpmn.model.*;
@@ -462,23 +461,26 @@ public class FormInstService implements IFormInstService {
         } else if (dto.getApprove_result() == Constants.APPROVE_DISAGREE) {
             String[] strings = null;
 
+            //注意，每个审批节点在流程模型设计阶段都会设置一个驳回属性：approveType，即当点击“不同意”按钮之后实例发生的变化
+            //但是，现在流程模型设计阶段并没有对approve_type这个属性进行操作（还没做，后续需要你做）
             ProcNodeDO nodeDO = procNodeService.getNodeDO(formModelService.getProcModelID(dto.getForm_model_id()), flowableService.getNodeId(dto.getTask_id()));
             Integer approveType = nodeDO.getApprove_type();
-            //默认的驳回操作是 结束整个流程
+            //一个审批节点默认的驳回属性是：结束整个流程，即CANCEL
             if (approveType == null)
                 approveType = Constants.NODE_APPROVE_CANCEL;
 
             switch (approveType) {
-                //直接结束整个流程
+                //当前审批节点的驳回属性设置为：直接结束整个流程
                 case Constants.NODE_APPROVE_CANCEL:
                     ProcUtils.completeProcInstForRejected(dto.getTask_id());
                     break;
-                //回滚到上一个经办节点处
+                //当前审批节点的驳回属性设置为：回滚到上一个经办节点处
                 case Constants.NODE_APPROVE_ROLLBACK:
                     //先判断当前实例中是否包含并行分支，如果是包含并行分支的，需要根据当前任务节点的位置，选择正确的回滚点位置
                     if (dto.containParallel()) {
+                        //这里的方法没有写完，需要你继续补充
                         String lastApplyNode = getRollbackPosInParallelProc(procInstID, procModelId);
-                        //回滚
+                        //利用flowable的函数方法完成回滚操作
                         procInstService.rollback(procInstID, lastApplyNode, executionId);
 //                        ProcUtils.completeProcInstForRejected(dto.getTask_id());
                     }
@@ -522,7 +524,7 @@ public class FormInstService implements IFormInstService {
 
                     break;
 
-                //高级回滚，可以指定回滚到任意经办节点，暂时不做
+                //当前审批节点的驳回属性设置为：高级回滚，可以指定回滚到任意经办节点，这个功能暂时不做
                 case Constants.NODE_APPROVE_ROLLBACK_PLUS:
                     throw new ProcException("暂时不支持该回滚类型！请检查node：" + nodeDO.getNodeId() + " 的属性");
             }
@@ -551,10 +553,10 @@ public class FormInstService implements IFormInstService {
         mainExecution.setExecutionId(startEventExecutionId);
         runningExecutions.put(startEventExecutionId, mainExecution);
 
-        //构建executions
-        selectRollbackNode(historicActsAsc, flowElements, runningExecutions, mainExecution, 0, procModelId, isVisited, nodeContainsIn);
+        //构建执行序列
+        constructExecutions(historicActsAsc, flowElements, runningExecutions, mainExecution, 0, procModelId, isVisited, nodeContainsIn);
 
-        //对executions
+        //对执行序列进行遍历，找到两个序列经过的相同的距离审批节点最近的经办节点，就是我们要找的回滚点
 
         return "";
     }
@@ -568,14 +570,14 @@ public class FormInstService implements IFormInstService {
      * @param i
      * @return
      */
-    public void selectRollbackNode(List<HistoricActivityInstance> historicActsAsc,
-                                   ArrayList<FlowElement> modelFlowMents,
-                                   HashMap<String, ProcExecution> runnningExecutions,
-                                   ProcExecution curExecution,
-                                   int i,
-                                   String procModelId,
-                                   HashMap<String, Boolean> isVisited,
-                                   HashMap<String, String[]> nodeContainsIn) throws Exception {
+    public void constructExecutions(List<HistoricActivityInstance> historicActsAsc,
+                                    ArrayList<FlowElement> modelFlowMents,
+                                    HashMap<String, ProcExecution> runnningExecutions,
+                                    ProcExecution curExecution,
+                                    int i,
+                                    String procModelId,
+                                    HashMap<String, Boolean> isVisited,
+                                    HashMap<String, String[]> nodeContainsIn) throws Exception {
         //先从头遍历，构建多条执行序列
         for (; i < modelFlowMents.size(); i++) {
             FlowElement flowElement = modelFlowMents.get(i);
@@ -589,33 +591,33 @@ public class FormInstService implements IFormInstService {
             }
 
 
-            //接着判断当前元素是不是属于当前的执行序列，如果不是，需要找到对应的执行序列，添加进去
-            boolean isMatch = curExecution.match(curNodeExecutionId);
-            //当前遍历的元素不在当前执行序列上，先去执行序列表中找是否有这么一条序列，如果有的话，切换到这条序列上；如果没有，创建新的序列，增加该元素
-            if (!isMatch) {
-                //获取正确的执行序列
-                ProcExecution execution = runnningExecutions.get(curNodeExecutionId);
+                    //接着判断当前元素是不是属于当前的执行序列，如果不是，需要找到对应的执行序列，添加进去
+                    boolean isMatch = curExecution.match(curNodeExecutionId);
+                    //当前遍历的元素不在当前执行序列上，先去执行序列表中找是否有这么一条序列，如果有的话，切换到这条序列上；如果没有，创建新的序列，增加该元素
+                    if (!isMatch) {
+                        //获取正确的执行序列
+                        ProcExecution execution = runnningExecutions.get(curNodeExecutionId);
 //                ProcExecution execution = getExecution(curNodeExecutionId, runnningExecutions);
-                //找不到，说明该执行序列没有添加到执行序列表中，需要新建，元素不是在这个时候加，需要先判断类型
-                if (execution == null) {
-                    ProcExecution newExecution = new ProcExecution(curNodeExecutionId);
-                    newExecution.setExecutionId(curNodeExecutionId);
-                    runnningExecutions.put(curNodeExecutionId, newExecution);
-                    curExecution = newExecution;
+                        //找不到，说明该执行序列没有添加到执行序列表中，需要新建，元素不是在这个时候加，需要先判断类型
+                        if (execution == null) {
+                            ProcExecution newExecution = new ProcExecution(curNodeExecutionId);
+                            newExecution.setExecutionId(curNodeExecutionId);
+                            runnningExecutions.put(curNodeExecutionId, newExecution);
+                            curExecution = newExecution;
                 } else {
                     curExecution = execution;
                 }
             }
 
             //看是否需要新增一条executions
-            if (flowElement instanceof StartEvent) {
-                curExecution.add(new ProcNode(flowElement.getId(), Constants.AS_NODE_START, curNodeExecutionId));
-            } else if (flowElement instanceof UserTask) {
-                Integer nodeTyep = procNodeService.getNodeType(procModelId, flowElement.getId());
-                curExecution.add(new ProcNode(flowElement.getId(), nodeTyep, curNodeExecutionId));
-            } else if (flowElement instanceof ParallelGateway) {
-                ParallelGateway gateway = (ParallelGateway) flowElement;
-                List<SequenceFlow> outgoingFlows = gateway.getOutgoingFlows();
+                if (flowElement instanceof StartEvent) {
+                    curExecution.add(new ProcNode(flowElement.getId(), Constants.AS_NODE_START, curNodeExecutionId));
+                } else if (flowElement instanceof UserTask) {
+                    Integer nodeTyep = procNodeService.getNodeType(procModelId, flowElement.getId());
+                    curExecution.add(new ProcNode(flowElement.getId(), nodeTyep, curNodeExecutionId));
+                } else if (flowElement instanceof ParallelGateway) {
+                    ParallelGateway gateway = (ParallelGateway) flowElement;
+                    List<SequenceFlow> outgoingFlows = gateway.getOutgoingFlows();
                 List<SequenceFlow> incomingFlows = gateway.getIncomingFlows();
                 //出度为1，那么就是join，即end
                 if (outgoingFlows.size() == 1)

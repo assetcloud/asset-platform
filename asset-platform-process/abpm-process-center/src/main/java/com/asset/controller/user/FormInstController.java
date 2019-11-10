@@ -164,7 +164,7 @@ public class FormInstController {
      * 1、点“同意” 即代表当前任务节点会向后流转，同时当前填写的表单实例需要加上这个处理意见，给下一个节点过目
      * 2、点“拒绝” 那么就是流程需要回滚到申请节点那个位置（这边的处理逻辑变成 当前节点直接不可用）
      */
-    @ApiOperation(value = "处理待审阅任务", notes = "对待审阅任务进行处理", httpMethod = "POST")
+    @ApiOperation(value = "处理待审批任务", notes = "对待审阅任务进行处理", httpMethod = "POST")
     @RequestMapping(value = "/form_inst/approval_node", method = RequestMethod.POST)
     public R<String[]> approveNode(
             @ApiParam(value = "对当前待审阅任务进行处理的实体类", required = true)
