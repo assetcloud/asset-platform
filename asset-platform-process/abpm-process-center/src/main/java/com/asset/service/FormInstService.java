@@ -1,6 +1,7 @@
 package com.asset.service;
 
-import com.alibaba.fastjson.JSON;
+import
+        com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.converter.FormConverter;
 import com.asset.dao.*;
@@ -480,9 +481,40 @@ public class FormInstService implements IFormInstService {
                     if (dto.containParallel()) {
                         //这里的方法没有写完，需要你继续补充
                         String lastApplyNode = getRollbackPosInParallelProc(procInstID, procModelId);
+
+                        if (lastApplyNode.equals(""))
+                            throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
+
+                        //回滚之后，需获取当前任务到上一个经办节点之间的那些任务实例formInst，将其状态值修改为“已回滚”(这一步操作应该在回滚发生前)
+                        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstID);
+                        for (int i = 0; i < historicActs.size(); i++) {
+                            if (historicActs.get(i).getActivityId().equals(lastApplyNode))
+                                break;
+
+                            AsFormInstDO updateDO = new AsFormInstDO.Builder()
+                                    .status(Constants.FORM_INST_ROLLED)
+                                    .build();
+
+                            UpdateWrapper<AsFormInstDO> updateWrapper = new UpdateWrapper<>();
+                            updateWrapper.lambda()
+                                    .eq(AsFormInstDO::getTaskId, historicActs.get(i).getTaskId());
+
+                            int update = asFormInstMapper.update(updateDO, updateWrapper);
+                            if (update == Constants.DATABASE_FAILED)
+                                throw new DatabaseException("更新任务状态值失败！");
+                        }
+
                         //利用flowable的函数方法完成回滚操作
                         procInstService.rollback(procInstID, lastApplyNode, executionId);
 //                        ProcUtils.completeProcInstForRejected(dto.getTask_id());
+                        // 回滚后，该实例下会生成新的任务节点信息（在act_hi_actinst表中可以找到，相同inst_id且END_time为空的条目）
+                        // 新的任务节点信息将其封装在as_form_inst表中，这里先不用saveRollbackTask()，saveUnCompleteTask()应该就可以满足要求了
+//                        saveRollbackTask(procInstID, dto.getForm_model_id());
+                        procInstService.saveUnCompleteTask(
+                                procInstID,
+                                dto.getForm_model_id());
+                        String[] taskIDs = ProcUtils.getTaskIDs(procInstID);
+                        strings = taskIDs;
                     }
                     //不包含并行分支，直接进行回滚
                     else {
@@ -541,6 +573,8 @@ public class FormInstService implements IFormInstService {
          遇到普通userTask，出度是一个的，加入之前创建的多条executionId表
  */
     public String getRollbackPosInParallelProc(String procInstID, String procModelId) throws Exception {
+        List<HistoricActivityInstance> historicActsDesc = ProcUtils.getHistoricActsDesc(procInstID);
+        int i,count=0;
         List<HistoricActivityInstance> historicActsAsc = ProcUtils.getHistoricActsAsc(procInstID);
         ArrayList<FlowElement> flowElements = (ArrayList<FlowElement>) ProcUtils.getFlowElements(procModelId);
         HashMap<String, ProcExecution> runningExecutions = new HashMap<>();
@@ -556,7 +590,33 @@ public class FormInstService implements IFormInstService {
         //构建执行序列
         constructExecutions(historicActsAsc, flowElements, runningExecutions, mainExecution, 0, procModelId, isVisited, nodeContainsIn);
 
-        //对执行序列进行遍历，找到两个序列经过的相同的距离审批节点最近的经办节点，就是我们要找的回滚点
+        //##对执行序列进行遍历，找到两个序列经过的相同的距离审批节点最近的经办节点，就是我们要找的回滚点
+        //获取当前节点执行流的ExecutionID
+        String curExecutionID = historicActsDesc.get(0).getExecutionId();
+        //获取当前执行流
+        ProcExecution curExecution=runningExecutions.get(curExecutionID);
+        //获取当中节点
+        ArrayList<ProcNode> curProcnodes=curExecution.getProcNodes();
+        //从后往前遍历寻找回滚节点
+        for(i=curProcnodes.size()-2;i>=0;i--)
+        {
+            //检查节点的类型
+            ProcNode procNode=curProcnodes.get(i);
+            if(procNode.getType()==Constants.AS_NODE_APPLY && count<=0)
+            {
+                //count用来记录经过的并行网关出口，来辅助寻找回滚节点，若找到配对的并行网关入口则减1，count<=0时代表是合适的回滚位置
+               return procNode.getId();
+
+            }
+            else if (procNode.getType()==Constants.AS_NODE_PARALLEL_end)
+            {
+                count++;
+            }
+            else if (procNode.getType()==Constants.AS_NODE_PARALLEL_start)
+            {
+                count--;
+            }
+        }
 
         return "";
     }
@@ -594,7 +654,7 @@ public class FormInstService implements IFormInstService {
                     //接着判断当前元素是不是属于当前的执行序列，如果不是，需要找到对应的执行序列，添加进去
                     boolean isMatch = curExecution.match(curNodeExecutionId);
                     //当前遍历的元素不在当前执行序列上，先去执行序列表中找是否有这么一条序列，如果有的话，切换到这条序列上；如果没有，创建新的序列，增加该元素
-                    if (!isMatch) {
+                    if (!isMatch)    {
                         //获取正确的执行序列
                         ProcExecution execution = runnningExecutions.get(curNodeExecutionId);
 //                ProcExecution execution = getExecution(curNodeExecutionId, runnningExecutions);
@@ -604,10 +664,10 @@ public class FormInstService implements IFormInstService {
                             newExecution.setExecutionId(curNodeExecutionId);
                             runnningExecutions.put(curNodeExecutionId, newExecution);
                             curExecution = newExecution;
-                } else {
-                    curExecution = execution;
-                }
-            }
+                         } else {
+                            curExecution = execution;
+                         }
+                     }
 
             //看是否需要新增一条executions
                 if (flowElement instanceof StartEvent) {
@@ -643,18 +703,18 @@ public class FormInstService implements IFormInstService {
         }
     }
 
-    public ArrayList<String> getLastNode(FlowElement flowElement) {
-        ArrayList<String> lastNodes = new ArrayList<>();
-        if (flowElement instanceof UserTask) {
-            List<SequenceFlow> incomingFlows = ((UserTask) flowElement).getIncomingFlows();
-            for (SequenceFlow sequenceFlow : incomingFlows) {
-                lastNodes.add(sequenceFlow.getSourceRef());
-            }
-
-        } else if (flowElement instanceof ParallelGateway) {
-
-        }
-    }
+//    public ArrayList<String> getLastNode(FlowElement flowElement) {
+//        ArrayList<String> lastNodes = new ArrayList<>();
+//        if (flowElement instanceof UserTask) {
+//            List<SequenceFlow> incomingFlows = ((UserTask) flowElement).getIncomingFlows();
+//            for (SequenceFlow sequenceFlow : incomingFlows) {
+//                lastNodes.add(sequenceFlow.getSourceRef());
+//            }
+//
+//        } else if (flowElement instanceof ParallelGateway) {
+//
+//        }
+//    }
 
     private ProcExecution getExecution(String executionId, ArrayList<ProcExecution> executions) {
         ProcExecution procExecution = null;
