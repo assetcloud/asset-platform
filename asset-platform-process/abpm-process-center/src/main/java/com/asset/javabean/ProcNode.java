@@ -3,7 +3,7 @@ package com.asset.javabean;
 import lombok.Data;
 
 /**
- * 用来表示流程中的一个节点（包含了网关、开始、结束事件）
+ * 用来表示流程中的一个节点（包含了网关、开始、结束事件 类型）
  */
 @Data
 public class ProcNode {

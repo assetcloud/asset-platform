@@ -19,12 +19,15 @@ import com.asset.service.impl.ActRuVariableService;
 import com.asset.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.apache.commons.lang3.StringUtils;
+import org.checkerframework.checker.units.qual.A;
 import org.dom4j.DocumentException;
 import org.flowable.bpmn.model.*;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
+import org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -477,82 +480,51 @@ public class FormInstService implements IFormInstService {
                     break;
                 //当前审批节点的驳回属性设置为：回滚到上一个经办节点处
                 case Constants.NODE_APPROVE_ROLLBACK:
+                    String lastApplyNode = "";
+
                     //先判断当前实例中是否包含并行分支，如果是包含并行分支的，需要根据当前任务节点的位置，选择正确的回滚点位置
                     if (dto.containParallel()) {
-                        //这里的方法没有写完，需要你继续补充
-                        String lastApplyNode = getRollbackPosInParallelProc(procInstID, procModelId);
-
-                        if (lastApplyNode.equals(""))
-                            throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
-
-                        //回滚之后，需获取当前任务到上一个经办节点之间的那些任务实例formInst，将其状态值修改为“已回滚”(这一步操作应该在回滚发生前)
-                        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstID);
-                        for (int i = 0; i < historicActs.size(); i++) {
-                            if (historicActs.get(i).getActivityId().equals(lastApplyNode))
-                                break;
-
-                            AsFormInstDO updateDO = new AsFormInstDO.Builder()
-                                    .status(Constants.FORM_INST_ROLLED)
-                                    .build();
-
-                            UpdateWrapper<AsFormInstDO> updateWrapper = new UpdateWrapper<>();
-                            updateWrapper.lambda()
-                                    .eq(AsFormInstDO::getTaskId, historicActs.get(i).getTaskId());
-
-                            int update = asFormInstMapper.update(updateDO, updateWrapper);
-                            if (update == Constants.DATABASE_FAILED)
-                                throw new DatabaseException("更新任务状态值失败！");
-                        }
-
-                        //利用flowable的函数方法完成回滚操作
-                        procInstService.rollback(procInstID, lastApplyNode, executionId);
-//                        ProcUtils.completeProcInstForRejected(dto.getTask_id());
-                        // 回滚后，该实例下会生成新的任务节点信息（在act_hi_actinst表中可以找到，相同inst_id且END_time为空的条目）
-                        // 新的任务节点信息将其封装在as_form_inst表中，这里先不用saveRollbackTask()，saveUnCompleteTask()应该就可以满足要求了
-//                        saveRollbackTask(procInstID, dto.getForm_model_id());
-                        procInstService.saveUnCompleteTask(
-                                procInstID,
-                                dto.getForm_model_id());
-                        String[] taskIDs = ProcUtils.getTaskIDs(procInstID);
-                        strings = taskIDs;
+                        //完成所有的回滚操作
+                        lastApplyNode = getRollbackPosInParallelProc(procInstID, procModelId);
                     }
                     //不包含并行分支，直接进行回滚
                     else {
                         //获取上一个经办节点
-                        String lastApplyNode = getLastApplyNodeActId(getProcInstId(dto.getTask_id()));
+                        lastApplyNode = getLastApplyNodeActId(getProcInstId(dto.getTask_id()));
                         if (lastApplyNode.equals(""))
                             throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
-
-                        //回滚之后，需获取当前任务到上一个经办节点之间的那些任务实例formInst，将其状态值修改为“已回滚”(这一步操作应该在回滚发生前)
-                        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstID);
-                        for (int i = 0; i < historicActs.size(); i++) {
-                            if (historicActs.get(i).getActivityId().equals(lastApplyNode))
-                                break;
-
-                            AsFormInstDO updateDO = new AsFormInstDO.Builder()
-                                    .status(Constants.FORM_INST_ROLLED)
-                                    .build();
-
-                            UpdateWrapper<AsFormInstDO> updateWrapper = new UpdateWrapper<>();
-                            updateWrapper.lambda()
-                                    .eq(AsFormInstDO::getTaskId, historicActs.get(i).getTaskId());
-
-                            int update = asFormInstMapper.update(updateDO, updateWrapper);
-                            if (update == Constants.DATABASE_FAILED)
-                                throw new DatabaseException("更新任务状态值失败！");
-                        }
-
                         //回滚
                         procInstService.rollback(procInstID, lastApplyNode, executionId);
-                        // 回滚后，该实例下会生成新的任务节点信息（在act_hi_actinst表中可以找到，相同inst_id且END_time为空的条目）
-                        // 新的任务节点信息将其封装在as_form_inst表中，这里先不用saveRollbackTask()，saveUnCompleteTask()应该就可以满足要求了
-//                        saveRollbackTask(procInstID, dto.getForm_model_id());
-                        procInstService.saveUnCompleteTask(
-                                procInstID,
-                                dto.getForm_model_id());
-                        String[] taskIDs = ProcUtils.getTaskIDs(procInstID);
-                        strings = taskIDs;
                     }
+
+                    //回滚之后，需获取当前任务到上一个经办节点之间的那些任务实例formInst，将其状态值修改为“已回滚”
+                    List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstID);
+                    for (int i = 0; i < historicActs.size(); i++) {
+                        if (historicActs.get(i).getActivityId().equals(lastApplyNode))
+                            break;
+
+                        AsFormInstDO updateDO = new AsFormInstDO.Builder()
+                                .status(Constants.FORM_INST_ROLLED)
+                                .build();
+
+                        UpdateWrapper<AsFormInstDO> updateWrapper = new UpdateWrapper<>();
+                        updateWrapper.lambda()
+                                .eq(AsFormInstDO::getTaskId, historicActs.get(i).getTaskId());
+
+                        int update = asFormInstMapper.update(updateDO, updateWrapper);
+                        if (update == Constants.DATABASE_FAILED)
+                            throw new DatabaseException("更新任务状态值失败！");
+                    }
+
+
+                    // 回滚后，该实例下会生成新的任务节点信息（在act_hi_actinst表中可以找到，相同inst_id且END_time为空的条目）
+                    // 新的任务节点信息将其封装在as_form_inst表中，这里先不用saveRollbackTask()，saveUnCompleteTask()应该就可以满足要求了
+//                        saveRollbackTask(procInstID, dto.getForm_model_id());
+                    procInstService.saveUnCompleteTask(
+                            procInstID,
+                            dto.getForm_model_id());
+                    String[] taskIDs = ProcUtils.getTaskIDs(procInstID);
+                    strings = taskIDs;
 
                     break;
 
@@ -571,64 +543,241 @@ public class FormInstService implements IFormInstService {
     从头开始遍历执行序列，遇到并行网关，如果出度有多个分支，那么代表是开始 发散了，需要构建一条新的executionId;
             如果出度只有一个出口，那么代表的是结束；
          遇到普通userTask，出度是一个的，加入之前创建的多条executionId表
- */
+         */
     public String getRollbackPosInParallelProc(String procInstID, String procModelId) throws Exception {
-        List<HistoricActivityInstance> historicActsDesc = ProcUtils.getHistoricActsDesc(procInstID);
-        int i,count=0;
-        List<HistoricActivityInstance> historicActsAsc = ProcUtils.getHistoricActsAsc(procInstID);
+        //获取model
         ArrayList<FlowElement> flowElements = (ArrayList<FlowElement>) ProcUtils.getFlowElements(procModelId);
-        HashMap<String, ProcExecution> runningExecutions = new HashMap<>();
-        HashMap<String, Boolean> isVisited = new HashMap<>();
-        HashMap<String, String[]> nodeContainsIn = new HashMap<>();
+        //遍历model,标记并行网关
+        HashMap<String, AsParallelNode> parallelNodes = signParallel(flowElements);
 
+        //获取从头开始的执行序列
+        List<HistoricActivityInstance> historicActsAsc = ProcUtils.getHistoricActsAsc(procInstID);
+        AsExecution firstExecution = new AsExecution("first");
+        int historicIndex = 0;
+        HashMap<String, AsExecution> allExes = new HashMap<>();
+        allExes.put(firstExecution.getExeId(), firstExecution);
+        String curTaskId = ProcUtils.getTaskIDs(procInstID)[0];
+        newConstructExecutions(firstExecution, historicActsAsc, historicIndex, parallelNodes, allExes, curTaskId);
 
-        ProcExecution mainExecution = new ProcExecution("main");
-        String startEventExecutionId = historicActsAsc.get(0).getExecutionId();
-        mainExecution.setExecutionId(startEventExecutionId);
-        runningExecutions.put(startEventExecutionId, mainExecution);
+        //接着遍历得到的allExes，注意这里先遍历包含curTaskId的exe(containExes变量),找到离当前审批节点最近的统一的经办节点，然后回滚到这个经办节点，
+        // 接着看剩余的exe（不包含curTaskId的exe，noneExes变量）,是否包含这个回滚点，如果包含，那么也回滚
+        ArrayList<AsExecution> containExes = new ArrayList<>();
+        ArrayList<AsExecution> noneExes = new ArrayList<>();
 
-        //构建执行序列
-        constructExecutions(historicActsAsc, flowElements, runningExecutions, mainExecution, 0, procModelId, isVisited, nodeContainsIn);
-
-        //##对执行序列进行遍历，找到两个序列经过的相同的距离审批节点最近的经办节点，就是我们要找的回滚点
-        //获取当前节点执行流的ExecutionID
-        String curExecutionID = historicActsDesc.get(0).getExecutionId();
-        //获取当前执行流
-        ProcExecution curExecution=runningExecutions.get(curExecutionID);
-        //获取当中节点
-        ArrayList<ProcNode> curProcnodes=curExecution.getProcNodes();
-        //从后往前遍历寻找回滚节点
-        for(i=curProcnodes.size()-2;i>=0;i--)
+        for(String key:allExes.keySet())
         {
-            //检查节点的类型
-            ProcNode procNode=curProcnodes.get(i);
-            if(procNode.getType()==Constants.AS_NODE_APPLY && count<=0)
-            {
-                //count用来记录经过的并行网关出口，来辅助寻找回滚节点，若找到配对的并行网关入口则减1，count<=0时代表是合适的回滚位置
-               return procNode.getId();
+            AsExecution curExe = allExes.get(key);
 
-            }
-            else if (procNode.getType()==Constants.AS_NODE_PARALLEL_end)
+            //原来是从startevent开始排序的，需要逆序排列
+            Collections.reverse(curExe.getExecutions());
+
+            if(curExe.containTask(curTaskId))
             {
-                count++;
+                containExes.add(curExe);
             }
-            else if (procNode.getType()==Constants.AS_NODE_PARALLEL_start)
-            {
-                count--;
+            else {
+                noneExes.add(curExe);
             }
         }
 
-        return "";
+        AsExecution curExecution = containExes.get(0);
+        AsTask curApproveTask = null;
+        //这里的i表示现在找第几个i
+        loop1:
+        for(int i=1;i<curExecution.getExecutions().size()+1;i++)
+        {
+            curApproveTask = getApproveTask(procModelId, i, curExecution.getExecutions());
+            //在剩余的执行序列中找当前找到的经办节点
+            for(int f=1;f<containExes.size();f++)
+            {
+                //如果有执行流不包含，那么说明当前找到的经办节点不会，i值++，找下一个经办节点
+                if(!containExes.get(f).containTask(curApproveTask.getTaskId()))
+                    continue loop1;
+            }
+            //如果能到这一步，说明这个当前找到的经办节点在当前执行流中全都包含，所以
+            break loop1;
+        }
+
+        //接着，要回滚了，containExes全部回滚到这个回滚点，noneExes看有没有这个回滚点，如果包含的话，也要回滚
+        for(int i = 0;i<containExes.size();i++)
+        {
+            ProcUtils.rollback(ProcUtils.getExecutionId(curApproveTask.getTaskId()),curApproveTask.getActId(),procInstID);
+        }
+
+        for (int i = 0;i<noneExes.size();i++)
+        {
+            if(noneExes.get(i).containTask(curApproveTask.getTaskId()))
+                ProcUtils.rollback(noneExes.get(i).getExecutions().get(0).getExecutionId(),curApproveTask.getActId(),procInstID);
+        }
+
+        return curApproveTask.getActId();
+
+
+
+
+//        //获取当前执行序列，从后往前
+//        List<HistoricActivityInstance> historicActsDesc = ProcUtils.getHistoricActsDesc(procInstID);
+//        int i, count = 0;
+//        HashMap<String, ProcExecution> runningExecutions = new HashMap<>();
+//        HashMap<String, Boolean> isVisited = new HashMap<>();
+//        HashMap<String, String[]> nodeContainsIn = new HashMap<>();
+//
+//
+//        ProcExecution mainExecution = new ProcExecution("main");
+//        String startEventExecutionId = historicActsAsc.get(0).getExecutionId();
+//        mainExecution.setExecutionId(startEventExecutionId);
+//        runningExecutions.put(startEventExecutionId, mainExecution);
+//
+//
+//        //构建执行序列
+//        constructExecutions(historicActsAsc, flowElements, runningExecutions, mainExecution, 0, procModelId, isVisited, nodeContainsIn);
+//
+//        //##对执行序列进行遍历，找到两个序列经过的相同的距离审批节点最近的经办节点，就是我们要找的回滚点
+//        //获取当前节点执行流的ExecutionID
+//        String curExecutionID = historicActsDesc.get(0).getExecutionId();
+//        //获取当前执行流
+//        ProcExecution curExecution = runningExecutions.get(curExecutionID);
+//        //获取当中节点
+//        ArrayList<ProcNode> curProcnodes = curExecution.getProcNodes();
+        //从后往前遍历寻找回滚节点
+//        for (i = curProcnodes.size() - 2; i >= 0; i--) {
+//            //检查节点的类型
+//            ProcNode procNode = curProcnodes.get(i);
+//            if (procNode.getType() == Constants.AS_NODE_APPLY && count <= 0) {
+//                //count用来记录经过的并行网关出口，来辅助寻找回滚节点，若找到配对的并行网关入口则减1，count<=0时代表是合适的回滚位置
+//                return procNode.getId();
+//
+//            } else if (procNode.getType() == Constants.AS_NODE_PARALLEL_end) {
+//                count++;
+//            } else if (procNode.getType() == Constants.AS_NODE_PARALLEL_start) {
+//                count--;
+//            }
+//        }
+
     }
 
     /**
-     * //构建executions
+     * 获取第index个经办节点
+     * @param index
+     * @return
+     */
+    public AsTask getApproveTask(String procModelId, int index,ArrayList<AsTask> executions){
+        int i = 1;
+
+        //遍历executions，找到第index个经办任务，i用来计数
+        for(int f= 0;f<executions.size();f++)
+        {
+            if(procNodeService.getNodeType(procModelId,executions.get(f).getActId())==Constants.AS_NODE_APPLY)
+            {
+                if(i==index)
+                    return executions.get(f);
+                else
+                    i++;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param publicExecution  这个是当前方法的一个公共执行链，如果需要创建新的分支，需要从这个公共执行链复制内容,注意这里的String内容是taskId
+     * @param historicActsAsc  一个不变的执行序列
+     * @param curHistoricIndex 当前递归层次遍历到执行序列的哪一个元素了
+     * @param parallelNodes    之前遍历model时得到的关于并行网关的信息
+     * @param allExes          构造出的所有执行流列表
+     */
+    private void newConstructExecutions(AsExecution publicExecution,
+                                        List<HistoricActivityInstance> historicActsAsc,
+                                        int curHistoricIndex,
+                                        HashMap<String, AsParallelNode> parallelNodes,
+                                        HashMap<String, AsExecution> allExes,
+                                        String curRunningTaskId) {
+        for (; curHistoricIndex < historicActsAsc.size(); curHistoricIndex++) {
+            HistoricActivityInstance curNode = historicActsAsc.get(curHistoricIndex);
+            AsTask curTask = new AsTask(curNode.getTaskId(), curNode.getExecutionId(), curNode.getActivityId());
+            if (curNode.getActivityType().equals("parallelGateway")) {
+                AsParallelNode asParallelNode = parallelNodes.get(curNode.getActivityId());
+                //判断是不是开始节点
+                if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_start) {
+                    //有几个出度，就要新创建几个exe，注意第一个创建的exe会把原来的publicExe在allExes中的位置顶替掉
+                    int outNums = asParallelNode.getOutNums();
+
+                    for (int i = 0; i < outNums; i++) {
+                        AsExecution newExe = new AsExecution(publicExecution);
+                        newExe.add(curTask);
+                        //第一个创建的exe会把原来的publicExe在allExes中的位置顶替掉
+                        if (i == 0) {
+                            allExes.put(newExe.getExeId(), newExe);
+                        }
+                        //curHistoricIndex是基本类型int，所以是值传递，不用担心在下一层递归函数中被修改
+                        newConstructExecutions(newExe, historicActsAsc, curHistoricIndex, parallelNodes, allExes, curRunningTaskId);
+                    }
+                } else if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_end) {
+                    publicExecution.add(curTask);
+                }
+            }
+            //遇到当前节点，return
+            else if (curNode.getTaskId().equals(curRunningTaskId)) {
+                publicExecution.add(curTask);
+                return;
+            }
+            //遇到非并行网关节点，直接添加
+            else {
+                publicExecution.add(curTask);
+            }
+        }
+    }
+
+    /**
+     * 标记并行网关
      *
+     * @param flowElements
+     */
+    private HashMap<String, AsParallelNode> signParallel(ArrayList<FlowElement> flowElements) {
+        //记录当前模型中出现的并行网关，然后对其中的并行网关进行标记
+        HashMap<String, AsParallelNode> parallelNodes = new HashMap<>();
+        Stack<String> stack = new Stack<>();
+
+        int i = 0;
+        //先从头遍历，构建多条执行序列
+        for (; i < flowElements.size(); i++) {
+            FlowElement flowElement = flowElements.get(i);
+            if (flowElement instanceof ParallelGateway) {
+                ParallelGateway gateway = (ParallelGateway) flowElement;
+                List<SequenceFlow> outgoingFlows = gateway.getOutgoingFlows();
+                List<SequenceFlow> incomingFlows = gateway.getIncomingFlows();
+
+                //出度为1，那么是end
+                if (outgoingFlows.size() == 1) {
+                    String curPeerStartId = stack.pop();
+                    parallelNodes.put(gateway.getId(), new AsParallelNode.Builder()
+                            .id(gateway.getId())
+                            .type(Constants.AS_NODE_PARALLEL_end)
+                            .peerNodeId(curPeerStartId)
+                            .outNums(1)
+                            .build());
+                    AsParallelNode curPeerStartNode = parallelNodes.get(curPeerStartId);
+                    curPeerStartNode.setPeerNodeId(gateway.getId());
+                } else {
+                    stack.push(gateway.getId());
+                    parallelNodes.put(gateway.getId(), new AsParallelNode(gateway.getId(), Constants.AS_NODE_PARALLEL_start, outgoingFlows.size()));
+                }
+            }
+        }
+
+        return parallelNodes;
+    }
+
+    /**
      * @param historicActsAsc
      * @param modelFlowMents
      * @param runnningExecutions
+     * @param curExecution
      * @param i
-     * @return
+     * @param procModelId
+     * @param isVisited
+     * @param nodeContainsIn
+     * @throws Exception
      */
     public void constructExecutions(List<HistoricActivityInstance> historicActsAsc,
                                     ArrayList<FlowElement> modelFlowMents,
@@ -651,33 +800,33 @@ public class FormInstService implements IFormInstService {
             }
 
 
-                    //接着判断当前元素是不是属于当前的执行序列，如果不是，需要找到对应的执行序列，添加进去
-                    boolean isMatch = curExecution.match(curNodeExecutionId);
-                    //当前遍历的元素不在当前执行序列上，先去执行序列表中找是否有这么一条序列，如果有的话，切换到这条序列上；如果没有，创建新的序列，增加该元素
-                    if (!isMatch)    {
-                        //获取正确的执行序列
-                        ProcExecution execution = runnningExecutions.get(curNodeExecutionId);
+            //接着判断当前元素是不是属于当前的执行序列，如果不是，需要找到对应的执行序列，添加进去
+            boolean isMatch = curExecution.match(curNodeExecutionId);
+            //当前遍历的元素不在当前执行序列上，先去执行序列表中找是否有这么一条序列，如果有的话，切换到这条序列上；如果没有，创建新的序列，增加该元素
+            if (!isMatch) {
+                //获取正确的执行序列
+                ProcExecution execution = runnningExecutions.get(curNodeExecutionId);
 //                ProcExecution execution = getExecution(curNodeExecutionId, runnningExecutions);
-                        //找不到，说明该执行序列没有添加到执行序列表中，需要新建，元素不是在这个时候加，需要先判断类型
-                        if (execution == null) {
-                            ProcExecution newExecution = new ProcExecution(curNodeExecutionId);
-                            newExecution.setExecutionId(curNodeExecutionId);
-                            runnningExecutions.put(curNodeExecutionId, newExecution);
-                            curExecution = newExecution;
-                         } else {
-                            curExecution = execution;
-                         }
-                     }
+                //找不到，说明该执行序列没有添加到执行序列表中，需要新建，元素不是在这个时候加，需要先判断类型
+                if (execution == null) {
+                    ProcExecution newExecution = new ProcExecution(curNodeExecutionId);
+                    newExecution.setExecutionId(curNodeExecutionId);
+                    runnningExecutions.put(curNodeExecutionId, newExecution);
+                    curExecution = newExecution;
+                } else {
+                    curExecution = execution;
+                }
+            }
 
             //看是否需要新增一条executions
-                if (flowElement instanceof StartEvent) {
-                    curExecution.add(new ProcNode(flowElement.getId(), Constants.AS_NODE_START, curNodeExecutionId));
-                } else if (flowElement instanceof UserTask) {
-                    Integer nodeTyep = procNodeService.getNodeType(procModelId, flowElement.getId());
-                    curExecution.add(new ProcNode(flowElement.getId(), nodeTyep, curNodeExecutionId));
-                } else if (flowElement instanceof ParallelGateway) {
-                    ParallelGateway gateway = (ParallelGateway) flowElement;
-                    List<SequenceFlow> outgoingFlows = gateway.getOutgoingFlows();
+            if (flowElement instanceof StartEvent) {
+                curExecution.add(new ProcNode(flowElement.getId(), Constants.AS_NODE_START, curNodeExecutionId));
+            } else if (flowElement instanceof UserTask) {
+                Integer nodeTyep = procNodeService.getNodeType(procModelId, flowElement.getId());
+                curExecution.add(new ProcNode(flowElement.getId(), nodeTyep, curNodeExecutionId));
+            } else if (flowElement instanceof ParallelGateway) {
+                ParallelGateway gateway = (ParallelGateway) flowElement;
+                List<SequenceFlow> outgoingFlows = gateway.getOutgoingFlows();
                 List<SequenceFlow> incomingFlows = gateway.getIncomingFlows();
                 //出度为1，那么就是join，即end
                 if (outgoingFlows.size() == 1)

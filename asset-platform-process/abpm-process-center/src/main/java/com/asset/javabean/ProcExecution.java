@@ -9,7 +9,7 @@ import java.util.ArrayList;
  */
 @Data
 public class ProcExecution {
-    ArrayList<ProcNode> procNodes;
+    ArrayList<ProcNode> procNodes;   //这条执行流里面的这些节点
     String executionId; //是当前分支下真实的执行序列ID,与当前执行序列第一个元素的executionId相同
     String name;  //是用来区分多条执行序列的
 
