@@ -1,6 +1,6 @@
 package com.asset.service.impl;
 
-import com.asset.dao.ProcTaskMapper;
+import com.asset.mapper.ProcTaskMapper;
 import com.asset.entity.ProcTaskInfo;
 import com.asset.service.IProcTaskService;
 import com.asset.utils.PageGrids;

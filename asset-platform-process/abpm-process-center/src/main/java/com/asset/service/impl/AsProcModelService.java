@@ -1,9 +1,8 @@
 package com.asset.service.impl;
 
 import com.asset.dto.SeqConditionDTO;
-import com.asset.entity.ApplicationDO;
 import com.asset.entity.AsProcModelDO;
-import com.asset.dao.AsProcModelMapper;
+import com.asset.mapper.AsProcModelMapper;
 import com.asset.entity.AsTempletDeModelDO;
 import com.asset.exception.DatabaseException;
 import com.asset.service.FormModelService;

@@ -1,7 +1,7 @@
 package com.asset.controller.user;
 
-import com.asset.dao.AsProcModelMapper;
-import com.asset.dao.FormAuthorityMapper;
+import com.asset.mapper.AsProcModelMapper;
+import com.asset.mapper.FormAuthorityMapper;
 import com.asset.dto.SeqConditionDTO;
 import com.asset.entity.FormAuthorityDO;
 import com.asset.entity.AsProcModelDO;

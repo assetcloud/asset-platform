@@ -3,7 +3,7 @@ package com.asset.service.impl;
 import com.asset.entity.AsApplicationDO;
 import com.asset.javabean.AdminAppInfoVO;
 import com.asset.javabean.AdminFormModelVO;
-import com.asset.dao.AsApplicationMapper;
+import com.asset.mapper.AsApplicationMapper;
 import com.asset.service.AdminFormModelService;
 import com.asset.service.ApplicationService;
 import com.asset.service.IAsApplicationService;

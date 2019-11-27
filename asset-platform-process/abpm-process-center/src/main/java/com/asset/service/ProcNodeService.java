@@ -1,6 +1,6 @@
 package com.asset.service;
 
-import com.asset.dao.ProcNodeMapper;
+import com.asset.mapper.ProcNodeMapper;
 import com.asset.dto.ProcModelDTO;
 import com.asset.dto.ProcNodeDTO;
 import com.asset.entity.AsTempletProcNodeDO;
@@ -16,7 +16,6 @@ import org.flowable.bpmn.model.Process;
 import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

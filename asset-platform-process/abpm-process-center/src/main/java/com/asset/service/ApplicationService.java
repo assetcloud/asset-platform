@@ -1,8 +1,8 @@
 package com.asset.service;
 
 
-import com.asset.dao.ApplicationMapper;
-import com.asset.dao.FormModelMapper;
+import com.asset.mapper.ApplicationMapper;
+import com.asset.mapper.FormModelMapper;
 import com.asset.entity.ApplicationDO;
 import com.asset.entity.AsTempletApplicationDO;
 import com.asset.exception.DatabaseException;
@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;

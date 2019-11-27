@@ -56,8 +56,7 @@ public class ProcNodeDO implements Serializable {
     private Integer ifJointSign;
 
     @TableField(value = "approve_type")
-    private Integer approve_type;
-
+    private Integer approveType;
 
 
     public ProcNodeDO() {
@@ -82,7 +81,7 @@ public class ProcNodeDO implements Serializable {
         this.signStrategy = JSON.toJSONString(nodeDTO.getSign_strategy());
         this.todoStrategy = nodeDTO.getTodo_strategy();
         this.ifJointSign = nodeDTO.getIf_joint_sign();
-        this.approve_type = nodeDTO.getApprove_type();
+        this.approveType = nodeDTO.getApprove_type();
     }
 
     private ProcNodeDO(Builder builder) {
@@ -97,7 +96,7 @@ public class ProcNodeDO implements Serializable {
         setSignStrategy(builder.signStrategy);
         setTodoStrategy(builder.todoStrategy);
         setIfJointSign(builder.ifJointSign);
-        setApprove_type(builder.approve_type);
+        setApproveType(builder.approve_type);
     }
 
 

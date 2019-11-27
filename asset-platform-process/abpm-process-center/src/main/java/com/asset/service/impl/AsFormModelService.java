@@ -1,7 +1,7 @@
 package com.asset.service.impl;
 
 import com.asset.entity.AsFormModelDO;
-import com.asset.dao.AsFormModelMapper;
+import com.asset.mapper.AsFormModelMapper;
 import com.asset.javabean.AdminFormModelVO;
 import com.asset.javabean.FormModelBO;
 import com.asset.service.*;

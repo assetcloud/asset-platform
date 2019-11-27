@@ -96,19 +96,24 @@ public class DuplicateFilter{
 //        if (!instSceneId.equals(formInstBO.getSceneId()))
 //            throw new FormException("当前用户权限或者工作场景权限不够，无法获取当前任务节点信息！");
 
+        //首先需要判断是不是会签节点
         //先去as_form_inst表中看 当前登录用户有没有执行过相同proc_inst_id的任务，有的话，取出这一行的task_id
-        List<String> taskId = duplicateFilter.formInstService.getAlreadyCompleteTask(formInstBO.getCurUserId(),
-                formInstBO.getProcInstId());
+        Boolean is = procNodeService.ifJointSign(formInstBO.getProcModelId(),formInstBO.getNodeId());
+        if(is){
+            List<String> taskId = duplicateFilter.formInstService.getAlreadyCompleteTask(formInstBO.getCurUserId(),
+                    formInstBO.getProcInstId());
 
-        //如果没有找到，说明没有重复执行的情况
-        if( taskId==null || taskId.size() == 0)
-            return formInstBO;
+            //如果没有找到，说明没有重复执行的情况
+            if( taskId==null || taskId.size() == 0)
+                return formInstBO;
 
-        for (int m = 0;m<taskId.size();m++){
-            //如果找到了还需要继续看是不是同一个流程模型中的同一个节点,如果是的话，就说明当前用户已经处理过当前的节点了，不能再执行了
-            String nodeId = duplicateFilter.flowableService.getNodeId(taskId.get(m));
-            if (nodeId.equals(formInstBO.getNodeId()))
-                throw new FormException("当前用户权限或者工作场景权限不够，无法获取当前任务节点信息！");
+            for (int m = 0;m<taskId.size();m++){
+                //如果找到了还需要继续看是不是同一个流程模型中的同一个节点,如果是的话，就说明当前用户已经处理过当前的节点了，不能再执行了
+                //这里会出现一个bug，就是 如果task2回滚到task1，同一个用户重新执行task1，那么就会触发这里的问题
+                String nodeId = duplicateFilter.flowableService.getNodeId(taskId.get(m));
+                if (nodeId.equals(formInstBO.getNodeId()))
+                    throw new FormException("当前用户权限或者工作场景权限不够，无法获取当前任务节点信息！");
+            }
         }
 
         return formInstBO;

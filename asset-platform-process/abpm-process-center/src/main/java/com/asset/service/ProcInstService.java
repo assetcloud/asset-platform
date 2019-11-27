@@ -2,9 +2,9 @@ package com.asset.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.asset.dao.ProcInstMapper;
-import com.asset.dao.FormInstMapper;
-import com.asset.dao.ProcNodeMapper;
+import com.asset.mapper.ProcInstMapper;
+import com.asset.mapper.FormInstMapper;
+import com.asset.mapper.ProcNodeMapper;
 import com.asset.dto.*;
 import com.asset.entity.*;
 import com.asset.exception.DatabaseException;
@@ -95,7 +95,9 @@ public class ProcInstService {
 
         //如果下面还有任务节点要处理，就在as_proc_inst中新建这个表单实例字段（每一个TaskId对应一个新的表单实例）
         for (int i = 0; i < taskIDs.length; i++) {
+            //在as_proc_inst表中找到的新task在as_form_inst表中是否存在
             boolean isNotContain = formInstMapper.getTaskId(taskIDs[i]) == null ? true : false;
+            //获取该新task的node_id
             String curNodeId = flowableService.getNodeId(taskIDs[i]);
 
             //当前要存的taskID不能是已经有的的，否则重复保存了

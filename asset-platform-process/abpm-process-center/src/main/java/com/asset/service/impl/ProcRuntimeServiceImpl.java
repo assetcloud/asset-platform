@@ -1,6 +1,6 @@
 package com.asset.service.impl;
 
-import com.asset.dao.ProcRuntimeMapper;
+import com.asset.mapper.ProcRuntimeMapper;
 import com.asset.entity.ProcInstInfo;
 import com.asset.service.IProcRuntimeService;
 import com.asset.utils.PageGrids;

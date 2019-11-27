@@ -1,9 +1,9 @@
 package com.asset.service;
 
-import com.asset.dao.FormInstMapper;
-import com.asset.dao.ProcInstMapper;
-import com.asset.dao.ProcNodeMapper;
-import com.asset.dao.UserMapper;
+import com.asset.mapper.FormInstMapper;
+import com.asset.mapper.ProcInstMapper;
+import com.asset.mapper.ProcNodeMapper;
+import com.asset.mapper.UserMapper;
 import com.asset.entity.User;
 import com.asset.utils.PageGrids;
 import com.github.pagehelper.PageHelper;

@@ -2,7 +2,7 @@ package com.asset.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.asset.converter.FormConverter;
-import com.asset.dao.FormAuthorityMapper;
+import com.asset.mapper.FormAuthorityMapper;
 import com.asset.entity.FormAuthorityDO;
 import com.asset.entity.AsTempletFormAuthorityDO;
 import com.asset.entity.FormInstDO;

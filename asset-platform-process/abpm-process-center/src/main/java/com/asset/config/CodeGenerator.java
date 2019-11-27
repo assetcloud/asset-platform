@@ -125,7 +125,7 @@ public class CodeGenerator {
 //        strategy.setSuperControllerClass("");
         // 写于父类中的公共字段
         strategy.setSuperEntityColumns("id");
-        strategy.setInclude(scanner("as_templet_proc_node").split(","));
+        strategy.setInclude(scanner("act_hi_actinst").split(","));
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
         mpg.setStrategy(strategy);

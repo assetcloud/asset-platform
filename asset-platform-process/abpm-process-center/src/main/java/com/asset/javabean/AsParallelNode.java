@@ -15,6 +15,7 @@ public class AsParallelNode {
     public AsParallelNode(String id, int type,int outNums) {
         this.id = id;
         this.type = type;
+        this.outNums = outNums;
     }
 
     private AsParallelNode(Builder builder) {

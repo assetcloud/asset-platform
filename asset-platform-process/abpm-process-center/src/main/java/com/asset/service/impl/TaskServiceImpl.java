@@ -1,7 +1,7 @@
 package com.asset.service.impl;
 
 import com.asset.entity.AsFormInstDO;
-import com.asset.dao.AsFormInstMapper;
+import com.asset.mapper.AsFormInstMapper;
 import com.asset.javabean.AdminTaskVO;
 import com.asset.service.FormModelService;
 import com.asset.service.ITaskService;

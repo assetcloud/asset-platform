@@ -1,6 +1,6 @@
 package com.asset.service.impl;
 
-import com.asset.dao.ProcRepositoryMapper;
+import com.asset.mapper.ProcRepositoryMapper;
 import com.asset.entity.ProcDefInfo;
 import com.asset.service.IProcRepositoryService;
 import com.asset.utils.PageGrids;

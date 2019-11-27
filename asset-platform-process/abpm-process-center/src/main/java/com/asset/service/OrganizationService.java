@@ -1,6 +1,6 @@
 package com.asset.service;
 
-import com.asset.dao.OrganizationMapper;
+import com.asset.mapper.OrganizationMapper;
 import com.asset.entity.Organization;
 import com.asset.utils.PageGrids;
 import com.github.pagehelper.PageHelper;

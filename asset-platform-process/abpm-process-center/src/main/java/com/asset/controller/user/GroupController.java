@@ -1,6 +1,6 @@
 package com.asset.controller.user;
 
-import com.asset.dao.AsGroupMapper;
+import com.asset.mapper.AsGroupMapper;
 import com.asset.dto.GroupCreateDTO;
 import com.asset.dto.GroupUpdateDTO;
 import com.asset.entity.GroupDO;

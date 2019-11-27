@@ -4,7 +4,6 @@ import
         com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.converter.FormConverter;
-import com.asset.dao.*;
 import com.asset.entity.*;
 import com.asset.exception.*;
 import com.asset.filter.DuplicateFilter;
@@ -15,19 +14,20 @@ import com.asset.javabean.form.ColumnItem;
 import com.asset.javabean.form.FormItem;
 import com.asset.javabean.form.FormSheet;
 import com.asset.dto.*;
+import com.asset.mapper.AsFormInstMapper;
+import com.asset.mapper.FormInstMapper;
 import com.asset.service.impl.ActRuVariableService;
 import com.asset.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
+import io.undertow.util.BadRequestException;
 import org.apache.commons.lang3.StringUtils;
-import org.checkerframework.checker.units.qual.A;
 import org.dom4j.DocumentException;
 import org.flowable.bpmn.model.*;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState;
+import org.flowable.ui.modeler.service.ModelServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -62,6 +62,14 @@ public class FormInstService implements IFormInstService {
     FormInstMapper formInstMapper;
     @Autowired
     AsFormInstMapper asFormInstMapper;
+
+    @Autowired
+    ModelServiceImpl modelService;
+
+    @Autowired
+    DuplicateFilter duplicateFilter;
+    @Autowired
+    ProcUtils procUtils;
 
     /**
      * 业务入口
@@ -468,7 +476,7 @@ public class FormInstService implements IFormInstService {
             //注意，每个审批节点在流程模型设计阶段都会设置一个驳回属性：approveType，即当点击“不同意”按钮之后实例发生的变化
             //但是，现在流程模型设计阶段并没有对approve_type这个属性进行操作（还没做，后续需要你做）
             ProcNodeDO nodeDO = procNodeService.getNodeDO(formModelService.getProcModelID(dto.getForm_model_id()), flowableService.getNodeId(dto.getTask_id()));
-            Integer approveType = nodeDO.getApprove_type();
+            Integer approveType = nodeDO.getApproveType();
             //一个审批节点默认的驳回属性是：结束整个流程，即CANCEL
             if (approveType == null)
                 approveType = Constants.NODE_APPROVE_CANCEL;
@@ -481,6 +489,9 @@ public class FormInstService implements IFormInstService {
                 //当前审批节点的驳回属性设置为：回滚到上一个经办节点处
                 case Constants.NODE_APPROVE_ROLLBACK:
                     String lastApplyNode = "";
+
+                    dto.setModelEditorJson(flowableService.getModelEditorJson(procModelId));
+
 
                     //先判断当前实例中是否包含并行分支，如果是包含并行分支的，需要根据当前任务节点的位置，选择正确的回滚点位置
                     if (dto.containParallel()) {
@@ -546,16 +557,16 @@ public class FormInstService implements IFormInstService {
          */
     public String getRollbackPosInParallelProc(String procInstID, String procModelId) throws Exception {
         //获取model
-        ArrayList<FlowElement> flowElements = (ArrayList<FlowElement>) ProcUtils.getFlowElements(procModelId);
+        ArrayList<FlowElement> flowElements = (ArrayList<FlowElement>) procUtils.getFlowElements(procModelId, modelService);
         //遍历model,标记并行网关
         HashMap<String, AsParallelNode> parallelNodes = signParallel(flowElements);
 
         //获取从头开始的执行序列
         List<HistoricActivityInstance> historicActsAsc = ProcUtils.getHistoricActsAsc(procInstID);
-        AsExecution firstExecution = new AsExecution("first");
+        AsExecution firstExecution = new AsExecution();
         int historicIndex = 0;
         HashMap<String, AsExecution> allExes = new HashMap<>();
-        allExes.put(firstExecution.getExeId(), firstExecution);
+//        allExes.put(firstExecution.getExeId(), firstExecution);
         String curTaskId = ProcUtils.getTaskIDs(procInstID)[0];
         newConstructExecutions(firstExecution, historicActsAsc, historicIndex, parallelNodes, allExes, curTaskId);
 
@@ -564,18 +575,15 @@ public class FormInstService implements IFormInstService {
         ArrayList<AsExecution> containExes = new ArrayList<>();
         ArrayList<AsExecution> noneExes = new ArrayList<>();
 
-        for(String key:allExes.keySet())
-        {
+        for (String key : allExes.keySet()) {
             AsExecution curExe = allExes.get(key);
 
             //原来是从startevent开始排序的，需要逆序排列
             Collections.reverse(curExe.getExecutions());
 
-            if(curExe.containTask(curTaskId))
-            {
+            if (curExe.containTask(curTaskId)) {
                 containExes.add(curExe);
-            }
-            else {
+            } else {
                 noneExes.add(curExe);
             }
         }
@@ -584,14 +592,12 @@ public class FormInstService implements IFormInstService {
         AsTask curApproveTask = null;
         //这里的i表示现在找第几个i
         loop1:
-        for(int i=1;i<curExecution.getExecutions().size()+1;i++)
-        {
+        for (int i = 1; i < curExecution.getExecutions().size() + 1; i++) {
             curApproveTask = getApproveTask(procModelId, i, curExecution.getExecutions());
             //在剩余的执行序列中找当前找到的经办节点
-            for(int f=1;f<containExes.size();f++)
-            {
+            for (int f = 1; f < containExes.size(); f++) {
                 //如果有执行流不包含，那么说明当前找到的经办节点不会，i值++，找下一个经办节点
-                if(!containExes.get(f).containTask(curApproveTask.getTaskId()))
+                if (!containExes.get(f).containTask(curApproveTask.getTaskId()))
                     continue loop1;
             }
             //如果能到这一步，说明这个当前找到的经办节点在当前执行流中全都包含，所以
@@ -599,20 +605,16 @@ public class FormInstService implements IFormInstService {
         }
 
         //接着，要回滚了，containExes全部回滚到这个回滚点，noneExes看有没有这个回滚点，如果包含的话，也要回滚
-        for(int i = 0;i<containExes.size();i++)
-        {
-            ProcUtils.rollback(ProcUtils.getExecutionId(curApproveTask.getTaskId()),curApproveTask.getActId(),procInstID);
+        for (int i = 0; i < containExes.size(); i++) {
+            ProcUtils.rollback(ProcUtils.getExecutionId(curApproveTask.getTaskId()), curApproveTask.getActId(), procInstID);
         }
 
-        for (int i = 0;i<noneExes.size();i++)
-        {
-            if(noneExes.get(i).containTask(curApproveTask.getTaskId()))
-                ProcUtils.rollback(noneExes.get(i).getExecutions().get(0).getExecutionId(),curApproveTask.getActId(),procInstID);
+        for (int i = 0; i < noneExes.size(); i++) {
+            if (noneExes.get(i).containTask(curApproveTask.getTaskId()))
+                ProcUtils.rollback(noneExes.get(i).getExecutions().get(0).getExecutionId(), curApproveTask.getActId(), procInstID);
         }
 
         return curApproveTask.getActId();
-
-
 
 
 //        //获取当前执行序列，从后往前
@@ -658,18 +660,21 @@ public class FormInstService implements IFormInstService {
 
     /**
      * 获取第index个经办节点
+     *
      * @param index
      * @return
      */
-    public AsTask getApproveTask(String procModelId, int index,ArrayList<AsTask> executions){
+    public AsTask getApproveTask(String procModelId, int index, ArrayList<AsTask> executions) {
         int i = 1;
 
         //遍历executions，找到第index个经办任务，i用来计数
-        for(int f= 0;f<executions.size();f++)
-        {
-            if(procNodeService.getNodeType(procModelId,executions.get(f).getActId())==Constants.AS_NODE_APPLY)
-            {
-                if(i==index)
+        for (int f = 0; f < executions.size(); f++) {
+            //限定只对userTask进行处理
+            if(!executions.get(f).getActType().equals("userTask"))
+                continue;
+
+            if (procNodeService.getNodeType(procModelId, executions.get(f).getActId()) == Constants.AS_NODE_APPLY) {
+                if (i == index)
                     return executions.get(f);
                 else
                     i++;
@@ -694,35 +699,82 @@ public class FormInstService implements IFormInstService {
                                         String curRunningTaskId) {
         for (; curHistoricIndex < historicActsAsc.size(); curHistoricIndex++) {
             HistoricActivityInstance curNode = historicActsAsc.get(curHistoricIndex);
-            AsTask curTask = new AsTask(curNode.getTaskId(), curNode.getExecutionId(), curNode.getActivityId());
-            if (curNode.getActivityType().equals("parallelGateway")) {
-                AsParallelNode asParallelNode = parallelNodes.get(curNode.getActivityId());
+            AsTask curTask = new AsTask(curNode);
+            if (curTask.getActType().equals("parallelGateway")) {
+                AsParallelNode asParallelNode = parallelNodes.get(curTask.getActId());
+
                 //判断是不是开始节点
                 if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_start) {
                     //有几个出度，就要新创建几个exe，注意第一个创建的exe会把原来的publicExe在allExes中的位置顶替掉
                     int outNums = asParallelNode.getOutNums();
 
+                    List<ActHiActinst> unCompleteActinsts = flowableService.selectTaskByInstId(curNode.getProcessInstanceId());
+                    if(unCompleteActinsts.size()!=outNums)
+                        throw new ProcException("当前并行网关有"+outNums+"个出度，但是有"+unCompleteActinsts.size()+"个未执行task");
+
+
                     for (int i = 0; i < outNums; i++) {
+                        //构建新execution，如果是第一个遍历到的出度的话，这个新execution的exeId应该确定(继承原来的executionId)，
+                        // 然后去act_ru_task表中找到与这个新创建的execution相同exeId的任务节点（得去act_ru_task表中找，因为act_hi_actinst表中会存在拥有相同exeId的历史任务，这些历史任务不能加到这里）
+                        publicExecution.initExeId(curTask.getExecutionId());
+                        publicExecution.add(curTask);
                         AsExecution newExe = new AsExecution(publicExecution);
-                        newExe.add(curTask);
-                        //第一个创建的exe会把原来的publicExe在allExes中的位置顶替掉
+
+
+
+                        //curNode是parallel，parallel之后的节点如果是没有被执行的，那么需要我们从act_ru_task中找到之后的节点信息，预加载进来
+                        //第一个创建的exe会继承原来的publicExe的id,然后会把原来的publicExe在allExes中的位置顶替掉
                         if (i == 0) {
+                            newExe.setExeId(publicExecution.getExeId());
+                            allExes.put(newExe.getExeId(), newExe);
+
+                            //去act_ru_task表中找到待执行的拥有相同exeId的下一个任务信息，添加到当前的newExe中
+                            //注意这里是根据executionId然后精确找到那个parallel之后的任务节点的，只有新建的第一条execution有这个待遇
+//                            ActHiActinst unCompleteActinst = flowableService.selectTaskByExeId(publicExecution.getExeId());
+                            for (int m = 0; m < unCompleteActinsts.size(); m++) {
+                                if (!unCompleteActinsts.get(m).getSign()
+                                        && unCompleteActinsts.get(m).getExecutionId().equals(publicExecution.getExeId())) {
+                                    unCompleteActinsts.get(m).setSign(true);
+
+                                    AsTask unCompleteTask = new AsTask(unCompleteActinsts.get(m));
+                                    newExe.add(unCompleteTask);
+                                    break;
+                                }
+                            }
+                        } else {
+                            //这里的execution都是除了主execution之外剩下的新创建的execution
+                            //这里新创建的execution的exeId是由 从act_ru_task表中读出的没有被添加过的ActHiActinst
+                            for (int m = 0; m < unCompleteActinsts.size(); m++) {
+                                if (!unCompleteActinsts.get(m).getSign()) {
+                                    unCompleteActinsts.get(m).setSign(true);
+
+                                    AsTask unCompleteTask = new AsTask(unCompleteActinsts.get(m));
+                                    newExe.setExeId(unCompleteTask.getExecutionId());
+                                    newExe.add(unCompleteTask);
+                                    break;
+                                }
+                            }
                             allExes.put(newExe.getExeId(), newExe);
                         }
+
                         //curHistoricIndex是基本类型int，所以是值传递，不用担心在下一层递归函数中被修改
-                        newConstructExecutions(newExe, historicActsAsc, curHistoricIndex, parallelNodes, allExes, curRunningTaskId);
+                        int newHistoricIndex = curHistoricIndex + 1;
+                        newConstructExecutions(newExe, historicActsAsc, newHistoricIndex, parallelNodes, allExes, curRunningTaskId);
                     }
                 } else if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_end) {
+                    publicExecution.initExeId(curTask.getExecutionId());
                     publicExecution.add(curTask);
                 }
             }
             //遇到当前节点，return
-            else if (curNode.getTaskId().equals(curRunningTaskId)) {
+            else if (curTask.getTaskId().equals(curRunningTaskId)) {
+                publicExecution.initExeId(curTask.getExecutionId());
                 publicExecution.add(curTask);
                 return;
             }
             //遇到非并行网关节点，直接添加
             else {
+                publicExecution.initExeId(curTask.getExecutionId());
                 publicExecution.add(curTask);
             }
         }
@@ -1093,7 +1145,6 @@ public class FormInstService implements IFormInstService {
 //        FormInstBO formInstBO = new FormInstBO(formInstDO,userId,Constants.TASK_ALL);
 
         UserIdFilter userFilter = new UserIdFilter();
-        DuplicateFilter duplicateFilter = new DuplicateFilter();
 
         //对不属于当前用户的表单任务进行筛选
         FormInstBO formInstBO1 = userFilter.shareLinkFiltrate(boo, sectionId);

@@ -1,7 +1,7 @@
 package com.asset.service.impl;
 
 import com.asset.entity.*;
-import com.asset.dao.AsTempletMapper;
+import com.asset.mapper.AsTempletMapper;
 import com.asset.exception.DatabaseException;
 import com.asset.javabean.AdminTempletVO;
 import com.asset.service.*;

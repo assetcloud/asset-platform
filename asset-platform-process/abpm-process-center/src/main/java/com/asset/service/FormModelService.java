@@ -2,7 +2,7 @@ package com.asset.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.asset.dao.FormModelMapper;
+import com.asset.mapper.FormModelMapper;
 import com.asset.dto.FormModelEditDTO;
 import com.asset.entity.AsTempletFormModelDO;
 import com.asset.entity.FormModelDO;

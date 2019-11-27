@@ -1,8 +1,7 @@
 package com.asset.service.impl;
 
-import com.asset.dao.AsTempletProcNodeMapper;
 import com.asset.entity.*;
-import com.asset.dao.AsTempletFormAuthorityMapper;
+import com.asset.mapper.AsTempletFormAuthorityMapper;
 import com.asset.exception.DatabaseException;
 import com.asset.service.IAsTempletFormAuthorityService;
 import com.asset.utils.Constants;

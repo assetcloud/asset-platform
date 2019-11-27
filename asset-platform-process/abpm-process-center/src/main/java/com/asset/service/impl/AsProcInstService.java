@@ -1,7 +1,7 @@
 package com.asset.service.impl;
 
 import com.asset.entity.AsProcInstDO;
-import com.asset.dao.AsProcInstMapper;
+import com.asset.mapper.AsProcInstMapper;
 import com.asset.exception.ProcException;
 import com.asset.javabean.AdminProcInstVO;
 import com.asset.service.*;

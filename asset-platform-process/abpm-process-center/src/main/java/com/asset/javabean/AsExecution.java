@@ -1,28 +1,30 @@
 package com.asset.javabean;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
 @Data
 public class AsExecution {
     ArrayList<AsTask> executions;
-    String exeId;  //注意这个不是代表的真的executionId，只是一个标示
+    String exeId;  //注意这个代表真实的executionId，每出现一个新的分支，那么就会有一个新的executionId，然后被赋值在这里，但是，主execution会被一直继承下来！
 
-    public AsExecution(String exeId) {
+    public AsExecution() {
         executions = new ArrayList<>();
-        this.exeId = exeId;
     }
 
     //创建一个新的AsExecution
     public AsExecution(AsExecution oldExe) {
         this.executions = (ArrayList<AsTask>) oldExe.getExecutions().clone();
-        this.exeId = oldExe.getExeId();
     }
 
+    //这里往列表中新加Task的时候，需要判断当前Task的executionId是不是和当前AsExecution的exeId是不是相同的
     public void add(AsTask val)
     {
-        executions.add(val);
+        if(val.getExecutionId().equals(exeId))
+            if(!containTask(val.getTaskId()))
+                executions.add(val);
     }
 
     /**
@@ -34,10 +36,16 @@ public class AsExecution {
     {
         for(int i=0;i<executions.size();i++)
         {
-            if(executions.get(i).equals(taskId))
+            if(executions.get(i).getTaskId().equals(taskId))
                 return true;
         }
         return false;
+    }
+
+    public void initExeId(String executionId)
+    {
+        if(StringUtils.isEmpty(this.exeId))
+            exeId = executionId;
     }
 
 

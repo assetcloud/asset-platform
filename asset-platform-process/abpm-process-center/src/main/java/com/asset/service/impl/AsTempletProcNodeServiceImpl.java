@@ -1,8 +1,7 @@
 package com.asset.service.impl;
 
-import com.asset.entity.AsTempletDeModelDO;
 import com.asset.entity.AsTempletProcNodeDO;
-import com.asset.dao.AsTempletProcNodeMapper;
+import com.asset.mapper.AsTempletProcNodeMapper;
 import com.asset.entity.ProcNodeDO;
 import com.asset.exception.DatabaseException;
 import com.asset.service.IAsTempletProcNodeService;

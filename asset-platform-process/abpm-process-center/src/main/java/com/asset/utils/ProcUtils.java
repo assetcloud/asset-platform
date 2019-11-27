@@ -5,6 +5,7 @@ import com.asset.entity.ProcNodeDO;
 import com.asset.exception.ProcException;
 import com.asset.javabean.ProcExecution;
 import com.asset.javabean.ProcNode;
+import org.checkerframework.checker.units.qual.A;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
@@ -17,8 +18,10 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.engine.runtime.ProcessInstanceQuery;
 import org.flowable.task.api.Task;
+import org.flowable.ui.modeler.service.ModelServiceImpl;
 import org.flowable.ui.modeler.serviceapi.ModelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,18 +32,22 @@ import java.util.List;
  *
  * @author YBY
  */
+@Component
 public class ProcUtils {
 
-    @Autowired
-    static ModelService modelService;
 
-    static ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
-    static RepositoryService repositoryService = engine.getRepositoryService();
-    static RuntimeService runtimeService = engine.getRuntimeService();
-    static TaskService taskService = engine.getTaskService();
-    static HistoryService historyService = engine.getHistoryService();
+
+//    static ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+//    static RepositoryService repositoryService = engine.getRepositoryService();
+//    static RuntimeService runtimeService = engine.getRuntimeService();
+//    static TaskService taskService = engine.getTaskService();
+//    static HistoryService historyService = engine.getHistoryService();
 
     public static void completeAll() {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        RuntimeService runtimeService = engine.getRuntimeService();
+        TaskService taskService = engine.getTaskService();
+
         ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
 
         List<ProcessInstance> lists = query.active().list();
@@ -70,6 +77,9 @@ public class ProcUtils {
      * @return
      */
     public static String[] getTaskIDs(String procInstID) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        TaskService taskService = engine.getTaskService();
+
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(procInstID).list();
         String[] taskIDs = new String[tasks.size()];
         for (int i = 0; i < tasks.size(); i++)
@@ -83,11 +93,16 @@ public class ProcUtils {
      * @param taskID
      */
     public static void completeTask(String taskID) throws FlowableException {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        TaskService taskService = engine.getTaskService();
+
         taskService.complete(taskID);
     }
 
 
     public static void rollback(String executionId, String rollbackActID, String procInstID) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        RuntimeService runtimeService = engine.getRuntimeService();
         runtimeService.createChangeActivityStateBuilder().
                 processInstanceId(procInstID)
                 .moveExecutionToActivityId(executionId, rollbackActID).
@@ -95,6 +110,9 @@ public class ProcUtils {
     }
 
     public static ProcessInstance createProcInstByXml(String fileName) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        RepositoryService repositoryService = engine.getRepositoryService();
+
         //部署
         DeploymentBuilder deployment = repositoryService.createDeployment();
         deployment.addClasspathResource("diagram/" + fileName + ".bpmn");
@@ -110,28 +128,32 @@ public class ProcUtils {
         return runtimeService.startProcessInstanceByKey(key);
     }
 
-    public static ProcessInstance createProcInstByModelId(String procModelId) {
-        org.flowable.ui.modeler.domain.Model modelData = modelService.getModel(procModelId);
-        BpmnModel bpmnModel = modelService.getBpmnModel(modelData);
-
-        DeploymentBuilder builder = repositoryService.createDeployment();
-        byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(bpmnModel);
-        String processXMLName = modelData.getName() + ".bpmn20.xml";
-        String depResourceName = modelData.getName() + "ResName";
-        String depName = modelData.getName() + "DepName";
-        String depKey = modelData.getName() + "DepKey";
-        //部署
-        Deployment dep = builder.addBpmnModel(depResourceName, bpmnModel).
-                name(depName).
-                key(depKey).
-                addBytes(processXMLName, bpmnBytes).   //必须加这个，否则流程定义文件会为空
-                deploy();
-
-        ProcessDefinition def = repositoryService.createProcessDefinitionQuery().deploymentId(dep.getId()).singleResult();
-
-        //创建流程实例
-        return runtimeService.startProcessInstanceById(def.getId());
-    }
+//    public ProcessInstance createProcInstByModelId(String procModelId) {
+//        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+//        RepositoryService repositoryService = engine.getRepositoryService();
+//        RuntimeService runtimeService = engine.getRuntimeService();
+//
+//        org.flowable.ui.modeler.domain.Model modelData = modelService.getModel(procModelId);
+//        BpmnModel bpmnModel = modelService.getBpmnModel(modelData);
+//
+//        DeploymentBuilder builder = repositoryService.createDeployment();
+//        byte[] bpmnBytes = new BpmnXMLConverter().convertToXML(bpmnModel);
+//        String processXMLName = modelData.getName() + ".bpmn20.xml";
+//        String depResourceName = modelData.getName() + "ResName";
+//        String depName = modelData.getName() + "DepName";
+//        String depKey = modelData.getName() + "DepKey";
+//        //部署
+//        Deployment dep = builder.addBpmnModel(depResourceName, bpmnModel).
+//                name(depName).
+//                key(depKey).
+//                addBytes(processXMLName, bpmnBytes).   //必须加这个，否则流程定义文件会为空
+//                deploy();
+//
+//        ProcessDefinition def = repositoryService.createProcessDefinitionQuery().deploymentId(dep.getId()).singleResult();
+//
+//        //创建流程实例
+//        return runtimeService.startProcessInstanceById(def.getId());
+//    }
 
     /**
      * 挂起一个流程实例
@@ -139,6 +161,9 @@ public class ProcUtils {
      * @param procInstId
      */
     public static void suspendProcInst(String procInstId) throws Exception {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        RuntimeService runtimeService = engine.getRuntimeService();
+
         if (isFinished(procInstId))
             throw new ProcException("流程实例: " + procInstId + "已执行完毕，无法挂起！");
         //根据一个流程实例的id挂起该流程实例
@@ -152,6 +177,8 @@ public class ProcUtils {
      * @param procInstId
      */
     public static void activateProcInst(String procInstId) throws Exception {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        RuntimeService runtimeService = engine.getRuntimeService();
         if (isFinished(procInstId))
             throw new ProcException("流程实例: " + procInstId + "已执行完毕，无法执行激活操作！");
 
@@ -176,6 +203,9 @@ public class ProcUtils {
      * @return
      */
     public static ProcessDefinition getProcessDefinitionByTaskId(String taskId) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        RepositoryService repositoryService = engine.getRepositoryService();
+        TaskService taskService = engine.getTaskService();
         // 1. 得到task
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         // 2. 通过task对象的pdid获取流程定义对象
@@ -188,6 +218,8 @@ public class ProcUtils {
      * @return 这个方法是返回当前执行的流程实例中影响域最前端的前面一个节点的信息，降序排列，即从后往前
      */
     public static List<HistoricActivityInstance> getHistoricActsDesc(String procInstanceID) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        HistoryService historyService = engine.getHistoryService();
 
         List<HistoricActivityInstance> historicActivityInstanceList = historyService
                 .createHistoricActivityInstanceQuery()
@@ -203,6 +235,8 @@ public class ProcUtils {
      * @return 这个方法是返回当前执行的流程实例中影响域最前端的前面一个节点的信息，升序排列，即从开始节点往后
      */
     public static List<HistoricActivityInstance> getHistoricActsAsc(String procInstanceID) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        HistoryService historyService = engine.getHistoryService();
 
         List<HistoricActivityInstance> historicActivityInstanceList = historyService
                 .createHistoricActivityInstanceQuery()
@@ -221,6 +255,9 @@ public class ProcUtils {
      * @return
      */
     public static boolean containParral(String defId, String nodeId) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        RepositoryService repositoryService = engine.getRepositoryService();
+
         BpmnModel bpmnModel = repositoryService.getBpmnModel(defId);
         Process process = bpmnModel.getProcesses().get(0);
         Collection<FlowElement> flowElements = process.getFlowElements();
@@ -245,6 +282,9 @@ public class ProcUtils {
      * @return
      */
     public static boolean isFinished(String processInstanceId) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        HistoryService historyService = engine.getHistoryService();
+
         return historyService.createHistoricProcessInstanceQuery().finished()
                 .processInstanceId(processInstanceId).count() > 0;
     }
@@ -255,6 +295,10 @@ public class ProcUtils {
      * @param procInstId
      */
     public static void deleteProcInst(String procInstId) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        HistoryService historyService = engine.getHistoryService();
+        RuntimeService runtimeService = engine.getRuntimeService();
+
         ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
                 .processInstanceId(procInstId) // 使用流程实例ID查询
                 .singleResult();
@@ -270,6 +314,8 @@ public class ProcUtils {
 
 
     public static String getExecutionId(String taskId) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        TaskService taskService = engine.getTaskService();
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         return task.getExecutionId();
     }
@@ -278,9 +324,12 @@ public class ProcUtils {
      * 审批节点点击“不同意”，导致实例结束
      */
     public static void completeProcInstForRejected(String taskId) throws FlowableException {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        TaskService taskService = engine.getTaskService();
 //        ProcessInstance instance = runtimeService.createProcessInstanceQuery()
 //                .processInstanceId(procInstId) // 使用流程实例ID查询
 //                .singleResult();
+
 //
 //        for (int i = 0; i < Integer.MAX_VALUE; i++) {
 //            List<Task> tasks = taskService.createTaskQuery().processInstanceId(instance.getId()).list();
@@ -297,6 +346,10 @@ public class ProcUtils {
     }
 
     public static void completeInst(String procInstId) {
+        ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
+        TaskService taskService = engine.getTaskService();
+        RuntimeService runtimeService = engine.getRuntimeService();
+
         ProcessInstance instance = runtimeService.createProcessInstanceQuery()
                 .processInstanceId(procInstId) // 使用流程实例ID查询
                 .singleResult();
@@ -315,10 +368,10 @@ public class ProcUtils {
     }
 
 
-    public static Collection<FlowElement> getFlowElements(String procModelId)
+    public Collection<FlowElement> getFlowElements(String procModelId,ModelService modelService1)
     {
-        org.flowable.ui.modeler.domain.Model modelData = modelService.getModel(procModelId);
-        BpmnModel bpmnModel = modelService.getBpmnModel(modelData);
+        org.flowable.ui.modeler.domain.Model modelData = modelService1.getModel(procModelId);
+        BpmnModel bpmnModel = modelService1.getBpmnModel(modelData);
         Process process = bpmnModel.getProcesses().get(0);
         Collection<FlowElement> flowElements = process.getFlowElements();
         return flowElements;

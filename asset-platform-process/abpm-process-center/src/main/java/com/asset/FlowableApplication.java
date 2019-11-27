@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         "org.flowable.ui.common",
         "org.flowable.rest"
 })
-@MapperScan(basePackages= {"com.asset.dao"})
+@MapperScan(basePackages= {"com.asset.mapper"})
 @EnableTransactionManagement(proxyTargetClass = true)
 public class FlowableApplication {
     public static void main(String[] args) {

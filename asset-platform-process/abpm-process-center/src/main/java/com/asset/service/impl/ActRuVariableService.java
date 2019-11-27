@@ -2,12 +2,11 @@ package com.asset.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.asset.entity.ActRuVariableDO;
-import com.asset.dao.ActRuVariableMapper;
+import com.asset.mapper.ActRuVariableMapper;
 import com.asset.exception.DatabaseException;
 import com.asset.javabean.ActRuVariableBO;
 import com.asset.service.IActRuVariableService;
 import com.asset.utils.Constants;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -15,7 +14,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**

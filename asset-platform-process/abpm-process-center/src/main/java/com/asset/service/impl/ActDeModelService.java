@@ -1,7 +1,7 @@
 package com.asset.service.impl;
 
 import com.asset.entity.ActDeModelDO;
-import com.asset.dao.ActDeModelMapper;
+import com.asset.mapper.ActDeModelMapper;
 import com.asset.entity.AsTempletDeModelDO;
 import com.asset.exception.DatabaseException;
 import com.asset.javabean.AdminProcModelVO;

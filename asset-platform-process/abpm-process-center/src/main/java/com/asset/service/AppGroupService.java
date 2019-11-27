@@ -1,6 +1,6 @@
 package com.asset.service;
 
-import com.asset.dao.AsGroupMapper;
+import com.asset.mapper.AsGroupMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
