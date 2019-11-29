@@ -45,13 +45,13 @@ public class AdminProcInstController {
     }
 
 
-    @Test
-    public void test2() throws Exception {
-        String procInstId  = "";
-        String procModelId = "";
-
-        service.getRollbackPosInParallelProc(procInstId,procModelId);
-    }
+//    @Test
+//    public void test2() throws Exception {
+//        String procInstId  = "";
+//        String procModelId = "";
+//
+//        service.getRollbackPosInParallelProc(procInstId,procModelId);
+//    }
 
 //    @Test
 //    public void testSetActivityIntoSynchronizingParallelGatewayFirst() {

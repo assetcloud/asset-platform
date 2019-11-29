@@ -69,6 +69,35 @@
             and asform.scene_id = #{curSelectSceneId,jdbcType=VARCHAR}
     </select>
 
+    <select id="selectSimpleTasksByProcInstId" parameterType="java.lang.String" resultType="com.asset.javabean.AsSimpleTask">
+        SELECT node.node_type AS "nodeType",
+               hi.ACT_ID_ AS "nodeId",
+               hi.TASK_ID_ AS "taskId",
+               hi.PROC_INST_ID_ AS "procInstId",
+               hi.EXECUTION_ID_ AS "executionId"
+        FROM as_proc_node AS node,
+             ACT_RU_TASK AS task,
+             ACT_HI_ACTINST AS hi
+        WHERE task.ID_ = hi.TASK_ID_
+        and   task.PROC_INST_ID_ = #{procInstId}
+        and   node.node_id = hi.ACT_ID_
+    </select>
+
+    <select id="selectSimpleTasksByTaskType" parameterType="java.lang.Integer" resultType="com.asset.javabean.AsSimpleTask">
+        SELECT node.node_type AS "nodeType",
+               hi.ACT_ID_ AS "nodeId",
+               hi.TASK_ID_ AS "taskId",
+               hi.PROC_INST_ID_ AS "procInstId",
+               hi.EXECUTION_ID_ AS "executionId"
+        FROM as_proc_node AS node,
+             ACT_RU_TASK AS task,
+             ACT_HI_ACTINST AS hi
+        WHERE task.ID_ = hi.TASK_ID_
+        and   (node.node_type = #{taskType1}
+        or    node.node_type = #{taskType2})
+        and   node.node_id = hi.ACT_ID_
+    </select>
+
     <select id="getNodeId" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT ACT_ID_
         from ACT_HI_ACTINST

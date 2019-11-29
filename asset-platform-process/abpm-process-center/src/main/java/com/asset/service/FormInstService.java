@@ -3,6 +3,8 @@ package com.asset.service;
 import
         com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.asset.command.RollbackCommand;
+import com.asset.command.ShowTaskCommand;
 import com.asset.converter.FormConverter;
 import com.asset.entity.*;
 import com.asset.exception.*;
@@ -20,7 +22,7 @@ import com.asset.service.impl.ActRuVariableService;
 import com.asset.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import io.undertow.util.BadRequestException;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.flowable.bpmn.model.*;
@@ -28,6 +30,7 @@ import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.ui.modeler.service.ModelServiceImpl;
+import org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -70,6 +73,10 @@ public class FormInstService implements IFormInstService {
     DuplicateFilter duplicateFilter;
     @Autowired
     ProcUtils procUtils;
+    @Autowired
+    RollbackCommand rollbackCommand;
+    @Autowired
+    ShowTaskCommand showTaskCommand;
 
     /**
      * 业务入口
@@ -246,7 +253,129 @@ public class FormInstService implements IFormInstService {
 
     }
 
-    /**
+//    /**
+//     * 业务入口
+//     * 用户登录系统之后，根据传进来的任务类型不同，前台显示待办（包含审批、经办）/待阅/全部的表单信息
+//     *
+//     * @param userID
+//     * @param taskType
+//     * @param curSelectSceneId 当前用户选择的工作场景Id
+//     * @param sectionId
+//     * @return
+//     * @throws InfoException
+//     * @throws ProcException
+//     * @throws FormException
+//     */
+//    public List<FormInstVO> listFormInst(String userID,
+//                                         Integer taskType,
+//                                         String curSelectSceneId,
+//                                         String sectionId) throws InfoException, ProcException, FormException {
+//        /*nfq1010:首先是获取流转用户的taskID  （是通过用户的ID来获取流转到该用户的task    这里是获取了多个 说明一个用户可能有多个task）？？？
+//         * */
+//        //1、先获取流转到该用户对应的FlowableTaskDO
+//        List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
+//        if (tasks.size() == 0)
+//            throw new SizeNullException("表单实例为空");
+//
+//        List<TaskBO> taskBOs = constructTaskBO(tasks);
+//
+//        //2、对上面集合进行遍历，从as_proc_node中取出ActType进行比对，确定节点类型，与输入的taskType比对，看是不是要显示的节点
+//        taskBOs = dressTaskByType(taskBOs, taskType);
+//        if (taskBOs.size() == 0)
+//            throw new SizeNullException("表单实例为空");
+//
+//        //3、获取真正的表单实例表
+//        ArrayList<FormInstDO> formInstDOs = (ArrayList<FormInstDO>) getFormInsts(taskBOs);
+//        ArrayList<FormInstBO> formInstBOs = new ArrayList<>();
+//
+//        //从数据库中找到的所有任务节点信息
+//        for (FormInstDO doo : formInstDOs) {
+//            String procModelId = procInstService.getProcModelId(doo.getProcInstId());
+//            String nodeId = flowableService.getNodeId(doo.getTaskId());
+//            ProcNodeDO nodeDO = procNodeService.getNodeDO(procModelId, nodeId);
+//
+//            FormInstBO boo = new FormInstBO.Builder()
+//                    .curUserId(userID)
+//                    .curTaskType(taskType)
+//                    .procModelId(procModelId)
+//                    .nodeId(nodeId)
+//                    .ifJointSign(nodeDO.getIfJointSign())
+//                    .sceneId(formModelService.getSceneId(doo.getFormModelId())).build();
+//            BeanUtils.copyProperties(doo, boo);
+//            if (!StringUtils.isEmpty(nodeDO.getCandidateUser()))
+//                boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
+//            if (!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
+//                boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
+//
+//            boo.setCommitter(procInstService.getCommitter(doo.getTaskId()));
+//
+//            formInstBOs.add(boo);
+////            formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,
+////                    formModelService.getSceneId(doo.getFormModelId())));
+//        }
+//
+//        //4、对所有表单实例的表单Sheet进行表单项操作权限设置
+//        for (int i = 0; i < formInstBOs.size(); i++) {
+//            FormInstDO inst = formInstBOs.get(i);
+//            authorityService.handleFormSheetAuthority(inst);
+//        }
+//
+//        UserIdFilter userIdFilter = new UserIdFilter();
+//        DuplicateFilter duplicateFilter = new DuplicateFilter();
+//        SceneFilter sceneFilter = new SceneFilter();
+//        //对不属于当前用户的表单任务进行筛选
+//        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs, sectionId);
+//        //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
+//        ArrayList<FormInstBO> filtrate2 = duplicateFilter.filtrate(filtrate1);
+//        //过滤工作场景
+//        ArrayList<FormInstBO> filtrate3 = sceneFilter.filtrate(filtrate2, curSelectSceneId);
+//
+//
+//        ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
+//        for (int i = 0; i < filtrate3.size(); i++) {
+//            FormInstBO boo = filtrate3.get(i);
+////            String committer = procInstService.getCommitter(filtrate3.get(i).getTaskId());
+//            String formInstValue = procInstService.getFormInstAllValue(boo.getProcInstId());
+//            Date commitTime = procInstService.getCommitTime(boo.getProcInstId());   // 这个指的是流程实例发起的时间
+//            FormInstVO voo = new FormInstVO.Builder()
+//                    .commitTime(commitTime.getTime())
+//                    .title(formModelService.getFormName(boo.getFormModelId()))   //title应该是对应的表单模型的名称
+//                    .build();
+//            BeanUtils.copyProperties(boo, voo);
+//            voo.setFormInstValue(formInstValue);
+//
+//            //content那一项内容应该是 根据需求显示表单模板中的一些字段信息（这个字段信息的动态设置应该是放在as_form_model表中），如果没有对这个进行设置的话，就显示这个任务的类型
+//            //现在暂时写死
+//            String zichanyijiaoFormModelId = "660d7d6f-d83f-11e9-a9e8-0242ac120006";
+//            if (boo.getFormModelId().equals(zichanyijiaoFormModelId)) {
+//                JSONObject jsonObject = JSON.parseObject(formInstValue);
+//                String assetName = (String) jsonObject.get("input_1566366027958");
+//                String assetNum = (String) jsonObject.get("input_1566366061170");
+////                String committerForContent = (String) jsonObject.get("input_1568450723142");
+//                String committerForContent = "金伟刚";
+////                String committerSection = (String) jsonObject.get("input_1568450690311");
+//                String committerSection = (String) jsonObject.get("input_1568450690311");
+//                String taker = (String) jsonObject.get("input_1566958355545");
+//                String takerSection = (String) jsonObject.get("input_1566960206187");
+//                voo.setContent("资产名称：" + assetName + " 数量：" + assetNum + " 申请人：" + committerForContent + " 所在部门：" + committerSection + " 接收人：" + taker + " 所在部门：" + takerSection);
+//            } else {
+//                if (boo.getNodeType() == Constants.AS_NODE_APPLY)
+//                    voo.setContent("经办节点");
+//                else if (boo.getNodeType() == Constants.AS_NODE_APPROVE)
+//                    voo.setContent("审批节点");
+//                else if (boo.getNodeType() == Constants.AS_NODE_CC)
+//                    voo.setContent("抄送节点");
+//                else
+//                    voo.setContent("其他节点");
+//            }
+//
+////            FormInstVO voo = filtrate3.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
+//            formInstVOs.add(voo);
+//        }
+//
+//        return formInstVOs;
+//    }
+/**
      * 业务入口
      * 用户登录系统之后，根据传进来的任务类型不同，前台显示待办（包含审批、经办）/待阅/全部的表单信息
      *
@@ -263,110 +392,8 @@ public class FormInstService implements IFormInstService {
                                          Integer taskType,
                                          String curSelectSceneId,
                                          String sectionId) throws InfoException, ProcException, FormException {
-        /*nfq1010:首先是获取流转用户的taskID  （是通过用户的ID来获取流转到该用户的task    这里是获取了多个 说明一个用户可能有多个task）？？？
-         * */
-        //1、先获取流转到该用户对应的FlowableTaskDO
-        List<FlowableTaskDO> tasks = flowableService.listCurTasks(userID);
-        if (tasks.size() == 0)
-            throw new SizeNullException("表单实例为空");
-
-        List<TaskBO> taskBOs = constructTaskBO(tasks);
-
-        //2、对上面集合进行遍历，从as_proc_node中取出ActType进行比对，确定节点类型，与输入的taskType比对，看是不是要显示的节点
-        taskBOs = dressTaskByType(taskBOs, taskType);
-        if (taskBOs.size() == 0)
-            throw new SizeNullException("表单实例为空");
-
-        //3、获取真正的表单实例表
-        ArrayList<FormInstDO> formInstDOs = (ArrayList<FormInstDO>) getFormInsts(taskBOs);
-        ArrayList<FormInstBO> formInstBOs = new ArrayList<>();
-
-        //从数据库中找到的所有任务节点信息
-        for (FormInstDO doo : formInstDOs) {
-            String procModelId = procInstService.getProcModelId(doo.getProcInstId());
-            String nodeId = flowableService.getNodeId(doo.getTaskId());
-            ProcNodeDO nodeDO = procNodeService.getNodeDO(procModelId, nodeId);
-
-            FormInstBO boo = new FormInstBO.Builder()
-                    .curUserId(userID)
-                    .curTaskType(taskType)
-                    .procModelId(procModelId)
-                    .nodeId(nodeId)
-                    .ifJointSign(nodeDO.getIfJointSign())
-                    .sceneId(formModelService.getSceneId(doo.getFormModelId())).build();
-            BeanUtils.copyProperties(doo, boo);
-            if (!StringUtils.isEmpty(nodeDO.getCandidateUser()))
-                boo.setCandidateUser(nodeDO.getCandidateUser().split("\\|"));
-            if (!StringUtils.isEmpty(nodeDO.getCandidateGroup()))
-                boo.setCandidateGroup(nodeDO.getCandidateGroup().split("\\|"));
-
-            boo.setCommitter(procInstService.getCommitter(doo.getTaskId()));
-
-            formInstBOs.add(boo);
-//            formInstBOs.add(new FormInstBO(doo,userID,taskType,nodeDO,
-//                    formModelService.getSceneId(doo.getFormModelId())));
-        }
-
-        //4、对所有表单实例的表单Sheet进行表单项操作权限设置
-        for (int i = 0; i < formInstBOs.size(); i++) {
-            FormInstDO inst = formInstBOs.get(i);
-            authorityService.handleFormSheetAuthority(inst);
-        }
-
-        UserIdFilter userIdFilter = new UserIdFilter();
-        DuplicateFilter duplicateFilter = new DuplicateFilter();
-        SceneFilter sceneFilter = new SceneFilter();
-        //对不属于当前用户的表单任务进行筛选
-        ArrayList<FormInstBO> filtrate1 = userIdFilter.filtrate(formInstBOs, sectionId);
-        //如果当前任务节点是会签节点，那么需要过滤当前用户已经执行过该会签任务节点
-        ArrayList<FormInstBO> filtrate2 = duplicateFilter.filtrate(filtrate1);
-        //过滤工作场景
-        ArrayList<FormInstBO> filtrate3 = sceneFilter.filtrate(filtrate2, curSelectSceneId);
-
-
-        ArrayList<FormInstVO> formInstVOs = new ArrayList<>();
-        for (int i = 0; i < filtrate3.size(); i++) {
-            FormInstBO boo = filtrate3.get(i);
-//            String committer = procInstService.getCommitter(filtrate3.get(i).getTaskId());
-            String formInstValue = procInstService.getFormInstAllValue(boo.getProcInstId());
-            Date commitTime = procInstService.getCommitTime(boo.getProcInstId());   // 这个指的是流程实例发起的时间
-            FormInstVO voo = new FormInstVO.Builder()
-                    .commitTime(commitTime.getTime())
-                    .title(formModelService.getFormName(boo.getFormModelId()))   //title应该是对应的表单模型的名称
-                    .build();
-            BeanUtils.copyProperties(boo, voo);
-            voo.setFormInstValue(formInstValue);
-
-            //content那一项内容应该是 根据需求显示表单模板中的一些字段信息（这个字段信息的动态设置应该是放在as_form_model表中），如果没有对这个进行设置的话，就显示这个任务的类型
-            //现在暂时写死
-            String zichanyijiaoFormModelId = "660d7d6f-d83f-11e9-a9e8-0242ac120006";
-            if (boo.getFormModelId().equals(zichanyijiaoFormModelId)) {
-                JSONObject jsonObject = JSON.parseObject(formInstValue);
-                String assetName = (String) jsonObject.get("input_1566366027958");
-                String assetNum = (String) jsonObject.get("input_1566366061170");
-//                String committerForContent = (String) jsonObject.get("input_1568450723142");
-                String committerForContent = "金伟刚";
-//                String committerSection = (String) jsonObject.get("input_1568450690311");
-                String committerSection = (String) jsonObject.get("input_1568450690311");
-                String taker = (String) jsonObject.get("input_1566958355545");
-                String takerSection = (String) jsonObject.get("input_1566960206187");
-                voo.setContent("资产名称：" + assetName + " 数量：" + assetNum + " 申请人：" + committerForContent + " 所在部门：" + committerSection + " 接收人：" + taker + " 所在部门：" + takerSection);
-            } else {
-                if (boo.getNodeType() == Constants.AS_NODE_APPLY)
-                    voo.setContent("经办节点");
-                else if (boo.getNodeType() == Constants.AS_NODE_APPROVE)
-                    voo.setContent("审批节点");
-                else if (boo.getNodeType() == Constants.AS_NODE_CC)
-                    voo.setContent("抄送节点");
-                else
-                    voo.setContent("其他节点");
-            }
-
-//            FormInstVO voo = filtrate3.get(i).transToVO(procInstService.getCommitter(formInstDOs.get(i).getTaskId()));
-            formInstVOs.add(voo);
-        }
-
-        return formInstVOs;
+        ArrayList<FormInstVO> formInstVOS = showTaskCommand.ShowTaskCommand(taskType, userID, curSelectSceneId, sectionId);
+        return formInstVOS;
     }
 
     /**
@@ -496,7 +523,7 @@ public class FormInstService implements IFormInstService {
                     //先判断当前实例中是否包含并行分支，如果是包含并行分支的，需要根据当前任务节点的位置，选择正确的回滚点位置
                     if (dto.containParallel()) {
                         //完成所有的回滚操作
-                        lastApplyNode = getRollbackPosInParallelProc(procInstID, procModelId);
+                        lastApplyNode = rollbackCommand.getRollbackPosInParallelProc(procInstID, procModelId, dto.getTask_id());
                     }
                     //不包含并行分支，直接进行回滚
                     else {
@@ -511,8 +538,13 @@ public class FormInstService implements IFormInstService {
                     //回滚之后，需获取当前任务到上一个经办节点之间的那些任务实例formInst，将其状态值修改为“已回滚”
                     List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstID);
                     for (int i = 0; i < historicActs.size(); i++) {
+                        //从后往前遍历，只到遍历到回滚点处，就不用更新状态值了
                         if (historicActs.get(i).getActivityId().equals(lastApplyNode))
                             break;
+                        //只对类型为userTask的进行更新状态值，因为as_form_inst表中只存在类型为userTask的任务
+                        if (!historicActs.get(i).getActivityType().equals("userTask"))
+                            continue;
+
 
                         AsFormInstDO updateDO = new AsFormInstDO.Builder()
                                 .status(Constants.FORM_INST_ROLLED)
@@ -549,114 +581,8 @@ public class FormInstService implements IFormInstService {
     }
 
 
-    /*
-    在包含并行分支的流程执行序列中找到正确的回滚点位置，方案设计如下：
-    从头开始遍历执行序列，遇到并行网关，如果出度有多个分支，那么代表是开始 发散了，需要构建一条新的executionId;
-            如果出度只有一个出口，那么代表的是结束；
-         遇到普通userTask，出度是一个的，加入之前创建的多条executionId表
-         */
-    public String getRollbackPosInParallelProc(String procInstID, String procModelId) throws Exception {
-        //获取model
-        ArrayList<FlowElement> flowElements = (ArrayList<FlowElement>) procUtils.getFlowElements(procModelId, modelService);
-        //遍历model,标记并行网关
-        HashMap<String, AsParallelNode> parallelNodes = signParallel(flowElements);
-
-        //获取从头开始的执行序列
-        List<HistoricActivityInstance> historicActsAsc = ProcUtils.getHistoricActsAsc(procInstID);
-        AsExecution firstExecution = new AsExecution();
-        int historicIndex = 0;
-        HashMap<String, AsExecution> allExes = new HashMap<>();
-//        allExes.put(firstExecution.getExeId(), firstExecution);
-        String curTaskId = ProcUtils.getTaskIDs(procInstID)[0];
-        newConstructExecutions(firstExecution, historicActsAsc, historicIndex, parallelNodes, allExes, curTaskId);
-
-        //接着遍历得到的allExes，注意这里先遍历包含curTaskId的exe(containExes变量),找到离当前审批节点最近的统一的经办节点，然后回滚到这个经办节点，
-        // 接着看剩余的exe（不包含curTaskId的exe，noneExes变量）,是否包含这个回滚点，如果包含，那么也回滚
-        ArrayList<AsExecution> containExes = new ArrayList<>();
-        ArrayList<AsExecution> noneExes = new ArrayList<>();
-
-        for (String key : allExes.keySet()) {
-            AsExecution curExe = allExes.get(key);
-
-            //原来是从startevent开始排序的，需要逆序排列
-            Collections.reverse(curExe.getExecutions());
-
-            if (curExe.containTask(curTaskId)) {
-                containExes.add(curExe);
-            } else {
-                noneExes.add(curExe);
-            }
-        }
-
-        AsExecution curExecution = containExes.get(0);
-        AsTask curApproveTask = null;
-        //这里的i表示现在找第几个i
-        loop1:
-        for (int i = 1; i < curExecution.getExecutions().size() + 1; i++) {
-            curApproveTask = getApproveTask(procModelId, i, curExecution.getExecutions());
-            //在剩余的执行序列中找当前找到的经办节点
-            for (int f = 1; f < containExes.size(); f++) {
-                //如果有执行流不包含，那么说明当前找到的经办节点不会，i值++，找下一个经办节点
-                if (!containExes.get(f).containTask(curApproveTask.getTaskId()))
-                    continue loop1;
-            }
-            //如果能到这一步，说明这个当前找到的经办节点在当前执行流中全都包含，所以
-            break loop1;
-        }
-
-        //接着，要回滚了，containExes全部回滚到这个回滚点，noneExes看有没有这个回滚点，如果包含的话，也要回滚
-        for (int i = 0; i < containExes.size(); i++) {
-            ProcUtils.rollback(ProcUtils.getExecutionId(curApproveTask.getTaskId()), curApproveTask.getActId(), procInstID);
-        }
-
-        for (int i = 0; i < noneExes.size(); i++) {
-            if (noneExes.get(i).containTask(curApproveTask.getTaskId()))
-                ProcUtils.rollback(noneExes.get(i).getExecutions().get(0).getExecutionId(), curApproveTask.getActId(), procInstID);
-        }
-
-        return curApproveTask.getActId();
 
 
-//        //获取当前执行序列，从后往前
-//        List<HistoricActivityInstance> historicActsDesc = ProcUtils.getHistoricActsDesc(procInstID);
-//        int i, count = 0;
-//        HashMap<String, ProcExecution> runningExecutions = new HashMap<>();
-//        HashMap<String, Boolean> isVisited = new HashMap<>();
-//        HashMap<String, String[]> nodeContainsIn = new HashMap<>();
-//
-//
-//        ProcExecution mainExecution = new ProcExecution("main");
-//        String startEventExecutionId = historicActsAsc.get(0).getExecutionId();
-//        mainExecution.setExecutionId(startEventExecutionId);
-//        runningExecutions.put(startEventExecutionId, mainExecution);
-//
-//
-//        //构建执行序列
-//        constructExecutions(historicActsAsc, flowElements, runningExecutions, mainExecution, 0, procModelId, isVisited, nodeContainsIn);
-//
-//        //##对执行序列进行遍历，找到两个序列经过的相同的距离审批节点最近的经办节点，就是我们要找的回滚点
-//        //获取当前节点执行流的ExecutionID
-//        String curExecutionID = historicActsDesc.get(0).getExecutionId();
-//        //获取当前执行流
-//        ProcExecution curExecution = runningExecutions.get(curExecutionID);
-//        //获取当中节点
-//        ArrayList<ProcNode> curProcnodes = curExecution.getProcNodes();
-        //从后往前遍历寻找回滚节点
-//        for (i = curProcnodes.size() - 2; i >= 0; i--) {
-//            //检查节点的类型
-//            ProcNode procNode = curProcnodes.get(i);
-//            if (procNode.getType() == Constants.AS_NODE_APPLY && count <= 0) {
-//                //count用来记录经过的并行网关出口，来辅助寻找回滚节点，若找到配对的并行网关入口则减1，count<=0时代表是合适的回滚位置
-//                return procNode.getId();
-//
-//            } else if (procNode.getType() == Constants.AS_NODE_PARALLEL_end) {
-//                count++;
-//            } else if (procNode.getType() == Constants.AS_NODE_PARALLEL_start) {
-//                count--;
-//            }
-//        }
-
-    }
 
     /**
      * 获取第index个经办节点
@@ -670,7 +596,7 @@ public class FormInstService implements IFormInstService {
         //遍历executions，找到第index个经办任务，i用来计数
         for (int f = 0; f < executions.size(); f++) {
             //限定只对userTask进行处理
-            if(!executions.get(f).getActType().equals("userTask"))
+            if (!executions.get(f).getActType().equals("userTask"))
                 continue;
 
             if (procNodeService.getNodeType(procModelId, executions.get(f).getActId()) == Constants.AS_NODE_APPLY) {
@@ -684,141 +610,9 @@ public class FormInstService implements IFormInstService {
         return null;
     }
 
-    /**
-     * @param publicExecution  这个是当前方法的一个公共执行链，如果需要创建新的分支，需要从这个公共执行链复制内容,注意这里的String内容是taskId
-     * @param historicActsAsc  一个不变的执行序列
-     * @param curHistoricIndex 当前递归层次遍历到执行序列的哪一个元素了
-     * @param parallelNodes    之前遍历model时得到的关于并行网关的信息
-     * @param allExes          构造出的所有执行流列表
-     */
-    private void newConstructExecutions(AsExecution publicExecution,
-                                        List<HistoricActivityInstance> historicActsAsc,
-                                        int curHistoricIndex,
-                                        HashMap<String, AsParallelNode> parallelNodes,
-                                        HashMap<String, AsExecution> allExes,
-                                        String curRunningTaskId) {
-        for (; curHistoricIndex < historicActsAsc.size(); curHistoricIndex++) {
-            HistoricActivityInstance curNode = historicActsAsc.get(curHistoricIndex);
-            AsTask curTask = new AsTask(curNode);
-            if (curTask.getActType().equals("parallelGateway")) {
-                AsParallelNode asParallelNode = parallelNodes.get(curTask.getActId());
-
-                //判断是不是开始节点
-                if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_start) {
-                    //有几个出度，就要新创建几个exe，注意第一个创建的exe会把原来的publicExe在allExes中的位置顶替掉
-                    int outNums = asParallelNode.getOutNums();
-
-                    List<ActHiActinst> unCompleteActinsts = flowableService.selectTaskByInstId(curNode.getProcessInstanceId());
-                    if(unCompleteActinsts.size()!=outNums)
-                        throw new ProcException("当前并行网关有"+outNums+"个出度，但是有"+unCompleteActinsts.size()+"个未执行task");
-
-
-                    for (int i = 0; i < outNums; i++) {
-                        //构建新execution，如果是第一个遍历到的出度的话，这个新execution的exeId应该确定(继承原来的executionId)，
-                        // 然后去act_ru_task表中找到与这个新创建的execution相同exeId的任务节点（得去act_ru_task表中找，因为act_hi_actinst表中会存在拥有相同exeId的历史任务，这些历史任务不能加到这里）
-                        publicExecution.initExeId(curTask.getExecutionId());
-                        publicExecution.add(curTask);
-                        AsExecution newExe = new AsExecution(publicExecution);
 
 
 
-                        //curNode是parallel，parallel之后的节点如果是没有被执行的，那么需要我们从act_ru_task中找到之后的节点信息，预加载进来
-                        //第一个创建的exe会继承原来的publicExe的id,然后会把原来的publicExe在allExes中的位置顶替掉
-                        if (i == 0) {
-                            newExe.setExeId(publicExecution.getExeId());
-                            allExes.put(newExe.getExeId(), newExe);
-
-                            //去act_ru_task表中找到待执行的拥有相同exeId的下一个任务信息，添加到当前的newExe中
-                            //注意这里是根据executionId然后精确找到那个parallel之后的任务节点的，只有新建的第一条execution有这个待遇
-//                            ActHiActinst unCompleteActinst = flowableService.selectTaskByExeId(publicExecution.getExeId());
-                            for (int m = 0; m < unCompleteActinsts.size(); m++) {
-                                if (!unCompleteActinsts.get(m).getSign()
-                                        && unCompleteActinsts.get(m).getExecutionId().equals(publicExecution.getExeId())) {
-                                    unCompleteActinsts.get(m).setSign(true);
-
-                                    AsTask unCompleteTask = new AsTask(unCompleteActinsts.get(m));
-                                    newExe.add(unCompleteTask);
-                                    break;
-                                }
-                            }
-                        } else {
-                            //这里的execution都是除了主execution之外剩下的新创建的execution
-                            //这里新创建的execution的exeId是由 从act_ru_task表中读出的没有被添加过的ActHiActinst
-                            for (int m = 0; m < unCompleteActinsts.size(); m++) {
-                                if (!unCompleteActinsts.get(m).getSign()) {
-                                    unCompleteActinsts.get(m).setSign(true);
-
-                                    AsTask unCompleteTask = new AsTask(unCompleteActinsts.get(m));
-                                    newExe.setExeId(unCompleteTask.getExecutionId());
-                                    newExe.add(unCompleteTask);
-                                    break;
-                                }
-                            }
-                            allExes.put(newExe.getExeId(), newExe);
-                        }
-
-                        //curHistoricIndex是基本类型int，所以是值传递，不用担心在下一层递归函数中被修改
-                        int newHistoricIndex = curHistoricIndex + 1;
-                        newConstructExecutions(newExe, historicActsAsc, newHistoricIndex, parallelNodes, allExes, curRunningTaskId);
-                    }
-                } else if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_end) {
-                    publicExecution.initExeId(curTask.getExecutionId());
-                    publicExecution.add(curTask);
-                }
-            }
-            //遇到当前节点，return
-            else if (curTask.getTaskId().equals(curRunningTaskId)) {
-                publicExecution.initExeId(curTask.getExecutionId());
-                publicExecution.add(curTask);
-                return;
-            }
-            //遇到非并行网关节点，直接添加
-            else {
-                publicExecution.initExeId(curTask.getExecutionId());
-                publicExecution.add(curTask);
-            }
-        }
-    }
-
-    /**
-     * 标记并行网关
-     *
-     * @param flowElements
-     */
-    private HashMap<String, AsParallelNode> signParallel(ArrayList<FlowElement> flowElements) {
-        //记录当前模型中出现的并行网关，然后对其中的并行网关进行标记
-        HashMap<String, AsParallelNode> parallelNodes = new HashMap<>();
-        Stack<String> stack = new Stack<>();
-
-        int i = 0;
-        //先从头遍历，构建多条执行序列
-        for (; i < flowElements.size(); i++) {
-            FlowElement flowElement = flowElements.get(i);
-            if (flowElement instanceof ParallelGateway) {
-                ParallelGateway gateway = (ParallelGateway) flowElement;
-                List<SequenceFlow> outgoingFlows = gateway.getOutgoingFlows();
-                List<SequenceFlow> incomingFlows = gateway.getIncomingFlows();
-
-                //出度为1，那么是end
-                if (outgoingFlows.size() == 1) {
-                    String curPeerStartId = stack.pop();
-                    parallelNodes.put(gateway.getId(), new AsParallelNode.Builder()
-                            .id(gateway.getId())
-                            .type(Constants.AS_NODE_PARALLEL_end)
-                            .peerNodeId(curPeerStartId)
-                            .outNums(1)
-                            .build());
-                    AsParallelNode curPeerStartNode = parallelNodes.get(curPeerStartId);
-                    curPeerStartNode.setPeerNodeId(gateway.getId());
-                } else {
-                    stack.push(gateway.getId());
-                    parallelNodes.put(gateway.getId(), new AsParallelNode(gateway.getId(), Constants.AS_NODE_PARALLEL_start, outgoingFlows.size()));
-                }
-            }
-        }
-
-        return parallelNodes;
-    }
 
     /**
      * @param historicActsAsc
@@ -1242,7 +1036,7 @@ public class FormInstService implements IFormInstService {
     }
 
     /**
-     * 业务入口
+     *
      * 这里根据Task信息返回对应的表单实例信息，但是注意这里表单实例信息中的formValue值来自as_proc_inst表中
      * formSheet值来自as_form_model
      *

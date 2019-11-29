@@ -2,6 +2,7 @@ package com.asset.javabean;
 
 
 import com.asset.entity.ActHiActinst;
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Builder;
 import lombok.Data;
 import org.flowable.engine.history.HistoricActivityInstance;
@@ -9,6 +10,7 @@ import org.flowable.engine.history.HistoricActivityInstance;
 @Data
 @Builder
 public class AsTask {
+//    @TableField("task_")
     String taskId; //用来找共同点
     //下面两个属性用于回滚
     String executionId;

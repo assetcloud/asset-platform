@@ -1,13 +1,11 @@
 package com.asset.mapper;
 
-import com.asset.entity.ActRuTask;
 import com.asset.entity.CommitFormInstDO;
 import com.asset.entity.FlowableTaskDO;
 import com.asset.entity.FormInstDO;
+import com.asset.javabean.AsSimpleTask;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.mybatis.spring.annotation.MapperScan;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -50,6 +48,11 @@ public interface FlowableMapper {
 
     List<CommitFormInstDO> listComFormInst1(@Param("userID") String userID,
                                             @Param("curSelectSceneId") String curSelectSceneId);
+
+    List<AsSimpleTask> selectSimpleTasksByProcInstId(String procInstId);
+
+    List<AsSimpleTask> selectSimpleTasksByTaskType(@Param("taskType1") Integer nodeType1,
+                                                   @Param("taskType2")  Integer nodeType2);
 
 
 //    /**

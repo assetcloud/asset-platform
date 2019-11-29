@@ -15,6 +15,7 @@ import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.DeploymentBuilder;
 import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.engine.runtime.ProcessInstanceQuery;
 import org.flowable.task.api.Task;
@@ -100,6 +101,12 @@ public class ProcUtils {
     }
 
 
+    /**
+     *
+     * @param executionId
+     * @param rollbackActID 要回滚到的节点的act_id
+     * @param procInstID
+     */
     public static void rollback(String executionId, String rollbackActID, String procInstID) {
         ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
         RuntimeService runtimeService = engine.getRuntimeService();
@@ -244,6 +251,9 @@ public class ProcUtils {
                 .finished()//已经结束的活动节点
                 .orderByHistoricActivityInstanceEndTime().asc().list();
 
+
+
+
         return historicActivityInstanceList;
     }
 
@@ -298,6 +308,9 @@ public class ProcUtils {
         ProcessEngine engine = ProcessEngines.getDefaultProcessEngine();
         HistoryService historyService = engine.getHistoryService();
         RuntimeService runtimeService = engine.getRuntimeService();
+
+
+
 
         ProcessInstance pi = runtimeService.createProcessInstanceQuery()//
                 .processInstanceId(procInstId) // 使用流程实例ID查询

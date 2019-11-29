@@ -12,6 +12,16 @@ public interface Constants {
     public static String NAMESPACE_PREFIX = "flowable";
     public static Integer PageSize = 10;
 
+
+    /**
+     * ----------------------------------------------------------------Flowable中的变量---------------------------------------------------------
+     */
+    public static String FLOWABLE_ACT_TYPE_PARALLEL = "parallelGateway";
+    public static String FLOWABLE_ACT_TYPE_STARTEVENT = "startEvent";
+    public static String FLOWABLE_ACT_TYPE_USERTASK = "userTask";
+
+
+
     /**
      * ----------------------------------------------------------------模型：应用分组状态---------------------------------------------------------
      */
