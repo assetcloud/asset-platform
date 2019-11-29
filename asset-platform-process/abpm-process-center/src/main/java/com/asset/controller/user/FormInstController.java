@@ -6,8 +6,11 @@ import com.asset.javabean.AsTaskVO;
 import com.asset.dto.*;
 import com.asset.javabean.TaskCount;
 import com.asset.service.*;
+import com.asset.utils.Query;
 import com.asset.utils.R;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.*;
+import javafx.concurrent.Task;
 import org.dom4j.DocumentException;
 import org.flowable.common.engine.api.FlowableException;
 import org.slf4j.Logger;
@@ -15,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,65 +73,88 @@ public class FormInstController {
         } catch (FlowableException e) {
             e.printStackTrace();
             return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
-        } catch (DatabaseException e)
-        {
+        } catch (DatabaseException e) {
             e.printStackTrace();
-            return R.fail(e.getMessage() );
-        }catch (InterruptedException e)
-        {
+            return R.fail(e.getMessage());
+        } catch (InterruptedException e) {
             e.printStackTrace();
-            return R.fail(e.getMessage() );
+            return R.fail(e.getMessage());
         }
         return R.data(urls);
     }
 
     /**
      * 用户登录系统之后，根据传进来的任务类型不同，前台显示待办（包含审批、经办）/待阅/全部的表单信息
-     *      * 这里的全部节点信息还包含了历史的处理信息，这里先不考虑
-     *      *
-     *      * @param userID
-     * @param taskType
-     * @return
+     * * 这里的全部节点信息还包含了历史的处理信息，这里先不考虑
+     * *
+     * * @param userID
+     * =     * @return
      */
-    @ApiOperation(value = "获取分配到的任务信息", notes = "", httpMethod = "GET")
-    @RequestMapping(value = "/form_inst/show", method = RequestMethod.GET)
-    public R listFormInst(
-            @ApiParam(value = "当前用户Id", required = true)
-            @RequestParam(value = "user_id") String userID,
-            @ApiParam(value = "当前要查看的任务节点类型,0——待办任务,1——待阅任务,2——全部任务", required = true, allowableValues = "0,1,2")
-            @RequestParam(value = "task_type") Integer taskType,
-            @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
-            @RequestParam(value = "scene_id") String sceneId,
-            @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
-            @RequestParam(value = "section_id") String sectionId) {
-        List<AsTaskVO> asTaskVOS = null;
+    @ApiOperation(value = "获取分配到的任务信息", notes = "", httpMethod = "POST")
+    @RequestMapping(value = "/form_inst/show", method = RequestMethod.POST)
+    public R listFormInst(@RequestBody FormInstListDTO dto, Query query) {
+//        Query query = new Query();
+//        query.setPage(dto.getPage());
+//        query.setSize(dto.getSize())
+        PageInfo<AsTaskVO> formInstVOs = null;
         try {
-            asTaskVOS = formInstService.listFormInst(userID, taskType, sceneId, sectionId);
+            formInstVOs = new PageInfo<>(formInstService.listFormInst(dto));
         } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
         }
-        return R.data(asTaskVOS);
+
+        formInstVOs.setPageNum(query.getPage());
+        formInstVOs.setPageSize(query.getSize());
+        formInstVOs.setStartRow(0);
+        formInstVOs.setSize(query.getSize());
+        formInstVOs.setEndRow(query.getSize() - 1);
+
+        //表示当前获取的大端的下标
+        int listSize = formInstVOs.getList().size();
+        int bigIndex = (query.getPage() - 1) * query.getSize() + query.getSize();
+        int smallIndex = (query.getPage() - 1) * query.getSize();
+        //大端的下标不能超过列表的总值
+        if (bigIndex > listSize)
+            bigIndex = listSize ;
+        if(smallIndex > listSize)
+            formInstVOs.setList(new ArrayList<AsTaskVO>());
+        else
+            formInstVOs.setList(     formInstVOs.getList().subList(  smallIndex, bigIndex  )    );
+
+        return R.data(formInstVOs);
     }
+
+    /**
+     * 用户点击分享链接，显示当前分配到的节点任务信息
+     *
+     * @return
+     */
+    @ApiOperation(value = "外链任务处理", notes = "用户点击外链，自动跳转到相应的任务处理页面，对分配到自己的任务进行快速处理", httpMethod = "POST")
+    @RequestMapping(value = "/form_inst/share_link", method = RequestMethod.GET)
+    public R getShareLinkTask(@RequestBody TaskShareDTO dto) {
+        AsTaskVO shareLinkTask = null;
+        try {
+            shareLinkTask = formInstService.getShareLinkTask(dto);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.fail(e.getMessage());
+        }
+        return R.data(shareLinkTask);
+    }
+
 
     /**
      * 返回当前用户有多少的待办任务，待阅任务
      *
-     * @param userID
      * @return
      */
-    @ApiOperation(value = "获取分配到的任务数目", notes = "在首页展示当前当前用户分配到的任务数目", httpMethod = "GET")
-    @GetMapping(value = "/form_inst/all/count")
-    public R<List<TaskCount>> formInstsCount(
-            @ApiParam(value = "当前用户Id", required = true)
-            @RequestParam(value = "user_id") String userID,
-            @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
-            @RequestParam(value = "scene_id") String sceneId,
-            @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
-            @RequestParam(value = "section_id") String sectionId) {
+    @ApiOperation(value = "获取分配到的任务数目", notes = "在首页展示当前当前用户分配到的任务数目", httpMethod = "POST")
+    @PostMapping(value = "/form_inst/all/count")
+    public R<List<TaskCount>> formInstsCount(@RequestBody FormInstCountDTO dto) {
         List<TaskCount> taskCounts = null;
         try {
-            taskCounts = formInstService.getFormInstsCounts(userID, sceneId, sectionId);
+            taskCounts = formInstService.getFormInstsCounts(dto);
         } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
@@ -136,26 +163,27 @@ public class FormInstController {
     }
 
     /*  nfq:2019/10/11
-    *    返回当前用户的发起申请数目
-    * */
-     @ApiOperation(value="统计用户发起表单",notes="在首页展示当前用户的发起申请",httpMethod = "GET")
-     @GetMapping(value= "/form_inst/commit_proc_inst/count")
-     public R <List<TaskCount>> commitFormCount(
-             @ApiParam(value = "当前用户Id", required = true)
-             @RequestParam(value = "user_id") String userID,
-             @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
-             @RequestParam(value = "scene_id") String sceneId,
-             @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
-             @RequestParam(value = "section_id") String sectionId){
-         List<TaskCount> taskCounts1 = null;
-         try {
-             taskCounts1 = formInstService.getcommitFormCounts(userID, sceneId, sectionId);
-         } catch (Exception e) {
-             e.printStackTrace();
-             return R.fail(e.getMessage());
-         }
-         return R.data(taskCounts1);
-     }
+     *    返回当前用户的发起申请数目
+     * */
+    @ApiOperation(value = "统计用户发起表单", notes = "在首页展示当前用户的发起申请", httpMethod = "GET")
+    @GetMapping(value = "/form_inst/commit_proc_inst/count")
+    public R<List<TaskCount>> commitFormCount(
+            @ApiParam(value = "当前用户Id", required = true)
+            @RequestParam(value = "user_id") String userID,
+            @ApiParam(value = "当前用户登录时选择的工作场景Id", required = true)
+            @RequestParam(value = "scene_id") String sceneId,
+            @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
+            @RequestParam(value = "section_id") String sectionId) {
+        List<TaskCount> taskCounts1 = null;
+        try {
+            taskCounts1 = formInstService.getcommitFormCounts(userID, sceneId, sectionId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.fail(e.getMessage());
+        }
+        return R.data(taskCounts1);
+    }
+
     /**
      * 用户登录系统，对审批节点进行处理，点击 同意 或 拒绝
      * 同时还可以对表单内容进行填写
@@ -214,32 +242,6 @@ public class FormInstController {
             return R.fail(e.getMessage() + "  请检查流程模型元素是否有误！");
         }
         return R.data(urls);
-    }
-
-    /**
-     * 用户点击分享链接，显示当前分配到的节点任务信息
-     *
-     * @param taskId
-     * @return
-     */
-    @ApiOperation(value = "外链任务处理", notes = "用户点击外链，自动跳转到相应的任务处理页面，对分配到自己的任务进行快速处理", httpMethod = "POST")
-    @RequestMapping(value = "/form_inst/share_link", method = RequestMethod.GET)
-    public R getShareLinkTask(
-            @ApiParam(value = "外链中包含的TaskId", required = true)
-            @RequestParam(value = "task_id") String taskId,
-            @ApiParam(value = "当前用户Id", required = true)
-            @RequestParam(value = "user_id") String userId,
-//                                     @RequestParam(value = "scene_id") String sceneId,   //这里点击外链，不需要对工作场景进行筛选
-            @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
-            @RequestParam(value = "section_id") String sectionId) {
-        AsTaskVO shareLinkTask = null;
-        try {
-            shareLinkTask = formInstService.getShareLinkTask(taskId, userId, sectionId);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return R.fail(e.getMessage());
-        }
-        return R.data(shareLinkTask);
     }
 
 

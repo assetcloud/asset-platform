@@ -44,7 +44,8 @@ public class GetTaskCommand {
      */
     public AsTaskVO getShareLinkTask(String taskId,
                                      String userId,
-                                     String sectionId) throws ProcException, FormException {
+                                     String sectionId,
+                                     String curSectionUsers ) throws ProcException, FormException {
         LoginUser loginUser = LoginUser.builder()
                 .userId(userId)
                 .sectionId(sectionId).build();
@@ -67,7 +68,7 @@ public class GetTaskCommand {
         selectRunningTaskStep.wrapWithSceneId(asRunningTask);
 
         //接着对candidate、会签节点进行筛选
-        candidateFiltrateCommand.filtrate(asRunningTasks,loginUser);
+        candidateFiltrateCommand.filtrate(asRunningTasks,loginUser,curSectionUsers);
         jointFiltrateCommand.filtrate(asRunningTasks,loginUser);
 
         if(asRunningTasks.size()==0)

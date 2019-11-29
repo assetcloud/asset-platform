@@ -1,4 +1,4 @@
-package com.asset.filter;
+package com.asset.config;
 
 import org.flowable.idm.api.User;
 import org.flowable.idm.engine.impl.persistence.entity.UserEntityImpl;

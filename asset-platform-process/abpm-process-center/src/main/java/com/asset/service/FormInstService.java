@@ -263,20 +263,14 @@ public class FormInstService implements IFormInstService {
      * 业务入口
      * 用户登录系统之后，根据传进来的任务类型不同，前台显示待办（包含审批、经办）/待阅/全部的表单信息
      *
-     * @param userID
-     * @param taskType
-     * @param curSelectSceneId 当前用户选择的工作场景Id
-     * @param sectionId
-     * @return
-     * @throws InfoException
-     * @throws ProcException
-     * @throws FormException
      */
-    public List<AsTaskVO> listFormInst(String userID,
-                                       Integer taskType,
-                                       String curSelectSceneId,
-                                       String sectionId) throws InfoException, ProcException, FormException {
-        ArrayList<AsTaskVO> asTaskVOS = showTaskCommand.showTasks(taskType, userID, curSelectSceneId, sectionId);
+    public List<AsTaskVO> listFormInst(FormInstListDTO dto) throws InfoException, ProcException, FormException {
+        String userID = dto.getUserId();
+        Integer taskType = dto.getTaskType();
+        String curSelectSceneId = dto.getSceneId();
+        String sectionId = dto.getSectionId();
+        String curSectionUsers = dto.getCurSectionUsers();
+        ArrayList<AsTaskVO> asTaskVOS = showTaskCommand.showTasks(taskType, userID, curSelectSceneId, sectionId,curSectionUsers);
         return asTaskVOS;
     }
 
@@ -591,21 +585,30 @@ public class FormInstService implements IFormInstService {
     /**
      * 入口方法
      * 统计各个类型的表单实例数目分别是多少
-     *
-     * @param userID
      * @return
      */
-    public List<TaskCount> getFormInstsCounts(String userID, String sceneId, String sectionId) throws Exception {
+    public List<TaskCount> getFormInstsCounts(FormInstCountDTO countDTO) throws Exception {
         TaskCount toDoCount;    //nfq:这个是统计待办的
         TaskCount toReadCount;   //nfq:这个是统计待阅的
         try {
-            toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(userID, Constants.TASK_TO_DO, sceneId, sectionId).size());
+            FormInstListDTO dto2 = FormInstListDTO.builder()
+                    .userId(countDTO.getUserId())
+                    .sceneId(countDTO.getSceneId())
+                    .sectionId(countDTO.getSectionId())
+                    .taskType(Constants.TASK_TO_DO).build();
+
+            toDoCount = new TaskCount(Constants.TASK_TO_DO, listFormInst(dto2).size());
         } catch (SizeNullException e) {
             toDoCount = new TaskCount(Constants.TASK_TO_DO, 0);
         }
 
         try {
-            toReadCount = new TaskCount(Constants.TASK_TOBE_READ, listFormInst(userID, Constants.TASK_TOBE_READ, sceneId, sectionId).size());
+            FormInstListDTO dto2 = FormInstListDTO.builder()
+                    .userId(countDTO.getUserId())
+                    .sceneId(countDTO.getSceneId())
+                    .sectionId(countDTO.getSectionId())
+                    .taskType(Constants.TASK_TOBE_READ).build();
+            toReadCount = new TaskCount(Constants.TASK_TOBE_READ, listFormInst(dto2).size());
         } catch (SizeNullException e) {
             toReadCount = new TaskCount(Constants.TASK_TOBE_READ, 0);
         }
@@ -633,16 +636,14 @@ public class FormInstService implements IFormInstService {
     /**
      * 入口方法
      * 点击外链之后,显示当前待执行节点的表单sheet
-     *
-     * @param taskId
      */
-    public AsTaskVO getShareLinkTask(String taskId,
-                                     String userId,
-                                     String sectionId) throws ProcException, FormException {
-        return getTaskCommand.getShareLinkTask(taskId,userId,sectionId);
+    public AsTaskVO getShareLinkTask(TaskShareDTO dto) throws ProcException, FormException {
+        String taskId = dto.getTaskId();
+        String userId = dto.getUserId();
+        String sectionId = dto.getSectionId();
+        String curSectionUsers = dto.getCurSectionUsers();
+        return getTaskCommand.getShareLinkTask(taskId,userId,sectionId,curSectionUsers);
     }
-
-
 
 
 

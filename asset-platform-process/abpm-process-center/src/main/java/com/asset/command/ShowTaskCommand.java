@@ -46,7 +46,8 @@ public class ShowTaskCommand {
     public ArrayList<AsTaskVO> showTasks(int taskType,
                                          String userId,
                                          String sceneId,
-                                         String sectionId){
+                                         String sectionId,
+                                         String curSectionUsers){
         LoginUser loginUser = LoginUser.builder()
                 .userId(userId)
                 .sceneId(sceneId)
@@ -55,7 +56,7 @@ public class ShowTaskCommand {
         //找到指定类型的任务节点
         List<AsSimpleTask> asSimpleTasks = selectSimpleTaskStep.selectSimpleTasksByTaskType(taskType);
         if (asSimpleTasks.size() == 0)
-            throw new SizeNullException("表单实例为空");
+            return new ArrayList<>();
 
         List<AsRunningTask> asRunningTasks = new ArrayList<>();
         for(int i = 0;i<asSimpleTasks.size();i++){
@@ -75,13 +76,13 @@ public class ShowTaskCommand {
 
 
         //接着对candidate、会签节点、选择的工作场景进行筛选
-        candidateFiltrateCommand.filtrate(asRunningTasks,loginUser);
+        candidateFiltrateCommand.filtrate(asRunningTasks,loginUser,curSectionUsers);
         jointFiltrateCommand.filtrate(asRunningTasks,loginUser);
         sceneFiltrateCommand.filtrate(asRunningTasks,loginUser);
 
 
         if(asRunningTasks.size()==0)
-            return null;
+            return new ArrayList<>();
 
         List<AsTaskDO> asTaskDOs = new ArrayList<>();
 
