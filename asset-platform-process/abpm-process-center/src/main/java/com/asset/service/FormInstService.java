@@ -5,11 +5,11 @@ import
 import com.alibaba.fastjson.JSONObject;
 import com.asset.command.RollbackCommand;
 import com.asset.command.ShowTaskCommand;
+import com.asset.command.UpdateProcStatusCommand;
 import com.asset.converter.FormConverter;
 import com.asset.entity.*;
 import com.asset.exception.*;
 import com.asset.filter.DuplicateFilter;
-import com.asset.filter.SceneFilter;
 import com.asset.filter.UserIdFilter;
 import com.asset.javabean.*;
 import com.asset.javabean.form.ColumnItem;
@@ -19,10 +19,10 @@ import com.asset.dto.*;
 import com.asset.mapper.AsFormInstMapper;
 import com.asset.mapper.FormInstMapper;
 import com.asset.service.impl.ActRuVariableService;
+import com.asset.step.LoadUncompleteTasksCommand;
 import com.asset.utils.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.DocumentException;
 import org.flowable.bpmn.model.*;
@@ -30,7 +30,6 @@ import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.ui.modeler.service.ModelServiceImpl;
-import org.hibernate.validator.internal.engine.messageinterpolation.parser.ELState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -77,6 +76,11 @@ public class FormInstService implements IFormInstService {
     RollbackCommand rollbackCommand;
     @Autowired
     ShowTaskCommand showTaskCommand;
+
+    @Autowired
+    UpdateProcStatusCommand updateProcStatusCommand;
+    @Autowired
+    LoadUncompleteTasksCommand loadUncompleteTasksCommand;
 
     /**
      * 业务入口
@@ -515,62 +519,34 @@ public class FormInstService implements IFormInstService {
                     break;
                 //当前审批节点的驳回属性设置为：回滚到上一个经办节点处
                 case Constants.NODE_APPROVE_ROLLBACK:
-                    String lastApplyNode = "";
+                    String rollbackNodeId;
+                    AsSimpleTask simpleTask = new AsSimpleTask.Builder()
+                            .executionId(executionId)
+                            .taskId(dto.getTask_id())
+                            .procInstId(procInstID).build();
 
                     dto.setModelEditorJson(flowableService.getModelEditorJson(procModelId));
 
-
                     //先判断当前实例中是否包含并行分支，如果是包含并行分支的，需要根据当前任务节点的位置，选择正确的回滚点位置
-                    if (dto.containParallel()) {
-                        //完成所有的回滚操作
-                        lastApplyNode = rollbackCommand.getRollbackPosInParallelProc(procInstID, procModelId, dto.getTask_id());
+                    if (dto.containParallel())
+                    {
+                        //回滚+更新被回滚任务状态码+加载新生成的任务节点
+                        HashMap<String, Object> hashMap = rollbackCommand.rollbackParallelProc(procInstID, procModelId, dto.getTask_id());
+                        rollbackNodeId = (String) hashMap.get("rollback");
+                        HashMap<String, AsExecution> allExes = (HashMap<String, AsExecution>)hashMap.get("allExes");
+                        updateProcStatusCommand.updateRollbackTaskStatus(rollbackNodeId,allExes);
+                        strings = loadUncompleteTasksCommand.loadUncompleteTasks(procInstID,dto.getForm_model_id());
                     }
                     //不包含并行分支，直接进行回滚
-                    else {
-                        //获取上一个经办节点
-                        lastApplyNode = getLastApplyNodeActId(getProcInstId(dto.getTask_id()));
-                        if (lastApplyNode.equals(""))
-                            throw new ProcException("无法找到上一个经办节点，无法完成回滚，当前审批意见无法执行！");
-                        //回滚
-                        procInstService.rollback(procInstID, lastApplyNode, executionId);
+                    else
+                    {
+                        //回滚+更新被回滚任务状态码+加载新生成的任务节点
+                        rollbackNodeId = rollbackCommand.rollbackNormalProc(simpleTask);
+                        updateProcStatusCommand.updateRollbackTaskStatus(simpleTask,rollbackNodeId);
+                        strings = loadUncompleteTasksCommand.loadUncompleteTasks(procInstID,dto.getForm_model_id());
                     }
-
-                    //回滚之后，需获取当前任务到上一个经办节点之间的那些任务实例formInst，将其状态值修改为“已回滚”
-                    List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstID);
-                    for (int i = 0; i < historicActs.size(); i++) {
-                        //从后往前遍历，只到遍历到回滚点处，就不用更新状态值了
-                        if (historicActs.get(i).getActivityId().equals(lastApplyNode))
-                            break;
-                        //只对类型为userTask的进行更新状态值，因为as_form_inst表中只存在类型为userTask的任务
-                        if (!historicActs.get(i).getActivityType().equals("userTask"))
-                            continue;
-
-
-                        AsFormInstDO updateDO = new AsFormInstDO.Builder()
-                                .status(Constants.FORM_INST_ROLLED)
-                                .build();
-
-                        UpdateWrapper<AsFormInstDO> updateWrapper = new UpdateWrapper<>();
-                        updateWrapper.lambda()
-                                .eq(AsFormInstDO::getTaskId, historicActs.get(i).getTaskId());
-
-                        int update = asFormInstMapper.update(updateDO, updateWrapper);
-                        if (update == Constants.DATABASE_FAILED)
-                            throw new DatabaseException("更新任务状态值失败！");
-                    }
-
-
-                    // 回滚后，该实例下会生成新的任务节点信息（在act_hi_actinst表中可以找到，相同inst_id且END_time为空的条目）
-                    // 新的任务节点信息将其封装在as_form_inst表中，这里先不用saveRollbackTask()，saveUnCompleteTask()应该就可以满足要求了
-//                        saveRollbackTask(procInstID, dto.getForm_model_id());
-                    procInstService.saveUnCompleteTask(
-                            procInstID,
-                            dto.getForm_model_id());
-                    String[] taskIDs = ProcUtils.getTaskIDs(procInstID);
-                    strings = taskIDs;
 
                     break;
-
                 //当前审批节点的驳回属性设置为：高级回滚，可以指定回滚到任意经办节点，这个功能暂时不做
                 case Constants.NODE_APPROVE_ROLLBACK_PLUS:
                     throw new ProcException("暂时不支持该回滚类型！请检查node：" + nodeDO.getNodeId() + " 的属性");
@@ -1151,25 +1127,6 @@ public class FormInstService implements IFormInstService {
     }
 
 
-    /**
-     * 获取流程实例中的上一个经办节点,注意这里不能获取并行网关中的经办节点！因为流程回滚不能回滚到并行网关中的经办节点处
-     * 1、用comingflow那个操作获取上一个节点
-     * 2、查看它的node——type是不是经办节点类型
-     * 3、如果不是，回到1；如果是，返回该节点
-     *
-     * @param procInstId 当前待执行的Task所属的流程实例Id
-     * @return
-     */
-    public String getLastApplyNodeActId(String procInstId) {
-        List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstId);
-        String procModelId = procInstService.getProcModelId(procInstId);
-        for (HistoricActivityInstance instance : historicActs) {
-            String actId = instance.getActivityId();
-            if (procNodeService.getNodeType(procModelId, actId) == Constants.AS_NODE_APPLY) ;
-            return actId;
-        }
-        return "";
-    }
 
 
     public String[] generateUrls(String procInstId) {

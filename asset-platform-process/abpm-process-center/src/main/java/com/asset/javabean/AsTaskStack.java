@@ -30,50 +30,25 @@ public class AsTaskStack extends Stack {
     //判断栈顶元素是不是并行网关-结束
     public boolean isTopParallelEnd(HashMap<String, AsParallelNode> parallelNodes) {
         AsTask curPeekTask = (AsTask) this.peek();
-        if (curPeekTask.getActType().equals(Constants.FLOWABLE_ACT_TYPE_PARALLEL)) {
-            AsParallelNode asParallelNode = parallelNodes.get(curPeekTask.getActId());
-            //检查是结束还是开始，结束的话，要一直出栈，只到遇到对应的开始
-            if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_end)
-                return true;
-            else
-                return false;
-        } else
-            return false;
+        return curPeekTask.isTopParallelEnd(parallelNodes);
     }
 
 
     //判断栈顶元素是不是并行网关-开始
     public boolean isTopParallelStart(HashMap<String, AsParallelNode> parallelNodes) {
         AsTask curPeekTask = (AsTask) this.peek();
-        if (curPeekTask.getActType().equals(Constants.FLOWABLE_ACT_TYPE_PARALLEL)) {
-            AsParallelNode asParallelNode = parallelNodes.get(curPeekTask.getActId());
-            //检查是结束还是开始，结束的话，要一直出栈，只到遇到对应的开始
-            if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_start)
-                return true;
-            else
-                return false;
-        } else
-            return false;
+        return curPeekTask.isTopParallelStart(parallelNodes);
     }
 
     //判断栈顶元素是不是经办节点
     public boolean isTopApplyTask(ProcNodeService procNodeService, String procModelId) {
         AsTask curPeekTask = (AsTask) this.peek();
-        if (curPeekTask.getActType().equals(Constants.FLOWABLE_ACT_TYPE_USERTASK))
-            if (procNodeService.getNodeType(procModelId, curPeekTask.getActId()).equals(Constants.AS_NODE_APPLY))
-                return true;
-            else
-                return false;
-        else
-            return false;
+        return curPeekTask.isApplyTask(procNodeService);
     }
 
     public boolean isTopStartEvent() {
         AsTask curPeekTask = (AsTask) this.peek();
-        if (curPeekTask.getActType().equals(Constants.FLOWABLE_ACT_TYPE_STARTEVENT))
-            return true;
-        else
-            return false;
+        return curPeekTask.isStartEvent();
     }
 
     public HashMap<String, Object> selectLastApplyTask(HashMap<String, AsParallelNode> parallelNodes, String procModelId, ProcNodeService procNodeService) {

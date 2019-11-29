@@ -50,7 +50,7 @@ public class AdminProcInstController {
 //        String procInstId  = "";
 //        String procModelId = "";
 //
-//        service.getRollbackPosInParallelProc(procInstId,procModelId);
+//        service.rollbackParallelProc(procInstId,procModelId);
 //    }
 
 //    @Test

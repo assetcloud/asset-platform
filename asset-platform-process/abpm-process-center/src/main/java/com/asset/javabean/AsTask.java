@@ -2,15 +2,28 @@ package com.asset.javabean;
 
 
 import com.asset.entity.ActHiActinst;
+import com.asset.service.ProcNodeService;
+import com.asset.step.TranslateStep;
+import com.asset.utils.Constants;
 import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.flowable.engine.history.HistoricActivityInstance;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
 
 @Data
+@Component
+@AllArgsConstructor
 @Builder
 public class AsTask {
-//    @TableField("task_")
+    @Autowired
+    TranslateStep translateStep;
+
+    //    @TableField("task_")
     String taskId; //用来找共同点
     //下面两个属性用于回滚
     String executionId;
@@ -28,12 +41,10 @@ public class AsTask {
     }
 
 
-
     public AsTask(HistoricActivityInstance node) {
-        switch (node.getActivityType())
-        {
+        switch (node.getActivityType()) {
             case "parallelGateway":
-                this.taskId = "parallelGateway_"+node.getActivityId();
+                this.taskId = "parallelGateway_" + node.getActivityId();
                 break;
             case "startEvent":
                 this.taskId = "startEvent";
@@ -52,10 +63,9 @@ public class AsTask {
     }
 
     public AsTask(ActHiActinst actInst) {
-        switch (actInst.getActType())
-        {
+        switch (actInst.getActType()) {
             case "parallelGateway":
-                this.taskId = "parallelGateway_"+actInst.getActId();
+                this.taskId = "parallelGateway_" + actInst.getActId();
                 break;
             case "startEvent":
                 this.taskId = "startEvent";
@@ -71,4 +81,52 @@ public class AsTask {
         this.actId = actInst.getActId();
         this.actType = actInst.getActType();
     }
+
+
+    //判断栈顶元素是不是经办节点
+    public boolean isApplyTask(ProcNodeService procNodeService) {
+        String procModelId = translateStep.taskIdToProcModelId(this.taskId);
+        if (this.getActType().equals(Constants.FLOWABLE_ACT_TYPE_USERTASK))
+            if (procNodeService.getNodeType(procModelId, this.getActId()).equals(Constants.AS_NODE_APPLY))
+                return true;
+            else
+                return false;
+        else
+            return false;
+    }
+
+    public boolean isStartEvent() {
+        if (this.getActType().equals(Constants.FLOWABLE_ACT_TYPE_STARTEVENT))
+            return true;
+        else
+            return false;
+    }
+
+    //判断栈顶元素是不是并行网关-开始
+    public boolean isTopParallelStart(HashMap<String, AsParallelNode> parallelNodes) {
+        if (this.getActType().equals(Constants.FLOWABLE_ACT_TYPE_PARALLEL)) {
+            AsParallelNode asParallelNode = parallelNodes.get(this.getActId());
+            //检查是结束还是开始，结束的话，要一直出栈，只到遇到对应的开始
+            if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_start)
+                return true;
+            else
+                return false;
+        } else
+            return false;
+    }
+
+    //判断栈顶元素是不是并行网关-结束
+    public boolean isTopParallelEnd(HashMap<String, AsParallelNode> parallelNodes) {
+
+        if (this.getActType().equals(Constants.FLOWABLE_ACT_TYPE_PARALLEL)) {
+            AsParallelNode asParallelNode = parallelNodes.get(this.getActId());
+            //检查是结束还是开始，结束的话，要一直出栈，只到遇到对应的开始
+            if (asParallelNode.getType() == Constants.AS_NODE_PARALLEL_end)
+                return true;
+            else
+                return false;
+        } else
+            return false;
+    }
+
 }
