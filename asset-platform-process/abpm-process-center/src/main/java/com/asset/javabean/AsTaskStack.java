@@ -2,6 +2,7 @@ package com.asset.javabean;
 
 import com.asset.exception.ProcException;
 import com.asset.service.ProcNodeService;
+import com.asset.step.TranslateStep;
 import com.asset.utils.Constants;
 import lombok.Data;
 
@@ -41,9 +42,9 @@ public class AsTaskStack extends Stack {
     }
 
     //判断栈顶元素是不是经办节点
-    public boolean isTopApplyTask(ProcNodeService procNodeService, String procModelId) {
+    public boolean isTopApplyTask(ProcNodeService procNodeService, String procModelId, TranslateStep translateStep) {
         AsTask curPeekTask = (AsTask) this.peek();
-        return curPeekTask.isApplyTask(procNodeService);
+        return curPeekTask.isApplyTask(procNodeService,translateStep);
     }
 
     public boolean isTopStartEvent() {
@@ -51,7 +52,7 @@ public class AsTaskStack extends Stack {
         return curPeekTask.isStartEvent();
     }
 
-    public HashMap<String, Object> selectLastApplyTask(HashMap<String, AsParallelNode> parallelNodes, String procModelId, ProcNodeService procNodeService) {
+    public HashMap<String, Object> selectLastApplyTask(HashMap<String, AsParallelNode> parallelNodes, String procModelId, ProcNodeService procNodeService,TranslateStep translateStep) {
         HashMap<String, Object> hashMap = new HashMap<>();
         while (!this.empty()) {
             //出栈元素是并行网关，记录或者跳过
@@ -68,7 +69,7 @@ public class AsTaskStack extends Stack {
                 hashMap.put("parallel", asParallelNode);
             }
             //出栈元素是经办节点，记录
-            else if (this.isTopApplyTask(procNodeService, procModelId)) {
+            else if (this.isTopApplyTask(procNodeService, procModelId,translateStep)) {
                 AsTask curPopTask = (AsTask) this.pop();
                 hashMap.put("rollbackTask", curPopTask);
                 break;
@@ -97,7 +98,8 @@ public class AsTaskStack extends Stack {
                                     AsTask rollbackTask,
                                     AsParallelNode mainExeParallel,
                                     String procModelId,
-                                    ProcNodeService procNodeService) {
+                                    ProcNodeService procNodeService,
+                                    TranslateStep translateStep) {
         AsParallelNode tempParallel = null;
 
         //一直遍历，只到没东西可以遍历
@@ -115,7 +117,7 @@ public class AsTaskStack extends Stack {
                 tempParallel = parallelNodes.get(curPopTask.getActId());
             }
             //出栈元素是经办节点，看之前记录的parallel是不是mainExe中记录的parallel,如果是，接着并且都是同一个task，那么就确定下来这两个execution都是可以被回滚到这个节点的
-            else if (this.isTopApplyTask(procNodeService, procModelId)) {
+            else if (this.isTopApplyTask(procNodeService, procModelId,translateStep)) {
                 AsTask curPopTask = (AsTask) this.pop();
                 if(tempParallel == mainExeParallel && curPopTask.getTaskId().equals(rollbackTask.getTaskId()))
                     return true;

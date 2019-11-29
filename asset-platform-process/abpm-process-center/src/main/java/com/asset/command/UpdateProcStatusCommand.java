@@ -9,9 +9,11 @@ import com.asset.mapper.AsFormInstMapper;
 import com.asset.service.ProcInstService;
 import com.asset.service.ProcNodeService;
 import com.asset.step.TranslateStep;
+import com.asset.step.UpdateFormInstStep;
 import com.asset.utils.Constants;
 import com.asset.utils.ProcUtils;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -30,6 +32,9 @@ public class UpdateProcStatusCommand {
     ProcInstService procInstService;
     @Autowired
     ProcNodeService procNodeService;
+
+    @Autowired
+    UpdateFormInstStep updateFormInstStep;
 
 
     /**
@@ -90,23 +95,19 @@ public class UpdateProcStatusCommand {
 
                 for (int i = 0; i < execution.size(); i++) {
                     AsTask curTask = execution.get(i);
-                    //从后往前遍历，只到遍历到回滚点处，就不用更新状态值了
+                    //从后往前遍历，只到遍历到回滚点处，当前回滚点还要把状态值更新了，然后回滚点前面的就不用更新状态值了
                     if (curTask.getActId().equals(rollbackActId))
+                    {
+                        updateFormInstStep.updateFormInstStatus(curTask, Constants.FORM_INST_ROLLED);
                         break;
+                    }
                     //只对类型为userTask的进行更新状态值，因为as_form_inst表中只存在类型为userTask的任务
-                    if (!curTask.isApplyTask(procNodeService))
+                    if (!curTask.isUserTask())
                         continue;
 
+                    updateFormInstStep.updateFormInstStatus(curTask, Constants.FORM_INST_ROLLED);
 
-                    AsFormInstDO updateDO = new AsFormInstDO.Builder()
-                            .status(Constants.FORM_INST_ROLLED)
-                            .build();
-                    UpdateWrapper<AsFormInstDO> updateWrapper = new UpdateWrapper<>();
-                    updateWrapper.lambda()
-                            .eq(AsFormInstDO::getTaskId, curTask.getTaskId());
-                    int update = asFormInstMapper.update(updateDO, updateWrapper);
-                    if (update == Constants.DATABASE_FAILED)
-                        throw new DatabaseException("更新任务状态值失败！");
+
                 }
             }
 

@@ -5,10 +5,7 @@ import com.asset.javabean.*;
 import com.asset.service.FlowableService;
 import com.asset.service.ProcInstService;
 import com.asset.service.ProcNodeService;
-import com.asset.step.ConstructExesStep;
-import com.asset.step.ConstructStacksStep;
-import com.asset.step.GetRollbackNodeStep;
-import com.asset.step.SignParallelNodeStep;
+import com.asset.step.*;
 import com.asset.utils.ProcUtils;
 import org.flowable.bpmn.model.FlowElement;
 import org.flowable.engine.history.HistoricActivityInstance;
@@ -46,6 +43,8 @@ public class RollbackCommand {
 
     @Autowired
     GetRollbackNodeStep getRollbackNodeStep;
+    @Autowired
+    TranslateStep translateStep;
 
 
     /*
@@ -81,7 +80,7 @@ public class RollbackCommand {
 
         //先对主执行序列进行遍历，找到回滚点
         AsTaskStack mainStack = stacks.get(mainIndex);
-        HashMap<String, Object> hashMap = mainStack.selectLastApplyTask(parallelNodes, procModelId, procNodeService);
+        HashMap<String, Object> hashMap = mainStack.selectLastApplyTask(parallelNodes, procModelId, procNodeService,translateStep);
         mainParallel = (AsParallelNode) hashMap.get("parallel");
         rollbackTask = (AsTask) hashMap.get("rollbackTask");
 
@@ -94,17 +93,21 @@ public class RollbackCommand {
         //对剩余的栈进行遍历，看哪些栈属于可以回滚，哪些栈属于不可回滚，划分出 可回滚 与 不可回滚 列表
         //这边划分出之后，对原来的execution
         for (int i = 0; i < stacks.size(); i++) {
+            AsTaskStack curStack = stacks.get(i);
+
             //主执行序列自动属于rollbackEnable
             if (i == mainIndex)
             {
                 //mainIndex此时更新为mainStack在rollbackEnable中的下标位置
                 mainIndex = rollbackEnable.size();
                 rollbackEnable.add(stacks.get(i));
+                for(AsExecution asExecution:allExes.values()){
+                    asExecution.initRollbackEnable(curStack.getExeId());
+                }
                 continue;
             }
-            AsTaskStack curStack = stacks.get(i);
 
-            if(curStack.isRollbackEnable(parallelNodes,rollbackTask,mainParallel,procModelId,procNodeService))
+            if(curStack.isRollbackEnable(parallelNodes,rollbackTask,mainParallel,procModelId,procNodeService,translateStep))
             {
                 rollbackEnable.add(curStack);
                 for(AsExecution asExecution:allExes.values()){

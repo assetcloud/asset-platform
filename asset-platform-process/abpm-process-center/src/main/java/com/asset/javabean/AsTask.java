@@ -16,12 +16,8 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 
 @Data
-@Component
-@AllArgsConstructor
-@Builder
 public class AsTask {
-    @Autowired
-    TranslateStep translateStep;
+
 
     //    @TableField("task_")
     String taskId; //用来找共同点
@@ -84,10 +80,10 @@ public class AsTask {
 
 
     //判断栈顶元素是不是经办节点
-    public boolean isApplyTask(ProcNodeService procNodeService) {
+    public boolean isApplyTask(ProcNodeService procNodeService,TranslateStep translateStep) {
         String procModelId = translateStep.taskIdToProcModelId(this.taskId);
         if (this.getActType().equals(Constants.FLOWABLE_ACT_TYPE_USERTASK))
-            if (procNodeService.getNodeType(procModelId, this.getActId()).equals(Constants.AS_NODE_APPLY))
+            if (procNodeService.getNodeType(     procModelId, this.getActId()   ) == (Constants.AS_NODE_APPLY))
                 return true;
             else
                 return false;
@@ -129,4 +125,10 @@ public class AsTask {
             return false;
     }
 
+    public boolean isUserTask() {
+        if (this.getActType().equals(Constants.FLOWABLE_ACT_TYPE_USERTASK))
+            return true;
+        else
+            return false;
+    }
 }
