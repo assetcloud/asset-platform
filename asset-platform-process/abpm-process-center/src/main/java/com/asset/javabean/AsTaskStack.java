@@ -5,6 +5,7 @@ import com.asset.service.ProcNodeService;
 import com.asset.utils.Constants;
 import lombok.Data;
 
+import javax.annotation.Priority;
 import java.util.HashMap;
 import java.util.Stack;
 
@@ -13,8 +14,8 @@ public class AsTaskStack extends Stack {
     String exeId;
 
     public void initExeId(String exeId) {
-        if (exeId == null)
-            exeId = exeId;
+        if (this.exeId == null)
+            this.exeId = exeId;
     }
 
     public void fromEndToStart(String startParallelId) {
@@ -96,8 +97,13 @@ public class AsTaskStack extends Stack {
                 AsTask curPopTask = (AsTask) this.pop();
                 hashMap.put("rollbackTask", curPopTask);
                 break;
-            } else if (this.isTopStartEvent()) {
+            }
+            else if (this.isTopStartEvent()) {
                 throw new ProcException("当前流程实例无法完成回滚操作！该审批节点前无经办节点！");
+            }
+            //属于其它情况，直接出栈即可
+            else {
+                this.pop();
             }
         }
 
@@ -142,6 +148,8 @@ public class AsTaskStack extends Stack {
             //直到遍历到开始节点还没有找到与mainExe相同的那个经办节点，那么说明这个execution和mainExe是独立的，属于不可被回滚的
             else if (this.isTopStartEvent()) {
                 return false;
+            } else {
+                this.pop();
             }
         }
 

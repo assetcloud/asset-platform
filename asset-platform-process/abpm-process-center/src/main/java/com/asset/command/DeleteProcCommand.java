@@ -23,13 +23,13 @@ public class DeleteProcCommand {
      * @param exeId
      */
     public void deleteExecution(String exeId) {
-        //删act_ru_task表
+        //删act_ru_task表中该execution下的所有待完成任务
         QueryWrapper<ActRuTask> queryWrapper = new QueryWrapper<>();
         queryWrapper.lambda()
                 .eq(ActRuTask::getExecutionId, exeId);
         int flag = taskMapper.delete(queryWrapper);
 
-        //删act_ru_execution表
+        //删act_ru_execution表中该execution
         QueryWrapper<ActRuExecution> queryWrapper2 = new QueryWrapper<>();
         queryWrapper2.lambda()
                 .eq(ActRuExecution::getId, exeId);

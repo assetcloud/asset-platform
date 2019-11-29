@@ -214,6 +214,7 @@ public class RollbackCommand {
                 //mainIndex此时更新为mainStack在rollbackEnable中的下标位置
                 mainIndex = rollbackEnable.size();
                 rollbackEnable.add(stacks.get(i));
+                continue;
             }
             AsTaskStack curStack = stacks.get(i);
 
