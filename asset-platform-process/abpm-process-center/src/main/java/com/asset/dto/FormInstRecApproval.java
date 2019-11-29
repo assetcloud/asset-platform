@@ -8,7 +8,7 @@ import lombok.Data;
  * 经办节点
  */
 @Data
-public class FormInstRecHandle extends FormInstRecBase {
+public class FormInstRecApproval extends FormInstRecBase {
     //待办节点的表单实例ID
     @ApiModelProperty(value = "表单实例Id")
     String form_inst_id;

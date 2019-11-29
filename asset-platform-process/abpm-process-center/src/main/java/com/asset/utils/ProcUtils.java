@@ -1,30 +1,19 @@
 package com.asset.utils;
 
-import com.asset.entity.AsFormInstDO;
-import com.asset.entity.ProcNodeDO;
 import com.asset.exception.ProcException;
-import com.asset.javabean.ProcExecution;
-import com.asset.javabean.ProcNode;
-import org.checkerframework.checker.units.qual.A;
-import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricActivityInstance;
-import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.DeploymentBuilder;
 import org.flowable.engine.repository.ProcessDefinition;
-import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.engine.runtime.ProcessInstanceQuery;
 import org.flowable.task.api.Task;
-import org.flowable.ui.modeler.service.ModelServiceImpl;
 import org.flowable.ui.modeler.serviceapi.ModelService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 

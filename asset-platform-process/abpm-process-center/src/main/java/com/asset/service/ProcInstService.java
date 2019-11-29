@@ -2,8 +2,9 @@ package com.asset.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.asset.command.ConstructCommand;
+import com.asset.mapper.AsTaskMapper;
 import com.asset.mapper.ProcInstMapper;
-import com.asset.mapper.FormInstMapper;
 import com.asset.mapper.ProcNodeMapper;
 import com.asset.dto.*;
 import com.asset.entity.*;
@@ -53,8 +54,7 @@ public class ProcInstService {
     protected ModelService modelService;
     @Autowired
     FormInstService formInstService;
-    @Autowired
-    FormInstMapper formInstMapper;
+
     @Autowired
     ProcInstMapper procInstMapper;
     @Autowired
@@ -67,6 +67,10 @@ public class ProcInstService {
     ApplicationService applicationService;
     @Autowired
     AsProcModelService procModelService;
+    @Autowired
+    AsTaskMapper asTaskMapper;
+    @Autowired
+    ConstructCommand constructCommand;
 
 
     public ProcessInstance getProcInst(String procInstId) {
@@ -96,16 +100,16 @@ public class ProcInstService {
         //如果下面还有任务节点要处理，就在as_proc_inst中新建这个表单实例字段（每一个TaskId对应一个新的表单实例）
         for (int i = 0; i < taskIDs.length; i++) {
             //在as_proc_inst表中找到的新task在as_form_inst表中是否存在
-            boolean isNotContain = formInstMapper.getTaskId(taskIDs[i]) == null ? true : false;
+//            boolean isNotContain = formInstMapper.getTaskId(taskIDs[i]) == null ? true : false;
+            boolean isNotContain = asTaskMapper.selectById(taskIDs[i]) == null ? true : false;
             //获取该新task的node_id
             String curNodeId = flowableService.getNodeId(taskIDs[i]);
 
             //当前要存的taskID不能是已经有的的，否则重复保存了
             if (isNotContain && !CommonUtils.isStringArrayContain(hasAddedNodeId,curNodeId)) {
                 String formInstAllValue = getFormInstAllValue(procInstId);
-                FormInstDO formInst = formInstService.createFormInst(originalFormSheet,
+                AsTaskDO formInst = constructCommand.constructUncompleteTaskRecord(originalFormSheet,
                         procInstId,
-                        null,
                         formModelId,
                         formInstAllValue,
                         taskIDs[i]);

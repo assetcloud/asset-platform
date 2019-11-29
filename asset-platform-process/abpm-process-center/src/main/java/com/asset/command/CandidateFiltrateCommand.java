@@ -1,13 +1,10 @@
 package com.asset.command;
 
-import com.asset.exception.FormException;
 import com.asset.javabean.AsRunningTask;
-import com.asset.javabean.FormInstBO;
 import com.asset.javabean.LoginUser;
 import com.asset.utils.Constants;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -66,28 +63,4 @@ public class CandidateFiltrateCommand {
         return "hahahah";
     }
 
-    public FormInstBO shareLinkFiltrate(FormInstBO formInstBO,
-                                        String sectionId) throws FormException {
-        //对user先进行筛选,如果有找到，那就立即返回即可
-        String[] candidateUser = formInstBO.getCandidateUser();
-        if (candidateUser != null)
-            for (int i = 0; i < candidateUser.length; i++) {
-                if (candidateUser[i].equals(formInstBO.getCurUserId()))
-                    return formInstBO;
-            }
-
-        //对组织进行筛选
-        String[] candidateGroup = formInstBO.getCandidateGroup();
-        if (candidateGroup == null)
-            throw new FormException("当前用户权限不够，无法获取当前任务节点信息！");
-
-
-        for (int i = 0; i < candidateGroup.length; i++) {
-            if (candidateGroup[i].equals(sectionId))
-                return formInstBO;
-        }
-
-        //人员和组织都找了，都找不到，所以当前用户是没有权限的
-        throw new FormException("当前用户权限不够，无法获取当前任务节点信息！");
-    }
 }

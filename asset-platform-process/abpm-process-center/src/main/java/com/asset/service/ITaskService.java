@@ -1,6 +1,6 @@
 package com.asset.service;
 
-import com.asset.entity.AsFormInstDO;
+import com.asset.entity.AsTaskDO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author YBY
  * @since 2019-08-04
  */
-public interface ITaskService extends IService<AsFormInstDO> {
+public interface ITaskService extends IService<AsTaskDO> {
 
 }

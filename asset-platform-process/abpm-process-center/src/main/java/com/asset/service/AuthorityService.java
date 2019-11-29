@@ -1,18 +1,13 @@
 package com.asset.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.asset.converter.FormConverter;
 import com.asset.mapper.FormAuthorityMapper;
 import com.asset.entity.FormAuthorityDO;
 import com.asset.entity.AsTempletFormAuthorityDO;
-import com.asset.entity.FormInstDO;
-import com.asset.exception.ProcException;
 import com.asset.javabean.form.OptionsBase;
 import com.asset.exception.DatabaseException;
-import com.asset.exception.FormException;
 import com.asset.exception.InfoException;
 import com.asset.javabean.form.FormItem;
-import com.asset.javabean.form.FormSheet;
 import com.asset.utils.Constants;
 import com.asset.utils.FormUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -106,74 +101,6 @@ public class AuthorityService {
         return curItem;
     }
 
-    public FormInstDO handleFormSheetAuthority(FormInstDO formInstDO) throws FormException ,ProcException{
-        //注意这里从表单实例中获取到的sheet是为null的，需要从对应的model中去获取
-        String formModelId = formInstDO.getFormModelId();
-        String modelSheetStr = formModelService.getModelSheetStr(formModelId);
-        FormSheet formSheet = FormConverter.jsonToEntity(modelSheetStr);
-
-        String curNode = flowableService.getNodeId(formInstDO.getTaskId());
-        String procModelId = procInstService.getProcModelId(formInstDO.getProcInstId());
-
-        if(procModelId.equals(Constants.REGISTER_PROC_ID)||
-                procModelId.equals(Constants.SCENE_SELECT_PROC_ID))
-        {
-            //这边需要对是否为注册审批流程进行判断，如果是的话，需要对第二个节点————审批节点进行特殊设置
-            formSheet = handleRegisterProc(procModelId,formSheet,curNode);
-            modelSheetStr = FormConverter.entityToJson(formSheet);
-            formInstDO.setFormInstSheetStr(modelSheetStr);
-            formInstDO.setNodeType(Constants.AS_NODE_APPROVE);
-            return formInstDO;
-        }
-
-        List<FormItem> items = formSheet.getList();
-
-        for (int i = 0; i <items.size(); i++) {
-            //获取当前Authority
-            Integer curAuthority = getCurAuthority(procModelId,
-                    curNode,
-                    items.get(i).getKey());
-            if(curAuthority==null)
-                throw new ProcException("当前流程模型："+procModelId+" 表单项权限信息丢失！");
-            //添加权限信息
-            handleItemAuthority(items.get(i),curAuthority);
-        }
-
-        modelSheetStr = FormConverter.entityToJson(formSheet);
-
-        formInstDO.setFormInstSheetStr(modelSheetStr);
-        return formInstDO;
-    }
-
-
-
-    public FormSheet handleRegisterProc(String procModelId,
-                                        FormSheet formSheet,
-                                        String curNode) throws FormException {
-//        Boolean isRegister = procModelId.equals(Constants.REGISTER_PROC_ID)?true:false;
-//        if(!isRegister)
-//            return formSheet;
-
-        //获取Sheet中一项项表单项，对每个表单项进行处理，看是否需要对其进行隐藏、加不可写或改为必填
-        List<FormItem> items = formSheet.getList();
-        if(items==null)
-            throw new FormException("表单模型数据为空");
-        for(int j=0;j<items.size();j++)
-        {
-            //当前流程模型是注册，表单项权限全部设为不可写
-//            if(isRegister)
-//            {
-                handleItemAuthority(items.get(j),Constants.AUTHORITY_DISABLE);
-//                continue;
-//            }
-            //获取当前Authority
-//            Integer curAuthority = getCurAuthority(procModelId,curNode,items.get(j).getKey());
-            //添加权限信息
-//            handleItemAuthority(items.get(j),curAuthority);
-        }
-
-        return formSheet;
-    }
 
     //判断当前存的表单
     public boolean contain(String procModelId, String actId,String formItemKey) {

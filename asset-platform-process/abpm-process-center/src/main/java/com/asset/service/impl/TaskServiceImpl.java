@@ -1,7 +1,7 @@
 package com.asset.service.impl;
 
-import com.asset.entity.AsFormInstDO;
-import com.asset.mapper.AsFormInstMapper;
+import com.asset.entity.AsTaskDO;
+import com.asset.mapper.AsTaskMapper;
 import com.asset.javabean.AdminTaskVO;
 import com.asset.service.FormModelService;
 import com.asset.service.ITaskService;
@@ -24,17 +24,17 @@ import java.util.List;
  */
 @Service
 @AllArgsConstructor
-public class TaskServiceImpl extends ServiceImpl<AsFormInstMapper, AsFormInstDO> implements ITaskService {
+public class TaskServiceImpl extends ServiceImpl<AsTaskMapper, AsTaskDO> implements ITaskService {
 
-    AsFormInstMapper formInstMapper;
+    AsTaskMapper formInstMapper;
     FormModelService formModelService;
     /**
      * 在控制台端获取流程任务节点信息
      *
      * @return
      */
-    public List<AdminTaskVO> listAdminProcTaskInfo(QueryWrapper<AsFormInstDO> queryWrapper) {
-        List<AsFormInstDO> formInstDOs = formInstMapper.selectList(queryWrapper);
+    public List<AdminTaskVO> listAdminProcTaskInfo(QueryWrapper<AsTaskDO> queryWrapper) {
+        List<AsTaskDO> formInstDOs = formInstMapper.selectList(queryWrapper);
         List<AdminTaskVO> VOs = new ArrayList<>();
         for (int i = 0; i < formInstDOs.size(); i++) {
             AdminTaskVO vo = new AdminTaskVO();

@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.asset.dto.CoopCommitFormProcDTO;
 import com.asset.dto.FormInstRecCreate;
-import com.asset.entity.AsFormInstDO;
+import com.asset.entity.AsTaskDO;
 import com.asset.exception.InfoException;
 import com.asset.javabean.form.FormSheet;
 import com.asset.service.FormInstService;
@@ -101,8 +101,8 @@ public class CooperationService implements ICooperationService {
         //form_inst表中取出相应对象数组，看是不是有approve_result等于 APPROVE_DISAGREE
         if(status == Constants.COOP_PROC_COMPLETED)
         {
-            List<AsFormInstDO> asFormInstDOS = formInstService.listFormInst(procInstId);
-            for(AsFormInstDO formInst : asFormInstDOS)
+            List<AsTaskDO> asTaskDOS = formInstService.listFormInst(procInstId);
+            for(AsTaskDO formInst : asTaskDOS)
             {
                 if(formInst.getApproveResult()!=null &&
                         formInst.getApproveResult() == Constants.APPROVE_DISAGREE)

@@ -1,17 +1,13 @@
 package com.asset.javabean;
 
-import com.asset.entity.FormInstDO;
-import com.asset.service.FormInstService;
-import com.asset.service.ProcInstService;
-import com.asset.utils.Constants;
+import com.asset.entity.AsTaskDO;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 
-@Data
-public class FormInstVO extends FormInstDO {
 
+@Data
+public class AsTaskVO extends AsTaskDO {
     //返回给前台用来展示的表单标题
     String title;
     //用来展示的表单内容
@@ -19,46 +15,16 @@ public class FormInstVO extends FormInstDO {
     //当前任务节点所处的实例的发起时间
     long commitTime;
 
-
-
-    public FormInstVO(FormInstDO doo,String committer) {
-        this.formInstValue = doo.getFormInstValue();
-        this.formModelId = doo.getFormModelId();
-        this.procInstId = doo.getProcInstId();
-        this.executionId = doo.getExecutionId();
-        this.taskId = doo.getTaskId();
-        this.executor = doo.getExecutor();
-        this.formInstSheetStr = doo.getFormInstSheetStr();
-        this.executeTime = doo.getExecuteTime();
-        this.id = doo.getId();
-        this.nodeType = doo.getNodeType();
-        this.status = doo.getStatus();
-
-        this.title = committer +"发起的表单";
-        if(doo.getNodeType() == Constants.AS_NODE_APPLY)
-            this.content = "经办节点";
-        else if(doo.getNodeType() == Constants.AS_NODE_APPROVE)
-            this.content = "审批节点";
-        else if(doo.getNodeType() == Constants.AS_NODE_CC)
-            this.content = "抄送节点";
-        else
-            this.content = "其他节点";
-    }
-
-    public FormInstVO() {
-    }
-
-    private FormInstVO(Builder builder) {
+    private AsTaskVO(Builder builder) {
         setId(builder.id);
         setFormModelId(builder.formModelId);
         setProcInstId(builder.procInstId);
         setExecutionId(builder.executionId);
-        setTaskId(builder.taskId);
-        setExecuteTime(builder.executeTime);
         setExecutor(builder.executor);
-        setFormInstSheetStr(builder.formInstSheetStr);
-        setStatus(builder.status);
+        setExecuteTime(builder.executeTime);
+        setFormInstSheet(builder.formInstSheet);
         setFormInstValue(builder.formInstValue);
+        setStatus(builder.status);
         setNodeType(builder.nodeType);
         setApproveResult(builder.approveResult);
         setTitle(builder.title);
@@ -66,17 +32,17 @@ public class FormInstVO extends FormInstDO {
         setCommitTime(builder.commitTime);
     }
 
+
     public static final class Builder {
         private String id;
         private String formModelId;
         private String procInstId;
         private String executionId;
-        private String taskId;
-        private Date executeTime;
         private String executor;
-        private String formInstSheetStr;
-        private int status;
+        private Date executeTime;
+        private String formInstSheet;
         private String formInstValue;
+        private Integer status;
         private Integer nodeType;
         private Integer approveResult;
         private String title;
@@ -106,8 +72,8 @@ public class FormInstVO extends FormInstDO {
             return this;
         }
 
-        public Builder taskId(String val) {
-            taskId = val;
+        public Builder executor(String val) {
+            executor = val;
             return this;
         }
 
@@ -116,23 +82,18 @@ public class FormInstVO extends FormInstDO {
             return this;
         }
 
-        public Builder executor(String val) {
-            executor = val;
-            return this;
-        }
-
-        public Builder formInstSheetStr(String val) {
-            formInstSheetStr = val;
-            return this;
-        }
-
-        public Builder status(int val) {
-            status = val;
+        public Builder formInstSheet(String val) {
+            formInstSheet = val;
             return this;
         }
 
         public Builder formInstValue(String val) {
             formInstValue = val;
+            return this;
+        }
+
+        public Builder status(Integer val) {
+            status = val;
             return this;
         }
 
@@ -161,8 +122,8 @@ public class FormInstVO extends FormInstDO {
             return this;
         }
 
-        public FormInstVO build() {
-            return new FormInstVO(this);
+        public AsTaskVO build() {
+            return new AsTaskVO(this);
         }
     }
 }

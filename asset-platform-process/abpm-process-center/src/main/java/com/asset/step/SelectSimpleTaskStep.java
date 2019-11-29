@@ -20,6 +20,11 @@ public class SelectSimpleTaskStep {
         return flowableMapper.selectSimpleTasksByProcInstId(procInstId);
     }
 
+
+    public AsSimpleTask selectSimpleTaskByTaskId(String taskId){
+        return flowableMapper.selectSimpleTasksByTaskId(taskId);
+    }
+
     public List<AsSimpleTask> selectSimpleTasksByTaskType(int taskType) {
         int nodeType1 = -1;
         int nodeType2 = -1;

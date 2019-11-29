@@ -1,8 +1,8 @@
 package com.asset.mapper;
 
+import com.asset.entity.AsTaskDO;
 import com.asset.entity.CommitFormInstDO;
 import com.asset.entity.FlowableTaskDO;
-import com.asset.entity.FormInstDO;
 import com.asset.javabean.AsSimpleTask;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -11,14 +11,6 @@ import java.util.List;
 
 @Mapper
 public interface FlowableMapper {
-
-    /**
-     * 取出AsFormInst对象中的taskId值去act_hi_actinst表中找到对应的ACT_ID_字段的值，
-     * 用于去别的表找这个ACT是什么类型的
-     * @param formInstDOS
-     * @return 对应的ACT_ID_字段的值
-     */
-    public List<FlowableTaskDO> getActIDs(List<FormInstDO> formInstDOS);
 
     /**
      * 获取当前流程实例要执行的任务节点的ACT_ID
@@ -54,11 +46,6 @@ public interface FlowableMapper {
     List<AsSimpleTask> selectSimpleTasksByTaskType(@Param("taskType1") Integer nodeType1,
                                                    @Param("taskType2")  Integer nodeType2);
 
+    AsSimpleTask selectSimpleTasksByTaskId(String taskId);
 
-//    /**
-//     * 找到在taskId之前 相同执行链（executionId）上按时间排序所有被执行的流程节点
-//     * @param executionId
-//     * @return
-//     */
-//    String[] getAllExecutedNodeIds(String executionId);
 }

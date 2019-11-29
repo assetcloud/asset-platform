@@ -1,11 +1,11 @@
 package com.asset.command;
 
-import com.asset.entity.AsFormInstDO;
+import com.asset.entity.AsTaskDO;
 import com.asset.exception.DatabaseException;
 import com.asset.javabean.AsExecution;
 import com.asset.javabean.AsSimpleTask;
 import com.asset.javabean.AsTask;
-import com.asset.mapper.AsFormInstMapper;
+import com.asset.mapper.AsTaskMapper;
 import com.asset.service.ProcInstService;
 import com.asset.service.ProcNodeService;
 import com.asset.step.TranslateStep;
@@ -13,7 +13,6 @@ import com.asset.step.UpdateFormInstStep;
 import com.asset.utils.Constants;
 import com.asset.utils.ProcUtils;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
-import com.sun.xml.internal.bind.v2.runtime.reflect.opt.Const;
 import org.flowable.engine.history.HistoricActivityInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -23,16 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class UpdateProcStatusCommand {
+public class UpdateTaskStatusCommand {
     @Autowired
-    AsFormInstMapper asFormInstMapper;
+    AsTaskMapper asTaskMapper;
     @Autowired
     TranslateStep translateStep;
     @Autowired
     ProcInstService procInstService;
     @Autowired
     ProcNodeService procNodeService;
-
     @Autowired
     UpdateFormInstStep updateFormInstStep;
 
@@ -47,7 +45,6 @@ public class UpdateProcStatusCommand {
     public void updateRollbackTaskStatus(AsSimpleTask simpleTask,String rollbackActId){
         //回滚之后，需获取当前任务到上一个经办节点之间的那些任务实例formInst，将其状态值修改为“已回滚”
         String procInstId = simpleTask.getProcInstId();
-        String formModelId = translateStep.procInstIdToFormModelId(procInstId);
 
         List<HistoricActivityInstance> historicActs = ProcUtils.getHistoricActsDesc(procInstId);
         for (int i = 0; i < historicActs.size(); i++) {
@@ -59,15 +56,15 @@ public class UpdateProcStatusCommand {
                 continue;
 
 
-            AsFormInstDO updateDO = new AsFormInstDO.Builder()
+            AsTaskDO updateDO = AsTaskDO.builder()
                     .status(Constants.FORM_INST_ROLLED)
                     .build();
 
-            UpdateWrapper<AsFormInstDO> updateWrapper = new UpdateWrapper<>();
+            UpdateWrapper<AsTaskDO> updateWrapper = new UpdateWrapper<>();
             updateWrapper.lambda()
-                    .eq(AsFormInstDO::getTaskId, historicActs.get(i).getTaskId());
+                    .eq(AsTaskDO::getId, historicActs.get(i).getTaskId());
 
-            int update = asFormInstMapper.update(updateDO, updateWrapper);
+            int update = asTaskMapper.update(updateDO, updateWrapper);
             if (update == Constants.DATABASE_FAILED)
                 throw new DatabaseException("更新任务状态值失败！");
         }

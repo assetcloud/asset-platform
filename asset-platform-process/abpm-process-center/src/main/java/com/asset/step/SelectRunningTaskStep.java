@@ -1,6 +1,7 @@
 package com.asset.step;
 
 import com.asset.converter.FormConverter;
+import com.asset.entity.AsTaskDO;
 import com.asset.entity.ProcNodeDO;
 import com.asset.exception.ProcException;
 import com.asset.javabean.AsRunningTask;
@@ -40,7 +41,23 @@ public class SelectRunningTaskStep {
     AuthorityService authorityService;
 
 
+    /**
+     * 增加formSheet信息
+     *
+     * @param task
+     * @return
+     */
+    public void wrapWithIfJointSign(AsRunningTask task) {
+            if (task.getProcModelId().isEmpty())
+                wrapWithProcModelId(task);
 
+            boolean i = procNodeService.ifJointSign(task.getProcModelId(), task.getNodeId());
+            if (i)
+                task.setIfJointSign(Constants.AS_NODE_JOINT_PARRAL);
+            else
+                task.setIfJointSign(Constants.AS_NODE_JOINT_DISABLE);
+
+    }
 
 
     /**
@@ -105,6 +122,7 @@ public class SelectRunningTaskStep {
         return tasks;
     }
 
+
     public void wrapWithFormModelId(AsRunningTask task) {
         if (task.getProcModelId().isEmpty())
             wrapWithProcModelId(task);
@@ -119,6 +137,23 @@ public class SelectRunningTaskStep {
         return tasks;
     }
 
+
+    public void wrapWithSheet2(AsTaskDO task) {
+        task.setFormInstSheet(formModelService.getModelSheetStr(task.getFormModelId()));
+    }
+
+    /**
+     * 增加formSheet信息
+     *
+     * @param tasks
+     * @return
+     */
+    public List<AsTaskDO> wrapWithSheet2(List<AsTaskDO> tasks) {
+        for (AsTaskDO task : tasks) {
+            wrapWithSheet2(task);
+        }
+        return tasks;
+    }
 
     public void wrapWithSheet(AsRunningTask task) {
         if (task.getFormModelId().isEmpty())
@@ -140,10 +175,28 @@ public class SelectRunningTaskStep {
     }
 
 
+
+
+    public void wrapWithFormValue2(AsTaskDO task) {
+        task.setFormInstValue(procInstService.getFormInstAllValue(task.getProcInstId()));
+    }
+
+    /**
+     * 增加FormValue信息
+     *
+     * @param tasks
+     * @return
+     */
+    public List<AsTaskDO> wrapWithFormValue2(List<AsTaskDO> tasks) {
+        for (AsTaskDO task : tasks) {
+            wrapWithFormValue2(task);
+        }
+        return tasks;
+    }
+
     public void wrapWithFormValue(AsRunningTask task) {
         task.setFormValue(procInstService.getFormInstAllValue(task.getProcInstId()));
     }
-
     /**
      * 增加FormValue信息
      *

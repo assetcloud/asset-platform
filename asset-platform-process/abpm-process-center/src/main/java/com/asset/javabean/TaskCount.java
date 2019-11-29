@@ -1,4 +1,4 @@
-package com.asset.entity;
+package com.asset.javabean;
 
 import lombok.Data;
 

@@ -1,6 +1,5 @@
 package com.asset.service;
 
-import com.asset.mapper.FormInstMapper;
 import com.asset.mapper.ProcInstMapper;
 import com.asset.mapper.ProcNodeMapper;
 import com.asset.mapper.UserMapper;
@@ -28,8 +27,7 @@ public class UserService{
     protected ModelService modelService;
     @Autowired
     FormInstService formInstService;
-    @Autowired
-    FormInstMapper formInstMapper;
+
     @Autowired
     ProcInstMapper procInstMapper;
     @Autowired

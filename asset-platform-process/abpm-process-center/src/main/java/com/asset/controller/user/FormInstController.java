@@ -1,11 +1,10 @@
 package com.asset.controller.user;
 
 import com.alibaba.fastjson.JSONObject;
-import com.asset.entity.*;
 import com.asset.exception.DatabaseException;
-import com.asset.exception.ProcException;
-import com.asset.javabean.FormInstVO;
+import com.asset.javabean.AsTaskVO;
 import com.asset.dto.*;
+import com.asset.javabean.TaskCount;
 import com.asset.service.*;
 import com.asset.utils.R;
 import io.swagger.annotations.*;
@@ -101,14 +100,14 @@ public class FormInstController {
             @RequestParam(value = "scene_id") String sceneId,
             @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
             @RequestParam(value = "section_id") String sectionId) {
-        List<FormInstVO> formInstVOs = null;
+        List<AsTaskVO> asTaskVOS = null;
         try {
-            formInstVOs = formInstService.listFormInst(userID, taskType, sceneId, sectionId);
+            asTaskVOS = formInstService.listFormInst(userID, taskType, sceneId, sectionId);
         } catch (Exception e) {
             e.printStackTrace();
             return R.fail(e.getMessage());
         }
-        return R.data( formInstVOs);
+        return R.data(asTaskVOS);
     }
 
     /**
@@ -188,7 +187,7 @@ public class FormInstController {
     @RequestMapping(value = "/form_inst/apply_node", method = RequestMethod.POST)
     public R applyNode(
             @ApiParam(value = "对当前经办任务进行处理的实体类", required = true)
-            @RequestBody FormInstRecHandle rec) {
+            @RequestBody FormInstRecApproval rec) {
         String[] urls;
         try {
             urls = formInstService.applyNode(rec);
@@ -233,7 +232,7 @@ public class FormInstController {
 //                                     @RequestParam(value = "scene_id") String sceneId,   //这里点击外链，不需要对工作场景进行筛选
             @ApiParam(value = "当前用户在当前工作场景下所属的部门Id，这个信息需要向组织架构请求获取", required = true)
             @RequestParam(value = "section_id") String sectionId) {
-        FormInstVO shareLinkTask = null;
+        AsTaskVO shareLinkTask = null;
         try {
             shareLinkTask = formInstService.getShareLinkTask(taskId, userId, sectionId);
         } catch (Exception e) {

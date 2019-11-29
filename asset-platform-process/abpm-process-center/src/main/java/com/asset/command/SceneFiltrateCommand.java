@@ -1,11 +1,9 @@
 package com.asset.command;
 
 import com.asset.javabean.AsRunningTask;
-import com.asset.javabean.FormInstBO;
 import com.asset.javabean.LoginUser;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component

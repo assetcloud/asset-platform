@@ -1,7 +1,7 @@
 package com.asset.controller.admin;
 
 
-import com.asset.entity.AsFormInstDO;
+import com.asset.entity.AsTaskDO;
 import com.asset.javabean.AdminTaskVO;
 import com.asset.service.impl.TaskServiceImpl;
 import com.asset.utils.Condition;
@@ -52,7 +52,7 @@ public class AdminTaskController {
     })
     @GetMapping(value = "/task/list")
     public R<PageInfo<AdminTaskVO>> showTasks(@ApiIgnore @RequestParam Map<String, Object> role, Query query){
-        QueryWrapper<AsFormInstDO> queryWrapper = Condition.getQueryWrapper(role, AsFormInstDO.class);
+        QueryWrapper<AsTaskDO> queryWrapper = Condition.getQueryWrapper(role, AsTaskDO.class);
         PageHelper.startPage(query.getPage(),query.getSize());
         PageInfo<AdminTaskVO> list = new PageInfo<>(asFormInstService.listAdminProcTaskInfo(queryWrapper));
         return R.data(list);

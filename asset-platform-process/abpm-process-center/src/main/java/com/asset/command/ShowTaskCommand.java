@@ -1,14 +1,14 @@
 package com.asset.command;
 
+import com.asset.entity.AsTaskDO;
 import com.asset.exception.SizeNullException;
-import com.asset.filter.SceneFilter;
 import com.asset.javabean.AsRunningTask;
 import com.asset.javabean.AsSimpleTask;
-import com.asset.javabean.FormInstVO;
+import com.asset.javabean.AsTaskVO;
 import com.asset.javabean.LoginUser;
+import com.asset.mapper.AsTaskMapper;
 import com.asset.step.SelectRunningTaskStep;
 import com.asset.step.SelectSimpleTaskStep;
-import javafx.scene.Scene;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,16 +26,27 @@ public class ShowTaskCommand {
     @Autowired
     CandidateFiltrateCommand candidateFiltrateCommand;
     @Autowired
-    JointCheckCommand jointCheckCommand;
+    JointFiltrateCommand jointFiltrateCommand;
     @Autowired
     SceneFiltrateCommand sceneFiltrateCommand;
     @Autowired
     VOTranslateCommand voTranslateCommand;
 
-    public ArrayList<FormInstVO> ShowTaskCommand(int taskType,
-                                String userId,
-                                String sceneId,
-                                String sectionId){
+    @Autowired
+    AsTaskMapper asTaskMapper;
+
+    /**
+     * 获取用户分配的任务信息
+     * @param taskType
+     * @param userId
+     * @param sceneId
+     * @param sectionId
+     * @return
+     */
+    public ArrayList<AsTaskVO> showTasks(int taskType,
+                                         String userId,
+                                         String sceneId,
+                                         String sectionId){
         LoginUser loginUser = LoginUser.builder()
                 .userId(userId)
                 .sceneId(sceneId)
@@ -53,6 +64,7 @@ public class ShowTaskCommand {
             asRunningTasks.add(task);
         }
 
+
         //SimpleTask需要从数据库中加载更多信息,sheet和formValue最后加载
         selectRunningTaskStep.wrapWithProcModelId(asRunningTasks);
         selectRunningTaskStep.wrapWithFormModelId(asRunningTasks);
@@ -64,16 +76,26 @@ public class ShowTaskCommand {
 
         //接着对candidate、会签节点、选择的工作场景进行筛选
         candidateFiltrateCommand.filtrate(asRunningTasks,loginUser);
-        jointCheckCommand.filtrate(asRunningTasks,loginUser);
+        jointFiltrateCommand.filtrate(asRunningTasks,loginUser);
         sceneFiltrateCommand.filtrate(asRunningTasks,loginUser);
 
 
-        //加载formValue和sheet信息
-        selectRunningTaskStep.wrapWithFormValue(asRunningTasks);
-        selectRunningTaskStep.wrapWithSheet(asRunningTasks);
+        if(asRunningTasks.size()==0)
+            return null;
+
+        List<AsTaskDO> asTaskDOs = new ArrayList<>();
+
+        for (AsRunningTask asRunningTask : asRunningTasks) {
+            AsTaskDO taskDO = asTaskMapper.selectById(asRunningTask.getTaskId());
+            selectRunningTaskStep.wrapWithFormValue2(taskDO);
+            selectRunningTaskStep.wrapWithSheet2(taskDO);
+            asTaskDOs.add(taskDO);
+        }
+
 
         //返回给前台的对象，需要加上一定的修饰
-        ArrayList<FormInstVO> formInstVOS = voTranslateCommand.toVO(asRunningTasks, loginUser);
-        return formInstVOS;
+        ArrayList<AsTaskVO> asTaskVOS = voTranslateCommand.toVO(asTaskDOs, loginUser);
+
+        return asTaskVOS;
     }
 }
