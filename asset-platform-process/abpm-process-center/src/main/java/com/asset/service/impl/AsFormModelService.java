@@ -2,9 +2,11 @@ package com.asset.service.impl;
 
 import com.asset.entity.AsFormModelDO;
 import com.asset.dao.AsFormModelMapper;
+import com.asset.exception.FormException;
 import com.asset.javabean.AdminFormModelVO;
 import com.asset.javabean.FormModelBO;
 import com.asset.service.*;
+import com.asset.utils.Constants;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.BeanUtils;
@@ -92,6 +94,67 @@ public class AsFormModelService extends ServiceImpl<AsFormModelMapper, AsFormMod
                 formModelDOs = modelMapper.selectList(queryWrapper);
                 break;
         }
+
+        if(formModelDOs.size()==0)
+            return null;
+
+        List<FormModelBO> boList = new ArrayList<>();
+        for (int i = 0; i < formModelDOs.size(); i++) {
+            FormModelBO bo = new FormModelBO();
+            BeanUtils.copyProperties(formModelDOs.get(i), bo);
+            boList.add(bo);
+        }
+        return boList;
+    }
+
+    /** 模型发布 **/
+    public void publihFormModel(String formModelId) throws Exception {
+        //先判模型表单状态
+        if (formModelService.getFormModelstatus(formModelId) == Constants.STATUS_TEMPORARY_STORAGE) {
+            throw new FormException("表单模型：" + formModelId + "还不可用！");
+        } else if (formModelService.getFormModelstatus(formModelId) == Constants.STATUS_AVAILABLE) {
+            formModelService.setFormModelstatus(formModelId, Constants.STATUS_PUBLISHRD);
+        } else if (formModelService.getFormModelstatus(formModelId) == Constants.STATUS_PUBLISHRD || formModelService.getFormModelstatus(formModelId) == Constants.STATUS_SHELVES || formModelService.getFormModelstatus(formModelId) == Constants.STATUS_OFF_SHELVES) {
+            throw new FormException("表单模型：" + formModelId + "已发布！");
+        }
+        else {
+            throw new FormException("错误的表单模型状态！");
+        }
+    }
+
+    /** 模型上架 **/
+    public void FormModelShelves(String formModelId) throws Exception {
+        //先判断模型表单状态
+        if (formModelService.getFormModelstatus(formModelId) == Constants.STATUS_TEMPORARY_STORAGE) {
+            throw new FormException("表单模型：" + formModelId + "还不可用！");
+        } else if (formModelService.getFormModelstatus(formModelId) == Constants.STATUS_AVAILABLE) {
+            throw new FormException("表单模型：" + formModelId + "未发布！");
+        } else if (formModelService.getFormModelstatus(formModelId) == Constants.STATUS_PUBLISHRD || formModelService.getFormModelstatus(formModelId) == Constants.STATUS_OFF_SHELVES) {
+            formModelService.setFormModelstatus(formModelId, Constants.STATUS_SHELVES);
+        } else if(formModelService.getFormModelstatus(formModelId) == Constants.STATUS_SHELVES ) {
+            throw new FormException("表单模型：" + formModelId + "已上架！");
+        }
+        else {
+            throw new FormException("错误的表单模型状态！");
+        }
+    }
+
+    /** 改变模型状态值 **/
+    public void ChangeFormModelStatus(String formModelId,int status) throws Exception {
+
+            formModelService.setFormModelstatus(formModelId, status);
+
+    }
+
+    /** 根据status获取表单模型应用**/
+    public List<FormModelBO> GetlistFormModelByStatus(int status) {
+        QueryWrapper<AsFormModelDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.lambda()
+                .eq(AsFormModelDO::getStatus, status)
+                .eq(AsFormModelDO::getIsDeleted, 0);
+        List<AsFormModelDO> formModelDOs = null;
+
+        formModelDOs = modelMapper.selectList(queryWrapper);
 
         if(formModelDOs.size()==0)
             return null;

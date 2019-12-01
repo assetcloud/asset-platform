@@ -47,6 +47,7 @@ public class AsFormModelDO implements Serializable {
     private Integer isAddSeqCondition;   //是否增加seqCondition，0否，1是
     @TableLogic(value = "0",delval = "1")
     private Integer isDeleted;
+    private Integer status;
 
     public AsFormModelDO() {
     }

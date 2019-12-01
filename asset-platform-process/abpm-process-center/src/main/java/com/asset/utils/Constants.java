@@ -45,6 +45,11 @@ public interface Constants {
     public static final int AUTHORITY_ENABLE = 3;      //表单项 可写
     public static final int AUTHORITY_REQUIRED = 4;      //表单项 必填
 
+    public static final int  STATUS_TEMPORARY_STORAGE= 0;      //表单项 暂存
+    public static final int  STATUS_AVAILABLE= 1;      //表单项 可用
+    public static final int  STATUS_PUBLISHRD= 2;      //表单项 已发布
+    public static final int  STATUS_SHELVES= 3;      //表单项 已上架
+    public static final int  STATUS_OFF_SHELVES= 4;      //表单项 已下架
 
     /**
      * --------------------------------------------------------------------模型：流程模型-----------------------------------------------------------------

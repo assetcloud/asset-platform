@@ -164,4 +164,65 @@ public class FormModelController {
         return R.data(sceneId);
     }
 
+    /**
+     * 修改表单模型状态——发布
+     * @param formModelId
+     */
+    @ApiOperation(value = "表单模型发布", httpMethod = "POST")
+    @PostMapping(value = "/form_model/publish")
+    public R publishFormModel(@RequestParam("form_model_id")String formModelId){
+        try {
+            asFormModelService.publihFormModel(formModelId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.fail(e.getMessage());
+        }
+        return R.success("成功发布： "+ formModelId);
+    }
+
+    /**
+     * 修改表单模型状态——上架
+     * @param formModelId
+     */
+    @ApiOperation(value = "表单模型应用上架", httpMethod = "POST")
+    @PostMapping(value = "/form_model/shelves")
+    public R FormModelShelves(@RequestParam("form_model_id")String formModelId){
+        try {
+            asFormModelService.FormModelShelves(formModelId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.fail(e.getMessage());
+        }
+        return R.success("成功上架： "+ formModelId);
+    }
+
+    /**
+     * 修改表单模型状态——任意
+     * @param formModelId
+     */
+    @ApiOperation(value = "改变表单模型状态", httpMethod = "POST")
+    @PostMapping(value = "/form_model/changeStatus")
+    public R ChangeFormModelStatus(@RequestParam("form_model_id")String formModelId,@RequestParam("status")int status){
+        try {
+            asFormModelService.ChangeFormModelStatus(formModelId,status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return R.fail(e.getMessage());
+        }
+        return R.success("修改成功： "+ formModelId);
+    }
+
+    /**
+     *根据输入的status即表单模型状态值获取表单模型应用
+     *@param status
+     */
+    @ApiOperation(value = "表单模型应用获取", httpMethod = "GET")
+    @GetMapping(value = "/form_model/getApp")
+    public R<List<FormModelBO>> getApplication(@RequestParam("status")int status) {
+        List<FormModelBO> formModelDOS = asFormModelService.GetlistFormModelByStatus(status);
+        if (formModelDOS == null)
+            R.fail("当前应用下表单模型为空！");
+
+        return R.data(formModelDOS);
+    }
 }

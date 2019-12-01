@@ -28,6 +28,7 @@ public class FormModelDO implements Serializable {
     private Integer isBindAuthority = 0;   //表单项权限数据是否添加，0否，1是
     private Integer isAddNodeInfo = 0;   //是否正确增加节点信息，0否，1是
     private Integer isAddSeqCondition = 0;   //是否增加seqCondition，0否，1是
+    private Integer status=0;
 
     public FormModelDO() {
     }
@@ -95,6 +96,7 @@ public class FormModelDO implements Serializable {
         setIsBindAuthority(builder.isBindAuthority);
         setIsAddNodeInfo(builder.isAddNodeInfo);
         setIsAddSeqCondition(builder.isAddSeqCondition);
+        setStatus(builder.status);
     }
 
 
@@ -116,6 +118,7 @@ public class FormModelDO implements Serializable {
         private Integer isBindAuthority =0;
         private Integer isAddNodeInfo =0;
         private Integer isAddSeqCondition =0;
+        public Integer status;
 
         public Builder() {
         }
@@ -202,6 +205,11 @@ public class FormModelDO implements Serializable {
 
         public Builder isAddSeqCondition(Integer val) {
             isAddSeqCondition = val;
+            return this;
+        }
+
+        public  Builder status(Integer val){
+            status=val;
             return this;
         }
 

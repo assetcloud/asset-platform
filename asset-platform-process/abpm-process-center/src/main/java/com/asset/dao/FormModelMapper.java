@@ -68,6 +68,8 @@ public interface FormModelMapper {
      */
     String getProcModelID(String formModelId);
 
+    int getStatus(String formModelId);
+    void setStatus(String formModelId,int status);
     /**
      * 从as_form_model表中找到model_json数据
      * @param formModelID

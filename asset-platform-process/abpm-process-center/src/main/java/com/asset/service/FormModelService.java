@@ -244,6 +244,12 @@ public class FormModelService {
         return formModelMapper.getBindFormSheet(procModelId);
     }
 
+    public  int getFormModelstatus(String formModelId){return formModelMapper.getStatus(formModelId);}
+
+    public void setFormModelstatus(String formModelId,int status){
+        formModelMapper.setStatus(formModelId,status);
+    }
+
     public String getSceneIdByProcModelId(String procModelId) {
         return formModelMapper.getSceneIdByProcModelId(procModelId);
     }
