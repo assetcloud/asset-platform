@@ -209,6 +209,22 @@
         WHERE id = #{formModelID,jdbcType = VARCHAR}
     </select>
 
+    <!--根据modelID返回status数据
+        @param String formModelID-->
+    <select id="getStatus" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT status
+        FROM as_form_model
+        WHERE id = #{formModelID,jdbcType = VARCHAR}
+    </select>
+
+    <!--根据modelID设置status数据
+        @param String formModelID-->
+    <update id="setStatus" parameterType="com.asset.entity.FormModelDO">
+        UPDATE as_form_model
+        SET status = #{status,jdbcType=INTEGER}
+        WHERE id = #{formModelId,jdbcType = VARCHAR}
+    </update>
+
     <select id="checkFormContain" parameterType="java.lang.String" resultType="java.lang.String">
         SELECT id
         FROM as_form_model

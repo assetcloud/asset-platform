@@ -35,7 +35,7 @@ public class FormModelService {
     FormInstService formInstService;
 
     /**
-     * 创建表单模型数据
+     * 创建表单模型数据（新增设置status）
      * @param dto
      * @return
      */
@@ -65,7 +65,8 @@ public class FormModelService {
                 .sceneId(dto.getScene_id())
                 .groupId(-1)
                 .createdTime(new Date())
-                .version(1).build();
+                .version(1)
+                .status(Constants.STATUS_TEMPORARY_STORAGE).build(); //表单模型刚创建，status为暂存
         int flag =  formModelMapper.insertSelective(formModelDO);
         if(flag == Constants.DATABASE_FAILED)
             throw new DatabaseException("插入数据失败！");
@@ -73,13 +74,16 @@ public class FormModelService {
     }
 
     /**
-     * 把相应的表单模型与流程模型绑定
+     * 把相应的表单模型与流程模型绑定(绑定成功后将表单模型status变成 可用 )
      */
     public void bindFormAndProcModel(String formModelId,String procModelId) throws DatabaseException {
         //在表单模型表中绑定流程模型ID
         int status = formModelMapper.bindFormAndProcModel(formModelId,procModelId);
         if(status == Constants.DATABASE_FAILED)
             throw new DatabaseException("插入数据失败！");
+        else
+            formModelMapper.setStatus(formModelId,Constants.STATUS_AVAILABLE);
+
     }
 
     /**
