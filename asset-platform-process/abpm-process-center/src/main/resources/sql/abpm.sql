@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : 10.1.18.178
+ Source Server         : 120.77.179.239
  Source Server Type    : MySQL
- Source Server Version : 50727
- Source Host           : 10.1.18.178:3306
+ Source Server Version : 50728
+ Source Host           : 120.77.179.239:3306
  Source Schema         : asset-platform-process
 
  Target Server Type    : MySQL
- Target Server Version : 50727
+ Target Server Version : 50728
  File Encoding         : 65001
 
- Date: 19/08/2019 20:01:51
+ Date: 02/12/2019 10:03:34
 */
 
 SET NAMES utf8mb4;
@@ -1840,6 +1840,7 @@ CREATE TABLE `as_form_model`  (
   `is_add_node_info` int(1) NULL DEFAULT NULL COMMENT '是否正确增加节点信息，0否，1是',
   `is_add_seq_condition` int(1) NULL DEFAULT NULL COMMENT '是否增加seqCondition，0否，1是',
   `is_deleted` int(1) NULL DEFAULT 0 COMMENT '是否被删除，0否，1是',
+  `status` int(64) NOT NULL COMMENT '表单模型状态 0：暂存 1：可用 2：已发布 3：已上架 4：已下架',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `app_idFK`(`app_id`) USING BTREE,
   CONSTRAINT `as_form_model_ibfk_1` FOREIGN KEY (`app_id`) REFERENCES `as_application` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
